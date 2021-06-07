@@ -1,0 +1,8 @@
+[TEXTURES]
+config/textures.txt
+
+[ANIMATIONS]
+config/animations.txt
+
+[Tiles]
+config/tiles.txt

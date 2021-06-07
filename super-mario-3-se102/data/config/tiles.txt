@@ -1,0 +1,7 @@
+##Texture for tiles in the game.
+##Tiles are automatically created using spritesheets taken from https://www.spriters-resource.com/nes/supermariobros3/sheet/81122 with modifications
+
+#PathToSpriteSheets
+#ColorKey (R, G, B)
+spritesheets/tiles.png
+224, 163, 216

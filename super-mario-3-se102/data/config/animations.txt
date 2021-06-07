@@ -1,0 +1,38 @@
+#Id, FrameDuration (in seconds), boxHandlingMode (Auto or Manual) (Auto: automatically calculate SpriteBoxs) (Manual: manually provide SpriteBoxs)
+#TextureId
+## Mode=Auto => StartPosition (X, Y), Dimension (Width, Height), Space, FrameCount, [Offset (X, Y) (Default=0)]
+## Mode=Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
+
+##Small mario##
+#Move#
+MarioSML, 0.066, Auto
+PlayableCharacters
+1, 16, 16, 16, 2, 2
+
+MarioSMR, 0.066, Auto
+PlayableCharacters
+1, 34, 16, 16, 2, 2
+
+#Idle#
+MarioSIL, -1, Manual
+PlayableCharacters
+1, 16, 16, 31
+
+MarioSIR, -1, Manual
+PlayableCharacters
+1, 34, 16, 49
+
+##Goomba##
+BGoombaM, 0.15, Auto
+Enemies
+0, 0, 16, 16, 0, 2
+
+##QuestionBlocks##
+QuestionBlockNormal, 0.14, Auto
+Tiles
+1140, 1, 16, 16, 1, 4 
+
+##Coin##
+Coin, 0.125, Auto
+Tiles
+936, 69, 16, 16, 1, 4

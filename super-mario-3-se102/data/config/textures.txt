@@ -1,0 +1,13 @@
+##Textures necessary for entity in the game
+#Id, Path
+#ColorKey (R, G, B)
+
+PlayableCharacters, spritesheets/playable_characters.png
+68, 145, 190
+
+Enemies, spritesheets/enemies.png
+68, 145, 190
+
+Tiles, spritesheets/tiles.png
+224, 163, 216
+

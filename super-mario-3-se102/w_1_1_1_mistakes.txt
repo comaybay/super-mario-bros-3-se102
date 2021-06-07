@@ -1,0 +1,13 @@
+Created by world_encoder.py, this file contains all tiles that are unidentifiable. Use this to find mistakes in your image or in world_encoder/data/tile_annotations.png
+unidentifiable entity found at position (55,34) (880, 544 px)
+unidentifiable entity found at position (83,47) (1328, 752 px)
+unidentifiable entity found at position (86,47) (1376, 752 px)
+unidentifiable entity found at position (89,47) (1424, 752 px)
+unidentifiable entity found at position (22,50) (352, 800 px)
+unidentifiable entity found at position (36,51) (576, 816 px)
+unidentifiable entity found at position (131,51) (2096, 816 px)
+unidentifiable entity found at position (52,53) (832, 848 px)
+unidentifiable entity found at position (55,53) (880, 848 px)
+unidentifiable entity found at position (92,53) (1472, 848 px)
+unidentifiable entity found at position (14,54) (224, 864 px)
+unidentifiable entity found at position (33,54) (528, 864 px)
