@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "EncodedWorld.h"
+#include "EntityManager.h"
 #include "Utils.h"
 #include "Entities.h"
 #include "Colors.h"
@@ -36,8 +37,8 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	D3DCOLOR bgColor{};
 	char* background;
 	char* foreground;
-	std::vector<LPEntity>* entities = new std::vector<LPEntity>();
-	EncodedWorld* encodedWorld{};
+	LPEntityManager entityManager = new EntityManager();
+	LPEncodedWorld encodedWorld{};
 	while (std::getline(file, section)) {
 		if (section[0] != '[')
 			continue;
@@ -48,16 +49,16 @@ LPScene SceneManager::LoadWorld(std::string id) {
 			else if (section == "[ENCODED WORLD]")
 				section = ParseEncodedWorld(file, worldDim.width, encodedWorld);
 			else if (section == "[WALL ENTITIES]")
-				section = ParseAndAddWallsEntities(file, entities);
+				section = ParseAndAddWallsEntities(file, entityManager);
 			else if (section == "[WORLD ENTITIES]")
-				section = ParseAndAddOtherEntities(file, entities);
+				section = ParseAndAddOtherEntities(file, entityManager);
 			else
 				break;
 		}
 	}
 	file.close();
 
-	return new Scene(worldDim, bgColor, encodedWorld, entities);
+	return new Scene(worldDim, bgColor, encodedWorld, entityManager);
 }
 
 std::string SceneManager::ParseWorldProperties(std::ifstream& file, Utils::Dimension& dim, D3DCOLOR& bgColor)
@@ -109,7 +110,7 @@ std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width
 	throw std::exception("Error parsing encoded world");
 }
 
-std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, std::vector<LPEntity>* entities)
+std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entities)
 {
 	using namespace Entities;
 	//TODO:
@@ -128,18 +129,23 @@ std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, std::vec
 
 		Utils::Vector2 pos(stoi(tokens[1]), stoi(tokens[2]));
 		Utils::Dimension dim(stoi(tokens[3]), stoi(tokens[4]));
-		if (tokens[0] == "Type1") {
-			entities->push_back(new CollisionWallType1(pos, dim));
-		}
+
+		LPEntity entity;
+		if (tokens[0] == "Type1")
+			entity = new CollisionWallType1(pos, dim);
+		else if (tokens[0] == "Type2")
+			entity = new CollisionWallType2(pos, dim);
 		else {
-			entities->push_back(new CollisionWallType2(pos, dim));
+			std::string msg = "ParseAndAddWallsEntities failed: undefined wall type: " + tokens[0];
+			throw std::exception(msg.c_str());
 		}
 
+		entities->AddToGroups(entity->GetEntityGroups(), entity);
 	}
 	return line;
 }
 
-std::string SceneManager::ParseAndAddOtherEntities(std::ifstream& file, std::vector<LPEntity>* entities)
+std::string SceneManager::ParseAndAddOtherEntities(std::ifstream& file, LPEntityManager entities)
 {
 	std::string line;
 	while (std::getline(file, line)) {
@@ -156,7 +162,7 @@ std::string SceneManager::ParseAndAddOtherEntities(std::ifstream& file, std::vec
 			continue;
 
 		LPEntity entity = parseMethodByEntityName[name](tokens);
-		entities->push_back(entity);
+		entities->AddToGroups(entity->GetEntityGroups(), entity);
 	}
 
 	return line;

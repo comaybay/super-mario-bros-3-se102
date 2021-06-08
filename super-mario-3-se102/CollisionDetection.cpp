@@ -1,5 +1,5 @@
 #include "CollisionDetection.h"
-#include "EntityManager.h"
+#include "Game.h"
 #include <algorithm>
 #include <unordered_set>
 using namespace Utils;
@@ -21,7 +21,7 @@ void CollisionDetection::Update(float delta)
 		//get target entities (use set data structure to avoid duplications)
 		std::unordered_set<LPEntity> entitySet;
 		for (std::string& groupName : pair.second)
-			for (const LPEntity& target : EntityManager::GetGroup(groupName))
+			for (const LPEntity& target : Game::GetSceneEntityManager()->GetEntitiesByGroup(groupName))
 				entitySet.insert(target);
 
 		std::vector<LPEntity> targetEntities(entitySet.begin(), entitySet.end());

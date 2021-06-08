@@ -1,5 +1,5 @@
 #include "Entities.h"
-#include "EntityManager.h"
+#include "Game.h"
 #include "Groups.h"
 using namespace Entities;
 
@@ -14,8 +14,8 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2& position)
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	if (data.edge.y == -1.0f) {
-		EntityManager::QueueFree(this);
-		EntityManager::AddToGroups(content->GetEntityGroups(), content);
+		Game::GetSceneEntityManager()->QueueFree(this);
+		Game::GetSceneEntityManager()->AddToGroups(content->GetEntityGroups(), content);
 		content = nullptr;
 	}
 }
