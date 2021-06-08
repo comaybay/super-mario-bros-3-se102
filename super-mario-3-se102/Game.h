@@ -19,6 +19,7 @@ public:
 	static int GetScale();
 	static Utils::Dimension GetGameDimension();
 	static const LPScene GetScene();
+	static const LPEntityManager GetSceneEntityManager();
 	static void Run();
 	static void Release();
 	static void ProcessKeyboard();
@@ -41,6 +42,6 @@ private:
 	static DWORD dwInOut;
 	static LPDIRECT3DSURFACE9 backBuffer;
 	static LPD3DXSPRITE d3dxSprite;
-	static LPScene pScene;
+	static LPScene scene;
 };
 
