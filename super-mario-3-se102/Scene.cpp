@@ -35,13 +35,13 @@ void Scene::Update(float delta)
 
 	//if (EntityManager::GetGroup("Player").size() != 0) {
 	//	int i = EntityManager::GetGroup("Player").size();
-	//	CollisionData d = CollisionDetection::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("Goombas").front(), delta);
-	//	CollisionData dh = CollisionDetection::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("CollisionBlocks").front(), delta);
+	//	CollisionData d = CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("Goombas").front(), delta);
+	//	CollisionData dh = CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("CollisionBlocks").front(), delta);
 	//	auto pBlock = EntityManager::GetGroup("CollisionBlocks").begin();
 	//	std::advance(pBlock, 1);
-	//	CollisionDetection::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
+	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
-	CollisionDetection::Update(delta);
+	CollisionEngine::Update(delta);
 	entityManager->UpdateAllEntities(delta);
 	entityManager->PostUpdateAllEntities();
 	camera.Update();

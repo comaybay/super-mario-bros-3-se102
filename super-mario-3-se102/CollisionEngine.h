@@ -13,7 +13,7 @@ struct CollisionData {
 	CollisionData(LPEntity who, Utils::Vector2 edge, float value, float delta);
 };
 
-class CollisionDetection
+class CollisionEngine
 {
 private:
 	struct CBox;
@@ -52,7 +52,7 @@ private:
 };
 
 template<class TEntity, class ...Args>
-static void CollisionDetection::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
+static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
 	//entites in these groups will be check for collision with entity
 	targetGroupsByLPEntity[handlerThis] = collisionTargetGroups;
 	GetCollisionEventOf(handlerThis)->Subscribe(handlerThis, handler);

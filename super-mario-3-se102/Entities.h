@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "CollisionDetection.h"
+#include "CollisionEngine.h"
 
 namespace Entities {
 	using namespace Utils;

@@ -11,7 +11,7 @@ Goomba::Goomba(std::string colorCode, Vector2 position)
 {
 	velocity = Vector2(30, 0);
 	speed = Vector2(30, 0);
-	CollisionDetection::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
+	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
 }
 
 void Goomba::Update(float delta)

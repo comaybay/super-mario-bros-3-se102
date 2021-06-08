@@ -8,7 +8,7 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2& position)
 	: Entity::Entity(position, "QuestionBlockNormal", { "Blocks", Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }),
 	content(content)
 {
-	CollisionDetection::Subscribe(this, &QuestionBlock::OnCollision, { Groups::PLAYER });
+	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Groups::PLAYER });
 }
 
 void QuestionBlock::OnCollision(CollisionData data)

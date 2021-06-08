@@ -4,7 +4,7 @@
 #include "AnimationManager.h"
 #include "EntityManager.h"
 #include "Entities.h"
-#include "CollisionDetection.h"
+#include "CollisionEngine.h"
 #include <sstream>
 #include <thread>
 #include <chrono>

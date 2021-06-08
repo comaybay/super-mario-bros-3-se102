@@ -1,4 +1,4 @@
-#include "CollisionDetection.h"
+#include "CollisionEngine.h"
 #include "Game.h"
 #include <algorithm>
 #include <unordered_set>
@@ -9,11 +9,11 @@ CollisionData::CollisionData() {};
 CollisionData::CollisionData(LPEntity who, Vector2 edge, float value, float delta)
 	: who(who), edge(edge), value(value), delta(delta) {};
 
-std::map<LPEntity, LPEvent<CollisionData>> CollisionDetection::collisionEventByLPEntity;
-std::map<LPEntity, std::vector<std::string>> CollisionDetection::targetGroupsByLPEntity;
-CollisionDetection::OnEntityDestroyHandler CollisionDetection::onEntityDestroy;
+std::map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
+std::map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
+CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
 
-void CollisionDetection::Update(float delta)
+void CollisionEngine::Update(float delta)
 {
 	std::vector<LPEntity> dataCollection;
 
@@ -29,8 +29,8 @@ void CollisionDetection::Update(float delta)
 		//sort target entities by time of collision/closeness
 		LPEntity entity = pair.first;
 		auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
-			float aVal = CollisionDetection::DetectCollisionValue(entity, a, delta);
-			float bVal = CollisionDetection::DetectCollisionValue(entity, b, delta);
+			float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
+			float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
 
 			//if equal and time = 0, sort by distance to entity
 			if (aVal == bVal && aVal != 1.0f) {
@@ -54,7 +54,7 @@ void CollisionDetection::Update(float delta)
 
 			CollisionData dataForEntity;
 			CollisionData dataForTarget;
-			CollisionDetection::Detect(entity, target, delta, dataForEntity, dataForTarget);
+			CollisionEngine::Detect(entity, target, delta, dataForEntity, dataForTarget);
 
 			if (dataForEntity.value == 1.0f)
 				continue;
@@ -70,7 +70,7 @@ void CollisionDetection::Update(float delta)
 	}
 }
 
-LPEvent<CollisionData> CollisionDetection::GetCollisionEventOf(LPEntity entity)
+LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
 {
 	if (!Utils::MapHas(entity, collisionEventByLPEntity))
 		collisionEventByLPEntity[entity] = new Event<CollisionData>();
@@ -78,7 +78,7 @@ LPEvent<CollisionData> CollisionDetection::GetCollisionEventOf(LPEntity entity)
 	return collisionEventByLPEntity[entity];
 }
 
-void CollisionDetection::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
+void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
 	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
 	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2(0, 0));
 
@@ -96,7 +96,7 @@ void CollisionDetection::Detect(LPEntity e1, LPEntity e2, float delta, Collision
 	);
 }
 
-float CollisionDetection::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
+float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
 {
 	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
 	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2(0, 0));
@@ -109,7 +109,7 @@ float CollisionDetection::DetectCollisionValue(LPEntity e1, LPEntity e2, float d
 		return SweptAABB(mBox, sBox).value;
 }
 
-CollisionDetection::CBox CollisionDetection::GetSweptBroadphaseBox(const CBox& box) {
+CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
 	CBox b;
 	b.position = Vector2(
 		box.velocity.x > 0 ? box.position.x : box.position.x + box.velocity.x,
@@ -123,7 +123,7 @@ CollisionDetection::CBox CollisionDetection::GetSweptBroadphaseBox(const CBox& b
 	return b;
 }
 
-void CollisionDetection::OnEntityDestroyHandler::Handle(LPEntity entity)
+void CollisionEngine::OnEntityDestroyHandler::Handle(LPEntity entity)
 {
 	auto itCE = collisionEventByLPEntity.find(entity);
 	collisionEventByLPEntity.erase(itCE);
@@ -132,7 +132,7 @@ void CollisionDetection::OnEntityDestroyHandler::Handle(LPEntity entity)
 }
 
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
-bool CollisionDetection::AABBCheck(const CBox& box1, const CBox& box2)
+bool CollisionEngine::AABBCheck(const CBox& box1, const CBox& box2)
 {
 	//MODIFICATION: >= and <= instead of > and <.
 	//if box1 is outside of box2, return false else true
@@ -145,7 +145,7 @@ bool CollisionDetection::AABBCheck(const CBox& box1, const CBox& box2)
 }
 
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
-CollisionData CollisionDetection::SweptAABB(const CBox& mBox, const CBox& sBox) {
+CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 	CollisionData data;
 	Vector2 invEntry;
 	Vector2 invExit;

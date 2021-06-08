@@ -22,7 +22,7 @@ Mario::Mario(Vector2 position) :
 	jumpDuration = 0;
 	onGround = false;
 
-	CollisionDetection::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS_TYPE_1, Groups::COLLISION_WALLS_TYPE_2 });
+	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS_TYPE_1, Groups::COLLISION_WALLS_TYPE_2 });
 }
 
 void Mario::OnCollision(CollisionData data)
