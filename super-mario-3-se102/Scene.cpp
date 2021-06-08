@@ -10,30 +10,17 @@ Scene::~Scene()
 	delete encodedWorld;
 }
 
-Scene::Scene(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, std::vector<LPEntity>* entities)
-	: worldTileDim(worldTileDim), backgroundColor(backgroundColor), encodedWorld(encodedWorld), entities(entities)
+Scene::Scene(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
+	: worldTileDim(worldTileDim), backgroundColor(backgroundColor), encodedWorld(encodedWorld), entityManager(entityManager)
 {
-	for (LPEntity e : *entities) {
-		EntityManager::AddToGroups(e->GetEntityGroups(), e);
-		e->GetDestroyEvent()->Subscribe(this, &Scene::OnEntityDestroy);
-	}
-
 	//TODO: REMOVE DEBUG CODE
 	//LPEntity mario = new Entities::Mario(Utils::Vector2(16 * 4, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup(Groups::PLAYER, mario);
 	//LPEntity goomba = new Entities::Goomba(Utils::Vector2(16 * 5, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup("Goombas", goomba);
 	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
-	EntityManager::AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
-	camera.FollowEntity(EntityManager::GetGroup(Groups::PLAYER).front());
-}
-
-//TODO: Unused code
-void Scene::OnEntityDestroy(LPEntity entity)
-{
-	auto it = std::find(entities->begin(), entities->end(), entity);
-	if (it != entities->end())
-		entities->erase(it);
+	entityManager->AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
+	camera.FollowEntity(entityManager->GetEntitiesByGroup(Groups::PLAYER).front());
 }
 
 //TODO: REMOVE TEST CODE
@@ -55,8 +42,8 @@ void Scene::Update(float delta)
 	//	CollisionDetection::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
 	CollisionDetection::Update(delta);
-	EntityManager::UpdateAllEntities(delta);
-	EntityManager::PostUpdateAllEntities();
+	entityManager->UpdateAllEntities(delta);
+	entityManager->PostUpdateAllEntities();
 	camera.Update();
 }
 
@@ -78,7 +65,7 @@ void Scene::Render()
 
 
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
-		EntityManager::RenderAllEntities();
+		entityManager->RenderAllEntities();
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
 		d3dxSprite->End();
@@ -100,10 +87,15 @@ Utils::Vector2 Scene::GetCameraPosition()
 	return camera.GetPosition();
 }
 
-//Tiles are taken from https://www.spriters-resource.com/nes/supermariobros3/sheet/81122 with modifications
-//This table consists of 73 columns and 21 rows
+LPEntityManager Scene::GetEntityManager()
+{
+	return entityManager;
+}
+
 RECT Scene::GetTileBoundingBox(int id)
 {
+	//tile map taken from https://www.spriters-resource.com/nes/supermariobros3/sheet/81122 with modifications
+	//tile map consists of 73 columns and 21 rows
 	int row = id / 73;
 	int col = id % 73;
 
@@ -116,7 +108,7 @@ RECT Scene::GetTileBoundingBox(int id)
 
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 {
-	Utils::Vector2 cp = Game::GetScene()->GetCameraPosition();
+	Utils::Vector2 cp = camera.GetPosition();
 	Utils::Vector2 tileOffset((int)cp.x / Game::TILE_SIZE, (int)cp.y / Game::TILE_SIZE);
 
 	Utils::Dimension gameDim = Game::GetGameDimension();
