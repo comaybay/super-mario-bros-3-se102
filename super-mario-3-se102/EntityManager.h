@@ -5,24 +5,22 @@
 #include <unordered_set>
 #include "Entity.h"
 
-typedef Entity* LPEntity;
-
 class EntityManager
 {
 public:
-	static void AddToGroup(std::string groupName, LPEntity entity);
-	static void AddToGroups(std::vector<std::string> groups, LPEntity entity);
-	static void RemoveFromGroup(std::string groupName, LPEntity entity);
-	static const std::list<LPEntity>& GetGroup(std::string groupName);
-	static void UpdateAllEntities(float delta);
-	static void PostUpdateAllEntities();
-	static void RenderAllEntities();
-	static void QueueFree(LPEntity entity);
-	static void FreeEntitiesInQueue();
+	void AddToGroup(std::string groupName, LPEntity entity);
+	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
+	void RemoveFromGroup(std::string groupName, LPEntity entity);
+	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
+	void UpdateAllEntities(float delta);
+	void PostUpdateAllEntities();
+	void RenderAllEntities();
+	void QueueFree(LPEntity entity);
+	void FreeEntitiesInQueue();
 private:
-	static bool IsCloseToPlayer(LPEntity entity);
-	static std::map<std::string, std::list<LPEntity>*> entitiesByGroup;
-	static std::unordered_set<LPEntity> entities;
-	static std::unordered_set<LPEntity> freeQueue;
+	bool IsCloseToPlayer(LPEntity entity);
+	std::map<std::string, std::list<LPEntity>*> entitiesByGroup;
+	std::unordered_set<LPEntity> entities;
+	std::unordered_set<LPEntity> freeQueue;
 };
-
+typedef EntityManager* LPEntityManager;

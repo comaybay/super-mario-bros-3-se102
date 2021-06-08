@@ -2,10 +2,6 @@
 #include "Groups.h"
 #include "Game.h"
 
-std::map<std::string, std::list<LPEntity>*> EntityManager::entitiesByGroup;
-std::unordered_set<LPEntity> EntityManager::entities;
-std::unordered_set<LPEntity> EntityManager::freeQueue;
-
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
 {
 	if (!Utils::MapHas(groupName, entitiesByGroup))
@@ -21,7 +17,7 @@ void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity
 		AddToGroup(groupName, entity);
 }
 
-const std::list<LPEntity>& EntityManager::GetGroup(std::string groupName)
+const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupName)
 {
 	if (Utils::MapHas(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];
