@@ -1,3 +1,10 @@
+#GamePixelDimension (Width, Height)
+#PixelScale
+[GAME SETTINGS]
+#Standard display resolution of NES console is 256x240
+256, 240
+3
+
 [TEXTURES]
 config/textures.txt
 
