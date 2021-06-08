@@ -182,7 +182,7 @@
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Entities.h" />
     <ClCompile Include="CollisionWallType1.cpp" />
-    <ClCompile Include="CollisionDetection.cpp" />
+    <ClCompile Include="CollisionEngine.cpp" />
     <ClCompile Include="CollisionHandling.cpp" />
     <ClCompile Include="EmptyAnimation.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CollisionDetection.h" />
+    <ClInclude Include="CollisionEngine.h" />
     <ClInclude Include="CollisionHandling.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="EmptyAnimation.h" />

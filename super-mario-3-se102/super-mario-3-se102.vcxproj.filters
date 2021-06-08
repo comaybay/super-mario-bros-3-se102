@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Entities">
       <UniqueIdentifier>{59d9a94f-8656-4173-813a-148a65d01399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CollisionEngine">
+      <UniqueIdentifier>{4f938570-2ee0-45f6-b1ce-509be45f2610}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,9 +47,6 @@
     </ClCompile>
     <ClCompile Include="Mario.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionDetection.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files</Filter>
@@ -105,6 +105,9 @@
     <ClCompile Include="Coin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -126,9 +129,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnimationManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionDetection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
@@ -168,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayerVariables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
