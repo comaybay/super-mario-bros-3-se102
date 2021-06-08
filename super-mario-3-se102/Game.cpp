@@ -90,19 +90,20 @@ const LPEntityManager Game::GetSceneEntityManager()
 
 void Game::Run()
 {
-	bool done = false;
 	MSG msg;
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
 	int frameTime = round(1000.0f / 60.0f);
 	const float dt = 1.0f / 60.0f;
 	int accumulator = 0;
 
-	while (!done)
+	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT)
-				done = true;
+			if (msg.message == WM_QUIT) {
+				Game::Release();
+				return;
+			}
 
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
