@@ -2,6 +2,8 @@
 #include <stringapiset.h>
 #include <sstream>
 #include <d3dx9.h>
+#include <fstream>
+
 using namespace Utils;
 
 void Utils::DebugOut(std::string text) {
@@ -117,6 +119,16 @@ std::vector<std::string> Utils::SplitEvery(int splitLength, const std::string& l
 		tokens.push_back(line.substr(i, splitLength));
 
 	return tokens;
+}
+
+std::string Utils::GetNextNonCommentLine(std::ifstream& file)
+{
+	std::string line = "EOF";
+	while (std::getline(file, line))
+		if (line[0] != '#' && line != "")
+			break;
+
+	return line;
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -293,6 +305,11 @@ int Utils::Sign(int number)
 	return (number > 0) - (number < 0);
 }
 
+float Utils::Sign(float number)
+{
+	return (number > 0) - (number < 0);
+}
+
 std::string Utils::JoinPath(const std::string& path1, const std::string& path2)
 {
 	if (path1[path1.size() - 1] == '/') {
@@ -321,10 +338,6 @@ int Utils::HexCharToInt(const char& ch) {
 	throw std::exception("charToInt failed: invaild hex char");
 }
 
-float Utils::Sign(float number)
-{
-	return (number > 0) - (number < 0);
-}
 
 
 const char* Utils::InvalidTokenSizeException::what() const throw () {

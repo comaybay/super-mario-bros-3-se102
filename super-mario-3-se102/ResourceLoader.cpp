@@ -1,5 +1,4 @@
 #include "ResourceLoader.h"
-#include "Utils.h"
 #include "TextureManager.h"
 #include "Animation.h"
 #include "AnimationManager.h"
@@ -9,6 +8,39 @@
 ResourceLoader::ResourceLoader(std::string rootDirectory)
 	: root(rootDirectory) {}
 
+void ResourceLoader::GetGameSettings(Utils::Dimension& gameDimension, int& pixelScale) const
+{
+	std::string configPath = Utils::JoinPath(root, "/config.txt");
+	std::ifstream file(configPath);
+
+	std::string line = "";
+	while (line != "EOF") {
+		line = Utils::GetNextNonCommentLine(file);
+		if (line[0] != '[' || line != "[GAME SETTINGS]")
+			continue;
+
+		line = Utils::GetNextNonCommentLine(file);
+		std::vector<std::string> dimTokens = Utils::SplitByComma(line);
+		if (dimTokens.size() != 2)
+			throw Utils::InvalidTokenSizeException(2);
+
+		gameDimension = Utils::Dimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
+
+		line = Utils::GetNextNonCommentLine(file);
+		std::vector<std::string> scaleTokens = Utils::SplitByComma(line);
+		if (scaleTokens.size() != 1)
+			throw Utils::InvalidTokenSizeException(1);
+
+		pixelScale = stoi(scaleTokens[0]);
+
+		file.close();
+		return;
+	}
+
+	file.close();
+	throw std::exception("GetGameSettings Failed: missing [GAME SETTINGS] section");
+}
+
 void ResourceLoader::Load() const
 {
 	std::string configPath = Utils::JoinPath(root, "/config.txt");
@@ -16,7 +48,7 @@ void ResourceLoader::Load() const
 	//go to section
 	std::string section;
 	while (std::getline(file, section)) {
-		if (section[0] != '[')
+		if (section[0] != '[' || section == "[GAME SETTINGS]")
 			continue;
 
 		std::string path;

@@ -59,6 +59,8 @@ namespace Utils
 
 	std::wstring StringToWideString(const std::string& s);
 
+	std::string GetNextNonCommentLine(std::ifstream& file);
+
 	std::vector<std::string> SplitByComma(const std::string& line);
 
 	std::vector<std::string> SplitEvery(int splitLength, const std::string& line);
@@ -93,6 +95,7 @@ namespace Utils
 
 	template <typename T>
 	inline T Clip(const T& n, const T& lower, const T& upper);
+
 }
 
 template<class K, class V>
