@@ -23,18 +23,25 @@ from enum import Enum
 
 
 def main():
+    # get game dimension from config.txt
+    this_dir = path.dirname(path.realpath(__file__))
+    config_path = path.join(this_dir, "..", "config.txt")
+    game_dim = get_game_dim(config_path)
+    if (game_dim == None):
+        print("Error: can't find GamePixelDimension value in ../config.txt")
+        return
+
     # automatically encode all images from ./worlds
     if (len(sys.argv) == 1):
-        dir = path.dirname(path.realpath(__file__))
-        world_path = path.join(dir, "worlds")
-        _, _, filenames = next(walk(world_path))
+        world_path = path.join(this_dir, "worlds")
+        _, _, input_img_filenames = next(walk(world_path))
 
-        for filename in filenames:
+        for filename in input_img_filenames:
             print(f"Working on {filename}...")
             file_path = path.join(world_path, filename)
             world_img = Image.open(file_path)
-            output_path = path.join(dir, "..", "worlds", path.splitext(filename)[0] + ".txt")
-            WorldEncoder(world_img, output_path).encode()
+            output_path = path.join(this_dir, "..", "worlds", path.splitext(filename)[0] + ".txt")
+            WorldEncoder(world_img, game_dim, output_path).encode()
             world_img.close()
 
         print("Done.")
@@ -55,6 +62,36 @@ def main():
         print("Done.")
 
 
+def get_game_dim(path):
+    with open(path, "r") as config_file:
+        while (True):
+            line = get_next_non_comment_line(config_file)
+            if line == "EOF":
+                break
+
+            if line != '[GAME SETTINGS]\n':
+                continue
+
+            tokens = get_next_non_comment_line(config_file)[:-1].split(',')
+            if (len(tokens) != 2):
+                print("Error: expected 2 tokens from GamePixelDimension in ../config.txt")
+                return None
+
+            return (int(tokens[0]), int(tokens[1]))
+
+    return None
+
+
+def get_next_non_comment_line(file) -> str:
+    while (True):
+        line = file.readline()
+        if not line:
+            return "EOF"
+
+        if line[0] != '#' and line != "":
+            return line
+
+
 class ColorKey:
     TRANSPARENT = (224, 163, 216, 255)  # 'Transparent color' in data/*_annotations.png
     VOID = (69, 42, 0, 255)             # color used to detect next layer
@@ -63,7 +100,7 @@ class ColorKey:
 
 
 class WorldEncoder:
-    def __init__(self, world_img, output_file_path):
+    def __init__(self, world_img, game_dim, output_file_path):
         self.output_file_path = output_file_path
         self.mistake_file = None
 
@@ -81,6 +118,9 @@ class WorldEncoder:
         self.entity_identifier = EntityIdentifier(
             self.entities_img, self.input_img_pixels, ColorKey.TRANSPARENT, self.world_bg_color)
 
+        # spatial partition cell size
+        self.sp_cell_dim = (game_dim[0] / 2, game_dim[1] / 2)
+
     def __del__(self):
         self.tiles_img.close()
         self.entities_img.close()
@@ -96,8 +136,10 @@ class WorldEncoder:
 
             self._write_encoded_world_header(encode_file)
             self._encode_background(first_layer_line, encode_file)
-            encode_file.write("\n")
             self._encode_foreground(second_layer_line, encode_file)
+
+            self._write_grid_props_header(encode_file)
+            self._encode_grid_props(encode_file)
 
             self._write_walls_header(encode_file)
             self._encode_walls(third_layer_line, encode_file)
@@ -110,19 +152,19 @@ class WorldEncoder:
             self.mistake_file = None
 
     def _write_world_props_header(self, encode_file):
-        encode_file.write("# Dimension (Width, Height)\n")
-        encode_file.write("# BackgroundColor (R, G, B)\n")
+        encode_file.write("#Dimension (Width, Height)\n")
+        encode_file.write("#BackgroundColor (R, G, B)\n")
         encode_file.write("[WORLD PROPERTIES]\n")
 
     def _encode_world_props(self, encode_file):
         # exclude 2 row of tiles, get height of one of the world in the image.
         encode_file.write(f"{self.world_tiles_size[0]}, {self.world_tiles_size[1]}\n")
         encode_file.write(
-            f"{self.world_bg_color[0]}, {self.world_bg_color[1]}, {self.world_bg_color[2]}\n\n"
+            f"{self.world_bg_color[0]}, {self.world_bg_color[1]}, {self.world_bg_color[2]}\n"
         )
 
     def _write_encoded_world_header(self, encode_file):
-        encode_file.write("#Background Tile Indices (3 digits Hex)\n")
+        encode_file.write("\n#Background Tile Indices (3 digits Hex)\n")
         encode_file.write("#Foreground Tile Indices (3 digits Hex)\n")
         encode_file.write("[ENCODED WORLD]\n")
 
@@ -139,13 +181,28 @@ class WorldEncoder:
 
                 else:
                     encode_file.write(code)
+        encode_file.write("\n")
 
     def _encode_foreground(self, start_line, encode_file):
         # same process as background
         return self._encode_background(start_line, encode_file)
 
+    def _write_grid_props_header(self, encode_file):
+        encode_file.write("\n#CellDimension (Width, Height)\n")
+        encode_file.write("#GridSize (Row, Column)\n")
+        encode_file.write("[SPATIAL PARTITION GRID]\n")
+
+    def _encode_grid_props(self, encode_file):
+        cell_w = self.sp_cell_dim[0]
+        cell_h = self.sp_cell_dim[1]
+        grid_col = round(self.world_tiles_size[0] * 16 / cell_w)
+        grid_row = round(self.world_tiles_size[1] * 16 / cell_h)
+        encode_file.write(f"{cell_w}, {cell_h}\n")
+        encode_file.write(f"{grid_col}, {grid_row}\n")
+
     def _write_walls_header(self, encode_file):
-        encode_file.write("\n\n#Type, Position (X, Y), Dimension (Width, Height)\n")
+        encode_file.write("\n#WallType, Position (X, Y), Dimension (Width, Height), GridPosition (X, Y)\n")
+        encode_file.write("#SpatialGridCellIndex (X, Y), ColumnSpan, RowSpan\n")
         encode_file.write("[WALL ENTITIES]\n")
 
     def _encode_walls(self, start_line, encode_file):
@@ -157,7 +214,10 @@ class WorldEncoder:
                 not_visited = visited.get((x, y), False) == False
                 if (not_empty_tile and not_visited):
                     walL_type, width, height = self._find_max_wall((x, y), end_position, visited)
-                    encode_file.write(f"{walL_type}, {x*16}, {(y - start_line)*16}, {width}, {height}\n")
+                    encode_file.write(f"{walL_type.value}, {x*16}, {(y - start_line)*16}, {width}, {height}\n")
+
+                    grid_x, grid_y, c_span, r_span = self._find_cell_positions((x, y), (width, height))
+                    encode_file.write(f"{grid_x}, {grid_y}, {c_span}, {r_span}\n")
 
     def _find_max_wall(self, position, end_position, visited):
         left, top = position
@@ -210,11 +270,24 @@ class WorldEncoder:
             if not found_right:
                 right += 1
 
-        wall_type = "Type1" if (wall_color == ColorKey.WALL_TYPE_1) else "Type2"
-        return (wall_type, (right - left + 1)*16, (bottom - top + 1)*16)
+        wall_type = EntityCode.WALL_TYPE_1 if (wall_color == ColorKey.WALL_TYPE_1) else EntityCode.WALL_TYPE_2
+        width = (right - left + 1)*16
+        height = (bottom - top + 1)*16
+        return (wall_type, width, height)
+
+    def _find_cell_positions(self, position, dim=(0, 0)):
+        px, py = (position[0] * 16, position[1] * 16)
+        w, h = dim
+        cell_w, cell_h = self.sp_cell_dim
+        grid_x = math.floor(px / cell_w)
+        grid_y = math.floor(py / cell_h)
+        c_span = math.floor(((px + w - 1) / cell_w) - grid_x) + 1
+        r_span = math.floor(((py + h - 1) / cell_h) - grid_y) + 1
+        return (grid_x, grid_y, c_span, r_span)
 
     def _write_entities_header(self, encode_file):
-        encode_file.write("\n\n#EntityName, [Entity specific properties...], Position (X, Y)\n")
+        encode_file.write("\n#EntityName, [Entity specific properties...], Position (X, Y)\n")
+        encode_file.write("#SpatialGridCellIndex (X, Y)\n")
         encode_file.write("[WORLD ENTITIES]\n")
 
     def _encode_entities(self, start_line, encode_file):
@@ -241,6 +314,9 @@ class WorldEncoder:
 
                     else:
                         encode_file.write(f"{code.value}, {x*16}, {(y - start_line)*16}\n")
+
+                    grid_x, grid_y, _, _ = self._find_cell_positions((x, y))
+                    encode_file.write(f"{grid_x}, {grid_y}\n")
 
     def _write_to_mistake_file(self, position, type):
         if (self.mistake_file == None):
@@ -298,7 +374,7 @@ class Identifier(ABC):
 
         return IdentifierCode.CODE_NOTFOUND
 
-    @abstractmethod
+    @ abstractmethod
     def _convertToCode(self, position) -> str:
         pass
 
@@ -341,6 +417,8 @@ class TileIdentifier(Identifier):
 
 
 class EntityCode(Enum):
+    WALL_TYPE_1 = "WallType1"
+    WALL_TYPE_2 = "WallType2"
     GOOMBA = "Goomba, Brown"
     GOOMBA_RED = "Goomba, Red"
     PARA_GOOMBA = "ParaGoomba, Brown"
@@ -355,6 +433,7 @@ class EntityCode(Enum):
     VENUS_GREEN = "Venus, Green"
     GOAL = "Goal"
     COIN = "Coin"
+    PORTAL_1 = "Portal, 1"
     PORTAL_2 = "Portal, 2"
     QUESTION_BLOCK_COIN = "QuestionBlock, Coin"
     QUESTION_BLOCK_SUPER_LEAF = "QuestionBlock, SuperLeaf"
@@ -373,7 +452,8 @@ class EntityIdentifier(Identifier):
         (2, 1): EntityCode.BRICK_1UP,
         (0, 2): EntityCode.COIN,
         (1, 2): EntityCode.GOAL,
-        (2, 2): EntityCode.PORTAL_2,
+        (2, 2): EntityCode.PORTAL_1,
+        (3, 2): EntityCode.PORTAL_2,
         (0, 3): EntityCode.GOOMBA,
         (1, 3): EntityCode.GOOMBA_RED,
         (2, 3): EntityCode.PARA_GOOMBA,
