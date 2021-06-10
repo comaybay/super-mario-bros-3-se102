@@ -1,6 +1,7 @@
 #pragma once
 #include "Utils.h"
 #include "Animation.h"
+#include "GridType.h"
 
 //avoid circular dependency
 template<typename ...Args>
@@ -14,9 +15,9 @@ typedef Entity* LPEntity;
 class Entity
 {
 public:
-	Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups);
-	Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::string& entityGroup);
-	Entity(const Utils::Vector2& position, const std::string& initialAnimation);
+	Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType);
+	Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType);
+	Entity(const Utils::Vector2& position, const std::string& initialAnimation, GridType gridType);
 	~Entity();
 	void SetAnimation(std::string id);
 	Utils::Vector2 GetPosition();
@@ -29,6 +30,11 @@ public:
 	/// remaining velocity will be reset every frame.
 	/// </summary>
 	Utils::Vector2 GetRemainingVelocity();
+
+	/// <summary>
+	/// GridType will be used for spatial parititoning
+	/// </summary>
+	GridType GetGridType();
 
 	void SetRemainingVelocity(Utils::Vector2 vel);
 	virtual Utils::Dimension GetDimension();
@@ -45,6 +51,7 @@ protected:
 	LPAnimation animation;
 private:
 	void Init();
+	GridType gridType;
 	Utils::Vector2 remainingVelocity;
 	LPEvent<LPEntity> destroyEvent; //use LPEvent instead of Event to avoid circular dependency
 };

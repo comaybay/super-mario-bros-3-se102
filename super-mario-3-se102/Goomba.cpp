@@ -7,7 +7,7 @@ using namespace Entities;
 float Goomba::maxFallSpeed = 230;
 
 Goomba::Goomba(std::string colorCode, Vector2 position)
-	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES })
+	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES)
 {
 	velocity = Vector2(30, 0);
 	speed = Vector2(30, 0);

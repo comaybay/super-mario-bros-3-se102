@@ -5,7 +5,7 @@
 using namespace Entities;
 
 Coin::Coin(const Vector2& position)
-	: Entity::Entity(position, "Coin", "Coins")
+	: Entity::Entity(position, "Coin", "Coins", GridType::STATIC_ENTITIES)
 {
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Groups::PLAYER });
 }

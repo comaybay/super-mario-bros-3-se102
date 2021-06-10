@@ -3,20 +3,24 @@
 #include "AnimationManager.h"
 #include "Event.h"
 
-Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)), groups(std::vector<std::string> {})
+Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, GridType gridType)
+	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
+	groups(std::vector<std::string> {}), gridType(gridType)
 {
 	Init();
 }
 
-Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::string& entityGroup)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)), groups(std::vector<std::string> {entityGroup})
+Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType)
+	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
+	groups(std::vector<std::string> {entityGroup}), gridType(gridType)
 {
 	Init();
 }
 
-Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)), groups(entityGroups)
+Entity::Entity
+(const Utils::Vector2& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType)
+	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
+	groups(entityGroups), gridType(gridType)
 {
 	Init();
 }
@@ -61,6 +65,10 @@ Utils::Vector2 Entity::GetRemainingVelocity()
 void Entity::SetRemainingVelocity(Utils::Vector2 velocity)
 {
 	remainingVelocity = velocity;
+}
+
+GridType Entity::GetGridType() {
+	return gridType;
 }
 
 Utils::SpriteBox Entity::GetSpriteBox() {

@@ -13,7 +13,7 @@ const float Mario::jumpSpeedAfterMaxWalkSpeed = 290;
 const float Mario::jumpSpeedReleaseEarly = 270 / 1.75;
 
 Mario::Mario(Vector2 position) :
-	Entity::Entity(position, "MarioSIR", Groups::PLAYER)
+	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::MOVABLE_ENTITIES)
 {
 
 	pStateUpdate = &Mario::IdleUpdate;
