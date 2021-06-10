@@ -178,6 +178,7 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="EncodedWorld.cpp" />
     <ClCompile Include="CollisionWallType2.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Entities.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Groups.h" />
     <ClInclude Include="RectSequence.h" />
