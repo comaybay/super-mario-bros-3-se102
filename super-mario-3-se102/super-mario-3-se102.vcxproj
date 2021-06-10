@@ -176,6 +176,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="DynamicGrid.cpp" />
     <ClCompile Include="EncodedWorld.cpp" />
     <ClCompile Include="CollisionWallType2.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="CollisionEngine.h" />
     <ClInclude Include="CollisionHandling.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="DynamicGrid.h" />
     <ClInclude Include="EmptyAnimation.h" />
     <ClInclude Include="EncodedWorld.h" />
     <ClInclude Include="Entity.h" />

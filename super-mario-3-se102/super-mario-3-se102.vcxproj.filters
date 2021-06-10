@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{52953911-e233-4dba-b940-1be1581a14aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SpatialGrid">
+      <UniqueIdentifier>{726e7870-acf4-4985-8bbb-67e25b8f8569}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,7 +121,10 @@
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
     <ClCompile Include="Grid.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\SpatialGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicGrid.cpp">
+      <Filter>Source Files\SpatialGrid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +192,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
