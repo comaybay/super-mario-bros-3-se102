@@ -11,7 +11,7 @@ class Grid
 {
 public:
 	Grid(int numberOfCollumns, int numberOfRows, Utils::Dimension cellSize);
-	virtual void Add(LPEntity entity, const Utils::Vector2& cellIndex);
+	virtual void AddToCell(LPEntity entity, const Utils::Vector2& cellIndex);
 	const LPEntitiesInCell EntitiesAt(const Utils::Vector2& cellIndex);
 	Utils::Vector2 GetCellIndexAtPoint(const Utils::Vector2& point);
 protected:
@@ -21,4 +21,5 @@ protected:
 	int numOfCols;
 	Utils::Dimension cellSize;
 };
+typedef Grid* LPGrid;
 

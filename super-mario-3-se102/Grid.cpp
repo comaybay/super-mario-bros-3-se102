@@ -10,7 +10,7 @@ Grid::Grid(int numberOfColumns, int numberOfRows, Utils::Dimension cellSize)
 }
 
 
-void Grid::Add(LPEntity entity, const Utils::Vector2& cellIndex)
+void Grid::AddToCell(LPEntity entity, const Utils::Vector2& cellIndex)
 {
 	cells[cellIndex.y * cellIndex.x + cellIndex.x]->push_back(entity);
 }

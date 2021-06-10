@@ -9,9 +9,9 @@ void DynamicGrid::Update()
 			UpdateEntityCellIndex(entity);
 }
 
-void DynamicGrid::Add(LPEntity entity, const Utils::Vector2& cellIndex)
+void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2& cellIndex)
 {
-	Grid::Add(entity, cellIndex);
+	Grid::AddToCell(entity, cellIndex);
 	IndexbyLPEntity[entity] = cellIndex;
 }
 
