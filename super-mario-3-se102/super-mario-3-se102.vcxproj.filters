@@ -126,6 +126,9 @@
     <ClCompile Include="DynamicGrid.cpp">
       <Filter>Source Files\SpatialGrid</Filter>
     </ClCompile>
+    <ClCompile Include="GridType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -195,6 +198,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DynamicGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GridType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
