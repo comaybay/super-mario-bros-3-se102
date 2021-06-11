@@ -216,7 +216,9 @@ class WorldEncoder:
                     walL_type, width, height = self._find_max_wall((x, y), end_position, visited)
                     encode_file.write(f"{walL_type.value}, {x*16}, {(y - start_line)*16}, {width}, {height}\n")
 
-                    grid_x, grid_y, c_span, r_span = self._find_cell_positions((x, y), (width, height))
+                    grid_x, grid_y, c_span, r_span = self._find_cell_positions(
+                        start_line*16, (x*16, y*16), (width, height)
+                    )
                     encode_file.write(f"{grid_x}, {grid_y}, {c_span}, {r_span}\n")
 
     def _find_max_wall(self, position, end_position, visited):
@@ -275,15 +277,17 @@ class WorldEncoder:
         height = (bottom - top + 1)*16
         return (wall_type, width, height)
 
-    def _find_cell_positions(self, position, dim=(0, 0)):
-        px, py = (position[0] * 16, position[1] * 16)
+    def _find_cell_positions(self, grid_start_y, position, dim=(0, 0)):
+        px, py = position
         w, h = dim
         cell_w, cell_h = self.sp_cell_dim
-        grid_x = math.floor(px / cell_w)
-        grid_y = math.floor(py / cell_h)
-        c_span = math.floor(((px + w - 1) / cell_w) - grid_x) + 1
-        r_span = math.floor(((py + h - 1) / cell_h) - grid_y) + 1
-        return (grid_x, grid_y, c_span, r_span)
+        cell_x = math.floor(px / cell_w)
+        cell_x_end = math.floor((px + w - 1) / cell_w)
+        cell_y = math.floor((py - grid_start_y) / cell_h)
+        cell_y_end = math.floor((py + h - 1 - grid_start_y) / cell_h)
+        c_span = cell_x_end - cell_x + 1
+        r_span = cell_y_end - cell_y_end + 1
+        return (cell_x, cell_y, c_span, r_span)
 
     def _write_entities_header(self, encode_file):
         encode_file.write("\n#EntityName, [Entity specific properties...], Position (X, Y)\n")
@@ -315,7 +319,7 @@ class WorldEncoder:
                     else:
                         encode_file.write(f"{code.value}, {x*16}, {(y - start_line)*16}\n")
 
-                    grid_x, grid_y, _, _ = self._find_cell_positions((x, y))
+                    grid_x, grid_y, _, _ = self._find_cell_positions(start_line*16, (x*16, y*16))
                     encode_file.write(f"{grid_x}, {grid_y}\n")
 
     def _write_to_mistake_file(self, position, type):
