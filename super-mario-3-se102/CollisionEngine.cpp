@@ -16,18 +16,16 @@ CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
 void CollisionEngine::Update(float delta)
 {
 	std::vector<LPEntity> dataCollection;
-
-	for (auto& pair : targetGroupsByLPEntity) {
-		//get target entities (use set data structure to avoid duplications)
-		std::unordered_set<LPEntity> entitySet;
-		for (std::string& groupName : pair.second)
-			for (const LPEntity& target : Game::GetSceneEntityManager()->GetEntitiesByGroup(groupName))
-				entitySet.insert(target);
-
-		std::vector<LPEntity> targetEntities(entitySet.begin(), entitySet.end());
+	std::vector<LPEntity> entities = Game::GetSceneEntityManager()->GetEntitiesAroundCamera();
+	for (LPEntity entity : entities) {
+		std::vector<LPEntity> targets;
+		std::copy_if(entities.begin(), entities.end(), back_inserter(targets),
+			[entity](LPEntity other) {
+				return other != entity && VectorHasAnyOf(targetGroupsByLPEntity[entity], other->GetEntityGroups());
+			}
+		);
 
 		//sort target entities by time of collision/closeness
-		LPEntity entity = pair.first;
 		auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
 			float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
 			float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
@@ -41,14 +39,14 @@ void CollisionEngine::Update(float delta)
 			else
 				return aVal < bVal;
 		};
-		std::sort(targetEntities.begin(), targetEntities.end(), ascending);
+		std::sort(targets.begin(), targets.end(), ascending);
 
 		std::unordered_set<std::string> hasPreviouslyNotified;
 		auto toKey = [](LPEntity a, LPEntity b) -> std::string {
 			return reinterpret_cast<const char*>(a) + std::string(",") + reinterpret_cast<const char*>(b);
 		};
 		//notify both if collided, need to notify right away so the next detections can give accurate results
-		for (const LPEntity& target : targetEntities) {
+		for (const LPEntity& target : targets) {
 			if (SetHas(toKey(entity, target), hasPreviouslyNotified))
 				continue;
 

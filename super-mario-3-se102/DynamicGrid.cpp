@@ -1,4 +1,5 @@
 #include "DynamicGrid.h"
+#include "Event.h"
 #include "Utils.h"
 using namespace Utils;
 
@@ -6,28 +7,50 @@ DynamicGrid::DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dim
 	: Grid(numberOfColumns, numberOfRows, cellSize)
 {}
 
-void DynamicGrid::Update()
+void DynamicGrid::UpdateCells(const CellRange& range)
 {
-	for (LPEntitiesInCell cell : cells)
-		for (LPEntity entity : *cell)
-			UpdateEntityCellIndex(entity);
+	for (int y = 0; y < range.rowSpan; y++)
+		for (int x = 0; x < range.colSpan; x++) {
+			LPConstEntitiesInCell entities = EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+			//this process require removing entity in the cell while iterating, therefore an iterator must be used 
+			for (auto it = entities->begin(); it != entities->end();) {
+				int prevSize = entities->size();
+				auto newIt = UpdateEntityCellIndex(it);
+
+				if (prevSize == entities->size())
+					it++;
+				else
+					it = newIt;
+			}
+		};
 }
 
 void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex)
 {
 	Grid::AddToCell(entity, cellIndex);
-	IndexbyLPEntity[&(*entity)] = cellIndex;
+	entity->GetDestroyEvent()->Subscribe(this, &DynamicGrid::OnEntityDestroy);
+	indexbyLPEntity[entity] = cellIndex;
 }
 
-void DynamicGrid::UpdateEntityCellIndex(LPEntity entity)
+EntitiesInCell::const_iterator DynamicGrid::UpdateEntityCellIndex(EntitiesInCell::const_iterator it)
 {
-	Utils::Vector2<int> oldIndex = IndexbyLPEntity[entity];
+	LPEntity entity = *it;
+	Utils::Vector2<int> oldIndex = indexbyLPEntity[entity];
 	Utils::Vector2<int> newIndex = GetCellIndexAtPoint(entity->GetPosition());
 
 	if (newIndex == oldIndex)
-		return;
+		return it;
 
 	//since LPEntity is unique, no need to use list::erase
-	cells[int(oldIndex.y * oldIndex.x + oldIndex.x)]->remove(entity);
-	cells[int(newIndex.y * newIndex.x + newIndex.x)]->push_back(entity);
+	auto newIt = cells[int(oldIndex.y * numOfCols + oldIndex.x)]->erase(it);
+	cells[int(newIndex.y * numOfCols + newIndex.x)]->push_back(entity);
+	indexbyLPEntity[entity] = newIndex;
+
+	return newIt;
+}
+
+void DynamicGrid::OnEntityDestroy(LPEntity entity)
+{
+	auto it = indexbyLPEntity.find(entity);
+	indexbyLPEntity.erase(it);
 }

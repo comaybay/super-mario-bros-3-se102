@@ -19,8 +19,9 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	if (data.edge.y == -1.0f) {
-		Game::GetSceneEntityManager()->QueueFree(this);
-		Game::GetSceneEntityManager()->AddToGroups(content->GetEntityGroups(), content);
+		LPEntityManager entityManager = Game::GetSceneEntityManager();
+		entityManager->QueueFree(this);
+		entityManager->Add(content);
 		content = nullptr;
 	}
 }

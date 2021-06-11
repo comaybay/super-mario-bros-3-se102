@@ -1,6 +1,35 @@
 #include "EntityManager.h"
 #include "Groups.h"
 #include "Game.h"
+using namespace Utils;
+
+EntityManager::EntityManager(LPGrid wallEntitySpatialGrid, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid)
+	: wallEntitySpatialGrid(wallEntitySpatialGrid), staticEntitySpatialGrid(staticEntitySpatialGrid),
+	movableEntitySpatialGrid(movableEntitySpatialGrid)
+{}
+
+void EntityManager::Add(LPEntity entity)
+{
+	Vector2<int> cellIndex = movableEntitySpatialGrid->GetCellIndexAtPoint(entity->GetPosition());
+	Add(entity, cellIndex);
+}
+
+void EntityManager::Add(LPEntity entity, const Vector2<int>& cellIndex)
+{
+	AddToGroups(entity->GetEntityGroups(), entity);
+
+	//currently not allow GridType::WALL_ENTITIES
+	switch (entity->GetGridType()) {
+	case GridType::MOVABLE_ENTITIES:
+		movableEntitySpatialGrid->AddToCell(entity, cellIndex);
+		break;
+	case GridType::STATIC_ENTITIES:
+		staticEntitySpatialGrid->AddToCell(entity, cellIndex);
+		break;
+	default:
+		throw std::exception("ParseAndAddOtherEntities failed: GridType must either be MOVABLE_ENTITIES or STATIC_ENTITIES");
+	}
+}
 
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
 {
@@ -27,6 +56,28 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 	}
 }
 
+std::vector<LPEntity> EntityManager::GetEntitiesAroundCamera()
+{
+	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Dimension dim = Game::GetGameDimension();
+	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+
+	std::vector<LPEntity> entities;
+
+	for (int y = 0; y < range.rowSpan; y++)
+		for (int x = 0; x < range.colSpan; x++) {
+			LPConstEntitiesInCell walls = wallEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+			LPConstEntitiesInCell statics = staticEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+			LPConstEntitiesInCell movables = movableEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+
+			entities.insert(entities.end(), walls->begin(), walls->end());
+			entities.insert(entities.end(), statics->begin(), statics->end());
+			entities.insert(entities.end(), movables->begin(), movables->end());
+		}
+
+	return entities;
+}
+
 bool EntityManager::IsCloseToPlayer(LPEntity entity)
 {
 	LPEntity player = entitiesByGroup[Groups::PLAYER]->front();
@@ -36,11 +87,13 @@ bool EntityManager::IsCloseToPlayer(LPEntity entity)
 
 void EntityManager::UpdateAllEntities(float delta)
 {
-	//update only when close to mario (SMB3 happens to do this)
-	//TODO: Make a spawner instead.
-	for (auto& entity : entities)
-		if (IsCloseToPlayer(entity))
-			entity->Update(delta);
+	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Dimension dim = Game::GetGameDimension();
+	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+	auto updateHandler = [delta](LPEntity entity) { entity->Update(delta); };
+	staticEntitySpatialGrid->ForEachEntityIn(range, updateHandler);
+	movableEntitySpatialGrid->ForEachEntityIn(range, updateHandler);
+	movableEntitySpatialGrid->UpdateCells(range);
 }
 
 void EntityManager::PostUpdateAllEntities()
@@ -52,9 +105,12 @@ void EntityManager::PostUpdateAllEntities()
 
 void EntityManager::RenderAllEntities()
 {
-	for (auto& groups : entitiesByGroup)
-		for (auto& entity : *groups.second)
-			entity->Render();
+	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Dimension dim = Game::GetGameDimension();
+	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+	auto renderHandler = [](LPEntity entity) { entity->Render(); };
+	movableEntitySpatialGrid->ForEachEntityIn(range, renderHandler);
+	staticEntitySpatialGrid->ForEachEntityIn(range, renderHandler);
 }
 
 void EntityManager::QueueFree(LPEntity entity) {
