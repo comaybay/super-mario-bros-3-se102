@@ -7,11 +7,11 @@ using namespace Utils;
 Camera::Camera()
 {
 	target = nullptr;
-	position = Vector2(0, 0);
+	position = Vector2<float>(0, 0);
 	onTargetDestroy = nullptr;
 }
 
-Vector2 Camera::GetPosition() const
+Vector2<float> Camera::GetPosition() const
 {
 	return position;
 }
@@ -25,10 +25,10 @@ void Camera::Update()
 	Dimension worldDim = Game::GetScene()->GetWorldDimension();
 	Dimension gameDim = Game::GetGameDimension();
 	Dimension targetDim = target->GetDimension();
-	Vector2 targetPos = target->GetPosition();
+	Vector2<float> targetPos = target->GetPosition();
 
 	//center around entity
-	Vector2 newPosition(
+	Vector2<float> newPosition(
 		targetPos.x + targetDim.width / 2 - gameDim.width / 2,
 		targetPos.y + targetDim.height / 2 - gameDim.height / 2
 	);

@@ -6,7 +6,7 @@ using namespace Utils;
 
 CollisionData::CollisionData() {};
 
-CollisionData::CollisionData(LPEntity who, Vector2 edge, float value, float delta)
+CollisionData::CollisionData(LPEntity who, Vector2<float> edge, float value, float delta)
 	: who(who), edge(edge), value(value), delta(delta) {};
 
 std::map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
@@ -34,7 +34,7 @@ void CollisionEngine::Update(float delta)
 
 			//if equal and time = 0, sort by distance to entity
 			if (aVal == bVal && aVal != 1.0f) {
-				Vector2 ePos = entity->GetPosition();
+				Vector2<float> ePos = entity->GetPosition();
 				return a->GetPosition().DistanceTo(ePos) < b->GetPosition().DistanceTo(ePos);
 			}
 			//sort by time of collision
@@ -80,7 +80,7 @@ LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
 
 void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
 	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
-	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2(0, 0));
+	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
 
 	//Broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);
@@ -99,7 +99,7 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
 {
 	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
-	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2(0, 0));
+	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
 
 	//Broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);
@@ -111,10 +111,10 @@ float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delt
 
 CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
 	CBox b;
-	b.position = Vector2(
+	b.position = Vector2<float>(
 		box.velocity.x > 0 ? box.position.x : box.position.x + box.velocity.x,
 		box.velocity.y > 0 ? box.position.y : box.position.y + box.velocity.y
-	);
+		);
 
 	b.dimension = Dimension(
 		box.dimension.width + abs(box.velocity.x),
@@ -147,8 +147,8 @@ bool CollisionEngine::AABBCheck(const CBox& box1, const CBox& box2)
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
 CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 	CollisionData data;
-	Vector2 invEntry;
-	Vector2 invExit;
+	Vector2<float> invEntry;
+	Vector2<float> invExit;
 
 	// find the distance between the objects on the near and far sides for both x and y 
 	invEntry.x = sBox.position.x - (mBox.position.x + mBox.dimension.width);
@@ -162,8 +162,8 @@ CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 		std::swap(invEntry.y, invExit.y);
 
 	// find time of collision and time of leaving for each axis (if statement is to prevent divide by zero) 
-	Vector2 entryTimeAxis;
-	Vector2 exitTimeAxis;
+	Vector2<float> entryTimeAxis;
+	Vector2<float> exitTimeAxis;
 
 	if (mBox.velocity.x == 0) {
 		entryTimeAxis.x = -std::numeric_limits<float>::infinity();

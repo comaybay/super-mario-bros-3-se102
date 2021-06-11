@@ -131,7 +131,7 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			if (rectSequenceTokens.size() > 8)
 				throw Utils::InvalidTokenSizeException(8);
 
-			Utils::Vector2 startPosition(
+			Utils::Vector2<int> startPosition(
 				std::stoi(rectSequenceTokens[0]),
 				std::stoi(rectSequenceTokens[1])
 			);
@@ -144,7 +144,7 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			int space = std::stoi(rectSequenceTokens[4]);
 			int frameCount = std::stoi(rectSequenceTokens[5]);
 
-			Utils::Vector2 offset(0, 0);
+			Utils::Vector2<int> offset(0, 0);
 			if (rectSequenceTokens.size() == 8) {
 				offset.x = std::stoi(rectSequenceTokens[6]);
 				offset.y = std::stoi(rectSequenceTokens[7]);
@@ -171,7 +171,7 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 					std::stoi(rectSequenceTokens[3]) + 1,
 				};
 
-				Utils::Vector2 offset(0, 0);
+				Utils::Vector2<int> offset(0, 0);
 				if (rectSequenceTokens.size() == 6) {
 					offset.x = std::stoi(rectSequenceTokens[4]);
 					offset.y = std::stoi(rectSequenceTokens[5]);

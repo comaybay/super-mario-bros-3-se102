@@ -6,11 +6,11 @@ using namespace Entities;
 
 float Goomba::maxFallSpeed = 230;
 
-Goomba::Goomba(std::string colorCode, Vector2 position)
+Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES)
 {
-	velocity = Vector2(30, 0);
-	speed = Vector2(30, 0);
+	velocity = Vector2<float>(30, 0);
+	speed = Vector2<float>(30, 0);
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
 }
 

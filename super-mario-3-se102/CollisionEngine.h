@@ -5,12 +5,12 @@
 
 struct CollisionData {
 	LPEntity who = nullptr;
-	Utils::Vector2 edge = Utils::Vector2(0, 0);
+	Utils::Vector2<float> edge = Utils::Vector2<float>(0, 0);
 	float value = 1.0f;
 	float delta;
 
 	CollisionData();
-	CollisionData(LPEntity who, Utils::Vector2 edge, float value, float delta);
+	CollisionData(LPEntity who, Utils::Vector2<float> edge, float value, float delta);
 };
 
 class CollisionEngine
@@ -40,12 +40,12 @@ private:
 	static OnEntityDestroyHandler onEntityDestroy;
 
 	struct CBox {
-		Utils::Vector2 position;
+		Utils::Vector2<float> position;
 		Utils::Dimension dimension;
-		Utils::Vector2 velocity;
+		Utils::Vector2<float> velocity;
 
 		CBox() {};
-		CBox(Utils::Vector2 position, Utils::Dimension dimension, Utils::Vector2 velocity)
+		CBox(Utils::Vector2<float> position, Utils::Dimension dimension, Utils::Vector2<float> velocity)
 			: position(position), dimension(dimension), velocity(velocity)
 		{};
 	};

@@ -4,7 +4,7 @@
 #include "Game.h"
 using namespace Entities;
 
-Coin::Coin(const Vector2& position)
+Coin::Coin(const Vector2<float>& position)
 	: Entity::Entity(position, "Coin", "Coins", GridType::STATIC_ENTITIES)
 {
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Groups::PLAYER });

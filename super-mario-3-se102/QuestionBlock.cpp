@@ -4,7 +4,7 @@
 using namespace Entities;
 
 //TODO: Complete Implementation
-QuestionBlock::QuestionBlock(LPEntity content, const Vector2& position)
+QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 	: Entity::Entity(
 		position,
 		"QuestionBlockNormal",

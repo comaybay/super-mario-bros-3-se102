@@ -3,14 +3,14 @@
 #include "AnimationManager.h"
 #include "Event.h"
 
-Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, GridType gridType)
+Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
 	groups(std::vector<std::string> {}), gridType(gridType)
 {
 	Init();
 }
 
-Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType)
+Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
 	groups(std::vector<std::string> {entityGroup}), gridType(gridType)
 {
@@ -18,7 +18,7 @@ Entity::Entity(const Utils::Vector2& position, const std::string& initialAnimati
 }
 
 Entity::Entity
-(const Utils::Vector2& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType)
+(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
 	groups(entityGroups), gridType(gridType)
 {
@@ -43,26 +43,26 @@ void Entity::SetAnimation(std::string id)
 	}
 }
 
-Utils::Vector2 Entity::GetPosition()
+Utils::Vector2<float> Entity::GetPosition()
 {
 	return position;
 }
 
-void Entity::SetPosition(const Utils::Vector2& position)
+void Entity::SetPosition(const Utils::Vector2<float>& position)
 {
 	this->position = position;
 }
 
-void Entity::SetVelocity(const Utils::Vector2& velocity)
+void Entity::SetVelocity(const Utils::Vector2<float>& velocity)
 {
 	this->velocity = velocity;
 }
 
-Utils::Vector2 Entity::GetRemainingVelocity()
+Utils::Vector2<float> Entity::GetRemainingVelocity()
 {
 	return remainingVelocity;
 }
-void Entity::SetRemainingVelocity(Utils::Vector2 velocity)
+void Entity::SetRemainingVelocity(Utils::Vector2<float> velocity)
 {
 	remainingVelocity = velocity;
 }

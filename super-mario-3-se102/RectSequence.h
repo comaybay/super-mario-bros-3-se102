@@ -9,7 +9,7 @@ private:
 
 public:
 	Utils::Dimension dim;
-	Utils::Vector2 position;
+	Utils::Vector2<float> position;
 	int size;
 };
 

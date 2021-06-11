@@ -13,21 +13,21 @@ void DynamicGrid::Update()
 			UpdateEntityCellIndex(entity);
 }
 
-void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2& cellIndex)
+void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex)
 {
 	Grid::AddToCell(entity, cellIndex);
-	IndexbyLPEntity[entity] = cellIndex;
+	IndexbyLPEntity[&(*entity)] = cellIndex;
 }
 
 void DynamicGrid::UpdateEntityCellIndex(LPEntity entity)
 {
-	Utils::Vector2  oldIndex = IndexbyLPEntity[entity];
-	Utils::Vector2 newIndex = GetCellIndexAtPoint(entity->GetPosition());
+	Utils::Vector2<int> oldIndex = IndexbyLPEntity[entity];
+	Utils::Vector2<int> newIndex = GetCellIndexAtPoint(entity->GetPosition());
 
 	if (newIndex == oldIndex)
 		return;
 
 	//since LPEntity is unique, no need to use list::erase
-	cells[oldIndex.y * oldIndex.x + oldIndex.x]->remove(entity);
-	cells[newIndex.y * newIndex.x + newIndex.x]->push_back(entity);
+	cells[int(oldIndex.y * oldIndex.x + oldIndex.x)]->remove(entity);
+	cells[int(newIndex.y * newIndex.x + newIndex.x)]->push_back(entity);
 }

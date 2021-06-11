@@ -3,7 +3,7 @@
 EmptyAnimation::EmptyAnimation()
 	: Animation::Animation("None", -1.0f, nullptr, std::vector<Utils::SpriteBox> {}) {}
 
-void EmptyAnimation::Render(Utils::Vector2 position)
+void EmptyAnimation::Render(Utils::Vector2<float> position)
 {
 }
 

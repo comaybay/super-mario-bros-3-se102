@@ -9,7 +9,7 @@ class Animation
 {
 public:
 	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, std::vector<Utils::SpriteBox> sequence);
-	virtual void Render(Utils::Vector2 position);
+	virtual void Render(Utils::Vector2<float> position);
 	virtual void Update(float delta);
 	Utils::SpriteBox GetCurrentSpriteBox();
 	const std::string id;

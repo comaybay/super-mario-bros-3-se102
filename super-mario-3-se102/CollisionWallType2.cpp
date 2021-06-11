@@ -2,7 +2,7 @@
 #include "Groups.h"
 using namespace Entities;
 
-CollisionWallType2::CollisionWallType2(Vector2 position, Dimension dimension)
+CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension dimension)
 	: Entity::Entity(
 		position,
 		AnimationId::NONE,

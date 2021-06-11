@@ -15,7 +15,7 @@ public:
 	void Update(float delta);
 	void Render();
 	Utils::Dimension GetWorldDimension();
-	Utils::Vector2 GetCameraPosition();
+	Utils::Vector2<float> GetCameraPosition();
 	LPEntityManager GetEntityManager();
 private:
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));

@@ -7,9 +7,9 @@ class DynamicGrid : public Grid
 public:
 	DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize);
 	void Update();
-	void AddToCell(LPEntity entity, const Utils::Vector2& cellIndex) override;
-private:
+	void AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex) override;
 	void UpdateEntityCellIndex(LPEntity entity);
-	std::unordered_map<LPEntity, Utils::Vector2> IndexbyLPEntity;
+private:
+	std::unordered_map<LPEntity, Utils::Vector2<int>> IndexbyLPEntity;
 };
 typedef DynamicGrid* LPDynamicGrid;

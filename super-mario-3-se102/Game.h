@@ -25,7 +25,7 @@ public:
 	static void ProcessKeyboard();
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
-	static const Utils::Vector2 Gravity;
+	static const Utils::Vector2<float> Gravity;
 	static const int TILE_SIZE = 16;
 private:
 	static int scale;

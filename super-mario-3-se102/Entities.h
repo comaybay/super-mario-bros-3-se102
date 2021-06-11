@@ -7,7 +7,7 @@ namespace Entities {
 
 	class CollisionWallType1 : public Entity {
 	public:
-		CollisionWallType1(Vector2 position, Dimension dimension);
+		CollisionWallType1(Vector2<float> position, Dimension dimension);
 		Dimension GetDimension() override;
 
 	private:
@@ -16,7 +16,7 @@ namespace Entities {
 
 	class CollisionWallType2 : public Entity {
 	public:
-		CollisionWallType2(Vector2 position, Dimension dimension);
+		CollisionWallType2(Vector2<float> position, Dimension dimension);
 		Dimension GetDimension() override;
 
 	private:
@@ -25,7 +25,7 @@ namespace Entities {
 
 	class Mario : public Entity {
 	public:
-		Mario(Vector2 position);
+		Mario(Vector2<float> position);
 		void Update(float delta) override;
 	private:
 		void OnCollision(CollisionData data);
@@ -40,10 +40,10 @@ namespace Entities {
 
 		EventHandler<Mario, CollisionData> onCollision;
 		void (Mario::* pStateUpdate)(float delta) = NULL;
-		Utils::Vector2 dir;
+		Utils::Vector2<float> dir;
 		float jumpDuration;
-		static const Utils::Vector2 acceleration;
-		static const Utils::Vector2 maxSpeed;
+		static const Utils::Vector2<float> acceleration;
+		static const Utils::Vector2<float> maxSpeed;
 		bool onGround;
 		int prevPressedKeyHorizontal;
 		static const float jumpSpeed;
@@ -54,11 +54,11 @@ namespace Entities {
 	class Goomba : public Entity
 	{
 	public:
-		Goomba(std::string color, Vector2 position);
+		Goomba(std::string color, Vector2<float> position);
 		void Update(float delta) override;
 	private:
 		std::string colorCode;
-		Vector2 speed;
+		Vector2<float> speed;
 		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;
 		void OnCollision(CollisionData data);
@@ -66,7 +66,7 @@ namespace Entities {
 
 	class QuestionBlock : public Entity {
 	public:
-		QuestionBlock(LPEntity content, const Vector2& position);
+		QuestionBlock(LPEntity content, const Vector2<float>& position);
 		void Update(float delta) override;
 	private:
 		void OnCollision(CollisionData data);
@@ -75,7 +75,7 @@ namespace Entities {
 
 	class Coin : public Entity {
 	public:
-		Coin(const Vector2& position);
+		Coin(const Vector2<float>& position);
 		void OnCollision(CollisionData data);
 	};
 

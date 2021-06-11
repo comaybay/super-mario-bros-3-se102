@@ -23,55 +23,6 @@ Dimension Dimension::Rounded() {
 	return Dimension(round(width), round(height));
 }
 
-Vector2::Vector2() {};
-
-Vector2::Vector2(float x, float y) : x(x), y(y) {};
-
-Vector2 Vector2::Rounded() {
-	return Vector2(round(x), round(y));
-}
-
-float Utils::Vector2::DistanceTo(const Vector2& v)
-{
-	return sqrt(pow(x - v.x, 2) + pow(y - v.y, 2));
-}
-
-Vector2 Vector2::operator+(const Utils::Vector2& other) const {
-	return Vector2(x + other.x, y + other.y);
-}
-
-Vector2 Vector2::operator-(const Vector2& other) const {
-	return Vector2(x - other.x, y - other.y);
-}
-
-Vector2 Vector2::operator- () const {
-	return  Vector2(-x, -y);
-}
-
-Vector2& Vector2::operator+=(const Vector2& other) {
-	x += other.x;
-	y += other.y;
-	return *this;
-}
-
-Vector2& Vector2::operator-=(const Vector2& other) {
-	x -= other.x;
-	y -= other.y;
-	return *this;
-}
-
-Vector2 Vector2::operator*(const Vector2& other) const {
-	return Vector2(x * other.x, y * other.y);
-}
-
-Vector2 Vector2::operator*(int value) const {
-	return Vector2(x * value, y * value);
-}
-
-Vector2 Vector2::operator*(float value) const {
-	return Vector2(x * value, y * value);
-}
-
 
 //from: https://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode
 std::wstring Utils::StringToWideString(const std::string& s)
@@ -277,13 +228,13 @@ LPDIRECTINPUTDEVICE8 Utils::CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND hWnd
 }
 
 
-std::vector<Utils::SpriteBox> Utils::CreateSpriteBoxSequence(Vector2 startPosition, Dimension dimension, int space, int frameCount, Vector2 offset)
+std::vector<Utils::SpriteBox> Utils::CreateSpriteBoxSequence(Vector2<int> startPosition, Dimension dimension, int space, int frameCount, Vector2<int> offset)
 {
 	std::vector<Utils::SpriteBox> sequence;
 	for (int i = 0; i < frameCount; i++) {
-		Vector2 position(
-			(int)startPosition.x + (dimension.width + space) * i,
-			(int)startPosition.y
+		Vector2<int> position(
+			startPosition.x + (dimension.width + space) * i,
+			startPosition.y
 		);
 
 		sequence.emplace_back

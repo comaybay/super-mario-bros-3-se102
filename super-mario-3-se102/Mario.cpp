@@ -6,19 +6,19 @@
 using namespace Entities;
 using namespace Utils;
 
-const Vector2 Mario::maxSpeed = Vector2(100, 230);
-const Vector2 Mario::acceleration = Vector2(400, 560);
+const Vector2<float> Mario::maxSpeed = Vector2<float>(100, 230);
+const Vector2<float> Mario::acceleration = Vector2<float>(400, 560);
 const float Mario::jumpSpeed = 270;
 const float Mario::jumpSpeedAfterMaxWalkSpeed = 290;
 const float Mario::jumpSpeedReleaseEarly = 270 / 1.75;
 
-Mario::Mario(Vector2 position) :
+Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::MOVABLE_ENTITIES)
 {
 
 	pStateUpdate = &Mario::IdleUpdate;
 	prevPressedKeyHorizontal = -1;
-	dir = Vector2(0, 1);
+	dir = Vector2<float>(0, 1);
 	jumpDuration = 0;
 	onGround = false;
 

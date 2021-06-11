@@ -12,24 +12,27 @@ namespace Utils
 {
 	void DebugOut(std::string text);
 	void DebugOut(const char* text);
+
+	template <class T>
 	struct Vector2
 	{
-		float x = 0;
-		float y = 0;
+		T x = 0;
+		T y = 0;
 		Vector2();
-		Vector2(float x, float y);
+		Vector2(T x, T y);
 
-		Vector2 operator+(const Vector2& other) const;
-		Vector2 operator-(const Vector2& other) const;
-		Vector2 operator-() const;
-		Vector2& operator+=(const Vector2& other);
-		Vector2& operator-=(const Vector2& other);
-		Vector2 operator*(const Vector2& other) const;
-		Vector2 operator*(int value) const;
-		Vector2 operator*(float value) const;
-		Vector2 Rounded();
-		float DistanceTo(const Vector2& v);
-
+		Vector2<T> operator+(const Vector2<T>& other) const;
+		Vector2<T> operator-(const Vector2<T>& other) const;
+		Vector2<T> operator-() const;
+		Vector2<T>& operator+=(const Vector2<T>& other);
+		Vector2<T>& operator-=(const Vector2<T>& other);
+		Vector2<T> operator*(const Vector2<T>& other) const;
+		Vector2<T> operator*(int value) const;
+		Vector2<T> operator*(float value) const;
+		bool operator==(const Vector2<T>& other) const;
+		bool operator!=(const Vector2<T>& other) const;
+		Vector2<T> Rounded();
+		float DistanceTo(const Vector2<T>& v);
 	};
 
 	struct Dimension {
@@ -42,8 +45,8 @@ namespace Utils
 
 	struct SpriteBox {
 		RECT rect;
-		Vector2 offset;
-		SpriteBox(RECT rect, Vector2 offset) : rect(rect), offset(offset) {};
+		Vector2<int> offset;
+		SpriteBox(RECT rect, Vector2<int> offset) : rect(rect), offset(offset) {};
 	};
 
 	struct InvalidTokenSizeException : public std::exception {
@@ -72,7 +75,7 @@ namespace Utils
 
 	LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 
-	std::vector<SpriteBox> CreateSpriteBoxSequence(Vector2 startPosition, Dimension dimension, int space, int frameCount, Vector2 offset);
+	std::vector<SpriteBox> CreateSpriteBoxSequence(Vector2<int> startPosition, Dimension dimension, int space, int frameCount, Vector2<int> offset);
 
 	std::string JoinPath(const std::string& path1, const std::string& path2);
 
@@ -95,7 +98,6 @@ namespace Utils
 
 	template <typename T>
 	inline T Clip(const T& n, const T& lower, const T& upper);
-
 }
 
 template<class K, class V>
@@ -135,4 +137,77 @@ inline bool Utils::VectorHasAnyOf(const std::vector<T>& elems, const std::vector
 template <typename T>
 inline T Utils::Clip(const T& n, const T& lower, const T& upper) {
 	return max(lower, min(n, upper));
+}
+
+template <typename T>
+inline Utils::Vector2<T>::Vector2() {};
+
+template <typename T>
+inline Utils::Vector2<T>::Vector2(T x, T y) : x(x), y(y) {};
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() {
+	return Vector2<T>(round(x), round(y));
+}
+
+template <typename T>
+inline float Utils::Vector2<T>::DistanceTo(const Utils::Vector2<T>& v)
+{
+	return sqrt(pow(x - v.x, 2) + pow(y - v.y, 2));
+}
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Vector2<T>& other) const {
+	return Vector2<T>(x + other.x, y + other.y);
+}
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Vector2<T>& other) const {
+	return Vector2<T>(x - other.x, y - other.y);
+}
+
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator- () const {
+	return  Vector2<T>(-x, -y);
+}
+
+template <typename T>
+inline Utils::Vector2<T>& Utils::Vector2<T>::operator+=(const Utils::Vector2<T>& other) {
+	x += other.x;
+	y += other.y;
+	return *this;
+}
+
+template <typename T>
+inline Utils::Vector2<T>& Utils::Vector2<T>::operator-=(const Utils::Vector2<T>& other) {
+	x -= other.x;
+	y -= other.y;
+	return *this;
+}
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(const Utils::Vector2<T>& other) const {
+	return Vector2<T>(x * other.x, y * other.y);
+}
+
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(int value) const {
+	return Vector2<T>(x * value, y * value);
+}
+
+template <typename T>
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(float value) const {
+	return Vector2<T>(x * value, y * value);
+}
+
+template <typename T>
+inline bool Utils::Vector2<T>::operator==(const Utils::Vector2<T>& other) const {
+	return this->x == other.x && this->y == other.y;
+}
+
+template <typename T>
+inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const {
+	return !(*this == other);
 }
