@@ -189,7 +189,7 @@ class WorldEncoder:
 
     def _write_grid_props_header(self, encode_file):
         encode_file.write("\n#CellDimension (Width, Height)\n")
-        encode_file.write("#GridSize (Row, Column)\n")
+        encode_file.write("#GridSize (Column, Row)\n")
         encode_file.write("[SPATIAL PARTITION GRID]\n")
 
     def _encode_grid_props(self, encode_file):
