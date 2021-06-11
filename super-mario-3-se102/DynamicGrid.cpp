@@ -2,6 +2,10 @@
 #include "Utils.h"
 using namespace Utils;
 
+DynamicGrid::DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize)
+	: Grid(numberOfColumns, numberOfRows, cellSize)
+{}
+
 void DynamicGrid::Update()
 {
 	for (LPEntitiesInCell cell : cells)

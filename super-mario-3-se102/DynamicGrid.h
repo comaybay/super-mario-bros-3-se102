@@ -5,6 +5,7 @@
 class DynamicGrid : public Grid
 {
 public:
+	DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize);
 	void Update();
 	void AddToCell(LPEntity entity, const Utils::Vector2& cellIndex) override;
 private:

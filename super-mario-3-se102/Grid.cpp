@@ -1,6 +1,6 @@
 #include "Grid.h"
 
-Grid::Grid(int numberOfColumns, int numberOfRows, Utils::Dimension cellSize)
+Grid::Grid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize)
 	: numOfCols(numberOfColumns), numOfRows(numberOfRows), cellSize(cellSize),
 	cells(std::vector<LPEntitiesInCell>(numberOfRows* numberOfColumns))
 {

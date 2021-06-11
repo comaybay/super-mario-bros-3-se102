@@ -10,7 +10,7 @@ typedef std::list<LPEntity>* LPEntitiesInCell;
 class Grid
 {
 public:
-	Grid(int numberOfCollumns, int numberOfRows, Utils::Dimension cellSize);
+	Grid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize);
 	virtual void AddToCell(LPEntity entity, const Utils::Vector2& cellIndex);
 	const LPEntitiesInCell EntitiesAt(const Utils::Vector2& cellIndex);
 	Utils::Vector2 GetCellIndexAtPoint(const Utils::Vector2& point);
