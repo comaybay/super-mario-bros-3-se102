@@ -213,17 +213,18 @@ class WorldEncoder:
                 not_empty_tile = self.tile_identifier.is_empty_tile((x, y)) == False
                 not_visited = visited.get((x, y), False) == False
                 if (not_empty_tile and not_visited):
-                    walL_type, width, height = self._find_max_wall((x, y), end_position, visited)
-                    encode_file.write(f"{walL_type.value}, {x*16}, {(y - start_line)*16}, {width}, {height}\n")
+                    walL_type, w_in_tile, h_in_tile = self._find_max_wall((x, y), end_position, visited)
+                    encode_file.write(
+                        f"{walL_type.value}, {x*16}, {(y - start_line)*16}, {w_in_tile*16}, {h_in_tile*16}\n")
 
                     grid_x, grid_y, c_span, r_span = self._find_cell_positions(
-                        start_line*16, (x*16, y*16), (width, height)
+                        start_line, (x, y), (w_in_tile, h_in_tile)
                     )
                     encode_file.write(f"{grid_x}, {grid_y}, {c_span}, {r_span}\n")
 
-    def _find_max_wall(self, position, end_position, visited):
-        left, top = position
-        end_right, end_bottom = end_position
+    def _find_max_wall(self, position_in_tile, end_position_in_tile, visited):
+        left, top = position_in_tile
+        end_right, end_bottom = end_position_in_tile
         right = left
         bottom = top
         wall_color = ColorKey.WALL_TYPE_1 if (
@@ -273,13 +274,15 @@ class WorldEncoder:
                 right += 1
 
         wall_type = EntityCode.WALL_TYPE_1 if (wall_color == ColorKey.WALL_TYPE_1) else EntityCode.WALL_TYPE_2
-        width = (right - left + 1)*16
-        height = (bottom - top + 1)*16
-        return (wall_type, width, height)
+        w_in_tile = right - left + 1
+        h_in_tile = bottom - top + 1
+        return (wall_type, w_in_tile, h_in_tile)
 
-    def _find_cell_positions(self, grid_start_y, position, dim=(0, 0)):
-        px, py = position
-        w, h = dim
+    def _find_cell_positions(self, grid_start_tile_y, position_in_tile, dim_in_tile=(0, 0)):
+        grid_start_y = grid_start_tile_y * 16
+        px, py = (position_in_tile[0] * 16, position_in_tile[1] * 16)
+        w, h = (dim_in_tile[0]*16, dim_in_tile[1]*16)
+
         cell_w, cell_h = self.sp_cell_dim
         cell_x = math.floor(px / cell_w)
         cell_x_end = math.floor((px + w - 1) / cell_w)
@@ -319,14 +322,14 @@ class WorldEncoder:
                     else:
                         encode_file.write(f"{code.value}, {x*16}, {(y - start_line)*16}\n")
 
-                    grid_x, grid_y, _, _ = self._find_cell_positions(start_line*16, (x*16, y*16))
+                    grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
                     encode_file.write(f"{grid_x}, {grid_y}\n")
 
-    def _write_to_mistake_file(self, position, type):
+    def _write_to_mistake_file(self, position_in_tile, type):
         if (self.mistake_file == None):
             self._create_mistake_file()
 
-        x, y = position
+        x, y = position_in_tile
         self.mistake_file.write(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)\n")
         print(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)")
 
@@ -360,30 +363,30 @@ class Identifier(ABC):
         self.tiles_pixels = tiles_img.load()
         self.tiles_size = (math.floor((tiles_img.width - 1) / 17), math.floor((tiles_img.height - 1) / 17))
 
-    def is_void_tile(self, world_tile_position) -> bool:
-        x, y = world_tile_position
+    def is_void_tile(self, world_position_in_tile) -> bool:
+        x, y = world_position_in_tile
         return (self.world_pixels[x*16, y*16] == ColorKey.VOID)
 
-    def get_tile_code(self, world_tile_position) -> str:
-        if (self.is_empty_tile(world_tile_position)):
+    def get_tile_code(self, world_position_in_tile) -> str:
+        if (self.is_empty_tile(world_position_in_tile)):
             return IdentifierCode.CODE_EMPTY
 
-        if (self.is_void_tile(world_tile_position)):
+        if (self.is_void_tile(world_position_in_tile)):
             return IdentifierCode.CODE_VOID
 
         for y in range(self.tiles_size[1]):
             for x in range(self.tiles_size[0]):
-                if (self._compare_tile((x, y), world_tile_position)):
+                if (self._compare_tile((x, y), world_position_in_tile)):
                     return self._convertToCode((x, y))
 
         return IdentifierCode.CODE_NOTFOUND
 
     @ abstractmethod
-    def _convertToCode(self, position) -> str:
+    def _convertToCode(self, position_in_tile) -> str:
         pass
 
-    def is_empty_tile(self, world_tile_position):
-        tx, ty = world_tile_position
+    def is_empty_tile(self, world_position_in_tile):
+        tx, ty = world_position_in_tile
         for y in range(16):
             for x in range(16):
                 world_pixel = self.world_pixels[tx * 16 + x, ty * 16 + y]
@@ -392,13 +395,13 @@ class Identifier(ABC):
 
         return True
 
-    def _compare_tile(self, tile_position, world_tile_position) -> bool:
+    def _compare_tile(self, position_in_tile, world_position_in_tile) -> bool:
         for i in range(16):
             for j in range(16):
-                tx = 1 + tile_position[0] * (16 + 1)  # +1 for space between tiles in #_annotations.png
-                ty = 1 + tile_position[1] * (16 + 1)
-                sx = world_tile_position[0] * 16
-                sy = world_tile_position[1] * 16
+                tx = 1 + position_in_tile[0] * (16 + 1)  # +1 for space between tiles in #_annotations.png
+                ty = 1 + position_in_tile[1] * (16 + 1)
+                sx = world_position_in_tile[0] * 16
+                sy = world_position_in_tile[1] * 16
                 tile_pixel = self.tiles_pixels[tx + j,  ty + i]
                 world_pixel = self.world_pixels[sx + j, sy + i]
 
@@ -415,8 +418,8 @@ class TileIdentifier(Identifier):
     def __init__(self, tiles_img, world_pixels, tile_transparent_color, world_bg_color):
         super().__init__(tiles_img, world_pixels, tile_transparent_color, world_bg_color)
 
-    def _convertToCode(self, position) -> str:
-        x, y = position
+    def _convertToCode(self, position_in_tile) -> str:
+        x, y = position_in_tile
         return format(x + y * self.tiles_size[0], 'x').upper().zfill(3)
 
 
@@ -474,8 +477,8 @@ class EntityIdentifier(Identifier):
     def __init__(self, tiles_img, world_pixels, tile_transparent_color, world_bg_color):
         super().__init__(tiles_img, world_pixels, tile_transparent_color, world_bg_color)
 
-    def _convertToCode(self, position) -> str:
-        return self._codeByPosition.get(position, IdentifierCode.NOT_IMPLEMENTED)
+    def _convertToCode(self, position_in_tile) -> str:
+        return self._codeByPosition.get(position_in_tile, IdentifierCode.NOT_IMPLEMENTED)
 
 
 if __name__ == "__main__":
