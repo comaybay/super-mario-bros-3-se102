@@ -25,14 +25,17 @@ CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
 void CollisionEngine::Update(float delta) {
 
 	for (auto& pair : targetGroupsByLPEntity) {
+		LPEntity entity = pair.first;
 		//get target entities (use set data structure to avoid duplications)
-		std::unordered_set<LPEntity> entitySet;
+		std::unordered_set<LPEntity> targetSet;
 		for (std::string& groupName : pair.second)
 			for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
-				entitySet.insert(target);
-		std::vector<LPEntity> targetEntities(entitySet.begin(), entitySet.end());
+				if (target != entity)
+					targetSet.insert(target);
+
+		std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
+
 		//sort target entities by time of collision/closeness
-		LPEntity entity = pair.first;
 		auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
 			float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
 			float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
@@ -111,6 +114,7 @@ float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delt
 		return SweptAABB(mBox, sBox).value;
 }
 
+//taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ 
 CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
 	CBox b;
 	b.position = Vector2<float>(
@@ -133,7 +137,7 @@ void CollisionEngine::OnEntityDestroyHandler::Handle(LPEntity entity)
 	targetGroupsByLPEntity.erase(itTG);
 }
 
-//taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
+//taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ with modifications
 bool CollisionEngine::AABBCheck(const CBox& box1, const CBox& box2)
 {
 	//MODIFICATION: >= and <= instead of > and <.
