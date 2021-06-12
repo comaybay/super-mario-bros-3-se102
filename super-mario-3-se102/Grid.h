@@ -10,14 +10,15 @@ struct CellRange {
 	CellRange(const Utils::Vector2<int>& cellIndex, const Utils::Vector2<int>& cellSpan);
 };
 
-typedef std::list<LPEntity> EntitiesInCell;
-typedef EntitiesInCell* LPEntitiesInCell;
-typedef const EntitiesInCell* LPConstEntitiesInCell;
 //reference: https://gameprogrammingpatterns.com/spatial-partition.html
 //Basic Spatial Grid, treat each entity at a point, do not take into account it's size
 class Grid
 {
 public:
+	typedef std::list<LPEntity> EntitiesInCell;
+	typedef EntitiesInCell* LPEntitiesInCell;
+	typedef const EntitiesInCell* LPConstEntitiesInCell;
+
 	Grid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize);
 	~Grid();
 	virtual void AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex);

@@ -86,26 +86,6 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 	}
 }
 
-std::vector<LPEntity> EntityManager::GetEntitiesAroundCamera()
-{
-	CellRange range = GetCellRangeAroundCamera();
-
-	std::vector<LPEntity> entities;
-
-	for (int y = 0; y < range.span.y; y++)
-		for (int x = 0; x < range.span.x; x++) {
-			LPConstEntitiesInCell walls = wallEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
-			LPConstEntitiesInCell statics = staticEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
-			LPConstEntitiesInCell movables = movableEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
-
-			entities.insert(entities.end(), walls->begin(), walls->end());
-			entities.insert(entities.end(), statics->begin(), statics->end());
-			entities.insert(entities.end(), movables->begin(), movables->end());
-		}
-
-	return entities;
-}
-
 void EntityManager::UpdateAllEntities(float delta)
 {
 	CellRange range = GetCellRangeAroundCamera();
@@ -134,6 +114,13 @@ void EntityManager::RenderAllEntities()
 CellRange EntityManager::GetCellRangeAroundCamera() {
 	Vector2<float> camPos = parentScene->GetCameraPosition();
 	Dimension dim = Game::GetGameDimension();
+
+	//add margin
+	int marginSize = 16 * 1;
+	camPos = camPos - Vector2<float>(marginSize, marginSize);
+	dim.width += marginSize;
+	dim.height += marginSize;
+
 	return staticEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
 }
 

@@ -23,7 +23,6 @@ public:
 	Utils::Dimension GetWorldDimension();
 	Utils::Vector2<float> GetCameraPosition();
 	void AddEntity(LPEntity entity);
-	std::vector<LPEntity> GetEntitiesAroundCamera();
 	void QueueFree(LPEntity entity);
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
 

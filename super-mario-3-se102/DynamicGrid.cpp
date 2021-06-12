@@ -32,7 +32,7 @@ void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2<int>& cellInde
 	indexbyLPEntity[entity] = cellIndex;
 }
 
-EntitiesInCell::const_iterator DynamicGrid::UpdateEntityCellIndex(EntitiesInCell::const_iterator it)
+Grid::EntitiesInCell::const_iterator DynamicGrid::UpdateEntityCellIndex(Grid::EntitiesInCell::const_iterator it)
 {
 	LPEntity entity = *it;
 	Utils::Vector2<int> oldIndex = indexbyLPEntity[entity];

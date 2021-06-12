@@ -84,11 +84,6 @@ void Scene::AddEntity(LPEntity entity)
 	entity->OnReady();
 }
 
-std::vector<LPEntity> Scene::GetEntitiesAroundCamera()
-{
-	return entityManager->GetEntitiesAroundCamera();
-}
-
 void Scene::QueueFree(LPEntity entity)
 {
 	entityManager->QueueFree(entity);
