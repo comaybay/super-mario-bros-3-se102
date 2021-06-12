@@ -14,19 +14,25 @@ std::map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEn
 std::map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
 CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
 
-void CollisionEngine::Update(float delta)
-{
-	std::vector<LPEntity> dataCollection;
-	std::vector<LPEntity> entities = Game::GetActiveScene()->GetEntitiesAroundCamera();
-	for (LPEntity entity : entities) {
-		std::vector<LPEntity> targets;
-		std::copy_if(entities.begin(), entities.end(), back_inserter(targets),
-			[entity](LPEntity other) {
-				return other != entity && VectorHasAnyOf(targetGroupsByLPEntity[entity], other->GetEntityGroups());
-			}
-		);
 
+/// <summary>
+/// <para>This algorithm do collision detection on entities that subsribe to the CollisionEngine, and only do detection between entity and it's given target groups.</para>
+/// <para>The downside of this algorithm is that it do not take into account the sptial partition grid.</para>
+/// <para>But because of that, you do not need to take into account collision between entities outside of active cells in spatial partition grid.</para>
+/// <para>By using entity group partition, this algorithm should be fast enough for game with minimal ammount of objects 
+/// and do not simmulate complex particle interactions, like SMB3.</para>
+/// </summary>
+void CollisionEngine::Update(float delta) {
+
+	for (auto& pair : targetGroupsByLPEntity) {
+		//get target entities (use set data structure to avoid duplications)
+		std::unordered_set<LPEntity> entitySet;
+		for (std::string& groupName : pair.second)
+			for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
+				entitySet.insert(target);
+		std::vector<LPEntity> targetEntities(entitySet.begin(), entitySet.end());
 		//sort target entities by time of collision/closeness
+		LPEntity entity = pair.first;
 		auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
 			float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
 			float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
@@ -40,14 +46,13 @@ void CollisionEngine::Update(float delta)
 			else
 				return aVal < bVal;
 		};
-		std::sort(targets.begin(), targets.end(), ascending);
-
+		std::sort(targetEntities.begin(), targetEntities.end(), ascending);
 		std::unordered_set<std::string> hasPreviouslyNotified;
 		auto toKey = [](LPEntity a, LPEntity b) -> std::string {
 			return reinterpret_cast<const char*>(a) + std::string(",") + reinterpret_cast<const char*>(b);
 		};
 		//notify both if collided, need to notify right away so the next detections can give accurate results
-		for (const LPEntity& target : targets) {
+		for (const LPEntity& target : targetEntities) {
 			if (SetHas(toKey(entity, target), hasPreviouslyNotified))
 				continue;
 
@@ -57,9 +62,7 @@ void CollisionEngine::Update(float delta)
 
 			if (dataForEntity.value == 1.0f)
 				continue;
-
 			collisionEventByLPEntity[entity]->Notify(dataForEntity);
-
 			//if target also subscribed and it's target groups include entity
 			if (MapHas(target, collisionEventByLPEntity) && VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByLPEntity[target])) {
 				collisionEventByLPEntity[target]->Notify(dataForTarget);
