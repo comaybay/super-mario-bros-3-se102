@@ -9,9 +9,9 @@ DynamicGrid::DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dim
 
 void DynamicGrid::UpdateCells(const CellRange& range)
 {
-	for (int y = 0; y < range.rowSpan; y++)
-		for (int x = 0; x < range.colSpan; x++) {
-			LPConstEntitiesInCell entities = EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+	for (int y = 0; y < range.span.y; y++)
+		for (int x = 0; x < range.span.x; x++) {
+			LPConstEntitiesInCell entities = EntitiesAt(range.index + Vector2<int>(x, y));
 			//this process require removing entity in the cell while iterating, therefore an iterator must be used 
 			for (auto it = entities->begin(); it != entities->end();) {
 				int prevSize = entities->size();

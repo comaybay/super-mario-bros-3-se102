@@ -61,6 +61,7 @@ namespace Entities {
 		Vector2<float> speed;
 		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;
+		virtual void OnReady() override;
 		void OnCollision(CollisionData data);
 	};
 

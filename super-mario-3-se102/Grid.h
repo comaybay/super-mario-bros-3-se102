@@ -5,10 +5,9 @@
 #include "Utils.h"
 
 struct CellRange {
-	Utils::Vector2<int> startCellIndex;
-	int colSpan;
-	int rowSpan;
-	CellRange(const Utils::Vector2<int>& startCellIndex, int colSpan, int rowSpan);
+	Utils::Vector2<int> index;
+	Utils::Vector2<int> span;
+	CellRange(const Utils::Vector2<int>& cellIndex, const Utils::Vector2<int>& cellSpan);
 };
 
 typedef std::list<LPEntity> EntitiesInCell;
@@ -24,6 +23,7 @@ public:
 	virtual void AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex);
 	LPConstEntitiesInCell EntitiesAt(const Utils::Vector2<int>& cellIndex);
 	void ForEachEntityIn(const CellRange& range, std::function<void(LPEntity)> handler);
+	void ForEachEntity(std::function<void(LPEntity)> handler);
 	Utils::Vector2<int> GetCellIndexAtPoint(const Utils::Vector2<float>& point);
 	CellRange GetCellRangeFromRectangle(const Utils::Vector2<float>& position, const Utils::Dimension& dim);
 	void OnEntityDestroy(LPEntity entity);

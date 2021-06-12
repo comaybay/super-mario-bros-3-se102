@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "AnimationManager.h"
 #include "Event.h"
+#include "Scene.h"
 
 Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
@@ -58,15 +59,6 @@ void Entity::SetVelocity(const Utils::Vector2<float>& velocity)
 	this->velocity = velocity;
 }
 
-Utils::Vector2<float> Entity::GetRemainingVelocity()
-{
-	return remainingVelocity;
-}
-void Entity::SetRemainingVelocity(Utils::Vector2<float> velocity)
-{
-	remainingVelocity = velocity;
-}
-
 GridType Entity::GetGridType() {
 	return gridType;
 }
@@ -74,6 +66,9 @@ GridType Entity::GetGridType() {
 Utils::SpriteBox Entity::GetSpriteBox() {
 	return animation->GetCurrentSpriteBox();
 }
+
+//do nothing by default
+void Entity::OnReady() {}
 
 Utils::Dimension Entity::GetDimension()
 {
@@ -103,8 +98,25 @@ LPEvent<LPEntity> const Entity::GetDestroyEvent()
 	return destroyEvent;
 }
 
+LPScene Entity::GetParentScene()
+{
+	return parentScene;
+}
+
 std::vector<std::string> Entity::GetEntityGroups()
 {
 	return groups;
 }
 
+void Entity::_SetParentScene(LPScene scene) {
+	this->parentScene = scene;
+}
+
+Utils::Vector2<float> Entity::_GetRemainingVelocity()
+{
+	return remainingVelocity;
+}
+void Entity::_SetRemainingVelocity(Utils::Vector2<float> velocity)
+{
+	remainingVelocity = velocity;
+}

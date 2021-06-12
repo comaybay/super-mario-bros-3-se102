@@ -9,9 +9,14 @@ float Goomba::maxFallSpeed = 230;
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES)
 {
-	velocity = Vector2<float>(30, 0);
 	speed = Vector2<float>(30, 0);
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
+}
+
+void Goomba::OnReady()
+{
+	LPEntity player = GetParentScene()->GetEntitiesByGroup(Groups::PLAYER).front();
+	velocity = (player->GetPosition().x < position.x) ? Vector2<float>(-30, 0) : Vector2<float>(30, 0);
 }
 
 void Goomba::Update(float delta)

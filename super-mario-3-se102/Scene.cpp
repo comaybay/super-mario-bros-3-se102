@@ -10,22 +10,24 @@ Scene::~Scene()
 	delete encodedWorld;
 }
 
-Scene::Scene(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
-	: worldTileDim(worldTileDim), backgroundColor(backgroundColor), encodedWorld(encodedWorld), entityManager(entityManager)
+Scene::Scene()
 {
-	//TODO: REMOVE DEBUG CODE
-	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup(Groups::PLAYER, mario);
-	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup("Goombas", goomba);
-	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
-	entityManager->AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
-	camera.FollowEntity(entityManager->GetEntitiesByGroup(Groups::PLAYER).front());
 }
 
+void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
+{
+	this->worldTileDim = worldTileDim;
+	this->backgroundColor = backgroundColor;
+	this->encodedWorld = encodedWorld;
+	this->entityManager = entityManager;
+}
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
 int i = 0;
+LPEntityManager Scene::_GetEntityManager()
+{
+	return entityManager;
+}
 void Scene::Update(float delta)
 {
 	/*i++;
@@ -76,6 +78,43 @@ void Scene::Render()
 	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 
+void Scene::AddEntity(LPEntity entity)
+{
+	entityManager->Add(entity);
+	entity->OnReady();
+}
+
+std::vector<LPEntity> Scene::GetEntitiesAroundCamera()
+{
+	return entityManager->GetEntitiesAroundCamera();
+}
+
+void Scene::QueueFree(LPEntity entity)
+{
+	entityManager->QueueFree(entity);
+}
+
+const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
+{
+	return entityManager->GetEntitiesByGroup(groupName);
+}
+
+void Scene::_Ready()
+{
+	//TODO: REMOVE DEBUG CODE
+	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
+	//EntityManager::AddToGroup(Groups::PLAYER, mario);
+	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
+	//EntityManager::AddToGroup("Goombas", goomba);
+	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
+	entityManager->AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
+
+	entityManager->ForEach([](LPEntity entity) {
+		entity->OnReady();
+		});
+	camera.FollowEntity(entityManager->GetEntitiesByGroup(Groups::PLAYER).front());
+}
+
 Utils::Dimension Scene::GetWorldDimension()
 {
 	int scale = Game::GetScale();
@@ -85,11 +124,6 @@ Utils::Dimension Scene::GetWorldDimension()
 Utils::Vector2<float> Scene::GetCameraPosition()
 {
 	return camera.GetPosition();
-}
-
-LPEntityManager Scene::GetEntityManager()
-{
-	return entityManager;
 }
 
 RECT Scene::GetTileBoundingBox(int id)

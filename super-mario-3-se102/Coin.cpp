@@ -1,4 +1,5 @@
 #include "Entities.h"
+#include "EntityManager.h"
 #include "Groups.h"
 #include "PlayerVariables.h"
 #include "Game.h"
@@ -13,6 +14,6 @@ Coin::Coin(const Vector2<float>& position)
 void Entities::Coin::OnCollision(CollisionData data)
 {
 	PlayerVariables::AddToNumberOfCoins(1);
-	Game::GetSceneEntityManager()->QueueFree(this);
+	GetParentScene()->QueueFree(this);
 }
 

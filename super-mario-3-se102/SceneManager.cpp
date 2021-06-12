@@ -44,6 +44,7 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	LPGrid wallEntitySpatialGrid = nullptr;
 	LPGrid staticEntitySpatialGrid = nullptr;
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
+	LPScene scene = new Scene();
 	while (std::getline(file, section)) {
 		if (section[0] != '[')
 			continue;
@@ -56,7 +57,7 @@ LPScene SceneManager::LoadWorld(std::string id) {
 				section = ParseEncodedWorld(file, worldDim.width, encodedWorld);
 			else if (section == "[SPATIAL PARTITION GRID]") {
 				section = ParseSpatialPartitionGrid(file, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
-				entityManager = new EntityManager(wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
+				entityManager = new EntityManager(scene, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
 			}
 			else if (section == "[WALL ENTITIES]")
 				section = ParseAndAddWallsEntities(file, entityManager, wallEntitySpatialGrid);
@@ -68,7 +69,9 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	}
 	file.close();
 
-	return new Scene(worldDim, bgColor, encodedWorld, entityManager);
+	scene->_Init(worldDim, bgColor, encodedWorld, entityManager);
+	scene->_Ready();
+	return scene;
 }
 
 std::string SceneManager::ParseWorldProperties(std::ifstream& file, Utils::Dimension& dim, D3DCOLOR& bgColor)
@@ -183,11 +186,7 @@ std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntity
 			throw std::exception(msg.c_str());
 		}
 
-		entityManager->AddToGroups(entity->GetEntityGroups(), entity);
-		for (int y = 0; y < cellSpan.y; y++)
-			for (int x = 0; x < cellSpan.x; x++)
-				wallEntitySpatialGrid->AddToCell(entity, cellIndex + Vector2<int>(x, y));
-
+		entityManager->Add(entity, CellRange(cellIndex, cellSpan));
 	}
 	return line;
 }

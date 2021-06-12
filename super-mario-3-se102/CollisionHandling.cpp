@@ -3,7 +3,7 @@
 
 void CollisionHandling::Slide(LPEntity entity, const CollisionData& data)
 {
-	Utils::Vector2<float> velocity = entity->GetRemainingVelocity();
+	Utils::Vector2<float> velocity = entity->_GetRemainingVelocity();
 	Utils::Vector2<float> position = entity->GetPosition();
 
 	//stop at collision
@@ -16,5 +16,5 @@ void CollisionHandling::Slide(LPEntity entity, const CollisionData& data)
 	velocity.x = data.edge.y * dotprod;
 	velocity.y = data.edge.x * dotprod;
 
-	entity->SetRemainingVelocity(velocity);
+	entity->_SetRemainingVelocity(velocity);
 }

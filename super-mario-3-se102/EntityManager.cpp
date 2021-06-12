@@ -1,15 +1,24 @@
 #include "EntityManager.h"
 #include "Groups.h"
 #include "Game.h"
+#include "Entity.h"
+#include "Scene.h"
 using namespace Utils;
 
-EntityManager::EntityManager(LPGrid wallEntitySpatialGrid, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid)
-	: wallEntitySpatialGrid(wallEntitySpatialGrid), staticEntitySpatialGrid(staticEntitySpatialGrid),
+EntityManager::EntityManager
+(LPScene parentScene, LPGrid wallEntitySpatialGrid, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid)
+	: parentScene(parentScene), wallEntitySpatialGrid(wallEntitySpatialGrid), staticEntitySpatialGrid(staticEntitySpatialGrid),
 	movableEntitySpatialGrid(movableEntitySpatialGrid)
 {}
 
 void EntityManager::Add(LPEntity entity)
 {
+	if (entity->GetGridType() == GridType::WALL_ENTITIES) {
+		CellRange range = wallEntitySpatialGrid->GetCellRangeFromRectangle(entity->GetPosition(), entity->GetDimension());
+		Add(entity, range);
+		return;
+	}
+
 	Vector2<int> cellIndex = movableEntitySpatialGrid->GetCellIndexAtPoint(entity->GetPosition());
 	Add(entity, cellIndex);
 }
@@ -17,8 +26,8 @@ void EntityManager::Add(LPEntity entity)
 void EntityManager::Add(LPEntity entity, const Vector2<int>& cellIndex)
 {
 	AddToGroups(entity->GetEntityGroups(), entity);
+	entity->_SetParentScene(parentScene);
 
-	//currently not allow GridType::WALL_ENTITIES
 	switch (entity->GetGridType()) {
 	case GridType::MOVABLE_ENTITIES:
 		movableEntitySpatialGrid->AddToCell(entity, cellIndex);
@@ -27,8 +36,30 @@ void EntityManager::Add(LPEntity entity, const Vector2<int>& cellIndex)
 		staticEntitySpatialGrid->AddToCell(entity, cellIndex);
 		break;
 	default:
-		throw std::exception("ParseAndAddOtherEntities failed: GridType must either be MOVABLE_ENTITIES or STATIC_ENTITIES");
+		throw std::exception("Add failed: for single cellIndex, GridType must either be MOVABLE_ENTITIES or STATIC_ENTITIES");
 	}
+}
+
+void EntityManager::Add(LPEntity entity, const CellRange& cellRange)
+{
+	AddToGroups(entity->GetEntityGroups(), entity);
+	entity->_SetParentScene(parentScene);
+
+	switch (entity->GetGridType()) {
+	case GridType::WALL_ENTITIES:
+		for (int y = 0; y < cellRange.span.y; y++)
+			for (int x = 0; x < cellRange.span.x; x++)
+				wallEntitySpatialGrid->AddToCell(entity, cellRange.index + Vector2<int>(x, y));
+		break;
+	default:
+		throw std::exception("Add failed: for cellSpan, GridType must be WALL_ENTITIES");
+	}
+}
+
+void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
+	wallEntitySpatialGrid->ForEachEntity(handler);
+	staticEntitySpatialGrid->ForEachEntity(handler);
+	movableEntitySpatialGrid->ForEachEntity(handler);
 }
 
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
@@ -58,17 +89,17 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 
 std::vector<LPEntity> EntityManager::GetEntitiesAroundCamera()
 {
-	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
 	Dimension dim = Game::GetGameDimension();
 	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
 
 	std::vector<LPEntity> entities;
 
-	for (int y = 0; y < range.rowSpan; y++)
-		for (int x = 0; x < range.colSpan; x++) {
-			LPConstEntitiesInCell walls = wallEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
-			LPConstEntitiesInCell statics = staticEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
-			LPConstEntitiesInCell movables = movableEntitySpatialGrid->EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
+	for (int y = 0; y < range.span.y; y++)
+		for (int x = 0; x < range.span.x; x++) {
+			LPConstEntitiesInCell walls = wallEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
+			LPConstEntitiesInCell statics = staticEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
+			LPConstEntitiesInCell movables = movableEntitySpatialGrid->EntitiesAt(range.index + Vector2<int>(x, y));
 
 			entities.insert(entities.end(), walls->begin(), walls->end());
 			entities.insert(entities.end(), statics->begin(), statics->end());
@@ -87,7 +118,7 @@ bool EntityManager::IsCloseToPlayer(LPEntity entity)
 
 void EntityManager::UpdateAllEntities(float delta)
 {
-	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
 	Dimension dim = Game::GetGameDimension();
 	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
 	auto updateHandler = [delta](LPEntity entity) { entity->Update(delta); };
@@ -105,7 +136,7 @@ void EntityManager::PostUpdateAllEntities()
 
 void EntityManager::RenderAllEntities()
 {
-	Vector2<float> camPos = Game::GetScene()->GetCameraPosition();
+	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
 	Dimension dim = Game::GetGameDimension();
 	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
 	auto renderHandler = [](LPEntity entity) { entity->Render(); };
@@ -130,6 +161,4 @@ void EntityManager::FreeEntitiesInQueue() {
 
 	freeQueue.clear();
 }
-
-
 

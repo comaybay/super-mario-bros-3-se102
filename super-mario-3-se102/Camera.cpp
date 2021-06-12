@@ -22,7 +22,7 @@ void Camera::Update()
 	if (target == nullptr)
 		return;
 
-	Dimension worldDim = Game::GetScene()->GetWorldDimension();
+	Dimension worldDim = Game::GetActiveScene()->GetWorldDimension();
 	Dimension gameDim = Game::GetGameDimension();
 	Dimension targetDim = target->GetDimension();
 	Vector2<float> targetPos = target->GetPosition();

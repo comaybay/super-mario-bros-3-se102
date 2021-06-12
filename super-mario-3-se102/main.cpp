@@ -14,6 +14,7 @@
 int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_  HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow)
 {
 	//TODO: CHANGE MAP -> UNORDEDRED_MAP FOR BEtTER PERFORMANCE
+	//TODO: FIXED ANIAMATION Implementation
 	const std::string dataDirectory = "data";
 	Utils::Dimension gameDim;
 	int scale;

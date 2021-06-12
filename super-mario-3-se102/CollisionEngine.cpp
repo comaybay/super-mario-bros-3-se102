@@ -1,4 +1,5 @@
 #include "CollisionEngine.h"
+#include "EntityManager.h"
 #include "Game.h"
 #include <algorithm>
 #include <unordered_set>
@@ -16,7 +17,7 @@ CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
 void CollisionEngine::Update(float delta)
 {
 	std::vector<LPEntity> dataCollection;
-	std::vector<LPEntity> entities = Game::GetSceneEntityManager()->GetEntitiesAroundCamera();
+	std::vector<LPEntity> entities = Game::GetActiveScene()->GetEntitiesAroundCamera();
 	for (LPEntity entity : entities) {
 		std::vector<LPEntity> targets;
 		std::copy_if(entities.begin(), entities.end(), back_inserter(targets),
@@ -77,7 +78,7 @@ LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
 }
 
 void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
-	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
+	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta);
 	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
 
 	//Broadphase check
@@ -96,7 +97,7 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
 {
-	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->GetRemainingVelocity() - e2->GetRemainingVelocity()) * delta);
+	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta);
 	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
 
 	//Broadphase check

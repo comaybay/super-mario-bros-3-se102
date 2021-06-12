@@ -3,10 +3,10 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <type_traits>
 #include "Utils.h"
 #include "EventHandler.h"
 #include "Entity.h"
-#include <type_traits>
 
 template <class... Args>
 class Event

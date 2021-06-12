@@ -2,8 +2,8 @@
 #include "Event.h"
 using namespace Utils;
 
-CellRange::CellRange(const Utils::Vector2<int>& startCellIndex, int colSpan, int rowSpan)
-	: startCellIndex(startCellIndex), colSpan(colSpan), rowSpan(rowSpan)
+CellRange::CellRange(const Utils::Vector2<int>& cellIndex, const Utils::Vector2<int>& cellSpan)
+	: index(cellIndex), span(cellSpan)
 {}
 
 Grid::Grid(int numberOfColumns, int numberOfRows, const Dimension& cellSize)
@@ -33,12 +33,18 @@ LPConstEntitiesInCell Grid::EntitiesAt(const Vector2<int>& cellIndex)
 
 void Grid::ForEachEntityIn(const CellRange& range, std::function<void(LPEntity)> handler)
 {
-	for (int y = 0; y < range.rowSpan; y++)
-		for (int x = 0; x < range.colSpan; x++) {
-			LPConstEntitiesInCell entities = EntitiesAt(range.startCellIndex + Vector2<int>(x, y));
-			for (LPEntity entity : *entities)
+	for (int y = 0; y < range.span.y; y++)
+		for (int x = 0; x < range.span.x; x++)
+			for (LPEntity entity : *EntitiesAt(range.index + Vector2<int>(x, y)))
 				handler(entity);
-		};
+}
+
+void Grid::ForEachEntity(std::function<void(LPEntity)> handler)
+{
+	for (int y = 0; y < numOfRows; y++)
+		for (int x = 0; x < numOfCols; x++)
+			for (LPEntity entity : *EntitiesAt(Vector2<int>(x, y)))
+				handler(entity);
 }
 
 Vector2<int> Grid::GetCellIndexAtPoint(const Vector2<float>& point)
@@ -57,11 +63,9 @@ CellRange Grid::GetCellRangeFromRectangle(const Vector2<float>& position, const 
 	Vector2<int> topLeftPos = GetCellIndexAtPoint(position);
 	Vector2<int> bottomRightPos = GetCellIndexAtPoint(Vector2<float>(position.x + dim.width, position.y + dim.height));
 
-	Vector2<int> difference = bottomRightPos - topLeftPos;
-	int colSpan = difference.x + 1;
-	int rowSpan = difference.y + 1;
+	Vector2<int> cellSpan = bottomRightPos - topLeftPos + Vector2<int>(1, 1);
 
-	return CellRange(topLeftPos, colSpan, rowSpan);
+	return CellRange(topLeftPos, cellSpan);
 }
 
 void Grid::OnEntityDestroy(LPEntity entity)

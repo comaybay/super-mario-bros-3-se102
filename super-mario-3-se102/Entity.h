@@ -3,11 +3,14 @@
 #include "Animation.h"
 #include "GridType.h"
 
-//avoid circular dependency
+//avoid circular dependencies
 template<typename ...Args>
 class Event;
 template<typename ...Args>
 using LPEvent = Event<Args...>*;
+
+class Scene;
+typedef Scene* LPScene;
 
 class Entity;
 typedef Entity* LPEntity;
@@ -23,20 +26,31 @@ public:
 	Utils::Vector2<float> GetPosition();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
+	LPScene GetParentScene();
 
 	/// <summary>
-	/// Get remainging velocity, used for collision detection and collision handling
+	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
+	/// </summary>
+	virtual void OnReady();
+
+	/// <summary>
+	/// Used internaly SceneManager to inject entity's parent scene
+	/// </summary>
+	void _SetParentScene(LPScene scene);
+
+	/// <summary>
+	/// remainging velocity is used internaly by CollisionEngine and CollisionHandling
 	/// this is the remaining velocity after any change in position by CollisionHandling.
 	/// remaining velocity will be reset every frame.
 	/// </summary>
-	Utils::Vector2<float> GetRemainingVelocity();
+	Utils::Vector2<float> _GetRemainingVelocity();
+	void _SetRemainingVelocity(Utils::Vector2<float> vel);
 
 	/// <summary>
 	/// GridType will be used for spatial parititoning
 	/// </summary>
 	GridType GetGridType();
 
-	void SetRemainingVelocity(Utils::Vector2<float> vel);
 	virtual Utils::Dimension GetDimension();
 	Utils::SpriteBox GetSpriteBox();
 	virtual void Update(float delta);
@@ -50,6 +64,7 @@ protected:
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
 private:
+	LPScene parentScene;
 	void Init();
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;

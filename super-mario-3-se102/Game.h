@@ -18,13 +18,13 @@ public:
 	static LPD3DXSPRITE GetD3DXSprite() { return d3dxSprite; };
 	static int GetScale();
 	static Utils::Dimension GetGameDimension();
-	static const LPScene GetScene();
-	static const LPEntityManager GetSceneEntityManager();
+	static const LPScene GetActiveScene();
 	static void Run();
 	static void Release();
 	static void ProcessKeyboard();
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
+	static void SwitchScene(LPScene scene);
 	static const Utils::Vector2<float> Gravity;
 	static const int TILE_SIZE = 16;
 private:
@@ -42,6 +42,6 @@ private:
 	static DWORD dwInOut;
 	static LPDIRECT3DSURFACE9 backBuffer;
 	static LPD3DXSPRITE d3dxSprite;
-	static LPScene scene;
+	static LPScene activeScene;
 };
 

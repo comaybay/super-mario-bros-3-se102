@@ -25,8 +25,7 @@ BYTE Game::keyStates[256];
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 const Utils::Vector2<float> Game::Gravity = Utils::Vector2<float>(0, 1200);
-LPScene Game::scene = nullptr;
-
+LPScene Game::activeScene = nullptr;
 
 void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimension gameDim)
 {
@@ -65,7 +64,12 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	//TODO: remove test code
 	SceneManager::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
 
-	scene = SceneManager::LoadWorld("World 1-1-1");
+	activeScene = SceneManager::LoadWorld("World 1-1-1");
+	SwitchScene(activeScene);
+}
+
+void Game::SwitchScene(LPScene scene) {
+	Game::activeScene = scene;
 }
 
 int Game::GetScale()
@@ -78,14 +82,9 @@ Utils::Dimension Game::GetGameDimension()
 	return gameDim;
 }
 
-const LPScene Game::GetScene()
+const LPScene Game::GetActiveScene()
 {
-	return scene;
-}
-
-const LPEntityManager Game::GetSceneEntityManager()
-{
-	return scene->GetEntityManager();
+	return activeScene;
 }
 
 void Game::Run()
@@ -118,12 +117,12 @@ void Game::Run()
 		ProcessKeyboard();
 		if (accumulator >= frameTime)
 		{
-			scene->Update(dt);
+			activeScene->Update(dt);
 			accumulator -= frameTime;
 		}
 
-		scene->Render();
-		Game::GetSceneEntityManager()->FreeEntitiesInQueue();
+		activeScene->Render();
+		Game::GetActiveScene()->_GetEntityManager()->FreeEntitiesInQueue();
 	}
 }
 

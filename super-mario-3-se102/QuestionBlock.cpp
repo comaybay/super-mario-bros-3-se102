@@ -1,6 +1,7 @@
 #include "Entities.h"
 #include "Game.h"
 #include "Groups.h"
+#include "EntityManager.h"
 using namespace Entities;
 
 //TODO: Complete Implementation
@@ -19,13 +20,11 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	if (data.edge.y == -1.0f) {
-		LPEntityManager entityManager = Game::GetSceneEntityManager();
-		entityManager->QueueFree(this);
-		entityManager->Add(content);
+		GetParentScene()->QueueFree(this);
+		GetParentScene()->AddEntity(content);
 		content = nullptr;
 	}
 }
-
 
 void QuestionBlock::Update(float delta)
 {
