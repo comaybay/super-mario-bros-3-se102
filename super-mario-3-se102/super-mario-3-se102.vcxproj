@@ -179,6 +179,7 @@
     <ClCompile Include="DynamicGrid.cpp" />
     <ClCompile Include="EncodedWorld.cpp" />
     <ClCompile Include="CollisionWallType2.cpp" />
+    <ClCompile Include="FixedAnimation.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GridType.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="FixedAnimation.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridType.h" />

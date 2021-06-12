@@ -1,6 +1,6 @@
 #include "ResourceLoader.h"
 #include "TextureManager.h"
-#include "Animation.h"
+#include "FixedAnimation.h"
 #include "AnimationManager.h"
 #include <fstream>
 #include <vector>
@@ -106,12 +106,13 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			continue;
 
 		std::vector<std::string> paramTokens = Utils::SplitByComma(line);
-		if (paramTokens.size() != 3)
-			throw Utils::InvalidTokenSizeException(3);
+		if (paramTokens.size() != 4)
+			throw Utils::InvalidTokenSizeException(4);
 
 		std::string animationId = paramTokens[0];
-		float frameDuration = std::stof(paramTokens[1]);
-		std::string rectSequenceHandlingMode = paramTokens[2];
+		std::string animationType = paramTokens[1];
+		float frameDuration = std::stof(paramTokens[2]);
+		std::string rectSequenceHandlingMode = paramTokens[3];
 
 		std::getline(file, line);
 		std::vector<std::string> idToken = Utils::SplitByComma(line);
@@ -185,9 +186,17 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			throw std::exception("Invalid sprite box handling mode: expected Auto or Manual");
 
 		LPDIRECT3DTEXTURE9 texture = TextureManager::Get(textureId);
-		LPAnimation animation = new Animation(animationId, frameDuration, texture, spriteBoxSequence);
 
-		AnimationManager::Add(animationId, animation);
+		AnimationType animType;
+		if (animationType == "Normal")
+			animType = AnimationType::NORMAL;
+		else if (animationType == "Fixed")
+			animType = AnimationType::FIXED;
+		else
+			throw std::exception("Invalid AnimationType: expected Normal or Auto");
+
+		AnimationProps animProps(animType, animationId, frameDuration, texture, spriteBoxSequence);
+		AnimationManager::Add(animationId, animProps);
 	}
 
 	file.close();

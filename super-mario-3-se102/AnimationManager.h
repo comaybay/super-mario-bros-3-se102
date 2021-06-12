@@ -2,12 +2,23 @@
 #include "Animation.h"
 #include <map>
 
+struct AnimationProps {
+	AnimationType type;
+	std::string id;
+	float frameDuration;
+	LPDIRECT3DTEXTURE9 texture;
+	std::vector<Utils::SpriteBox> sequence;
+	AnimationProps();
+	AnimationProps
+	(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence);
+};
+
 class AnimationManager
 {
 public:
-	static void Add(std::string id, LPAnimation anim);
-	static LPAnimation GetNew(std::string id);
+	static void Add(const std::string& id, const AnimationProps& anim);
+	static LPAnimation GetNew(const std::string& id);
 private:
-	static std::map<std::string, LPAnimation> animationById;
+	static std::map<std::string, AnimationProps> animationPropsById;
 };
 
