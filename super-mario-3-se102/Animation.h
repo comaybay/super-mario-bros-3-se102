@@ -13,16 +13,21 @@ public:
 	virtual void Update(float delta);
 	Utils::SpriteBox GetCurrentSpriteBox();
 	const std::string id;
-private:
+protected:
 	int currentFrame;
 	float frameDuration;
-	float currentDuration;
 	LPDIRECT3DTEXTURE9 texture;
 	std::vector<Utils::SpriteBox> sequence;
+private:
+	float currentDuration;
 };
 typedef Animation* LPAnimation;
 
 class AnimationId {
 public:
 	const static std::string NONE;
+};
+
+enum class AnimationType {
+	NORMAL, FIXED
 };
