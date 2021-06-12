@@ -83,15 +83,12 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 		return *entitiesByGroup[groupName];
 	else {
 		std::string msg = "No group with name=\"" + groupName + "\" found";
-		throw std::exception(msg.c_str());
 	}
 }
 
 std::vector<LPEntity> EntityManager::GetEntitiesAroundCamera()
 {
-	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
-	Dimension dim = Game::GetGameDimension();
-	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+	CellRange range = GetCellRangeAroundCamera();
 
 	std::vector<LPEntity> entities;
 
@@ -109,18 +106,9 @@ std::vector<LPEntity> EntityManager::GetEntitiesAroundCamera()
 	return entities;
 }
 
-bool EntityManager::IsCloseToPlayer(LPEntity entity)
-{
-	LPEntity player = entitiesByGroup[Groups::PLAYER]->front();
-	float distance = entity->GetPosition().DistanceTo(player->GetPosition());
-	return distance <= Game::GetGameDimension().width + 3 * Game::TILE_SIZE;
-}
-
 void EntityManager::UpdateAllEntities(float delta)
 {
-	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
-	Dimension dim = Game::GetGameDimension();
-	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+	CellRange range = GetCellRangeAroundCamera();
 	auto updateHandler = [delta](LPEntity entity) { entity->Update(delta); };
 	staticEntitySpatialGrid->ForEachEntityIn(range, updateHandler);
 	movableEntitySpatialGrid->ForEachEntityIn(range, updateHandler);
@@ -129,19 +117,24 @@ void EntityManager::UpdateAllEntities(float delta)
 
 void EntityManager::PostUpdateAllEntities()
 {
-	for (auto& groups : entitiesByGroup)
-		for (auto& entity : *groups.second)
-			entity->PostUpdate();
+	CellRange range = GetCellRangeAroundCamera();
+	auto postUpdateHandler = [](LPEntity entity) { entity->PostUpdate(); };
+	staticEntitySpatialGrid->ForEachEntityIn(range, postUpdateHandler);
+	movableEntitySpatialGrid->ForEachEntityIn(range, postUpdateHandler);
 }
 
 void EntityManager::RenderAllEntities()
 {
-	Vector2<float> camPos = Game::GetActiveScene()->GetCameraPosition();
-	Dimension dim = Game::GetGameDimension();
-	CellRange range = movableEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
+	CellRange range = GetCellRangeAroundCamera();
 	auto renderHandler = [](LPEntity entity) { entity->Render(); };
 	movableEntitySpatialGrid->ForEachEntityIn(range, renderHandler);
 	staticEntitySpatialGrid->ForEachEntityIn(range, renderHandler);
+}
+
+CellRange EntityManager::GetCellRangeAroundCamera() {
+	Vector2<float> camPos = parentScene->GetCameraPosition();
+	Dimension dim = Game::GetGameDimension();
+	return staticEntitySpatialGrid->GetCellRangeFromRectangle(camPos, dim);
 }
 
 void EntityManager::QueueFree(LPEntity entity) {
