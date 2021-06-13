@@ -186,7 +186,7 @@ std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntity
 			throw std::exception(msg.c_str());
 		}
 
-		entityManager->Add(entity, CellRange(cellIndex, cellSpan));
+		entityManager->_AddToWallSPGrid(entity, CellRange(cellIndex, cellSpan));
 	}
 	return line;
 }
@@ -204,17 +204,27 @@ std::string SceneManager::ParseAndAddOtherEntities
 			continue;
 
 		std::vector<std::string> entityTokens = Utils::SplitByComma(line);
-		std::getline(file, line);
-		std::vector<std::string> cellTokens = Utils::SplitByComma(line);
 
 		std::string name = entityTokens[0];
-		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
-
+		//TODO: remove this line of code when everything is implemented
 		if (!Utils::MapHas(name, parseMethodByEntityName))
 			continue;
 
+		std::string isInAnyGrid = entityTokens[entityTokens.size() - 1];
+
+		if (isInAnyGrid == "False") {
+			LPEntity entity = parseMethodByEntityName[name](entityTokens);
+			entityManager->_AddWithoutPutToGrid(entity);
+			continue;
+		}
+
+
+		std::getline(file, line);
+		std::vector<std::string> cellTokens = Utils::SplitByComma(line);
+		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
+
 		LPEntity entity = parseMethodByEntityName[name](entityTokens);
-		entityManager->Add(entity, cellIndex);
+		entityManager->_AddToNonWallSPGrid(entity, cellIndex);
 	}
 
 	return line;
@@ -222,8 +232,8 @@ std::string SceneManager::ParseAndAddOtherEntities
 
 LPEntity SceneManager::ParseMario(const std::vector<std::string>& tokens)
 {
-	if (tokens.size() != 3)
-		throw Utils::InvalidTokenSizeException(3);
+	if (tokens.size() != 4)
+		throw Utils::InvalidTokenSizeException(4);
 
 	return new Entities::Mario(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
 }
@@ -231,8 +241,8 @@ LPEntity SceneManager::ParseMario(const std::vector<std::string>& tokens)
 
 LPEntity SceneManager::ParseGoomba(const std::vector<std::string>& tokens)
 {
-	if (tokens.size() != 4)
-		throw Utils::InvalidTokenSizeException(4);
+	if (tokens.size() != 5)
+		throw Utils::InvalidTokenSizeException(5);
 
 	return new Entities::Goomba(Colors::ToColorCode(tokens[1]), Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
@@ -254,8 +264,8 @@ LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
 
 LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens)
 {
-	if (tokens.size() != 4)
-		throw Utils::InvalidTokenSizeException(4);
+	if (tokens.size() != 5)
+		throw Utils::InvalidTokenSizeException(5);
 
 	//TODO: REMOVE TEST CODE
 	LPEntity content = new Entities::Goomba(Colors::ToColorCode("Brown"), Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
@@ -264,8 +274,8 @@ LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens
 }
 
 LPEntity SceneManager::ParseCoin(const std::vector<std::string>& tokens) {
-	if (tokens.size() != 3)
-		throw Utils::InvalidTokenSizeException(3);
+	if (tokens.size() != 4)
+		throw Utils::InvalidTokenSizeException(4);
 
 	return new Entities::Coin(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
 }
