@@ -29,17 +29,19 @@ namespace Entities {
 		void Update(float delta) override;
 	private:
 		void OnCollision(CollisionData data);
-		void WallSide(CollisionData& data);
+		void WallSlide(CollisionData& data);
+		void ClipVelocity();
 
 		void SwitchState(void (Mario::* state)(float delta));
-		void IdleUpdate(float delta);
-		void WalkUpdate(float delta);
-		void RunUpdate(float delta);
-		void JumpUpdate(float delta);
-		void FallUpdate(float delta);
+		void Idle(float delta);
+		void Walk(float delta);
+		void Run(float delta);
+		void Jump(float delta);
+		void Fall(float delta);
+		void Die(float delta);
 
 		EventHandler<Mario, CollisionData> onCollision;
-		void (Mario::* pStateUpdate)(float delta) = NULL;
+		void (Mario::* state)(float delta) = NULL;
 		Utils::Vector2<float> dir;
 		float jumpDuration;
 		static const Utils::Vector2<float> acceleration;

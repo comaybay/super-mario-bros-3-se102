@@ -44,8 +44,8 @@ void Scene::Update(float delta)
 	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
 	CollisionEngine::Update(delta);
-	entityManager->UpdateAllEntities(delta);
-	entityManager->PostUpdateAllEntities();
+	entityManager->UpdateEntities(delta);
+	entityManager->PostUpdateEntities();
 	camera.Update();
 }
 
@@ -67,7 +67,7 @@ void Scene::Render()
 
 
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
-		entityManager->RenderAllEntities();
+		entityManager->RenderEntities();
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
 		d3dxSprite->End();
@@ -92,6 +92,11 @@ void Scene::QueueFree(LPEntity entity)
 const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
 {
 	return entityManager->GetEntitiesByGroup(groupName);
+}
+
+void Scene::PlayerDeath()
+{
+	entityManager->SetUpdateEntitiesInMovableSPGrid(false);
 }
 
 void Scene::_Ready()

@@ -25,6 +25,7 @@ public:
 	void AddEntity(LPEntity entity);
 	void QueueFree(LPEntity entity);
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
+	void PlayerDeath();
 
 private:
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
