@@ -293,8 +293,8 @@ class WorldEncoder:
         return (cell_x, cell_y, c_span, r_span)
 
     def _write_entities_header(self, encode_file):
-        encode_file.write("\n#EntityName, [Entity specific properties...], Position (X, Y)\n")
-        encode_file.write("#SpatialGridCellIndex (X, Y)\n")
+        encode_file.write("\n#EntityName, [Entity specific properties...], Position (X, Y), IsInAnyGrid\n")
+        encode_file.write("#[SpatialPartitionGridCellIndex (X, Y) (If IsInAnyGrid = True)]\n")
         encode_file.write("[WORLD ENTITIES]\n")
 
     def _encode_entities(self, start_line, encode_file):
@@ -313,17 +313,24 @@ class WorldEncoder:
                     self._write_to_mistake_file((x, y), "entity")
 
                 else:
+                    pos_x = x * 16
+                    pos_y = (y - start_line) * 16
+                    isInAnyGrid = True
+
                     if (code == EntityCode.PIRANHA_GREEN or code == EntityCode.PIRANHA_RED):
-                        encode_file.write(f"{code.value}, {x*16 + 8}, {(y - start_line)*16}\n")
+                        pos_x += 8
 
                     elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_RED):
-                        encode_file.write(f"{code.value}, {x*16 + 8}, {(y - start_line)*16 + 8}\n")
+                        pos_x += 8
+                        pos_y += 8
 
-                    else:
-                        encode_file.write(f"{code.value}, {x*16}, {(y - start_line)*16}\n")
+                    elif (code == EntityCode.MARIO):
+                        isInAnyGrid = False
 
-                    grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
-                    encode_file.write(f"{grid_x}, {grid_y}\n")
+                    encode_file.write(f"{code.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
+                    if isInAnyGrid:
+                        grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
+                        encode_file.write(f"{grid_x}, {grid_y}\n")
 
     def _write_to_mistake_file(self, position_in_tile, type):
         if (self.mistake_file == None):
