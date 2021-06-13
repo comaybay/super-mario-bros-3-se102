@@ -31,15 +31,21 @@ private:
 	void OnEntityDestroy(LPEntity entity);
 	std::map<intptr_t, std::list<LPEventHandler<Args...>>*> eventHandlersById;
 
+	/// <summary>
+	/// <para>To avoid iterator invalidation while notifying handlers, all operations regarding handler removal 
+	/// will be beform after notifications is completed.</para>
+	/// <para>When unsubscribe method is called, it will push necessary information for unsubscribing handler to a wait list,
+	/// and after everything is safe (notifications is completed), will start performing handler unsubscribing (if there is any)
+	/// by calling this method</para>
+	/// </summary>
+	void UnsubscribeFromEvent(intptr_t thisId, intptr_t handlerId);
 
-	struct UnsubscribeProps {
+	struct ToRemoveProps {
 		intptr_t thisId;
 		intptr_t handlerId;
-		UnsubscribeProps(intptr_t thisId, intptr_t handlerId) : thisId(thisId), handlerId(handlerId) {}
+		ToRemoveProps(intptr_t thisId, intptr_t handlerId) : thisId(thisId), handlerId(handlerId) {}
 	};
-	std::list<UnsubscribeProps> removeWaitList;
-
-	void RemoveFromEvent(intptr_t thisId, intptr_t handlerId);
+	std::list<ToRemoveProps> unsubscribeWaitList;
 };
 
 template<class ...Args>
@@ -70,11 +76,10 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args.
 {
 	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t thisId = GetAddressOf(handlerThis);
+	unsubscribeWaitList.push_back(ToRemoveProps(thisId, handlerId));
 
 	if (std::is_base_of<Entity, T>::value)
 		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent()->Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
-
-	removeWaitList.push_back(UnsubscribeProps(thisId, handlerId));
 }
 
 template<class ...Args>
@@ -91,8 +96,8 @@ inline void Event<Args...>::Notify(Args... other)
 		for (LPEventHandler<Args...>& eHandler : *pair.second)
 			eHandler->Handle(other...);
 
-	for (UnsubscribeProps& props : removeWaitList)
-		RemoveFromEvent(props.thisId, props.handlerId);
+	for (ToRemoveProps& props : unsubscribeWaitList)
+		UnsubscribeFromEvent(props.thisId, props.handlerId);
 }
 
 template<class ...Args>
@@ -104,7 +109,7 @@ inline void Event<Args...>::OnEntityDestroy(LPEntity entity)
 }
 
 template<class ...Args>
-inline void Event<Args...>::RemoveFromEvent(intptr_t thisId, intptr_t handlerId)
+inline void Event<Args...>::UnsubscribeFromEvent(intptr_t thisId, intptr_t handlerId)
 {
 	for (auto it = eventHandlersById[thisId]->begin(); it != eventHandlersById[thisId]->end(); it++)
 		if ((*it)->GetId() == handlerId) {
