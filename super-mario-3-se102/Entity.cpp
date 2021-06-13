@@ -3,6 +3,7 @@
 #include "AnimationManager.h"
 #include "Event.h"
 #include "Scene.h"
+#include "Groups.h"
 
 Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
@@ -28,6 +29,7 @@ Entity::Entity
 
 void Entity::Init()
 {
+	groups.push_back(Groups::ALL);
 	destroyEvent = new Event<LPEntity>();
 }
 
