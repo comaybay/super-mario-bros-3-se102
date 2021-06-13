@@ -6,11 +6,12 @@
 using namespace Entities;
 using namespace Utils;
 
-const Vector2<float> Mario::maxSpeed = Vector2<float>(100, 230);
-const Vector2<float> Mario::acceleration = Vector2<float>(400, 560);
-const float Mario::jumpSpeed = 270;
-const float Mario::jumpSpeedAfterMaxWalkSpeed = 290;
-const float Mario::jumpSpeedReleaseEarly = 270 / 1.75;
+const Vector2<float> Mario::MAX_SPEED = Vector2<float>(100, 230);
+const Vector2<float> Mario::ACCELERATION = Vector2<float>(400, 560);
+const float Mario::JUMP_SPEED = 270;
+const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
+const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = 290;
+const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 
 Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE)
@@ -18,7 +19,7 @@ Mario::Mario(Vector2<float> position) :
 	state = &Mario::Idle;
 	prevPressedKeyHorizontal = -1;
 	dir = Vector2<float>(0, 1);
-	jumpDuration = 0;
+	deathWaitDuration = 0;
 	onGround = false;
 
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
@@ -39,7 +40,7 @@ void Mario::OnCollision(CollisionData data)
 	else if (VectorHas(Groups::ENEMIES, groups)) {
 		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
 		GetParentScene()->PlayerDeath();
-		SwitchState(&Mario::Die);
+		SwitchState(&Mario::DieWait);
 	}
 }
 
@@ -58,8 +59,8 @@ void Mario::WallSlide(CollisionData& data)
 
 void Entities::Mario::ClipVelocity()
 {
-	velocity.x = Clip(velocity.x, -maxSpeed.x, maxSpeed.x);
-	velocity.y = min(velocity.y, maxSpeed.y);
+	velocity.x = Clip(velocity.x, -MAX_SPEED.x, MAX_SPEED.x);
+	velocity.y = min(velocity.y, MAX_SPEED.y);
 }
 
 void Mario::Update(float delta)
@@ -74,21 +75,24 @@ void Mario::Update(float delta)
 }
 
 void Mario::SwitchState(void (Mario::* state)(float delta)) {
-	if (state == &Mario::Jump) {
-		jumpDuration = 0;
-	}
-
 	this->state = state;
 
 	if (state == &Mario::Fall) {
 		dir.y = 1;
 	}
 
-	if (state == &Mario::Jump) {
-		velocity.y = (abs(velocity.x) == maxSpeed.x) ? -jumpSpeedAfterMaxWalkSpeed : -jumpSpeed;
+	else if (state == &Mario::Jump) {
+		velocity.y = (abs(velocity.x) == MAX_SPEED.x) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
 		dir.y = -1;
 		onGround = false;
 	}
+
+	else if (state == &Mario::DieWait) {
+		velocity = Vector2<float>(0, 0);
+	}
+
+	else if (state == &Mario::DieFall)
+		velocity.y = -DEATH_JUMP_SPEED;
 }
 
 void Mario::Idle(float delta)
@@ -97,8 +101,8 @@ void Mario::Idle(float delta)
 	ClipVelocity();
 
 	dir.x = -Utils::Sign(velocity.x);
-	if (abs(velocity.x) > acceleration.x * delta)
-		velocity.x += acceleration.x * dir.x * delta;
+	if (abs(velocity.x) > ACCELERATION.x * delta)
+		velocity.x += ACCELERATION.x * dir.x * delta;
 	else {
 		velocity.x = 0;
 		if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
@@ -118,7 +122,7 @@ void Mario::Idle(float delta)
 void Mario::Walk(float delta)
 {
 	velocity += Game::Gravity * delta;
-	velocity.x += acceleration.x * dir.x * delta;
+	velocity.x += ACCELERATION.x * dir.x * delta;
 	ClipVelocity();
 
 	if (!onGround) {
@@ -154,13 +158,12 @@ void Mario::Run(float delta)
 
 void Mario::Jump(float delta)
 {
-	velocity.y += acceleration.y * delta;
-	velocity.x += acceleration.x * dir.x * delta;
+	velocity.y += ACCELERATION.y * delta;
+	velocity.x += ACCELERATION.x * dir.x * delta;
 	ClipVelocity();
 
-	jumpDuration += delta;
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
-		velocity.y = max(velocity.y, -jumpSpeedReleaseEarly);
+		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
 		SwitchState(&Mario::Fall);
 		return;
 	}
@@ -180,8 +183,8 @@ void Mario::Jump(float delta)
 	else {
 		dir.x = -Utils::Sign(velocity.x);
 
-		if (abs(velocity.x) > acceleration.x * delta)
-			velocity.x += acceleration.x * dir.x * delta;
+		if (abs(velocity.x) > ACCELERATION.x * delta)
+			velocity.x += ACCELERATION.x * dir.x * delta;
 		else {
 			velocity.x = 0;
 			if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
@@ -195,7 +198,7 @@ void Mario::Jump(float delta)
 
 void Mario::Fall(float delta) {
 
-	velocity.x += acceleration.x * dir.x * delta;
+	velocity.x += ACCELERATION.x * dir.x * delta;
 	ClipVelocity();
 
 	if (onGround) {
@@ -203,7 +206,7 @@ void Mario::Fall(float delta) {
 		return;
 	}
 	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, maxSpeed.y);
+	velocity.y = min(velocity.y, MAX_SPEED.y);
 
 	if (Game::IsKeyDown(DIK_RIGHT)) {
 		prevPressedKeyHorizontal = DIK_RIGHT;
@@ -218,8 +221,8 @@ void Mario::Fall(float delta) {
 	else {
 		dir.x = -Utils::Sign(velocity.x);
 
-		if (abs(velocity.x) > acceleration.x * delta)
-			velocity.x += acceleration.x * dir.x * delta;
+		if (abs(velocity.x) > ACCELERATION.x * delta)
+			velocity.x += ACCELERATION.x * dir.x * delta;
 		else {
 			velocity.x = 0;
 			if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
@@ -230,6 +233,14 @@ void Mario::Fall(float delta) {
 
 }
 
-void Mario::Die(float delta) {
-	velocity.y += Game::Gravity.y * delta;
+void Mario::DieWait(float delta) {
+	deathWaitDuration += delta;
+
+	if (deathWaitDuration >= 0.75f)
+		SwitchState(&Mario::DieFall);
+}
+
+void Mario::DieFall(float delta) {
+	velocity.y += Game::Gravity.y / 1.5 * delta;
+	ClipVelocity();
 }

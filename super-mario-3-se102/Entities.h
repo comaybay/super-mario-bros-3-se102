@@ -38,19 +38,21 @@ namespace Entities {
 		void Run(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
-		void Die(float delta);
+		void DieWait(float delta);
+		void DieFall(float delta);
 
 		EventHandler<Mario, CollisionData> onCollision;
-		void (Mario::* state)(float delta) = NULL;
+		void (Mario::* state)(float delta);
 		Utils::Vector2<float> dir;
-		float jumpDuration;
-		static const Utils::Vector2<float> acceleration;
-		static const Utils::Vector2<float> maxSpeed;
+		float deathWaitDuration;
 		bool onGround;
 		int prevPressedKeyHorizontal;
-		static const float jumpSpeed;
-		static const float jumpSpeedAfterMaxWalkSpeed;
-		static const float jumpSpeedReleaseEarly;
+		static const Utils::Vector2<float> MAX_SPEED;
+		static const Utils::Vector2<float> ACCELERATION;
+		static const float JUMP_SPEED;
+		static const float JUMP_SPEED_AFTER_MAX_WALK_SPEED;
+		static const float JUMP_SPEED_RELASE_EARLY;
+		static const float DEATH_JUMP_SPEED;
 	};
 
 	class Goomba : public Entity
