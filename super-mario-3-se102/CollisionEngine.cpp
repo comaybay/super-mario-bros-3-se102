@@ -137,8 +137,6 @@ CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
 
 void CollisionEngine::OnEntityUnsubscribeHandler::Handle(LPEntity entity)
 {
-	entity->GetDestroyEvent()->Unsubscribe(&onEntityUnsubscribe, &OnEntityUnsubscribeHandler::Handle);
-
 	auto itCE = collisionEventByLPEntity.find(entity);
 	collisionEventByLPEntity.erase(itCE);
 	auto itTG = targetGroupsByLPEntity.find(entity);

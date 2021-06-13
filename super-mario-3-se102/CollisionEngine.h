@@ -67,6 +67,8 @@ static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* han
 template<class TEntity, class ...Args>
 static void CollisionEngine::Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...)) {
 	GetCollisionEventOf(handlerThis)->Unsubscribe(handlerThis, handler);
+	handlerThis->GetDestroyEvent()->Unsubscribe(&onEntityUnsubscribe, &OnEntityUnsubscribeHandler::Handle);
+
 	unsubscribeWaitList.push_back(handlerThis);
 }
 
