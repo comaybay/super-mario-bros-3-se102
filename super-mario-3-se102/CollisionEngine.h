@@ -18,7 +18,7 @@ class CollisionEngine
 private:
 	struct CBox;
 
-	class OnEntityDestroyHandler {
+	class OnEntityUnsubscribeHandler {
 	public:
 		void Handle(LPEntity entity);
 	};
@@ -26,6 +26,10 @@ private:
 public:
 	template<class TEntity, class ...Args>
 	static void Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups);
+
+	template<class TEntity, class ...Args>
+	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
+
 	static void Update(float delta);
 	static void Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
 	static float DetectCollisionValue(LPEntity e1, LPEntity e2, float delta);
@@ -37,7 +41,8 @@ private:
 	static void OnEntityDestroy(LPEntity entity);
 	static std::map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
 	static std::map<LPEntity, std::vector<std::string>> targetGroupsByLPEntity;
-	static OnEntityDestroyHandler onEntityDestroy;
+	static OnEntityUnsubscribeHandler onEntityUnsubscribe;
+	static std::list<LPEntity> unsubscribeWaitList;
 
 	struct CBox {
 		Utils::Vector2<float> position;
@@ -56,7 +61,12 @@ static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* han
 	//entites in these groups will be check for collision with entity
 	targetGroupsByLPEntity[handlerThis] = collisionTargetGroups;
 	GetCollisionEventOf(handlerThis)->Subscribe(handlerThis, handler);
-	handlerThis->GetDestroyEvent()->Subscribe(&onEntityDestroy, &OnEntityDestroyHandler::Handle);
+	handlerThis->GetDestroyEvent()->Subscribe(&onEntityUnsubscribe, &OnEntityUnsubscribeHandler::Handle);
 }
 
+template<class TEntity, class ...Args>
+static void CollisionEngine::Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...)) {
+	GetCollisionEventOf(handlerThis)->Unsubscribe(handlerThis, handler);
+	unsubscribeWaitList.push_back(handlerThis);
+}
 

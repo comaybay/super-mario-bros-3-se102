@@ -12,7 +12,8 @@ CollisionData::CollisionData(LPEntity who, Vector2<float> edge, float value, flo
 
 std::map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
 std::map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
-CollisionEngine::OnEntityDestroyHandler CollisionEngine::onEntityDestroy;
+CollisionEngine::OnEntityUnsubscribeHandler CollisionEngine::onEntityUnsubscribe;
+std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 
 
 /// <summary>
@@ -73,6 +74,11 @@ void CollisionEngine::Update(float delta) {
 			}
 		}
 	}
+
+	for (LPEntity entity : unsubscribeWaitList)
+		onEntityUnsubscribe.Handle(entity);
+
+	unsubscribeWaitList.clear();
 }
 
 LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
@@ -129,8 +135,10 @@ CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
 	return b;
 }
 
-void CollisionEngine::OnEntityDestroyHandler::Handle(LPEntity entity)
+void CollisionEngine::OnEntityUnsubscribeHandler::Handle(LPEntity entity)
 {
+	entity->GetDestroyEvent()->Unsubscribe(&onEntityUnsubscribe, &OnEntityUnsubscribeHandler::Handle);
+
 	auto itCE = collisionEventByLPEntity.find(entity);
 	collisionEventByLPEntity.erase(itCE);
 	auto itTG = targetGroupsByLPEntity.find(entity);
