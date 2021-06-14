@@ -31,7 +31,7 @@ namespace Utils
 		Vector2<T> operator*(float value) const;
 		bool operator==(const Vector2<T>& other) const;
 		bool operator!=(const Vector2<T>& other) const;
-		Vector2<T> Rounded();
+		Vector2<int> Rounded();
 		float DistanceTo(const Vector2<T>& v);
 	};
 
@@ -146,8 +146,8 @@ template <typename T>
 inline Utils::Vector2<T>::Vector2(T x, T y) : x(x), y(y) {};
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() {
-	return Vector2<T>(round(x), round(y));
+inline Utils::Vector2<int> Utils::Vector2<T>::Rounded() {
+	return Vector2<int>(round(x), round(y));
 }
 
 template <typename T>

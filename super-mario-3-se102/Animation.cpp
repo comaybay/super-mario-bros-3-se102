@@ -31,8 +31,8 @@ Utils::SpriteBox Animation::GetCurrentSpriteBox()
 void Animation::Render(Utils::Vector2<float> position)
 {
 	Utils::SpriteBox sb = sequence[currentFrame];
-	Utils::Vector2<float> cp = Game::GetActiveScene()->GetCameraPosition();
-	D3DXVECTOR3 p(round(position.x + sb.offset.x - cp.x), round(position.y + sb.offset.y - cp.y), 0);
+	Utils::Vector2<int> cp = Game::GetActiveScene()->GetCameraPosition().Rounded();
+	D3DXVECTOR3 p(round(position.x + sb.offset.x) - cp.x, round(position.y + sb.offset.y) - cp.y, 0);
 
 	Game::GetD3DXSprite()->Draw(texture, &sb.rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 }

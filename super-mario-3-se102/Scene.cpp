@@ -142,8 +142,8 @@ RECT Scene::GetTileBoundingBox(int id)
 
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 {
-	Utils::Vector2<float> cp = camera.GetPosition();
-	Utils::Vector2<float> tileOffset((int)cp.x / Game::TILE_SIZE, (int)cp.y / Game::TILE_SIZE);
+	Utils::Vector2<int> cp = camera.GetPosition().Rounded();
+	Utils::Vector2<float> tileOffset(cp.x / Game::TILE_SIZE, cp.y / Game::TILE_SIZE);
 
 	Utils::Dimension gameDim = Game::GetGameDimension();
 
@@ -163,7 +163,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 
 			//FFF = 4095, no tile
 			if (index != 4095) {
-				D3DXVECTOR3 p(round(x * Game::TILE_SIZE - cp.x), round(y * Game::TILE_SIZE - cp.y), 0);
+				D3DXVECTOR3 p(round(x * Game::TILE_SIZE) - cp.x, round(y * Game::TILE_SIZE) - cp.y, 0);
 				RECT rect = GetTileBoundingBox(index);
 				Game::GetD3DXSprite()->Draw(TextureManager::Get(TextureID::TILES), &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 			}
