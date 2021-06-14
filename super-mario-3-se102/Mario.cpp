@@ -88,6 +88,7 @@ void Mario::SwitchState(void (Mario::* state)(float delta)) {
 	}
 
 	else if (state == &Mario::DieWait) {
+		SetAnimation("MarioDie");
 		velocity = Vector2<float>(0, 0);
 	}
 
