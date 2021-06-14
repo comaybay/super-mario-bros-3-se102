@@ -42,6 +42,8 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 
 	DirectInput8Create
 	(
+		//WARNING: GWL_HINSTANCE is undefined if your solution platform is x64, switch to x86 instead
+		//from: https://stackoverflow.com/questions/51771072/gwl-wndproc-undeclared/51772471
 		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8, (VOID**)&di, NULL
