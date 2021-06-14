@@ -10,9 +10,7 @@ Scene::~Scene()
 	delete encodedWorld;
 }
 
-Scene::Scene()
-{
-}
+Scene::Scene() {}
 
 void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
 {
@@ -20,6 +18,8 @@ void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEnc
 	this->backgroundColor = backgroundColor;
 	this->encodedWorld = encodedWorld;
 	this->entityManager = entityManager;
+	Game::EnableCollisionEngine(true);
+
 }
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
@@ -43,7 +43,6 @@ void Scene::Update(float delta)
 	//	std::advance(pBlock, 1);
 	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
-	CollisionEngine::Update(delta);
 	entityManager->UpdateEntities(delta);
 	entityManager->PostUpdateEntities();
 	camera.Update();
@@ -97,6 +96,7 @@ const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
 void Scene::PlayerDeath()
 {
 	entityManager->SetUpdateEntitiesInMovableSPGrid(false);
+	Game::EnableCollisionEngine(false);
 }
 
 void Scene::_Ready()

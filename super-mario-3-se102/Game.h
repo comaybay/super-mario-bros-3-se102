@@ -25,6 +25,7 @@ public:
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
 	static void SwitchScene(LPScene scene);
+	static void EnableCollisionEngine(bool state);
 	static const Utils::Vector2<float> Gravity;
 	static const int TILE_SIZE = 16;
 private:
@@ -43,5 +44,6 @@ private:
 	static LPDIRECT3DSURFACE9 backBuffer;
 	static LPD3DXSPRITE d3dxSprite;
 	static LPScene activeScene;
+	static bool enableCollisionEngine;
 };
 

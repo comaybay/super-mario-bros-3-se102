@@ -26,6 +26,7 @@ DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 const Utils::Vector2<float> Game::Gravity = Utils::Vector2<float>(0, 1200);
 LPScene Game::activeScene = nullptr;
+bool Game::enableCollisionEngine = true;
 
 void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimension gameDim)
 {
@@ -66,6 +67,11 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 
 	activeScene = SceneManager::LoadWorld("World 1-1-1");
 	SwitchScene(activeScene);
+}
+
+
+void Game::EnableCollisionEngine(bool state) {
+	enableCollisionEngine = state;
 }
 
 void Game::SwitchScene(LPScene scene) {
@@ -117,6 +123,9 @@ void Game::Run()
 		ProcessKeyboard();
 		if (accumulator >= frameTime)
 		{
+			if (enableCollisionEngine)
+				CollisionEngine::Update(dt);
+
 			activeScene->Update(dt);
 			accumulator -= frameTime;
 		}

@@ -38,7 +38,6 @@ void Mario::OnCollision(CollisionData data)
 	}
 
 	else if (VectorHas(Groups::ENEMIES, groups)) {
-		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
 		GetParentScene()->PlayerDeath();
 		SwitchState(&Mario::DieWait);
 	}
