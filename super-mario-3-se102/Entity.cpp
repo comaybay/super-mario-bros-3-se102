@@ -5,6 +5,8 @@
 #include "Scene.h"
 #include "Groups.h"
 
+using namespace Utils;
+
 Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType)
 	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
 	groups(std::vector<std::string> {}), gridType(gridType)
@@ -46,19 +48,32 @@ void Entity::SetAnimation(std::string id)
 	}
 }
 
-Utils::Vector2<float> Entity::GetPosition()
+Vector2<float> Entity::GetPosition()
 {
 	return position;
 }
 
-void Entity::SetPosition(const Utils::Vector2<float>& position)
+void Entity::SetPosition(const Vector2<float>& position)
 {
 	this->position = position;
 }
 
-void Entity::SetVelocity(const Utils::Vector2<float>& velocity)
+void Entity::SetVelocity(const Vector2<float>& velocity)
 {
 	this->velocity = velocity;
+}
+
+void Entity::Move(const Vector2<float>& direction, Vector2<float>& accel, Vector2<float>& maxSpeed, float delta)
+{
+	if (direction.x != 0) {
+		velocity.x += accel.x * delta * direction.x;
+		velocity.x = Clip(velocity.x, -maxSpeed.x, maxSpeed.x);
+	}
+
+	if (direction.y != 0) {
+		velocity.y += accel.y * delta * direction.y;
+		velocity.y = Clip(velocity.y, -maxSpeed.y, maxSpeed.y);
+	}
 }
 
 GridType Entity::GetGridType() {

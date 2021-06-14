@@ -30,12 +30,11 @@ namespace Entities {
 	private:
 		void OnCollision(CollisionData data);
 		void WallSlide(CollisionData& data);
-		void ClipVelocity();
+		void UpdateHorizontalDirection(float delta);
 
 		void SwitchState(void (Mario::* state)(float delta));
 		void Idle(float delta);
 		void Walk(float delta);
-		void Run(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
 		void DieWait(float delta);
@@ -44,10 +43,12 @@ namespace Entities {
 		EventHandler<Mario, CollisionData> onCollision;
 		void (Mario::* state)(float delta);
 		Utils::Vector2<float> dir;
-		float deathWaitDuration;
+		float time;
 		bool onGround;
 		int prevPressedKeyHorizontal;
-		static const Utils::Vector2<float> MAX_SPEED;
+		static const float MAX_FALL_SPEED;
+		static const float MAX_WALK_SPEED;
+		static const float MAX_RUN_SPEED;
 		static const Utils::Vector2<float> ACCELERATION;
 		static const float JUMP_SPEED;
 		static const float JUMP_SPEED_AFTER_MAX_WALK_SPEED;

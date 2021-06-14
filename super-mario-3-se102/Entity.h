@@ -26,6 +26,7 @@ public:
 	Utils::Vector2<float> GetPosition();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
+	void Move(const Utils::Vector2<float>& direction, Utils::Vector2<float>& accel, Utils::Vector2<float>& maxSpeed, float delta);
 	LPScene GetParentScene();
 
 	/// <summary>
