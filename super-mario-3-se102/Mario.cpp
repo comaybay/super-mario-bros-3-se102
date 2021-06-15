@@ -19,14 +19,13 @@ const std::string Mario::AnimationSet::DEATH = "MarioDie";
 
 Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE),
-	state(EntityState<Mario>(this)),
+	state(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),
 	time(0),
 	onGround(false),
 	powerLevel(PowerLevel::SMALL)
 {
-	state.SetHandler(&Mario::Idle);
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
 }
