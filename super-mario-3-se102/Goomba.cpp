@@ -7,24 +7,30 @@ using namespace Entities;
 float Goomba::maxFallSpeed = 230;
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
-	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES)
+	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	speed(Vector2<float>(30, 0)),
+	state(EntityState<Goomba>(this, &Goomba::MoveAround))
 {
-	speed = Vector2<float>(30, 0);
-	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
 }
 
 void Goomba::OnReady()
 {
+	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
 	LPEntity player = GetParentScene()->GetEntitiesByGroup(Groups::PLAYER).front();
 	velocity = (player->GetPosition().x < position.x) ? Vector2<float>(-30, 0) : Vector2<float>(30, 0);
 }
+
+void Goomba::MoveAround(float delta) {
+	velocity += Game::Gravity * delta;
+	velocity.y = min(velocity.y, maxFallSpeed);
+}
+void Goomba::Die(float delta) {}
 
 void Goomba::Update(float delta)
 {
 	Entity::Update(delta);
 
-	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, maxFallSpeed);
+	state.Handle(delta);;
 }
 
 void Goomba::OnCollision(CollisionData data)
