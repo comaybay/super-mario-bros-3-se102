@@ -58,7 +58,7 @@ namespace Utils
 	};
 
 	int Sign(int number);
-	float Sign(float number);
+	int Sign(float number);
 
 	std::wstring StringToWideString(const std::string& s);
 
