@@ -9,7 +9,7 @@ using namespace Utils;
 const float Mario::MAX_FALL_SPEED = 230;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
-const Vector2<float> Mario::ACCELERATION = Vector2<float>(300, 560);
+const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 560);
 const float Mario::JUMP_SPEED = 270;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = 290;
@@ -86,9 +86,9 @@ Mario::AnimationSet Mario::GetAnimationSetByPowerLevel(Mario::PowerLevel powerLe
 {
 	switch (powerLevel) {
 	case PowerLevel::SMALL:
-		return AnimationSet{ "MarioSIL", "MarioSIR", "MarioSML", "MarioSMR", "MarioSJL" , "MarioSJR" };
+		return AnimationSet{ "MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSML", "MarioSMR", "MarioSJL" , "MarioSJR" };
 	case PowerLevel::BIG:
-		return AnimationSet{ "MarioBIL", "MarioBIR", "MarioBML", "MarioBMR", "MarioBJL" , "MarioBJR" };
+		return AnimationSet{ "MarioBIL", "MarioBIR", "MarioBTL", "MarioBTR", "MarioBML", "MarioBMR", "MarioBJL" , "MarioBJR" };
 	}
 }
 
@@ -154,8 +154,12 @@ void Mario::Walk(float delta)
 	velocity.y += Game::Gravity.y * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
-	if (dir.x != 0)
-		SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
+	if (dir.x != 0) {
+		if (dir.x == Sign(velocity.x))
+			SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
+		else
+			SetAnimation((dir.x < 0) ? animationSet.turnLeft : animationSet.turnRight);
+	}
 
 	if (Game::IsKeyDown(DIK_A))
 		SwitchState(&Mario::Run);
@@ -176,7 +180,12 @@ void Mario::Run(float delta)
 	velocity.y += Game::Gravity.y * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
-	SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
+	if (dir.x != 0) {
+		if (dir.x == Sign(velocity.x))
+			SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
+		else
+			SetAnimation((dir.x < 0) ? animationSet.turnLeft : animationSet.turnRight);
+	}
 
 	if (!Game::IsKeyDown(DIK_A)) {
 		SwitchState(&Mario::Walk);

@@ -28,6 +28,8 @@ namespace Entities {
 		struct AnimationSet {
 			std::string idleLeft;
 			std::string idleRight;
+			std::string turnLeft;
+			std::string turnRight;
 			std::string walkLeft;
 			std::string walkRight;
 			std::string jumpLeft;
