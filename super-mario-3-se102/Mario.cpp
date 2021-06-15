@@ -18,14 +18,15 @@ const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 const std::string Mario::AnimationSet::DEATH = "MarioDie";
 
 Mario::Mario(Vector2<float> position) :
-	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE)
+	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE),
+	state(EntityState<Mario>(this)),
+	lastPressedKeyHorizontal(DIK_RIGHT),
+	dir(Vector2<float>(0, 1)),
+	time(0),
+	onGround(false),
+	powerLevel(PowerLevel::SMALL)
 {
-	state = &Mario::Idle;
-	lastPressedKeyHorizontal = DIK_RIGHT;
-	dir = Vector2<float>(0, 1);
-	time = 0;
-	onGround = false;
-	powerLevel = PowerLevel::SMALL;
+	state.SetHandler(&Mario::Idle);
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
 }
@@ -96,31 +97,30 @@ void Mario::Update(float delta) {
 	Entity::Update(delta);
 
 	UpdateHorizontalDirection();
-	auto prevState = state;
-	(this->*state)(delta);
+	state.Handle(delta);
 }
 
-void Mario::SwitchState(void (Mario::* state)(float delta)) {
-	this->state = state;
+void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
+	state.SetHandler(stateHandler);
 
-	if (state == &Mario::Fall) {
+	if (stateHandler == &Mario::Fall) {
 		onGround = false;
 		dir.y = 1;
 	}
 
-	else if (state == &Mario::Jump) {
+	else if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
 		dir.y = 1;
 		onGround = false;
 	}
 
-	else if (state == &Mario::DieWait) {
+	else if (stateHandler == &Mario::DieWait) {
 		time = 0;
 		SetAnimation("MarioDie");
 		velocity = Vector2<float>(0, 0);
 	}
 
-	else if (state == &Mario::DieFall)
+	else if (stateHandler == &Mario::DieFall)
 		velocity.y = -DEATH_JUMP_SPEED;
 }
 

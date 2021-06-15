@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "CollisionEngine.h"
+#include "EntityState.h"
 
 namespace Entities {
 	using namespace Utils;
@@ -51,7 +52,7 @@ namespace Entities {
 		void UpdateHorizontalDirection();
 		Mario::AnimationSet GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel);
 
-		void SwitchState(void (Mario::* state)(float delta));
+		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
 		void Walk(float delta);
 		void Run(float delta);
@@ -63,7 +64,7 @@ namespace Entities {
 		void ApplyFriction(float delta);
 
 		EventHandler<Mario, CollisionData> onCollision;
-		void (Mario::* state)(float delta);
+		EntityState<Mario> state;
 		Utils::Vector2<float> dir;
 		float time;
 		bool onGround;
@@ -86,11 +87,13 @@ namespace Entities {
 	public:
 		Goomba(std::string color, Vector2<float> position);
 		void Update(float delta) override;
+
 	private:
 		std::string colorCode;
 		Vector2<float> speed;
 		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;
+		EntityState<Goomba>::Handler state;
 		virtual void OnReady() override;
 		void OnCollision(CollisionData data);
 	};
