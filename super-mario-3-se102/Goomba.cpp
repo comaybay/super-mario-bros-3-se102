@@ -35,11 +35,24 @@ void Goomba::Update(float delta)
 
 void Goomba::OnCollision(CollisionData data)
 {
-	CollisionHandling::Slide(this, data);
+	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (data.edge.y != 0.0f)
-		velocity.y = 0;
+	if (VectorHas(Groups::PLAYER, groups)) {
+		if (data.edge.y == 1.0f) {
+			state.SetHandler(&Goomba::Die);
+			return;
+		}
 
-	else if (data.edge.x != 0.0f)
-		velocity.x = speed.x * -Sign(velocity.x);
+		velocity.x = (position.x < data.who->GetPosition().x) ? speed.x : -speed.x;
+	}
+	else {
+		CollisionHandling::Slide(this, data);
+
+		if (data.edge.y != 0.0f)
+			velocity.y = 0;
+
+		else if (data.edge.x != 0.0f)
+			velocity.x = speed.x * -Sign(velocity.x);
+	}
+
 }

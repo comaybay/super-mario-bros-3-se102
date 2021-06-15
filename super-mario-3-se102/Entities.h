@@ -89,11 +89,14 @@ namespace Entities {
 		void Update(float delta) override;
 
 	private:
+		void MoveAround(float delta);
+		void Die(float delta);
+
 		std::string colorCode;
 		Vector2<float> speed;
 		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;
-		EntityState<Goomba>::Handler state;
+		EntityState<Goomba> state;
 		virtual void OnReady() override;
 		void OnCollision(CollisionData data);
 	};
