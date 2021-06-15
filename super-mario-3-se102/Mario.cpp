@@ -9,22 +9,31 @@ using namespace Utils;
 const float Mario::MAX_FALL_SPEED = 230;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
-const Vector2<float> Mario::ACCELERATION = Vector2<float>(400, 560);
+const Vector2<float> Mario::ACCELERATION = Vector2<float>(300, 560);
 const float Mario::JUMP_SPEED = 270;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = 290;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 
+const std::string Mario::AnimationSet::DEATH = "MarioDie";
+
 Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE)
 {
 	state = &Mario::Idle;
-	prevPressedKeyHorizontal = -1;
+	lastPressedKeyHorizontal = DIK_RIGHT;
 	dir = Vector2<float>(0, 1);
 	time = 0;
 	onGround = false;
-
+	powerLevel = PowerLevel::SMALL;
+	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
+}
+
+void Mario::SetPowerLevel(Mario::PowerLevel level)
+{
+	powerLevel = level;
+	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 }
 
 void Mario::OnCollision(CollisionData data)
@@ -34,10 +43,9 @@ void Mario::OnCollision(CollisionData data)
 	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups))
 		WallSlide(data);
 
-	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups)) {
-		if (data.edge.y == -1.0f)
-			WallSlide(data);
-	}
+
+	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f)
+		WallSlide(data);
 
 	else if (VectorHas(Groups::ENEMIES, groups)) {
 		GetParentScene()->PlayerDeath();
@@ -49,10 +57,11 @@ void Mario::WallSlide(CollisionData& data)
 {
 	CollisionHandling::Slide(this, data);
 
-	if (data.edge.y != 0.0f) {
-		onGround = true;
+	if (data.edge.y != 0.0f)
 		velocity.y = 0;
-	}
+
+	if (data.edge.y == -1.0f)
+		onGround = true;
 
 	if (data.edge.x != 0.0f)
 		velocity.x = 0;
@@ -61,11 +70,11 @@ void Mario::WallSlide(CollisionData& data)
 void Mario::UpdateHorizontalDirection()
 {
 	if (Game::IsKeyDown(DIK_RIGHT)) {
-		prevPressedKeyHorizontal = DIK_RIGHT;
+		lastPressedKeyHorizontal = DIK_RIGHT;
 		dir.x = 1;
 	}
 	else if (Game::IsKeyDown(DIK_LEFT)) {
-		prevPressedKeyHorizontal = DIK_LEFT;
+		lastPressedKeyHorizontal = DIK_LEFT;
 		dir.x = -1;
 	}
 	else {
@@ -73,23 +82,31 @@ void Mario::UpdateHorizontalDirection()
 	}
 }
 
-void Mario::Update(float delta)
+Mario::AnimationSet Mario::GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel)
 {
+	switch (powerLevel) {
+	case PowerLevel::SMALL:
+		return AnimationSet{ "MarioSIL", "MarioSIR", "MarioSML", "MarioSMR", "MarioSJL" , "MarioSJR" };
+	case PowerLevel::BIG:
+		return AnimationSet{ "MarioBIL", "MarioBIR", "MarioBML", "MarioBMR", "MarioBJL" , "MarioBJR" };
+	}
+}
+
+void Mario::Update(float delta) {
 	Entity::Update(delta);
 
 	UpdateHorizontalDirection();
 	auto prevState = state;
 	(this->*state)(delta);
-
-	//reset to check if still on ground
-	onGround = false;
 }
 
 void Mario::SwitchState(void (Mario::* state)(float delta)) {
 	this->state = state;
 
-	if (state == &Mario::Fall)
+	if (state == &Mario::Fall) {
+		onGround = false;
 		dir.y = 1;
+	}
 
 	else if (state == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
@@ -109,26 +126,25 @@ void Mario::SwitchState(void (Mario::* state)(float delta)) {
 
 void Mario::Idle(float delta)
 {
+	velocity.y += Game::Gravity.y * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	if (velocity.x == 0)
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.idleLeft : animationSet.idleRight);
+	else
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
+
 	if (velocity.x != 0)
 		ApplyFriction(delta);
-	else {
-		if (prevPressedKeyHorizontal == DIK_RIGHT)
-			SetAnimation("MarioSIR");
-		else
-			SetAnimation("MarioSIL");
-	}
 
-	if (Game::IsKeyPressed(DIK_S)) {
+	if (Game::IsKeyPressed(DIK_S))
 		SwitchState(&Mario::Jump);
-		return;
-	}
 
-	if (dir.x != 0) {
+	else if (dir.x != 0) {
 		if (Game::IsKeyDown(DIK_A))
 			SwitchState(&Mario::Run);
 		else
 			SwitchState(&Mario::Walk);
-		return;
 	}
 }
 
@@ -138,31 +154,20 @@ void Mario::Walk(float delta)
 	velocity.y += Game::Gravity.y * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
-	if (Game::IsKeyDown(DIK_A)) {
+	if (dir.x != 0)
+		SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
+
+	if (Game::IsKeyDown(DIK_A))
 		SwitchState(&Mario::Run);
-		return;
-	}
 
-	if (!onGround) {
+	else if (!onGround)
 		SwitchState(&Mario::Fall);
-		return;
-	}
 
-	if (Game::IsKeyDown(DIK_RIGHT)) {
-		SetAnimation("MarioSMR");
-	}
-	else if (Game::IsKeyDown(DIK_LEFT)) {
-		SetAnimation("MarioSML");
-	}
-	else {
+	else if (dir.x == 0)
 		SwitchState(&Mario::Idle);
-		return;
-	}
 
-	if (onGround && Game::IsKeyPressed(DIK_S)) {
+	else if (onGround && Game::IsKeyPressed(DIK_S))
 		SwitchState(&Mario::Jump);
-		return;
-	}
 }
 
 void Mario::Run(float delta)
@@ -170,6 +175,8 @@ void Mario::Run(float delta)
 	ApplyHorizontalMovement(delta);
 	velocity.y += Game::Gravity.y * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	SetAnimation((dir.x < 0) ? animationSet.walkLeft : animationSet.walkRight);
 
 	if (!Game::IsKeyDown(DIK_A)) {
 		SwitchState(&Mario::Walk);
@@ -181,13 +188,7 @@ void Mario::Run(float delta)
 		return;
 	}
 
-	if (Game::IsKeyDown(DIK_RIGHT)) {
-		SetAnimation("MarioSMR");
-	}
-	else if (Game::IsKeyDown(DIK_LEFT)) {
-		SetAnimation("MarioSML");
-	}
-	else {
+	if (dir.x == 0) {
 		SwitchState(&Mario::Idle);
 		return;
 	}
@@ -207,10 +208,7 @@ void Mario::Jump(float delta)
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	if (dir.x > 0)
-		SetAnimation("MarioSMR");
-	else
-		SetAnimation("MarioSML");
+	SetAnimation((dir.x < 0) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
@@ -227,10 +225,7 @@ void Mario::Fall(float delta) {
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	if (Game::IsKeyDown(DIK_RIGHT))
-		SetAnimation("MarioSMR");
-	else if (Game::IsKeyDown(DIK_LEFT))
-		SetAnimation("MarioSML");
+	SetAnimation((dir.x < 0) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (!onGround)
 		return;

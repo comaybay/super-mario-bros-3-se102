@@ -25,12 +25,29 @@ namespace Entities {
 
 	class Mario : public Entity {
 	public:
+		struct AnimationSet {
+			std::string idleLeft;
+			std::string idleRight;
+			std::string walkLeft;
+			std::string walkRight;
+			std::string jumpLeft;
+			std::string jumpRight;
+			static const std::string DEATH;
+		};
+
+		enum class PowerLevel {
+			SMALL,
+			BIG,
+		};
+
 		Mario(Vector2<float> position);
+		void SetPowerLevel(Mario::PowerLevel level);
 		void Update(float delta) override;
 	private:
 		void OnCollision(CollisionData data);
 		void WallSlide(CollisionData& data);
 		void UpdateHorizontalDirection();
+		Mario::AnimationSet GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel);
 
 		void SwitchState(void (Mario::* state)(float delta));
 		void Idle(float delta);
@@ -49,7 +66,9 @@ namespace Entities {
 		float time;
 		bool onGround;
 		bool runBeforeJump;
-		int prevPressedKeyHorizontal;
+		int lastPressedKeyHorizontal;
+		Mario::PowerLevel powerLevel;
+		Mario::AnimationSet animationSet;
 		static const float MAX_FALL_SPEED;
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
