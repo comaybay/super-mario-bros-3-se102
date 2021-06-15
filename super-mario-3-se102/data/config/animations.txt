@@ -50,7 +50,11 @@ PlayableCharacters
 ##Goomba##
 BGoombaM, Normal, 0.15, Auto
 Enemies
-0, 0, 16, 16, 0, 2
+0, 0, 16, 16, 0, 2, 0, 1
+
+BGoombaDeath, Normal, -1, Manual
+Enemies
+32, 0, 47, 15, 0, 1
 
 ##QuestionBlocks##
 QuestionBlockNormal, Fixed, 0.14, Auto

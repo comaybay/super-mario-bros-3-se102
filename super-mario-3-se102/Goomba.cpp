@@ -8,6 +8,7 @@ float Goomba::maxFallSpeed = 230;
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	colorCode(colorCode),
 	speed(Vector2<float>(30, 0)),
 	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
 	time(0)
@@ -24,7 +25,14 @@ void Goomba::MoveAround(float delta) {
 	velocity += Game::Gravity * delta;
 	velocity.y = min(velocity.y, maxFallSpeed);
 }
-void Goomba::Die(float delta) {}
+
+void Goomba::Die(float delta) {
+	time += delta;
+
+	if (time >= 0.25f) {
+		parentScene->QueueFree(this);
+	}
+}
 
 void Goomba::Update(float delta)
 {
@@ -40,6 +48,8 @@ void Goomba::OnCollision(CollisionData data)
 	if (VectorHas(Groups::PLAYER, groups)) {
 		if (data.edge.y == 1.0f) {
 			state.SetHandler(&Goomba::Die);
+			SetAnimation(colorCode + "GoombaDeath");
+			velocity.x = 0;
 			return;
 		}
 
