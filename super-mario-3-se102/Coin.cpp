@@ -11,9 +11,9 @@ Coin::Coin(const Vector2<float>& position)
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Groups::PLAYER });
 }
 
-void Entities::Coin::OnCollision(CollisionData data)
+void Coin::OnCollision(CollisionData data)
 {
 	PlayerVariables::AddToNumberOfCoins(1);
-	GetParentScene()->QueueFree(this);
+	parentScene->QueueFree(this);
 }
 

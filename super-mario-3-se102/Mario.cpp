@@ -47,7 +47,7 @@ void Mario::OnCollision(CollisionData data)
 		WallSlide(data);
 
 	else if (VectorHas(Groups::ENEMIES, groups)) {
-		GetParentScene()->PlayerDeath();
+		parentScene->PlayerDeath();
 		SwitchState(&Mario::DieWait);
 	}
 }

@@ -20,8 +20,8 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	if (data.edge.y == -1.0f) {
-		GetParentScene()->QueueFree(this);
-		GetParentScene()->AddEntity(content);
+		parentScene->QueueFree(this);
+		parentScene->AddEntity(content);
 		content = nullptr;
 	}
 }

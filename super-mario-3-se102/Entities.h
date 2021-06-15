@@ -93,6 +93,7 @@ namespace Entities {
 		void Die(float delta);
 
 		std::string colorCode;
+		float time;
 		Vector2<float> speed;
 		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;

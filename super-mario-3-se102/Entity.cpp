@@ -102,10 +102,6 @@ LPEvent<LPEntity> const Entity::GetDestroyEvent()
 	return destroyEvent;
 }
 
-LPScene Entity::GetParentScene()
-{
-	return parentScene;
-}
 
 const std::vector<std::string>& Entity::GetEntityGroups()
 {

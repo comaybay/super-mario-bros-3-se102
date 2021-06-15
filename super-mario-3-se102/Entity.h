@@ -26,7 +26,6 @@ public:
 	Utils::Vector2<float> GetPosition();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
-	LPScene GetParentScene();
 
 	/// <summary>
 	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
@@ -59,12 +58,12 @@ public:
 	const std::vector<std::string>& GetEntityGroups();
 	LPEvent<LPEntity> const GetDestroyEvent();
 protected:
+	LPScene parentScene;
 	std::vector<std::string> groups;
 	Utils::Vector2<float> position;
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
 private:
-	LPScene parentScene;
 	void Init();
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;
