@@ -63,19 +63,6 @@ void Entity::SetVelocity(const Vector2<float>& velocity)
 	this->velocity = velocity;
 }
 
-void Entity::Move(const Vector2<float>& direction, Vector2<float>& accel, Vector2<float>& maxSpeed, float delta)
-{
-	if (direction.x != 0) {
-		velocity.x += accel.x * delta * direction.x;
-		velocity.x = Clip(velocity.x, -maxSpeed.x, maxSpeed.x);
-	}
-
-	if (direction.y != 0) {
-		velocity.y += accel.y * delta * direction.y;
-		velocity.y = Clip(velocity.y, -maxSpeed.y, maxSpeed.y);
-	}
-}
-
 GridType Entity::GetGridType() {
 	return gridType;
 }

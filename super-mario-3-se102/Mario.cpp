@@ -8,7 +8,7 @@ using namespace Utils;
 
 const float Mario::MAX_FALL_SPEED = 230;
 const float Mario::MAX_WALK_SPEED = 100;
-const float Mario::MAX_RUN_SPEED = 200;
+const float Mario::MAX_RUN_SPEED = 150;
 const Vector2<float> Mario::ACCELERATION = Vector2<float>(400, 560);
 const float Mario::JUMP_SPEED = 270;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
@@ -58,7 +58,7 @@ void Mario::WallSlide(CollisionData& data)
 		velocity.x = 0;
 }
 
-void Mario::UpdateHorizontalDirection(float delta)
+void Mario::UpdateHorizontalDirection()
 {
 	if (Game::IsKeyDown(DIK_RIGHT)) {
 		prevPressedKeyHorizontal = DIK_RIGHT;
@@ -68,13 +68,16 @@ void Mario::UpdateHorizontalDirection(float delta)
 		prevPressedKeyHorizontal = DIK_LEFT;
 		dir.x = -1;
 	}
+	else {
+		dir.x = 0;
+	}
 }
 
 void Mario::Update(float delta)
 {
 	Entity::Update(delta);
 
-	UpdateHorizontalDirection(delta);
+	UpdateHorizontalDirection();
 	auto prevState = state;
 	(this->*state)(delta);
 
@@ -106,30 +109,53 @@ void Mario::SwitchState(void (Mario::* state)(float delta)) {
 
 void Mario::Idle(float delta)
 {
-	Vector2<float> acc(0, Game::Gravity.y);
-	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
-	Move(dir, acc, maxSpeed, delta);
-
-
-	if (velocity.x == 0) {
-		if (prevPressedKeyHorizontal == DIK_LEFT)
-			SetAnimation("MarioSIL");
-
-		else if (prevPressedKeyHorizontal == DIK_RIGHT)
+	if (velocity.x != 0)
+		ApplyFriction(delta);
+	else {
+		if (prevPressedKeyHorizontal == DIK_RIGHT)
 			SetAnimation("MarioSIR");
+		else
+			SetAnimation("MarioSIL");
+	}
+
+	if (Game::IsKeyPressed(DIK_S)) {
+		SwitchState(&Mario::Jump);
+		return;
+	}
+
+	if (dir.x != 0) {
+		if (Game::IsKeyDown(DIK_A))
+			SwitchState(&Mario::Run);
+		else
+			SwitchState(&Mario::Walk);
+		return;
+	}
+}
+
+void Mario::Walk(float delta)
+{
+	ApplyHorizontalMovement(delta);
+	velocity.y += Game::Gravity.y * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	if (Game::IsKeyDown(DIK_A)) {
+		SwitchState(&Mario::Run);
+		return;
+	}
+
+	if (!onGround) {
+		SwitchState(&Mario::Fall);
+		return;
+	}
+
+	if (Game::IsKeyDown(DIK_RIGHT)) {
+		SetAnimation("MarioSMR");
+	}
+	else if (Game::IsKeyDown(DIK_LEFT)) {
+		SetAnimation("MarioSML");
 	}
 	else {
-		//apply friction to slow mario down
-		int frictionDirX = -Sign(velocity.x);
-		velocity.x += ACCELERATION.x * frictionDirX * delta;
-
-		//stop mario
-		if (Sign(velocity.x) == frictionDirX)
-			velocity.x = 0;
-	}
-
-	if (Game::IsKeyDown(DIK_RIGHT) || Game::IsKeyDown(DIK_LEFT)) {
-		SwitchState(&Mario::Walk);
+		SwitchState(&Mario::Idle);
 		return;
 	}
 
@@ -139,11 +165,16 @@ void Mario::Idle(float delta)
 	}
 }
 
-void Mario::Walk(float delta)
+void Mario::Run(float delta)
 {
-	Vector2<float> acc(ACCELERATION.x, Game::Gravity.y);
-	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
-	Move(dir, acc, maxSpeed, delta);
+	ApplyHorizontalMovement(delta);
+	velocity.y += Game::Gravity.y * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	if (!Game::IsKeyDown(DIK_A)) {
+		SwitchState(&Mario::Walk);
+		return;
+	}
 
 	if (!onGround) {
 		SwitchState(&Mario::Fall);
@@ -151,14 +182,10 @@ void Mario::Walk(float delta)
 	}
 
 	if (Game::IsKeyDown(DIK_RIGHT)) {
-		prevPressedKeyHorizontal = DIK_RIGHT;
-		dir.x = 1;
 		SetAnimation("MarioSMR");
 	}
 	else if (Game::IsKeyDown(DIK_LEFT)) {
-		prevPressedKeyHorizontal = DIK_LEFT;
 		SetAnimation("MarioSML");
-		dir.x = -1;
 	}
 	else {
 		SwitchState(&Mario::Idle);
@@ -173,81 +200,50 @@ void Mario::Walk(float delta)
 
 void Mario::Jump(float delta)
 {
-	Vector2<float> acc(ACCELERATION.x, ACCELERATION.y);
-	Vector2<float> maxSpeed(MAX_WALK_SPEED, std::numeric_limits<float>::infinity());
-	Move(dir, acc, maxSpeed, delta);
+	ApplyHorizontalMovement(delta);
+	velocity.y += ACCELERATION.y * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	if (dir.x == 0 && velocity.x != 0)
+		ApplyFriction(delta);
+
+	if (dir.x > 0)
+		SetAnimation("MarioSMR");
+	else
+		SetAnimation("MarioSML");
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
 		SwitchState(&Mario::Fall);
 		return;
 	}
-
-	if (Game::IsKeyDown(DIK_RIGHT)) {
-		prevPressedKeyHorizontal = DIK_RIGHT;
-		dir.x = 1;
-		SetAnimation("MarioSMR");
-	}
-
-	else if (Game::IsKeyDown(DIK_LEFT)) {
-		prevPressedKeyHorizontal = DIK_LEFT;
-		SetAnimation("MarioSML");
-		dir.x = -1;
-	}
-
-	else {
-		dir.x = -Utils::Sign(velocity.x);
-
-		if (abs(velocity.x) > ACCELERATION.x * delta)
-			velocity.x += ACCELERATION.x * dir.x * delta;
-		else {
-			velocity.x = 0;
-			if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
-			else if (prevPressedKeyHorizontal == DIK_RIGHT) SetAnimation("MarioSIR");
-		}
-		return;
-	}
-
-
 }
 
 void Mario::Fall(float delta) {
+	ApplyHorizontalMovement(delta);
+	velocity.y += ACCELERATION.y * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
-	Vector2<float> acc(ACCELERATION.x, ACCELERATION.y);
-	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
-	Move(dir, acc, maxSpeed, delta);
+	if (dir.x == 0 && velocity.x != 0)
+		ApplyFriction(delta);
 
-	if (onGround) {
+	if (Game::IsKeyDown(DIK_RIGHT))
+		SetAnimation("MarioSMR");
+	else if (Game::IsKeyDown(DIK_LEFT))
+		SetAnimation("MarioSML");
+
+	if (!onGround)
+		return;
+
+	if (abs(velocity.x) == 0) {
 		SwitchState(&Mario::Idle);
 		return;
 	}
 
-	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
-
-	if (Game::IsKeyDown(DIK_RIGHT)) {
-		prevPressedKeyHorizontal = DIK_RIGHT;
-		dir.x = 1;
-		SetAnimation("MarioSMR");
-	}
-	else if (Game::IsKeyDown(DIK_LEFT)) {
-		prevPressedKeyHorizontal = DIK_LEFT;
-		SetAnimation("MarioSML");
-		dir.x = -1;
-	}
-	else {
-		dir.x = -Utils::Sign(velocity.x);
-
-		if (abs(velocity.x) > ACCELERATION.x * delta)
-			velocity.x += ACCELERATION.x * dir.x * delta;
-		else {
-			velocity.x = 0;
-			if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
-			else if (prevPressedKeyHorizontal == DIK_RIGHT) SetAnimation("MarioSIR");
-		}
-		return;
-	}
-
+	if (Game::IsKeyDown(DIK_A))
+		SwitchState(&Mario::Run);
+	else
+		SwitchState(&Mario::Walk);
 }
 
 void Mario::DieWait(float delta) {
@@ -260,5 +256,36 @@ void Mario::DieWait(float delta) {
 void Mario::DieFall(float delta) {
 	Vector2<float> acc(0, Game::Gravity.y / 1.5);
 	Vector2<float> maxSpeed(0, MAX_FALL_SPEED);
-	Move(dir, acc, maxSpeed, delta);
+	velocity += dir * acc * delta;
+}
+
+void Mario::ApplyHorizontalMovement(float delta)
+{
+	float isHoldingRunButton = Game::IsKeyDown(DIK_A);
+	float accelX = ACCELERATION.x;
+
+	//transition from run to walk
+	if (!isHoldingRunButton && abs(velocity.x) > MAX_WALK_SPEED && Sign(velocity.x) == dir.x)
+		accelX = -ACCELERATION.x;
+
+	else if (isHoldingRunButton && abs(velocity.x) == MAX_RUN_SPEED && Sign(velocity.x) == dir.x)
+		accelX = 0;
+
+	velocity.x += dir.x * accelX * delta;
+
+	if (isHoldingRunButton)
+		velocity.x = Clip(velocity.x, -MAX_RUN_SPEED, MAX_RUN_SPEED);
+
+	else if (!isHoldingRunButton && accelX == -ACCELERATION.x && abs(velocity.x) < MAX_WALK_SPEED)
+		velocity.x = MAX_WALK_SPEED * dir.x;
+}
+
+void Mario::ApplyFriction(float delta) {
+	//apply friction to slow mario down
+	int frictionDirX = -Sign(velocity.x);
+	velocity.x += ACCELERATION.x * frictionDirX * delta;
+
+	//stop mario
+	if (Sign(velocity.x) == frictionDirX)
+		velocity.x = 0;
 }
