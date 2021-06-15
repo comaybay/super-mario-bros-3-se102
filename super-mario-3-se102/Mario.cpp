@@ -15,7 +15,7 @@ const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = 290;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 
-const std::string Mario::AnimationSet::DEATH = "MarioDie";
+const std::string Mario::AnimationSet::DEATH = "MarioDeath";
 
 Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", Groups::PLAYER, GridType::NONE),
@@ -47,8 +47,10 @@ void Mario::OnCollision(CollisionData data)
 		WallSlide(data);
 
 	else if (VectorHas(Groups::ENEMIES, groups)) {
-		parentScene->PlayerDeath();
-		SwitchState(&Mario::DieWait);
+		if (data.edge.y != -1.0f) {
+			parentScene->PlayerDeath();
+			SwitchState(&Mario::DieWait);
+		}
 	}
 }
 
@@ -114,7 +116,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 
 	else if (stateHandler == &Mario::DieWait) {
 		time = 0;
-		SetAnimation("MarioDie");
+		SetAnimation(AnimationSet::DEATH);
 		velocity = Vector2<float>(0, 0);
 	}
 
