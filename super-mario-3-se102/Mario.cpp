@@ -110,20 +110,30 @@ void Mario::Idle(float delta)
 	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
 	Move(dir, acc, maxSpeed, delta);
 
-	dir.x = -Utils::Sign(velocity.x);
-	if (abs(velocity.x) > ACCELERATION.x * delta)
-		velocity.x += ACCELERATION.x * dir.x * delta;
+
+	if (velocity.x == 0) {
+		if (prevPressedKeyHorizontal == DIK_LEFT)
+			SetAnimation("MarioSIL");
+
+		else if (prevPressedKeyHorizontal == DIK_RIGHT)
+			SetAnimation("MarioSIR");
+	}
 	else {
-		velocity.x = 0;
-		if (prevPressedKeyHorizontal == DIK_LEFT) SetAnimation("MarioSIL");
-		else if (prevPressedKeyHorizontal == DIK_RIGHT) SetAnimation("MarioSIR");
+		//apply friction to slow mario down
+		int frictionDirX = -Sign(velocity.x);
+		velocity.x += ACCELERATION.x * frictionDirX * delta;
+
+		//stop mario
+		if (Sign(velocity.x) == frictionDirX)
+			velocity.x = 0;
 	}
 
 	if (Game::IsKeyDown(DIK_RIGHT) || Game::IsKeyDown(DIK_LEFT)) {
 		SwitchState(&Mario::Walk);
 		return;
 	}
-	else if (onGround && Game::IsKeyPressed(DIK_S)) {
+
+	if (onGround && Game::IsKeyPressed(DIK_S)) {
 		SwitchState(&Mario::Jump);
 		return;
 	}
