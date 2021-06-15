@@ -74,6 +74,7 @@ void Mario::Update(float delta)
 {
 	Entity::Update(delta);
 
+	UpdateHorizontalDirection(delta);
 	auto prevState = state;
 	(this->*state)(delta);
 
@@ -105,7 +106,6 @@ void Mario::SwitchState(void (Mario::* state)(float delta)) {
 
 void Mario::Idle(float delta)
 {
-	UpdateHorizontalDirection(delta);
 	Vector2<float> acc(0, Game::Gravity.y);
 	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
 	Move(dir, acc, maxSpeed, delta);
@@ -173,7 +173,6 @@ void Mario::Walk(float delta)
 
 void Mario::Jump(float delta)
 {
-	UpdateHorizontalDirection(delta);
 	Vector2<float> acc(ACCELERATION.x, ACCELERATION.y);
 	Vector2<float> maxSpeed(MAX_WALK_SPEED, std::numeric_limits<float>::infinity());
 	Move(dir, acc, maxSpeed, delta);
@@ -214,7 +213,6 @@ void Mario::Jump(float delta)
 
 void Mario::Fall(float delta) {
 
-	UpdateHorizontalDirection(delta);
 	Vector2<float> acc(ACCELERATION.x, ACCELERATION.y);
 	Vector2<float> maxSpeed(MAX_WALK_SPEED, MAX_FALL_SPEED);
 	Move(dir, acc, maxSpeed, delta);
@@ -260,7 +258,6 @@ void Mario::DieWait(float delta) {
 }
 
 void Mario::DieFall(float delta) {
-	UpdateHorizontalDirection(delta);
 	Vector2<float> acc(0, Game::Gravity.y / 1.5);
 	Vector2<float> maxSpeed(0, MAX_FALL_SPEED);
 	Move(dir, acc, maxSpeed, delta);
