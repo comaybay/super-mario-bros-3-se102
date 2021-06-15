@@ -56,7 +56,7 @@ public:
 	virtual void Update(float delta);
 	virtual void PostUpdate();
 	virtual void Render();
-	virtual std::vector<std::string> GetEntityGroups();
+	const std::vector<std::string>& GetEntityGroups();
 	LPEvent<LPEntity> const GetDestroyEvent();
 protected:
 	std::vector<std::string> groups;

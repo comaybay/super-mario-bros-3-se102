@@ -107,7 +107,7 @@ LPScene Entity::GetParentScene()
 	return parentScene;
 }
 
-std::vector<std::string> Entity::GetEntityGroups()
+const std::vector<std::string>& Entity::GetEntityGroups()
 {
 	return groups;
 }

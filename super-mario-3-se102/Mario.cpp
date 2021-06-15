@@ -38,11 +38,10 @@ void Mario::SetPowerLevel(Mario::PowerLevel level)
 
 void Mario::OnCollision(CollisionData data)
 {
-	std::vector<std::string> groups = data.who->GetEntityGroups();
+	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups))
 		WallSlide(data);
-
 
 	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f)
 		WallSlide(data);
