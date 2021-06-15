@@ -35,5 +35,5 @@ void Goomba::OnCollision(CollisionData data)
 		velocity.y = 0;
 
 	else if (data.edge.x != 0.0f)
-		velocity.x = speed.x * -Utils::Sign(velocity.x);
+		velocity.x = speed.x * -Sign(velocity.x);
 }
