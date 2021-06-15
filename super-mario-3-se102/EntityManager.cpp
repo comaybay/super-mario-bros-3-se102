@@ -169,7 +169,7 @@ void EntityManager::QueueFree(LPEntity entity) {
 void EntityManager::FreeEntitiesInQueue() {
 	for (LPEntity entity : freeQueue) {
 		//remove entity from all of it's groups
-		for (std::string& group : entity->GetEntityGroups()) {
+		for (const std::string& group : entity->GetEntityGroups()) {
 			auto removed = std::remove(entitiesByGroup[group]->begin(), entitiesByGroup[group]->end(), entity);
 			entitiesByGroup[group]->erase(removed);
 		}
