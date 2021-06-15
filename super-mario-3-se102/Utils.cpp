@@ -256,7 +256,7 @@ int Utils::Sign(int number)
 	return (number > 0) - (number < 0);
 }
 
-float Utils::Sign(float number)
+int Utils::Sign(float number)
 {
 	return (number > 0) - (number < 0);
 }
