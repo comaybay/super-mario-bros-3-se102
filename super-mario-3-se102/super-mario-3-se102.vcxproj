@@ -217,6 +217,7 @@
     <ClInclude Include="EncodedWorld.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="EntityState.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="FixedAnimation.h" />
