@@ -79,6 +79,8 @@ namespace Entities {
 		static const float JUMP_SPEED;
 		static const float JUMP_SPEED_AFTER_MAX_WALK_SPEED;
 		static const float JUMP_SPEED_RELASE_EARLY;
+		static const float BOUNCE_SPEED;
+		static const float BOUNCE_SPEED_HOLD_JUMP;
 		static const float DEATH_JUMP_SPEED;
 	};
 

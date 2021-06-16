@@ -9,10 +9,12 @@ using namespace Utils;
 const float Mario::MAX_FALL_SPEED = 230;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
-const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 560);
-const float Mario::JUMP_SPEED = 270;
+const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 740);
+const float Mario::BOUNCE_SPEED = 200;
+const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
+const float Mario::JUMP_SPEED = 310;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
-const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = 290;
+const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 
 const std::string Mario::AnimationSet::DEATH = "MarioDeath";
@@ -47,10 +49,14 @@ void Mario::OnCollision(CollisionData data)
 		WallSlide(data);
 
 	else if (VectorHas(Groups::ENEMIES, groups)) {
-		if (data.edge.y != -1.0f) {
+		if (data.edge.y == -1.0f) {
+			velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
+		}
+		else {
 			parentScene->PlayerDeath();
 			SwitchState(&Mario::DieWait);
 		}
+
 	}
 }
 
