@@ -24,6 +24,11 @@ std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 /// and do not simmulate complex particle interactions, like SMB3.</para>
 /// </summary>
 void CollisionEngine::Update(float delta) {
+	//keep events and targetGroups up to date before doing collision detection
+	for (LPEntity entity : unsubscribeWaitList)
+		onEntityUnsubscribe.Handle(entity);
+
+	unsubscribeWaitList.clear();
 
 	for (auto& pair : targetGroupsByLPEntity) {
 		LPEntity entity = pair.first;
@@ -74,11 +79,6 @@ void CollisionEngine::Update(float delta) {
 			}
 		}
 	}
-
-	for (LPEntity entity : unsubscribeWaitList)
-		onEntityUnsubscribe.Handle(entity);
-
-	unsubscribeWaitList.clear();
 }
 
 LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)

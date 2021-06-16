@@ -92,12 +92,14 @@ inline Event<Args...>::~Event()
 template<class ...Args>
 inline void Event<Args...>::Notify(Args... other)
 {
+	for (ToRemoveProps& props : unsubscribeWaitList)
+		UnsubscribeFromEvent(props.thisId, props.handlerId);
+
+	unsubscribeWaitList.clear();
+
 	for (auto& pair : eventHandlersById)
 		for (LPEventHandler<Args...>& eHandler : *pair.second)
 			eHandler->Handle(other...);
-
-	for (ToRemoveProps& props : unsubscribeWaitList)
-		UnsubscribeFromEvent(props.thisId, props.handlerId);
 }
 
 template<class ...Args>
