@@ -27,11 +27,13 @@ void Goomba::MoveAround(float delta) {
 }
 
 void Goomba::Die(float delta) {
+	velocity += Game::Gravity * delta;
+	velocity.y = min(velocity.y, maxFallSpeed);
+
 	time += delta;
 
-	if (time >= 0.25f) {
+	if (time >= 0.25f)
 		parentScene->QueueFree(this);
-	}
 }
 
 void Goomba::Update(float delta)
