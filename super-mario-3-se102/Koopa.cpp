@@ -8,7 +8,7 @@ using namespace Utils;
 const Vector2<float> Koopa::SPEED(30, 0);
 
 Koopa::Koopa(const std::string& colorCode, const Utils::Vector2<float>& position)
-	: Entity(position, colorCode + "KoopaML", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, colorCode + "KoopaML", "HBKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(colorCode),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround))
 {
@@ -24,6 +24,14 @@ void Koopa::OnReady()
 void Koopa::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+
+	if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups)) {
+		if (data.edge.y == -1.0f)
+			CollisionHandling::Slide(this, data);
+
+		return;
+	}
+
 
 	CollisionHandling::Slide(this, data);
 

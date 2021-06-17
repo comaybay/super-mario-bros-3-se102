@@ -18,3 +18,4 @@ void CollisionHandling::Slide(LPEntity entity, const CollisionData& data)
 
 	entity->_SetRemainingVelocity(velocity);
 }
+

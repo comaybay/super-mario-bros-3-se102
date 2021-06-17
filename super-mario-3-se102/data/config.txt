@@ -11,5 +11,8 @@ config/textures.txt
 [ANIMATIONS]
 config/animations.txt
 
-[Tiles]
+[HITBOXES]
+config/hitboxes.txt
+
+[TILES]
 config/tiles.txt

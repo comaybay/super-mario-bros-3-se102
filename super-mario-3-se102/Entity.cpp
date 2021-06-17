@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include "EntityManager.h"
+#include "HitboxManager.h"
 #include "AnimationManager.h"
 #include "Event.h"
 #include "Scene.h"
@@ -7,24 +8,38 @@
 
 using namespace Utils;
 
-Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
-	groups(std::vector<std::string> {}), gridType(gridType)
+Entity::Entity(
+	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+	const std::vector<std::string>& entityGroups, GridType gridType
+)
+	: position(position),
+	animation(AnimationManager::GetNew(initialAnimation)),
+	hitbox(HitboxManager::Get(hitbox)),
+	groups(entityGroups),
+	gridType(gridType)
 {
 	Init();
 }
 
-Entity::Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
-	groups(std::vector<std::string> {entityGroup}), gridType(gridType)
+Entity::Entity(
+	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+	const std::string& entityGroup, GridType gridType
+) :
+	position(position),
+	animation(AnimationManager::GetNew(initialAnimation)),
+	hitbox(HitboxManager::Get(hitbox)),
+	groups(std::vector<std::string> {entityGroup}),
+	gridType(gridType)
 {
 	Init();
 }
 
-Entity::Entity
-(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType)
-	: position(position), animation(AnimationManager::GetNew(initialAnimation)),
-	groups(entityGroups), gridType(gridType)
+Entity::Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType) :
+	position(position),
+	animation(AnimationManager::GetNew(AnimationId::NONE)),
+	hitbox(HitboxManager::Get(HitboxId::NONE)),
+	groups(entityGroups),
+	gridType(gridType)
 {
 	Init();
 }
@@ -48,6 +63,11 @@ void Entity::SetAnimation(std::string id)
 	}
 }
 
+void Entity::SetHitbox(std::string id)
+{
+	hitbox = HitboxManager::Get(id);
+}
+
 Vector2<float> Entity::GetPosition()
 {
 	return position;
@@ -67,9 +87,9 @@ GridType Entity::GetGridType() {
 	return gridType;
 }
 
-const Hitbox& Entity::GetHitbox()
+LPConstHitbox Entity::GetHitbox()
 {
-	return animation->GetHitbox();
+	return hitbox;
 }
 
 Utils::SpriteBox Entity::GetSpriteBox() {
@@ -106,7 +126,6 @@ LPEvent<LPEntity> const Entity::GetDestroyEvent()
 {
 	return destroyEvent;
 }
-
 
 const std::vector<std::string>& Entity::GetEntityGroups()
 {

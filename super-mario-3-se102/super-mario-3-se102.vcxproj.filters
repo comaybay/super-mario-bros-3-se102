@@ -31,6 +31,9 @@
     <Filter Include="Source Files\SpatialGrid">
       <UniqueIdentifier>{726e7870-acf4-4985-8bbb-67e25b8f8569}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Hitboxes">
+      <UniqueIdentifier>{4294f70b-2e68-41a0-978f-f0b1b27fb403}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,11 +132,14 @@
     <ClCompile Include="Koopa.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Hitbox.cpp">
-      <Filter>Source Files\Animations</Filter>
-    </ClCompile>
     <ClCompile Include="FixedAnimation.cpp">
       <Filter>Source Files\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="HitboxManager.cpp">
+      <Filter>Source Files\Hitboxes</Filter>
+    </ClCompile>
+    <ClCompile Include="Hitbox.cpp">
+      <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +246,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hitbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HitboxManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Utils.h"
+#include "Hitbox.h"
 #include "Animation.h"
 #include "GridType.h"
 
@@ -18,11 +18,18 @@ typedef Entity* LPEntity;
 class Entity
 {
 public:
-	Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::vector<std::string>& entityGroups, GridType gridType);
-	Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& entityGroup, GridType gridType);
-	Entity(const Utils::Vector2<float>& position, const std::string& initialAnimation, GridType gridType);
+	Entity(
+		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+		const std::vector<std::string>& entityGroups, GridType gridType
+	);
+	Entity(
+		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+		const std::string& entityGroup, GridType gridType
+	);
+	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroup, GridType gridType);
 	~Entity();
 	void SetAnimation(std::string id);
+	void SetHitbox(std::string id);
 	Utils::Vector2<float> GetPosition();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
@@ -51,7 +58,7 @@ public:
 	GridType GetGridType();
 
 	virtual Utils::Dimension GetCurrentSpriteDimension();
-	virtual const Hitbox& GetHitbox();
+	virtual LPConstHitbox GetHitbox();
 	Utils::SpriteBox GetSpriteBox();
 	virtual void Update(float delta);
 	virtual void PostUpdate();
@@ -64,6 +71,7 @@ protected:
 	Utils::Vector2<float> position;
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
+	LPConstHitbox hitbox;
 private:
 	void Init();
 	GridType gridType;

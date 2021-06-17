@@ -1,0 +1,6 @@
+#Id, RelativePosition (X, Y), Dimension (Width, Height)
+##*RelativePosition: position relative to position of entity
+
+HBMarioS, 4, 0, 10, 16
+
+HBKoopa, 0, 10, 16, 16

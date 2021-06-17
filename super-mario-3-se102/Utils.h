@@ -5,6 +5,7 @@
 #include <d3d9.h>
 #include <dinput.h>
 #include <functional>
+#include <unordered_map>
 #include <map>
 #include <unordered_set>
 
@@ -84,6 +85,9 @@ namespace Utils
 	template<class K, class V>
 	bool MapHas(const K& key, const std::map<K, V>& map);
 
+	template<class K, class V>
+	bool MapHas(const K& key, const std::unordered_map<K, V>& map);
+
 	template<class T>
 	bool SetHas(const T& key, const std::unordered_set<T>& set);
 
@@ -102,6 +106,12 @@ namespace Utils
 
 template<class K, class V>
 inline bool Utils::MapHas(const K& key, const std::map<K, V>& map) {
+	auto it = map.find(key);
+	return (it != map.end());
+}
+
+template<class K, class V>
+inline bool Utils::MapHas(const K& key, const std::unordered_map<K, V>& map) {
 	auto it = map.find(key);
 	return (it != map.end());
 }

@@ -7,7 +7,7 @@ using namespace Entities;
 using namespace Utils;
 
 Coin::Coin(const Vector2<float>& position)
-	: Entity::Entity(position, "Coin", "Coins", GridType::STATIC_ENTITIES)
+	: Entity::Entity(position, "Coin", HitboxId::TILE_SIZE_HITBOX, "Coins", GridType::STATIC_ENTITIES)
 {
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Groups::PLAYER });
 }

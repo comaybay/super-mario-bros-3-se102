@@ -10,6 +10,7 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 	: Entity::Entity(
 		position,
 		"QuestionBlockNormal",
+		HitboxId::TILE_SIZE_HITBOX,
 		{ "Blocks", Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),

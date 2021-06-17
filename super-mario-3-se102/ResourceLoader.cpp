@@ -1,12 +1,11 @@
 #include "ResourceLoader.h"
 #include "TextureManager.h"
-#include "FixedAnimation.h"
 #include "AnimationManager.h"
 #include <fstream>
 #include <vector>
-#include "Hitbox.h"
+#include "HitboxManager.h"
 
-ResourceLoader::ResourceLoader(std::string rootDirectory)
+ResourceLoader::ResourceLoader(const std::string& rootDirectory)
 	: root(rootDirectory) {}
 
 void ResourceLoader::GetGameSettings(Utils::Dimension& gameDimension, int& pixelScale) const
@@ -60,14 +59,16 @@ void ResourceLoader::Load() const
 			LoadTextures(path);
 		else if (section == "[ANIMATIONS]")
 			LoadAnimations(path);
-		else if (section == "[Tiles]")
+		else if (section == "[TILES]")
 			LoadTiles(path);
+		else if (section == "[HITBOXES]")
+			LoadHitboxes(path);
 	}
 
 	file.close();
 }
 
-void ResourceLoader::LoadTextures(std::string configPath) const
+void ResourceLoader::LoadTextures(const std::string& configPath) const
 {
 	std::ifstream file(configPath);
 
@@ -96,7 +97,7 @@ void ResourceLoader::LoadTextures(std::string configPath) const
 	file.close();
 }
 
-void ResourceLoader::LoadAnimations(std::string configPath) const
+void ResourceLoader::LoadAnimations(const std::string& configPath) const
 {
 	std::ifstream file(configPath);
 
@@ -107,14 +108,13 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			continue;
 
 		std::vector<std::string> paramTokens = Utils::SplitByComma(line);
-		if (paramTokens.size() != 5)
-			throw Utils::InvalidTokenSizeException(5);
+		if (paramTokens.size() != 4)
+			throw Utils::InvalidTokenSizeException(4);
 
 		std::string animationId = paramTokens[0];
 		std::string animationType = paramTokens[1];
 		float frameDuration = std::stof(paramTokens[2]);
-		std::string hitboxHandlingMode = paramTokens[3];
-		std::string spriteSequenceHandlingMode = paramTokens[4];
+		std::string spriteSequenceHandlingMode = paramTokens[3];
 
 		std::getline(file, line);
 		std::vector<std::string> idToken = Utils::SplitByComma(line);
@@ -122,17 +122,6 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			throw Utils::InvalidTokenSizeException(1);
 
 		std::string textureId = idToken[0];
-
-		std::vector<std::string> hitboxTokens;
-		if (!Utils::VectorHas(hitboxHandlingMode, { "Custom", "Default" }))
-			throw std::exception("Invalid hitbox handling mode: expected Custom or Default");
-
-		else if (hitboxHandlingMode == "Custom") {
-			line = Utils::GetNextNonCommentLine(file);
-			hitboxTokens = Utils::SplitByComma(line);
-			if (hitboxTokens.size() != 4)
-				throw Utils::InvalidTokenSizeException(4);
-		}
 
 		std::vector<Utils::SpriteBox> spriteBoxSequence;
 		if (spriteSequenceHandlingMode == "Auto") {
@@ -209,34 +198,14 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 
 		AnimationProps animProps;
 
-		Hitbox hitbox;
-		if (hitboxHandlingMode == "Default") {
-			RECT hitboxRect = spriteBoxSequence[0].rect;
-			Utils::Dimension dim(hitboxRect.right - hitboxRect.left, hitboxRect.bottom - hitboxRect.top);
-			hitbox = Hitbox(Utils::Vector2<float>(0, 0), dim);
-
-			animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence, hitbox);
-		}
-		else if (hitboxHandlingMode == "Custom") {
-			hitbox = Hitbox(
-				Utils::Vector2<float>(stoi(hitboxTokens[0]), stoi(hitboxTokens[1])),
-				Utils::Dimension(stoi(hitboxTokens[2]), stoi(hitboxTokens[3]))
-			);
-
-		}
-		else {
-			std::string msg = "Hitbox handling mode not implemented: " + hitboxHandlingMode;
-			throw std::exception(msg.c_str());
-		}
-
-		animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence, hitbox);
+		animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence);
 		AnimationManager::Add(animationId, animProps);
 	}
 
 	file.close();
 }
 
-void ResourceLoader::LoadTiles(std::string configPath) const
+void ResourceLoader::LoadTiles(const std::string& configPath) const
 {
 	std::ifstream file(configPath);
 
@@ -262,4 +231,27 @@ void ResourceLoader::LoadTiles(std::string configPath) const
 	}
 
 	file.close();
+}
+
+void ResourceLoader::LoadHitboxes(const std::string& configPath) const
+{
+	std::ifstream file(configPath);
+
+	std::string line;
+	while (true) {
+		line = Utils::GetNextNonCommentLine(file);
+		if (line == "EOF")
+			return;
+
+		std::vector<std::string> tokens = Utils::SplitByComma(line);
+		if (tokens.size() != 5)
+			throw Utils::InvalidTokenSizeException(5);
+
+		LPHitbox hitbox = new Hitbox(
+			Utils::Vector2<float>(stof(tokens[1]), stof(tokens[2])),
+			Utils::Dimension(stoi(tokens[3]), stoi(tokens[4]))
+		);
+
+		HitboxManager::Add(tokens[0], hitbox);
+	}
 }

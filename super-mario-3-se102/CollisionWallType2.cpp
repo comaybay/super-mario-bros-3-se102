@@ -6,7 +6,6 @@ using namespace Utils;
 CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension dimension)
 	: Entity::Entity(
 		position,
-		AnimationId::NONE,
 		{ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_2 },
 		GridType::WALL_ENTITIES
 	),
@@ -14,13 +13,14 @@ CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension dimens
 {
 }
 
-const Hitbox& CollisionWallType2::GetHitbox()
+LPConstHitbox CollisionWallType2::GetHitbox()
 {
-	return hitbox;
+	return &hitbox;
 }
 
 Dimension CollisionWallType2::GetCurrentSpriteDimension()
 {
-	return hitbox.dimension;
+	return hitbox.GetDimension();
 }
+
 

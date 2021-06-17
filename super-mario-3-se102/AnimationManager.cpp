@@ -6,11 +6,8 @@ std::map<std::string, AnimationProps> AnimationManager::animationPropsById;
 
 AnimationProps::AnimationProps() {}
 
-AnimationProps::AnimationProps(
-	AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence,
-	const Hitbox& hitbox
-)
-	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence), hitbox(hitbox)
+AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence)
+	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence)
 {}
 
 void AnimationManager::Add(const std::string& id, const AnimationProps& animProps)
@@ -31,9 +28,9 @@ LPAnimation AnimationManager::GetNew(const std::string& id)
 	const AnimationProps& props = animationPropsById[id];
 	switch (props.type) {
 	case AnimationType::NORMAL:
-		return new Animation(props.id, props.frameDuration, props.texture, props.sequence, props.hitbox);
+		return new Animation(props.id, props.frameDuration, props.texture, props.sequence);
 	case AnimationType::FIXED:
-		return new FixedAnimation(props.id, props.frameDuration, props.texture, props.sequence, props.hitbox);
+		return new FixedAnimation(props.id, props.frameDuration, props.texture, props.sequence);
 	default:
 		throw std::exception("GetNew Failed: Not implemented animation type.");
 	}

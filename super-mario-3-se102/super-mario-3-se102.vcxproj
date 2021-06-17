@@ -183,6 +183,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GridType.cpp" />
     <ClCompile Include="Hitbox.cpp" />
+    <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridType.h" />
     <ClInclude Include="Hitbox.h" />
+    <ClInclude Include="HitboxManager.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="PlayerVariables.h" />

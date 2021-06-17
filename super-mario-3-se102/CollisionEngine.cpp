@@ -90,16 +90,17 @@ LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
 	return collisionEventByLPEntity[entity];
 }
 
-void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
+void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2)
+{
 	CBox mBox(
-		e1->GetPosition() + e1->GetHitbox().relativePosition,
-		e1->GetHitbox().dimension,
+		e1->GetPosition() + e1->GetHitbox()->GetRelativePosition(),
+		e1->GetHitbox()->GetDimension(),
 		(e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta
 	);
 
 	CBox sBox(
-		e2->GetPosition() + e2->GetHitbox().relativePosition,
-		e2->GetHitbox().dimension,
+		e2->GetPosition() + e2->GetHitbox()->GetRelativePosition(),
+		e2->GetHitbox()->GetDimension(),
 		Utils::Vector2<float>(0, 0)
 	);
 
@@ -120,14 +121,14 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
 {
 	CBox mBox(
-		e1->GetPosition() + e1->GetHitbox().relativePosition,
-		e1->GetHitbox().dimension,
+		e1->GetPosition() + e1->GetHitbox()->GetRelativePosition(),
+		e1->GetHitbox()->GetDimension(),
 		(e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta
 	);
 
 	CBox sBox(
-		e2->GetPosition() + e2->GetHitbox().relativePosition,
-		e2->GetHitbox().dimension,
+		e2->GetPosition() + e2->GetHitbox()->GetRelativePosition(),
+		e2->GetHitbox()->GetDimension(),
 		Utils::Vector2<float>(0, 0)
 	);
 
