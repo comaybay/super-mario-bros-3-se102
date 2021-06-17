@@ -1,8 +1,7 @@
-#include "Entities.h"
+#include "CollisionWallType1.h"
 #include "Groups.h"
 using namespace Entities;
 
-//TODO: COLLISION BLOCKS AS CONST STRING
 CollisionWallType1::CollisionWallType1(Utils::Vector2<float> position, Utils::Dimension dimension)
 	: Entity::Entity(
 		position,

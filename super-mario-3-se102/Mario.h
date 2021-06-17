@@ -1,29 +1,10 @@
 #pragma once
 #include "Entity.h"
+#include "Utils.h"
 #include "CollisionEngine.h"
 #include "EntityState.h"
 
 namespace Entities {
-	using namespace Utils;
-
-	class CollisionWallType1 : public Entity {
-	public:
-		CollisionWallType1(Vector2<float> position, Dimension dimension);
-		Dimension GetDimension() override;
-
-	private:
-		Dimension dim;
-	};
-
-	class CollisionWallType2 : public Entity {
-	public:
-		CollisionWallType2(Vector2<float> position, Dimension dimension);
-		Dimension GetDimension() override;
-
-	private:
-		Dimension dim;
-	};
-
 	class Mario : public Entity {
 	public:
 		struct AnimationSet {
@@ -43,7 +24,7 @@ namespace Entities {
 			BIG,
 		};
 
-		Mario(Vector2<float> position);
+		Mario(Utils::Vector2<float> position);
 		void SetPowerLevel(Mario::PowerLevel level);
 		void Update(float delta) override;
 	private:
@@ -83,40 +64,4 @@ namespace Entities {
 		static const float BOUNCE_SPEED_HOLD_JUMP;
 		static const float DEATH_JUMP_SPEED;
 	};
-
-	class Goomba : public Entity
-	{
-	public:
-		Goomba(std::string color, Vector2<float> position);
-		void Update(float delta) override;
-
-	private:
-		void MoveAround(float delta);
-		void Die(float delta);
-
-		std::string colorCode;
-		float time;
-		Vector2<float> speed;
-		static float maxFallSpeed;
-		EventHandler<CollisionData> onCollisionHandler;
-		EntityState<Goomba> state;
-		virtual void OnReady() override;
-		void OnCollision(CollisionData data);
-	};
-
-	class QuestionBlock : public Entity {
-	public:
-		QuestionBlock(LPEntity content, const Vector2<float>& position);
-		void Update(float delta) override;
-	private:
-		void OnCollision(CollisionData data);
-		LPEntity content;
-	};
-
-	class Coin : public Entity {
-	public:
-		Coin(const Vector2<float>& position);
-		void OnCollision(CollisionData data);
-	};
-
 }

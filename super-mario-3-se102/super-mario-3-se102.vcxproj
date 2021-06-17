@@ -182,9 +182,9 @@
     <ClCompile Include="FixedAnimation.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GridType.cpp" />
+    <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
-    <ClCompile Include="Entities.h" />
     <ClCompile Include="CollisionWallType1.cpp" />
     <ClCompile Include="CollisionEngine.cpp" />
     <ClCompile Include="CollisionHandling.cpp" />
@@ -209,8 +209,11 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="CollisionEngine.h" />
     <ClInclude Include="CollisionHandling.h" />
+    <ClInclude Include="CollisionWallType1.h" />
+    <ClInclude Include="CollisionWallType2.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DynamicGrid.h" />
     <ClInclude Include="EmptyAnimation.h" />
@@ -222,10 +225,14 @@
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="FixedAnimation.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Goomba.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridType.h" />
+    <ClInclude Include="Koopa.h" />
+    <ClInclude Include="Mario.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Groups.h" />
+    <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="RectSequence.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SceneManager.h" />

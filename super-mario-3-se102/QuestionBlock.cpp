@@ -1,8 +1,9 @@
-#include "Entities.h"
+#include "QuestionBlock.h"
 #include "Game.h"
 #include "Groups.h"
 #include "EntityManager.h"
 using namespace Entities;
+using namespace Utils;
 
 //TODO: Complete Implementation
 QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)

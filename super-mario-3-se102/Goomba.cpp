@@ -1,8 +1,9 @@
-#include "Entities.h"
+#include "Goomba.h"
 #include "CollisionHandling.h"
 #include "Game.h"
 #include "Groups.h"
 using namespace Entities;
+using namespace Utils;
 
 float Goomba::maxFallSpeed = 230;
 

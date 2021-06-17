@@ -1,6 +1,7 @@
-#include "Entities.h"
+#include "CollisionWallType2.h"
 #include "Groups.h"
 using namespace Entities;
+using namespace Utils;
 
 CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension dimension)
 	: Entity::Entity(
