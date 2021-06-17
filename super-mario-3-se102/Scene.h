@@ -5,6 +5,7 @@
 #include "EncodedWorld.h"
 #include "Camera.h"
 #include "Event.h"
+#include "Grid.h"
 
 //avoid circular dependecies
 class Entity;
@@ -28,13 +29,18 @@ public:
 	void PlayerDeath();
 
 private:
-	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
+	CellRange GetCellRangeAroundCamera();
 	RECT GetTileBoundingBox(int id);
+	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
+	void RenderEntitiesInGrids();
 	Utils::Dimension worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
 	Camera camera;
 	LPEntityManager entityManager;
+	bool updateMovablesInSPGridEnabled;
+	bool renderMovablesInSPGridEnabled;
+
 
 public:
 	/// <summary>
@@ -47,11 +53,6 @@ public:
 	/// called when everything in the scene is loaded, used internally by SceneManager.
 	/// </summary>
 	void _Ready();
-
-	/// <summary>
-	/// used internally by Game
-	/// </summary>
-	LPEntityManager _GetEntityManager();
 };
 typedef Scene* LPScene;
 

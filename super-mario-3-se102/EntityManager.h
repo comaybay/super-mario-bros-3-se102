@@ -14,6 +14,15 @@ class EntityManager
 {
 public:
 	EntityManager(LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid);
+	void ForEach(std::function<void(LPEntity)> handler);
+	void AddToGroup(std::string groupName, LPEntity entity);
+	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
+	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
+	const LPGrid GetGrid(GridType gridType);
+	const std::list<LPEntity>& GetNonGridEntities();
+
+	void QueueFree(LPEntity entity);
+	void FreeEntitiesInQueue();
 
 	/// <summary>
 	/// Add entity at runtime, only used by Scene.
@@ -32,20 +41,6 @@ public:
 	/// Used internally by SceneManager
 	/// </summary>
 	void _AddWithoutPutToGrid(LPEntity entity);
-
-	void ForEach(std::function<void(LPEntity)> handler);
-	void AddToGroup(std::string groupName, LPEntity entity);
-	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
-	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
-
-	void UpdateEntities(float delta);
-	void PostUpdateEntities();
-	void RenderEntities();
-	void SetUpdateEntitiesInMovableSPGrid(bool state);
-	void SetRenderEntitiesInMovableSPGrid(bool state);
-
-	void QueueFree(LPEntity entity);
-	void FreeEntitiesInQueue();
 private:
 	CellRange GetCellRangeAroundCamera();
 	LPScene parentScene = nullptr;

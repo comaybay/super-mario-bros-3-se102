@@ -4,13 +4,18 @@
 #include "EntityManager.h"
 #include "TextureManager.h"
 #include "Groups.h"
+using namespace Utils;
+
+Scene::Scene()
+{
+	updateMovablesInSPGridEnabled = true;
+	renderMovablesInSPGridEnabled = true;
+}
 
 Scene::~Scene()
 {
 	delete encodedWorld;
 }
-
-Scene::Scene() {}
 
 void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
 {
@@ -24,10 +29,6 @@ void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEnc
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
 int i = 0;
-LPEntityManager Scene::_GetEntityManager()
-{
-	return entityManager;
-}
 void Scene::Update(float delta)
 {
 	/*i++;
@@ -43,9 +44,42 @@ void Scene::Update(float delta)
 	//	std::advance(pBlock, 1);
 	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
-	entityManager->UpdateEntities(delta);
-	entityManager->PostUpdateEntities();
+	CellRange range = GetCellRangeAroundCamera();
+
+	auto forEachEntity = [this, range](std::function<void(LPEntity)> handler) {
+		entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, handler);
+
+		if (updateMovablesInSPGridEnabled) {
+			LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
+			movableEntitiesSPGrid->ForEachEntityIn(range, handler);
+			movableEntitiesSPGrid->UpdateCells(range);
+		}
+
+		for (LPEntity entity : entityManager->GetNonGridEntities())
+			handler(entity);
+	};
+
+	auto update = [delta](LPEntity entity) { entity->Update(delta); };
+	auto postUpdate = [](LPEntity entity) { entity->PostUpdate(); };
+
+	forEachEntity(update);
 	camera.Update();
+	forEachEntity(postUpdate);
+
+	entityManager->FreeEntitiesInQueue();
+}
+
+CellRange Scene::GetCellRangeAroundCamera() {
+	Vector2<float> camPos = GetCameraPosition();
+	Dimension dim = Game::GetGameDimension();
+
+	//add margin
+	int marginSize = 16 * 1;
+	camPos = camPos - Vector2<float>(marginSize, marginSize);
+	dim.width += marginSize;
+	dim.height += marginSize;
+
+	return entityManager->GetGrid(GridType::STATIC_ENTITIES)->GetCellRangeFromRectangle(camPos, dim);
 }
 
 void Scene::Render()
@@ -64,10 +98,15 @@ void Scene::Render()
 		d3ddv->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
 		d3ddv->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
 
-
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
-		entityManager->RenderEntities();
+
+		RenderEntitiesInGrids();
+
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
+
+		//non grid entites (like Mario) are rendered last
+		for (LPEntity entity : entityManager->GetNonGridEntities())
+			entity->Render();
 
 		d3dxSprite->End();
 		d3ddv->EndScene();
@@ -76,6 +115,18 @@ void Scene::Render()
 	// Display back buffer content to the screen
 	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
+
+void Scene::RenderEntitiesInGrids()
+{
+	CellRange range = GetCellRangeAroundCamera();
+	auto renderEntity = [](LPEntity entity) { entity->Render(); };
+
+	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, renderEntity);
+
+	if (renderMovablesInSPGridEnabled)
+		entityManager->GetGrid(GridType::MOVABLE_ENTITIES)->ForEachEntityIn(range, renderEntity);
+}
+
 
 void Scene::AddEntity(LPEntity entity)
 {
@@ -95,7 +146,7 @@ const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
 
 void Scene::PlayerDeath()
 {
-	entityManager->SetUpdateEntitiesInMovableSPGrid(false);
+	updateMovablesInSPGridEnabled = false;
 	Game::EnableCollisionEngine(false);
 }
 
@@ -170,3 +221,4 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 		}
 	}
 }
+

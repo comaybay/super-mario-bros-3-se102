@@ -132,7 +132,6 @@ void Game::Run()
 		}
 
 		activeScene->Render();
-		Game::GetActiveScene()->_GetEntityManager()->FreeEntitiesInQueue();
 	}
 }
 

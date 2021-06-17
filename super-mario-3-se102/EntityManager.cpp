@@ -98,55 +98,23 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 	}
 }
 
-void EntityManager::UpdateEntities(float delta)
+const LPGrid EntityManager::GetGrid(GridType gridType)
 {
-	CellRange range = GetCellRangeAroundCamera();
-	auto updateHandler = [delta](LPEntity entity) { entity->Update(delta); };
-
-	staticEntitySPGrid->ForEachEntityIn(range, updateHandler);
-	if (updateMovablesInSPGrid) {
-		movableEntitySPGrid->ForEachEntityIn(range, updateHandler);
-		movableEntitySPGrid->UpdateCells(range);
+	switch (gridType) {
+	case GridType::WALL_ENTITIES:
+		return wallEntitySPGrid;
+	case GridType::MOVABLE_ENTITIES:
+		return movableEntitySPGrid;
+	case GridType::STATIC_ENTITIES:
+		return staticEntitySPGrid;
+	default:
+		throw std::exception("GetGrid failed: invalid Gridtype");
 	}
-
-	for (LPEntity entity : nonGridEntities)
-		entity->Update(delta);
 }
 
-void EntityManager::PostUpdateEntities()
+const std::list<LPEntity>& EntityManager::GetNonGridEntities()
 {
-	CellRange range = GetCellRangeAroundCamera();
-	auto postUpdateHandler = [](LPEntity entity) { entity->PostUpdate(); };
-
-	staticEntitySPGrid->ForEachEntityIn(range, postUpdateHandler);
-	if (updateMovablesInSPGrid)
-		movableEntitySPGrid->ForEachEntityIn(range, postUpdateHandler);
-
-	for (LPEntity entity : nonGridEntities)
-		entity->PostUpdate();
-}
-
-void EntityManager::RenderEntities()
-{
-	CellRange range = GetCellRangeAroundCamera();
-	auto renderHandler = [](LPEntity entity) { entity->Render(); };
-	movableEntitySPGrid->ForEachEntityIn(range, renderHandler);
-
-	if (renderMovablesInSPGrid)
-		staticEntitySPGrid->ForEachEntityIn(range, renderHandler);
-
-	for (LPEntity entity : nonGridEntities)
-		entity->Render();
-}
-
-void EntityManager::SetUpdateEntitiesInMovableSPGrid(bool state)
-{
-	updateMovablesInSPGrid = state;
-}
-
-void EntityManager::SetRenderEntitiesInMovableSPGrid(bool state)
-{
-	renderMovablesInSPGrid = state;
+	return nonGridEntities;
 }
 
 CellRange EntityManager::GetCellRangeAroundCamera() {
