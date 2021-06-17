@@ -2,13 +2,14 @@
 #include "Groups.h"
 #include "Game.h"
 #include "CollisionHandling.h"
+#include "EntityConstants.h"
 using namespace Entities;
 using namespace Utils;
 
 const Vector2<float> Koopa::SPEED(30, 0);
 
 Koopa::Koopa(const std::string& colorCode, const Utils::Vector2<float>& position)
-	: Entity(position, colorCode + "KoopaML", "HBKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, colorCode + "KoopaML", "HitboxKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(colorCode),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround))
 {
@@ -31,7 +32,6 @@ void Koopa::OnCollision(CollisionData data)
 
 		return;
 	}
-
 
 	CollisionHandling::Slide(this, data);
 
@@ -56,5 +56,5 @@ void Koopa::Update(float delta)
 
 void Koopa::MoveAround(float delta) {
 	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, 230);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }

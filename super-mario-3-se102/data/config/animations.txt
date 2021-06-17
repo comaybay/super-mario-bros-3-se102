@@ -52,20 +52,20 @@ PlayableCharacters
 ##Goomba##
 BGoombaM, Normal, 0.15, Auto
 Enemies
-0, 0, 16, 16, 0, 2, 0, 1
+0, 0, 16, 16, 0, 2
 
 BGoombaDeath, Normal, -1, Manual
 Enemies
-32, 0, 47, 15, 0, 1
+32, 0, 47, 15
 
 ##Koopa##
 GKoopaML, Normal, 0.15, Auto
 Enemies
-0, 51, 16, 26, 0, 2, 0, 1
+0, 51, 16, 26, 0, 2
 
 GKoopaMR, Normal, 0.15, Auto
 Enemies
-0, 83, 16, 26, 0, 2, 0, 1
+0, 83, 16, 26, 0, 2
 
 ##QuestionBlocks##
 QuestionBlockNormal, Fixed, 0.14, Auto

@@ -20,7 +20,7 @@ const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 const std::string Mario::AnimationSet::DEATH = "MarioDeath";
 
 Mario::Mario(Vector2<float> position) :
-	Entity::Entity(position, "MarioSIR", "HBMarioS", Groups::PLAYER, GridType::NONE),
+	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Groups::PLAYER, GridType::NONE),
 	state(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),

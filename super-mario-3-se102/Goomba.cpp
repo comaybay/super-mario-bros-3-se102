@@ -8,7 +8,7 @@ using namespace Utils;
 float Goomba::maxFallSpeed = 230;
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
-	: Entity(position, colorCode + "GoombaM", HitboxId::TILE_SIZE_HITBOX, { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, colorCode + "GoombaM", "HitboxGoomba", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(colorCode),
 	speed(Vector2<float>(30, 0)),
 	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
