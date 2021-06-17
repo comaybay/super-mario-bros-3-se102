@@ -1,67 +1,82 @@
-#Id, AnimationType (Normal or Fixed), FrameDuration (in seconds), boxHandlingMode (Auto or Manual) 
-## (Fixed: entities that use this animation type will always have the same frame, not dependent on creation time)
-## (Auto: automatically calculate SpriteBoxes) (Manual: user manually provide SpriteBoxes)
+#Id, AnimationType (Normal or Fixed), FrameDuration (in seconds), HitboxHandlingMode (Default or Custom), SpriteboxHandlingMode (Auto or Manual)
+##*Fixed: entities that use this animation type will always have the same frame, not dependent on creation time
+##*Auto: automatically calculate SpriteBoxes) (Manual: user manually provide SpriteBoxes
 #TextureId
-## Mode=Auto => StartPosition (X, Y), Dimension (Width, Height), Space, FrameCount, [Offset (X, Y) (Default=0)]
-## Mode=Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
+#If HitboxHandlingMode = Default => No arguments needed (CollisionHitBox = Size of the first sprite)
+#If HitboxHandlingMode = Custom => RelativeX, RelativeY, Width, Height 
+##*RelativeX, RelativeY: X, Y position relative to the position of entity
+#If SpriteboxHandlingMode = Auto => StartPosition (X, Y), Dimension (Width, Height), Space, FrameCount, [Offset (X, Y) (Default=0)]
+#If SpriteboxHandlingMode = Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
+
 
 ##Small mario##
 #Move#
-MarioSML, Normal, 0.066, Auto
+MarioSML, Normal, 0.066, Default, Auto
 PlayableCharacters
 1, 16, 16, 16, 2, 2
 
-MarioSMR, Normal, 0.066, Auto
+MarioSMR, Normal, 0.066, Default, Auto
 PlayableCharacters
 1, 34, 16, 16, 2, 2
 
 #Turn#
-MarioSTL, Normal, -1, Manual
+MarioSTL, Normal, -1, Default, Manual
 PlayableCharacters
 109, 16, 124, 31
 
-MarioSTR, Normal, -1, Manual
+MarioSTR, Normal, -1, Default, Manual
 PlayableCharacters
 127, 16, 142, 31
 
 #Jump#
-MarioSJR, Normal, -1, Manual
+MarioSJR, Normal, -1, Default, Manual
 PlayableCharacters
 37, 34, 52, 49
 
-MarioSJL, Normal, -1, Manual
+MarioSJL, Normal, -1, Default, Manual
 PlayableCharacters
 55, 34, 70, 49
 
 #Idle#
-MarioSIL, Normal, -1, Manual
+MarioSIL, Normal, -1, Default, Manual
 PlayableCharacters
 1, 16, 16, 31
 
-MarioSIR, Normal, -1, Manual
+MarioSIR, Normal, -1, Default, Manual
 PlayableCharacters
 1, 34, 16, 49
 
 #Death#
-MarioDeath, Normal, -1, Manual
+MarioDeath, Normal, -1, Default, Manual
 PlayableCharacters
 307, 16, 322, 31
 
 ##Goomba##
-BGoombaM, Normal, 0.15, Auto
+BGoombaM, Normal, 0.15, Default, Auto
 Enemies
 0, 0, 16, 16, 0, 2, 0, 1
 
-BGoombaDeath, Normal, -1, Manual
+BGoombaDeath, Normal, -1, Default, Manual
 Enemies
 32, 0, 47, 15, 0, 1
 
+##Koopa##
+GKoopaML, Normal, 0.15, Custom, Auto
+Enemies
+0, 10, 16, 16
+0, 51, 16, 26, 0, 2, 0, 1
+
+GKoopaMR, Normal, 0.15, Custom, Auto
+Enemies
+0, 10, 16, 16
+0, 83, 16, 26, 0, 2, 0, 1
+
 ##QuestionBlocks##
-QuestionBlockNormal, Fixed, 0.14, Auto
+QuestionBlockNormal, Fixed, 0.14, Default, Auto
 Tiles
 1140, 1, 16, 16, 1, 4 
 
 ##Coin##
-Coin, Fixed, 0.125, Auto
+Coin, Fixed, 0.125, Default, Auto
 Tiles
 936, 69, 16, 16, 1, 4

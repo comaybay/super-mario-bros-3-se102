@@ -24,7 +24,7 @@ void Camera::Update()
 
 	Dimension worldDim = Game::GetActiveScene()->GetWorldDimension();
 	Dimension gameDim = Game::GetGameDimension();
-	Dimension targetDim = target->GetDimension();
+	Dimension targetDim = target->GetCurrentSpriteDimension();
 	Vector2<float> targetPos = target->GetPosition();
 
 	//center around entity

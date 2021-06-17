@@ -10,10 +10,17 @@ CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension dimens
 		{ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_2 },
 		GridType::WALL_ENTITIES
 	),
-	dim(dimension)
+	hitbox(Hitbox(Vector2<float>(0, 0), dimension))
 {
 }
 
-Dimension CollisionWallType2::GetDimension() {
-	return dim;
-};
+const Hitbox& CollisionWallType2::GetHitbox()
+{
+	return hitbox;
+}
+
+Dimension CollisionWallType2::GetCurrentSpriteDimension()
+{
+	return hitbox.dimension;
+}
+

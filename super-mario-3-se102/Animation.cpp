@@ -4,12 +4,15 @@
 
 const std::string AnimationId::NONE = "__ANI_ID_NONE__";
 
-Animation::Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, std::vector<Utils::SpriteBox> sequence)
-	: id(id), frameDuration(frameDuration), texture(texture), sequence(sequence)
-{
-	currentFrame = 0;
-	currentDuration = 0;
-}
+Animation::Animation(
+	std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence,
+	const Hitbox& hitbox
+)
+	: id(id), frameDuration(frameDuration), texture(texture), sequence(sequence),
+	hitbox(hitbox),
+	currentFrame(0),
+	currentDuration(0)
+{}
 
 void Animation::Update(float delta)
 {
@@ -26,6 +29,11 @@ void Animation::Update(float delta)
 Utils::SpriteBox Animation::GetCurrentSpriteBox()
 {
 	return sequence[currentFrame];
+}
+
+const Hitbox& Animation::GetHitbox()
+{
+	return hitbox;
 }
 
 void Animation::Render(Utils::Vector2<float> position)

@@ -1,7 +1,7 @@
 #include "EmptyAnimation.h"
 
 EmptyAnimation::EmptyAnimation()
-	: Animation::Animation("None", -1.0f, nullptr, std::vector<Utils::SpriteBox> {}) {}
+	: Animation::Animation("None", -1.0f, nullptr, std::vector<Utils::SpriteBox> {}, Hitbox()) {}
 
 void EmptyAnimation::Render(Utils::Vector2<float> position)
 {

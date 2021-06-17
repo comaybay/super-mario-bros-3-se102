@@ -1,11 +1,14 @@
 #include "FixedAnimation.h"
 #include "Utils.h"
 
-FixedAnimation::FixedAnimation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, std::vector<Utils::SpriteBox> sequence)
-	: Animation(id, frameDuration, texture, sequence)
+FixedAnimation::FixedAnimation(
+	std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence,
+	const Hitbox& hitbox
+)
+	: Animation(id, frameDuration, texture, sequence, hitbox)
 {}
 
 void FixedAnimation::Update(float _)
 {
-	currentFrame = (int)((GetTickCount64() / 1000.0f) / frameDuration) % sequence.size();
+	currentFrame = (ULONGLONG)((GetTickCount64() / 1000.0f) / frameDuration) % sequence.size();
 }

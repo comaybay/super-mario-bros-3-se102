@@ -1,6 +1,7 @@
 #include "CollisionEngine.h"
 #include "EntityManager.h"
 #include "Game.h"
+#include "Groups.h"
 #include <algorithm>
 #include <unordered_set>
 using namespace Utils;
@@ -90,8 +91,17 @@ LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
 }
 
 void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2) {
-	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta);
-	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
+	CBox mBox(
+		e1->GetPosition() + e1->GetHitbox().relativePosition,
+		e1->GetHitbox().dimension,
+		(e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta
+	);
+
+	CBox sBox(
+		e2->GetPosition() + e2->GetHitbox().relativePosition,
+		e2->GetHitbox().dimension,
+		Utils::Vector2<float>(0, 0)
+	);
 
 	//Broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);
@@ -109,8 +119,17 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
 {
-	CBox mBox(e1->GetPosition(), e1->GetDimension(), (e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta);
-	CBox sBox(e2->GetPosition(), e2->GetDimension(), Utils::Vector2<float>(0, 0));
+	CBox mBox(
+		e1->GetPosition() + e1->GetHitbox().relativePosition,
+		e1->GetHitbox().dimension,
+		(e1->_GetRemainingVelocity() - e2->_GetRemainingVelocity()) * delta
+	);
+
+	CBox sBox(
+		e2->GetPosition() + e2->GetHitbox().relativePosition,
+		e2->GetHitbox().dimension,
+		Utils::Vector2<float>(0, 0)
+	);
 
 	//Broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);

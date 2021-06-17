@@ -4,6 +4,7 @@
 #include "AnimationManager.h"
 #include <fstream>
 #include <vector>
+#include "Hitbox.h"
 
 ResourceLoader::ResourceLoader(std::string rootDirectory)
 	: root(rootDirectory) {}
@@ -106,13 +107,14 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			continue;
 
 		std::vector<std::string> paramTokens = Utils::SplitByComma(line);
-		if (paramTokens.size() != 4)
-			throw Utils::InvalidTokenSizeException(4);
+		if (paramTokens.size() != 5)
+			throw Utils::InvalidTokenSizeException(5);
 
 		std::string animationId = paramTokens[0];
 		std::string animationType = paramTokens[1];
 		float frameDuration = std::stof(paramTokens[2]);
-		std::string rectSequenceHandlingMode = paramTokens[3];
+		std::string hitboxHandlingMode = paramTokens[3];
+		std::string spriteSequenceHandlingMode = paramTokens[4];
 
 		std::getline(file, line);
 		std::vector<std::string> idToken = Utils::SplitByComma(line);
@@ -121,8 +123,19 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 
 		std::string textureId = idToken[0];
 
+		std::vector<std::string> hitboxTokens;
+		if (!Utils::VectorHas(hitboxHandlingMode, { "Custom", "Default" }))
+			throw std::exception("Invalid hitbox handling mode: expected Custom or Default");
+
+		else if (hitboxHandlingMode == "Custom") {
+			line = Utils::GetNextNonCommentLine(file);
+			hitboxTokens = Utils::SplitByComma(line);
+			if (hitboxTokens.size() != 4)
+				throw Utils::InvalidTokenSizeException(4);
+		}
+
 		std::vector<Utils::SpriteBox> spriteBoxSequence;
-		if (rectSequenceHandlingMode == "Auto") {
+		if (spriteSequenceHandlingMode == "Auto") {
 			std::getline(file, line);
 			std::vector<std::string> rectSequenceTokens = Utils::SplitByComma(line);
 
@@ -153,7 +166,7 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 
 			spriteBoxSequence = Utils::CreateSpriteBoxSequence(startPosition, dim, space, frameCount, offset);
 		}
-		else if (rectSequenceHandlingMode == "Manual") {
+		else if (spriteSequenceHandlingMode == "Manual") {
 			while (getline(file, line)) {
 				if (line == "")
 					break;
@@ -182,8 +195,7 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 			}
 
 		}
-		else
-			throw std::exception("Invalid sprite box handling mode: expected Auto or Manual");
+		else throw std::exception("Invalid sprite box handling mode: expected Auto or Manual");
 
 		LPDIRECT3DTEXTURE9 texture = TextureManager::Get(textureId);
 
@@ -193,9 +205,31 @@ void ResourceLoader::LoadAnimations(std::string configPath) const
 		else if (animationType == "Fixed")
 			animType = AnimationType::FIXED;
 		else
-			throw std::exception("Invalid AnimationType: expected Normal or Auto");
+			throw std::exception("Invalid AnimationType: expected Normal or Fixed");
 
-		AnimationProps animProps(animType, animationId, frameDuration, texture, spriteBoxSequence);
+		AnimationProps animProps;
+
+		Hitbox hitbox;
+		if (hitboxHandlingMode == "Default") {
+			RECT hitboxRect = spriteBoxSequence[0].rect;
+			Utils::Dimension dim(hitboxRect.right - hitboxRect.left, hitboxRect.bottom - hitboxRect.top);
+			hitbox = Hitbox(Utils::Vector2<float>(0, 0), dim);
+
+			animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence, hitbox);
+		}
+		else if (hitboxHandlingMode == "Custom") {
+			hitbox = Hitbox(
+				Utils::Vector2<float>(stoi(hitboxTokens[0]), stoi(hitboxTokens[1])),
+				Utils::Dimension(stoi(hitboxTokens[2]), stoi(hitboxTokens[3]))
+			);
+
+		}
+		else {
+			std::string msg = "Hitbox handling mode not implemented: " + hitboxHandlingMode;
+			throw std::exception(msg.c_str());
+		}
+
+		animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence, hitbox);
 		AnimationManager::Add(animationId, animProps);
 	}
 

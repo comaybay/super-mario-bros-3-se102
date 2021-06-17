@@ -6,9 +6,11 @@ namespace Entities {
 	class CollisionWallType2 : public Entity {
 	public:
 		CollisionWallType2(Utils::Vector2<float> position, Utils::Dimension dimension);
-		Utils::Dimension GetDimension() override;
+		const Hitbox& GetHitbox() override;
+		Utils::Dimension GetCurrentSpriteDimension() override;
 
 	private:
-		Utils::Dimension dim;
+		Hitbox hitbox;
 	};
 }
+

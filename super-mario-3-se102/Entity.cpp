@@ -67,6 +67,11 @@ GridType Entity::GetGridType() {
 	return gridType;
 }
 
+const Hitbox& Entity::GetHitbox()
+{
+	return animation->GetHitbox();
+}
+
 Utils::SpriteBox Entity::GetSpriteBox() {
 	return animation->GetCurrentSpriteBox();
 }
@@ -74,7 +79,7 @@ Utils::SpriteBox Entity::GetSpriteBox() {
 //do nothing by default
 void Entity::OnReady() {}
 
-Utils::Dimension Entity::GetDimension()
+Utils::Dimension Entity::GetCurrentSpriteDimension()
 {
 	RECT rect1 = GetSpriteBox().rect;
 	return Utils::Dimension(rect1.right - rect1.left, rect1.bottom - rect1.top);

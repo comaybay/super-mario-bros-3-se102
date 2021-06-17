@@ -50,7 +50,8 @@ public:
 	/// </summary>
 	GridType GetGridType();
 
-	virtual Utils::Dimension GetDimension();
+	virtual Utils::Dimension GetCurrentSpriteDimension();
+	virtual const Hitbox& GetHitbox();
 	Utils::SpriteBox GetSpriteBox();
 	virtual void Update(float delta);
 	virtual void PostUpdate();
