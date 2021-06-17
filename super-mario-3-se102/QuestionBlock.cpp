@@ -1,7 +1,7 @@
 #include "QuestionBlock.h"
-#include "Game.h"
 #include "Groups.h"
 #include "EntityManager.h"
+#include "Scene.h"
 using namespace Entities;
 using namespace Utils;
 

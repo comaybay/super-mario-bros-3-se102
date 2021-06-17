@@ -26,7 +26,6 @@ public:
 	static bool IsKeyPressed(int keyCode);
 	static void SwitchScene(LPScene scene);
 	static void EnableCollisionEngine(bool state);
-	static const Utils::Vector2<float> Gravity;
 	static const int TILE_SIZE = 16;
 private:
 	static int scale;

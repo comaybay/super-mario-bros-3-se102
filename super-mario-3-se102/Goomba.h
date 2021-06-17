@@ -18,7 +18,6 @@ namespace Entities {
 		std::string colorCode;
 		float time;
 		Utils::Vector2<float> speed;
-		static float maxFallSpeed;
 		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
 		virtual void OnReady() override;

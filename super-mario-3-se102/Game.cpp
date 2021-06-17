@@ -24,7 +24,6 @@ LPD3DXSPRITE Game::d3dxSprite;
 BYTE Game::keyStates[256];
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
-const Utils::Vector2<float> Game::Gravity = Utils::Vector2<float>(0, 1200);
 LPScene Game::activeScene = nullptr;
 bool Game::enableCollisionEngine = true;
 

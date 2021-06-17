@@ -1,11 +1,11 @@
 #include "Goomba.h"
 #include "CollisionHandling.h"
-#include "Game.h"
 #include "Groups.h"
+#include "EntityConstants.h"
+#include "Scene.h"
 using namespace Entities;
 using namespace Utils;
 
-float Goomba::maxFallSpeed = 230;
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", "HitboxGoomba", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
@@ -23,13 +23,13 @@ void Goomba::OnReady()
 }
 
 void Goomba::MoveAround(float delta) {
-	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, maxFallSpeed);
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
 void Goomba::Die(float delta) {
-	velocity += Game::Gravity * delta;
-	velocity.y = min(velocity.y, maxFallSpeed);
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	time += delta;
 

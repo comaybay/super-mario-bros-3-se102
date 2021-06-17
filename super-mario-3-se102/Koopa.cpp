@@ -55,6 +55,6 @@ void Koopa::Update(float delta)
 }
 
 void Koopa::MoveAround(float delta) {
-	velocity += Game::Gravity * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }

@@ -2,11 +2,12 @@
 #include "Game.h"
 #include "EventHandler.h"
 #include "CollisionHandling.h"
+#include "EntityConstants.h"
 #include "Groups.h"
 using namespace Entities;
 using namespace Utils;
 
-const float Mario::MAX_FALL_SPEED = 230;
+const float Mario::MAX_FALL_SPEED = EntityConstants::MAX_FALL_SPEED;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
 const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 740);
@@ -132,7 +133,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 
 void Mario::Idle(float delta)
 {
-	velocity.y += Game::Gravity.y * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
 	if (velocity.x == 0)
@@ -157,7 +158,7 @@ void Mario::Idle(float delta)
 void Mario::Walk(float delta)
 {
 	ApplyHorizontalMovement(delta);
-	velocity.y += Game::Gravity.y * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
 	if (dir.x != 0) {
@@ -183,7 +184,7 @@ void Mario::Walk(float delta)
 void Mario::Run(float delta)
 {
 	ApplyHorizontalMovement(delta);
-	velocity.y += Game::Gravity.y * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 
 	if (dir.x != 0) {
@@ -264,7 +265,7 @@ void Mario::DieWait(float delta) {
 }
 
 void Mario::DieFall(float delta) {
-	Vector2<float> acc(0, Game::Gravity.y / 1.5);
+	Vector2<float> acc(0, EntityConstants::GRAVITY / 1.5);
 	Vector2<float> maxSpeed(0, MAX_FALL_SPEED);
 	velocity += dir * acc * delta;
 }
