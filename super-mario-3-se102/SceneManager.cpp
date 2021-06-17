@@ -2,8 +2,9 @@
 #include "EncodedWorld.h"
 #include "EntityManager.h"
 #include "Utils.h"
-#include "Entities.h"
 #include "Colors.h"
+#include "Entities.h"
+
 #include <fstream>
 
 using namespace Utils;
@@ -14,7 +15,7 @@ std::map <std::string, SceneManager::ParseEntityMethod> SceneManager::parseMetho
 	{"Mario", &SceneManager::ParseMario},
 	{"Goomba", &SceneManager::ParseGoomba},
 	//{"ParaGoomba",&SceneManager::ParseParaGoomba},
-	//{"Koopa",&SceneManager::ParseKoopa},
+	{"Koopa",&SceneManager::ParseKoopa},
 	//{"ParaKoopa", &SceneManager::ParseParaKoopa},
 	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
 	{"Coin", &SceneManager::ParseCoin},
@@ -151,7 +152,6 @@ std::string SceneManager::ParseSpatialPartitionGrid
 
 std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid)
 {
-	using namespace Entities;
 	//TODO:
 	std::string line;
 	while (std::getline(file, line))
@@ -178,9 +178,9 @@ std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntity
 
 		LPEntity entity;
 		if (entityTokens[0] == "WallType1")
-			entity = new CollisionWallType1(pos, dim);
+			entity = new Entities::CollisionWallType1(pos, dim);
 		else if (entityTokens[0] == "WallType2")
-			entity = new CollisionWallType2(pos, dim);
+			entity = new Entities::CollisionWallType2(pos, dim);
 		else {
 			std::string msg = "ParseAndAddWallsEntities failed: undefined wall type: " + entityTokens[0];
 			throw std::exception(msg.c_str());
@@ -254,7 +254,10 @@ LPEntity SceneManager::ParseParaGoomba(const std::vector<std::string>& tokens)
 
 LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
 {
-	return LPEntity();
+	if (tokens.size() != 5)
+		throw Utils::InvalidTokenSizeException(5);
+
+	return new Entities::Koopa(Colors::ToColorCode("Green"), Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
 }
 
 LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
