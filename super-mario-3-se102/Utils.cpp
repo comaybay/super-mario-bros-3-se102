@@ -74,12 +74,15 @@ std::vector<std::string> Utils::SplitEvery(int splitLength, const std::string& l
 
 std::string Utils::GetNextNonCommentLine(std::ifstream& file)
 {
-	std::string line = "EOF";
+	std::string resline = "EOF";
+	std::string line;
 	while (std::getline(file, line))
-		if (line[0] != '#' && line != "")
+		if (line[0] != '#' && line != "") {
+			resline = line;
 			break;
+		}
 
-	return line;
+	return resline;
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
