@@ -7,5 +7,7 @@ HitboxGoomba, 0, 3, 16, 12
 
 HitboxKoopa, 0, 10, 16, 15
 
+HitboxKoopaShell, 0, 0, 16, 15
+
 
 

@@ -7,7 +7,9 @@
 using namespace Entities;
 using namespace Utils;
 
-const Vector2<float> Koopa::SPEED(30, 0);
+const float Koopa::WALK_SPEED = 30;
+const float Koopa::SHELL_SLIDE_SPEED = 240;
+const float Koopa::FRICTION = 2600;
 
 Koopa::Koopa(const std::string& colorCode, const Utils::Vector2<float>& position)
 	: Entity(position, colorCode + "KoopaML", "HitboxKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
@@ -19,7 +21,7 @@ void Koopa::OnReady()
 {
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
 	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
-	velocity = (player->GetPosition().x < position.x) ? -SPEED : SPEED;
+	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 }
 
 void Koopa::OnCollision(CollisionData data)
@@ -27,16 +29,7 @@ void Koopa::OnCollision(CollisionData data)
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (VectorHas(Groups::PLAYER, groups)) {
-		Mario* mario = static_cast<Mario*>(data.who);
-		if (data.edge.y == 1.0f) {
-			mario->SwitchState(&Mario::Bounce);
-
-			state.SetHandler(&Koopa::ShellIdle);
-			velocity.x = 0;
-		}
-		else
-			mario->TakeDamage();
-
+		HandlePlayerCollision(data);
 		return;
 	}
 
@@ -48,20 +41,56 @@ void Koopa::OnCollision(CollisionData data)
 	if (VectorHas(Groups::ENEMIES, groups) && state.GetHandler() == &Koopa::ShellIdle)
 		return;
 
-	CollisionHandling::Slide(this, data);
-	if (data.edge.x != 0.0f) {
-		velocity.x = SPEED.x * data.edge.x;
+	if (state.GetHandler() == &Koopa::MoveAround) {
+		CollisionHandling::Slide(this, data);
+		if (data.edge.x != 0.0f) {
+			velocity.x = WALK_SPEED * data.edge.x;
 
-		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
-		SetAnimation(colorCode + anim);
+			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+			SetAnimation(colorCode + anim);
+		}
 	}
 }
 
-void Koopa::Update(float delta)
+void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
-	Entity::Update(delta);
+	Mario* mario = static_cast<Mario*>(data.who);
+	if (state.GetHandler() == &Koopa::MoveAround) {
+		if (data.edge.y == 1.0f) {
+			mario->SwitchState(&Mario::Bounce);
+			SwitchState(&Koopa::ShellIdle);
+			velocity.x = 0;
+		}
+		else
+			mario->TakeDamage();
 
-	state.Handle(delta);
+		return;
+	}
+
+	if (state.GetHandler() == &Koopa::ShellIdle) {
+		if (data.edge.x != 0.0f)
+			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
+
+		else {
+			bool isPlayerOnLeftSide = (position.x < mario->GetPosition().x + GetCurrentSpriteDimension().width / 2);
+			float direction = isPlayerOnLeftSide ? 1.0f : -1.0f;
+			velocity.x = SHELL_SLIDE_SPEED * direction;
+		}
+
+		SwitchState(&Koopa::ShellSlide);
+		return;
+	}
+
+	if (state.GetHandler() == &Koopa::ShellSlide) {
+		if (data.edge.x != 0.0f || data.edge.y == -1.0f) {
+			mario->TakeDamage();
+			return;
+		}
+
+		mario->SwitchState(&Mario::Bounce);
+		SwitchState(&Koopa::ShellIdle);
+		return;
+	}
 }
 
 void Koopa::HandleWallCollision(const CollisionData& data)
@@ -74,8 +103,10 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		if (data.edge.y != 0.0f)
 			velocity.y = 0;
 
-		if (data.edge.x != 0.0f)
-			velocity.x = SPEED.x * data.edge.x;
+		if (data.edge.x != 0.0f) {
+			float speed = (state.GetHandler() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
+			velocity.x = speed * data.edge.x;
+		}
 	}
 
 	if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
@@ -84,13 +115,43 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 	}
 }
 
-void Koopa::MoveAround(float delta) {
+void Koopa::Update(float delta)
+{
+	Entity::Update(delta);
+
+	state.Handle(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
+void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
+{
+	state.SetHandler(handler);
+
+	if (handler == &Koopa::ShellIdle) {
+		SetAnimation(colorCode + "KoopaSI");
+		SetHitbox("HitboxKoopaShell");
+	}
+
+	else if (handler == &Koopa::ShellSlide)
+		SetAnimation(colorCode + "KoopaSM");
+}
+
+void Koopa::MoveAround(float delta)
+{
+}
+
 void Koopa::ShellIdle(float delta)
 {
-	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+	if (velocity.x != 0) {
+		float moveDirection = Sign(velocity.x);
+		velocity.x += FRICTION * delta * -moveDirection;
+		if (moveDirection != Sign(velocity.x))
+			velocity.x = 0;
+	}
+}
+
+void Koopa::ShellSlide(float delta)
+{
 }

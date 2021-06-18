@@ -67,6 +67,19 @@ GKoopaMR, Normal, 0.15, Auto
 Enemies
 0, 83, 16, 26, 0, 2
 
+#Shell#
+GKoopaSI, Normal, -1, Manual
+Enemies
+32, 48, 47, 63
+
+GKoopaSILegOut, Normal, -1, Manual
+Enemies
+32, 48, 47, 79
+
+GKoopaSM, Normal, 0.035, Auto
+Enemies
+32, 48, 16, 16, 0, 4
+
 ##QuestionBlocks##
 QuestionBlockNormal, Fixed, 0.14, Auto
 Tiles
