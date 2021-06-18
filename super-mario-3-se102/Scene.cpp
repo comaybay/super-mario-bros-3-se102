@@ -74,7 +74,7 @@ CellRange Scene::GetCellRangeAroundCamera() {
 	Dimension dim = Game::GetGameDimension();
 
 	//add margin
-	int marginSize = 16 * 1;
+	int marginSize = Game::GetGameDimension().width / 4;
 	camPos = camPos - Vector2<float>(marginSize, marginSize);
 	dim.width += marginSize;
 	dim.height += marginSize;
