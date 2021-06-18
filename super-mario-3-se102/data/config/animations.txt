@@ -61,11 +61,11 @@ Enemies
 ##Koopa##
 GKoopaML, Normal, 0.15, Auto
 Enemies
-0, 51, 16, 26, 0, 2
+0, 48, 16, 32, 0, 2
 
 GKoopaMR, Normal, 0.15, Auto
 Enemies
-0, 83, 16, 26, 0, 2
+0, 80, 16, 32, 0, 2
 
 #Shell#
 GKoopaSI, Normal, -1, Manual

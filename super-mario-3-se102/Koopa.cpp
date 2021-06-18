@@ -60,6 +60,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			mario->SwitchState(&Mario::Bounce);
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
+			position.y += Game::TILE_SIZE;
 		}
 		else
 			mario->TakeDamage();

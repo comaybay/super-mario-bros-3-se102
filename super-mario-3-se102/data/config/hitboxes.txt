@@ -5,7 +5,7 @@ HitboxMarioS, 3, 2, 10, 14
 
 HitboxGoomba, 0, 3, 16, 12
 
-HitboxKoopa, 0, 10, 16, 15
+HitboxKoopa, 0, 16, 16, 15
 
 HitboxKoopaShell, 0, 0, 16, 15
 
