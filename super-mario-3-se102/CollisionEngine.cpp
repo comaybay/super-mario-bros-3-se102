@@ -11,8 +11,8 @@ CollisionData::CollisionData() {};
 CollisionData::CollisionData(LPEntity who, Vector2<float> edge, float value, float delta)
 	: who(who), edge(edge), value(value), delta(delta) {};
 
-std::map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
-std::map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
+std::unordered_map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
+std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
 CollisionEngine::OnEntityUnsubscribeHandler CollisionEngine::onEntityUnsubscribe;
 std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 

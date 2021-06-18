@@ -9,8 +9,8 @@
 
 using namespace Utils;
 
-std::map<std::string, std::string> SceneManager::scenePathById;
-std::map <std::string, SceneManager::ParseEntityMethod> SceneManager::parseMethodByEntityName =
+std::unordered_map<std::string, std::string> SceneManager::scenePathById;
+std::unordered_map <std::string, SceneManager::ParseEntityMethod> SceneManager::parseMethodByEntityName =
 {
 	{"Mario", &SceneManager::ParseMario},
 	{"Goomba", &SceneManager::ParseGoomba},

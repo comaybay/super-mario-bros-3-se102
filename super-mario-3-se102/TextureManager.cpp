@@ -4,7 +4,7 @@
 
 std::string TextureID::TILES = "__TILES__";
 
-std::map<std::string, LPDIRECT3DTEXTURE9> TextureManager::textureById;
+std::unordered_map<std::string, LPDIRECT3DTEXTURE9> TextureManager::textureById;
 
 void TextureManager::Load(std::string id, std::string path, D3DCOLOR color_key)
 {

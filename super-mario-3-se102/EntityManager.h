@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <unordered_set>
 #include <list>
@@ -45,7 +45,7 @@ private:
 	CellRange GetCellRangeAroundCamera();
 	LPScene parentScene = nullptr;
 
-	std::map<std::string, std::list<LPEntity>*> entitiesByGroup;
+	std::unordered_map<std::string, std::list<LPEntity>*> entitiesByGroup;
 	std::unordered_set<LPEntity> freeQueue;
 	std::list<LPEntity> nonGridEntities;
 

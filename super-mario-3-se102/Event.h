@@ -1,7 +1,7 @@
 #pragma once
 #include <list>
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <type_traits>
 #include "Utils.h"
@@ -29,7 +29,7 @@ private:
 	intptr_t GetAddressOf(T* handlerThis);
 
 	void OnEntityDestroy(LPEntity entity);
-	std::map<intptr_t, std::list<LPEventHandler<Args...>>*> eventHandlersById;
+	std::unordered_map<intptr_t, std::list<LPEventHandler<Args...>>*> eventHandlersById;
 
 	/// <summary>
 	/// <para>To avoid iterator invalidation while notifying handlers, all operations regarding handler removal 

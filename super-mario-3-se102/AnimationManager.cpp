@@ -2,7 +2,7 @@
 #include "EmptyAnimation.h"
 #include "FixedAnimation.h"
 
-std::map<std::string, AnimationProps> AnimationManager::animationPropsById;
+std::unordered_map<std::string, AnimationProps> AnimationManager::animationPropsById;
 
 AnimationProps::AnimationProps() {}
 

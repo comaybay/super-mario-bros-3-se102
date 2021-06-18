@@ -39,8 +39,8 @@ private:
 	static bool AABBCheck(const CBox& box1, const CBox& box2);
 	static CBox GetSweptBroadphaseBox(const CBox& box);
 	static void OnEntityDestroy(LPEntity entity);
-	static std::map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
-	static std::map<LPEntity, std::vector<std::string>> targetGroupsByLPEntity;
+	static std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
+	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByLPEntity;
 	static OnEntityUnsubscribeHandler onEntityUnsubscribe;
 	static std::list<LPEntity> unsubscribeWaitList;
 

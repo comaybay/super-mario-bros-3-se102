@@ -1,6 +1,6 @@
 #pragma once
 #include "Animation.h"
-#include <map>
+#include <unordered_map>
 
 struct AnimationProps {
 	AnimationType type;
@@ -18,6 +18,6 @@ public:
 	static void Add(const std::string& id, const AnimationProps& anim);
 	static LPAnimation GetNew(const std::string& id);
 private:
-	static std::map<std::string, AnimationProps> animationPropsById;
+	static std::unordered_map<std::string, AnimationProps> animationPropsById;
 };
 

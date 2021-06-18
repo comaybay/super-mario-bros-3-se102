@@ -6,7 +6,6 @@
 #include <dinput.h>
 #include <functional>
 #include <unordered_map>
-#include <map>
 #include <unordered_set>
 
 namespace Utils
@@ -83,9 +82,6 @@ namespace Utils
 	int HexCharToInt(const char& ch);
 
 	template<class K, class V>
-	bool MapHas(const K& key, const std::map<K, V>& map);
-
-	template<class K, class V>
 	bool MapHas(const K& key, const std::unordered_map<K, V>& map);
 
 	template<class T>
@@ -102,12 +98,6 @@ namespace Utils
 
 	template <typename T>
 	inline T Clip(const T& n, const T& lower, const T& upper);
-}
-
-template<class K, class V>
-inline bool Utils::MapHas(const K& key, const std::map<K, V>& map) {
-	auto it = map.find(key);
-	return (it != map.end());
 }
 
 template<class K, class V>
