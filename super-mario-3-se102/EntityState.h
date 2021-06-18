@@ -13,10 +13,11 @@ public:
 	EntityState(LPENTITY entity);
 	EntityState(LPENTITY entity, Handler intialHandler);
 	void SetHandler(Handler handler);
+	Handler GetHandler();
 	void Handle(float delta);
 
 private:
-	EntityState<ENTITY>::Handler stateHandler;
+	Handler stateHandler;
 	LPENTITY handlerThis;
 };
 
@@ -35,6 +36,11 @@ inline EntityState<ENTITY>::EntityState(LPENTITY entity) {
 template<class ENTITY>
 inline void EntityState<ENTITY>::SetHandler(Handler handler) {
 	stateHandler = handler;
+}
+
+template<class ENTITY>
+inline typename EntityState<ENTITY>::Handler EntityState<ENTITY>::GetHandler() {
+	return stateHandler;
 }
 
 template<class ENTITY>

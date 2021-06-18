@@ -30,7 +30,7 @@ Mario::Mario(Vector2<float> position) :
 	powerLevel(PowerLevel::SMALL)
 {
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
-	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES });
+	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS });
 }
 
 void Mario::SetPowerLevel(Mario::PowerLevel level)
@@ -39,40 +39,34 @@ void Mario::SetPowerLevel(Mario::PowerLevel level)
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 }
 
+void Mario::TakeDamage()
+{
+	if (powerLevel == PowerLevel::SMALL)
+		SwitchState(&Mario::Die);
+}
+
 void Mario::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups))
-		WallSlide(data);
+	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups)) {
+		CollisionHandling::Slide(this, data);
 
-	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f)
-		WallSlide(data);
+		if (data.edge.y != 0.0f)
+			velocity.y = 0;
 
-	else if (VectorHas(Groups::ENEMIES, groups)) {
-		if (data.edge.y == -1.0f) {
-			velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
-		}
-		else {
-			parentScene->PlayerDeath();
-			SwitchState(&Mario::DieWait);
-		}
+		if (data.edge.x != 0.0f)
+			velocity.x = 0;
 
+		if (data.edge.y == -1.0f)
+			onGround = true;
 	}
-}
 
-void Mario::WallSlide(CollisionData& data)
-{
-	CollisionHandling::Slide(this, data);
-
-	if (data.edge.y != 0.0f)
-		velocity.y = 0;
-
-	if (data.edge.y == -1.0f)
+	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+		CollisionHandling::Slide(this, data);
 		onGround = true;
-
-	if (data.edge.x != 0.0f)
-		velocity.x = 0;
+		velocity.y = 0;
+	}
 }
 
 void Mario::UpdateHorizontalDirection()
@@ -112,18 +106,22 @@ void Mario::Update(float delta) {
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 	state.SetHandler(stateHandler);
 
-	if (stateHandler == &Mario::Fall) {
-		onGround = false;
-		dir.y = 1;
-	}
-
-	else if (stateHandler == &Mario::Jump) {
+	if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
 		dir.y = 1;
 		onGround = false;
 	}
 
-	else if (stateHandler == &Mario::DieWait) {
+	else if (stateHandler == &Mario::Fall) {
+		onGround = false;
+		dir.y = 1;
+	}
+
+	else if (stateHandler == &Mario::Bounce)
+		velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
+
+	else if (stateHandler == &Mario::Die) {
+		parentScene->PlayerDeath();
 		time = 0;
 		SetAnimation(AnimationSet::DEATH);
 		velocity = Vector2<float>(0, 0);
@@ -230,6 +228,12 @@ void Mario::Jump(float delta)
 	}
 }
 
+void Mario::Bounce(float delta)
+{
+	//same as fall
+	Fall(delta);
+}
+
 void Mario::Fall(float delta) {
 	ApplyHorizontalMovement(delta);
 	velocity.y += ACCELERATION.y * delta;
@@ -254,7 +258,7 @@ void Mario::Fall(float delta) {
 		SwitchState(&Mario::Walk);
 }
 
-void Mario::DieWait(float delta) {
+void Mario::Die(float delta) {
 	time += delta;
 
 	if (time >= 0.75f)

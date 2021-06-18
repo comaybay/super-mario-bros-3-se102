@@ -70,7 +70,6 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	SwitchScene(activeScene);
 }
 
-
 void Game::EnableCollisionEngine(bool state) {
 	enableCollisionEngine = state;
 }

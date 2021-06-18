@@ -25,13 +25,9 @@ namespace Entities {
 		};
 
 		Mario(Utils::Vector2<float> position);
-		void SetPowerLevel(Mario::PowerLevel level);
 		void Update(float delta) override;
-	private:
-		void OnCollision(CollisionData data);
-		void WallSlide(CollisionData& data);
-		void UpdateHorizontalDirection();
-		Mario::AnimationSet GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel);
+		void SetPowerLevel(Mario::PowerLevel level);
+		void TakeDamage();
 
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
@@ -39,8 +35,15 @@ namespace Entities {
 		void Run(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
-		void DieWait(float delta);
+		void Bounce(float delta);
+		void Die(float delta);
 		void DieFall(float delta);
+
+	private:
+		void OnCollision(CollisionData data);
+		void UpdateHorizontalDirection();
+		Mario::AnimationSet GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel);
+
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
 

@@ -15,7 +15,9 @@ namespace Entities {
 		void OnReady() override;
 		void OnCollision(CollisionData data);
 
+		void HandleWallCollision(const CollisionData& data);
 		void MoveAround(float delta);
+		void ShellIdle(float delta);
 
 		std::string colorCode;
 		EntityState<Koopa> state;
