@@ -20,11 +20,9 @@ public:
 	void ForEach(std::function<void(LPEntity)> handler);
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
 	const LPGrid GetGrid(GridType gridType);
-	const std::list<LPEntity>& GetNonGridEntities();
+	const std::unordered_set<LPEntity>& GetNonGridEntities();
 	void QueueFree(LPEntity entity);
 	void FreeEntitiesInQueue();
-
-
 
 	/// <summary>
 	/// Used internally by SceneManager
@@ -44,7 +42,7 @@ private:
 
 	std::unordered_map<std::string, std::list<LPEntity>*> entitiesByGroup;
 	std::unordered_set<LPEntity> freeQueue;
-	std::list<LPEntity> nonGridEntities;
+	std::unordered_set<LPEntity> nonGridEntities;
 
 	LPGrid wallEntitySPGrid = nullptr;
 	LPGrid staticEntitySPGrid = nullptr;

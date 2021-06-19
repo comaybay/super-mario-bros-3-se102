@@ -66,7 +66,7 @@ void EntityManager::_AddWithoutPutToGrid(LPEntity entity)
 {
 	AddToGroups(entity->GetEntityGroups(), entity);
 	entity->_SetParentScene(parentScene);
-	nonGridEntities.push_back(entity);
+	nonGridEntities.insert(entity);
 }
 
 void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
@@ -112,7 +112,7 @@ const LPGrid EntityManager::GetGrid(GridType gridType)
 	}
 }
 
-const std::list<LPEntity>& EntityManager::GetNonGridEntities()
+const std::unordered_set<LPEntity>& EntityManager::GetNonGridEntities()
 {
 	return nonGridEntities;
 }
@@ -141,6 +141,9 @@ void EntityManager::FreeEntitiesInQueue() {
 			auto removed = std::remove(entitiesByGroup[group]->begin(), entitiesByGroup[group]->end(), entity);
 			entitiesByGroup[group]->erase(removed);
 		}
+
+		if (entity->GetGridType() == GridType::NONE)
+			nonGridEntities.erase(entity);
 
 		delete entity;
 	}
