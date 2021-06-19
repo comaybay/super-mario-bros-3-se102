@@ -4,11 +4,12 @@
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
+#include "BoomFX.h"
 using namespace Entities;
 using namespace Utils;
 
 const float Goomba::WALK_SPEED = 30.0f;
-const Vector2<float> Goomba::KNOCK_OVER_VELOCITY(60, -200);
+const Vector2<float> Goomba::KNOCK_OVER_VELOCITY(60, -250);
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", "HitboxGoomba", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
@@ -91,6 +92,9 @@ void Goomba::KnockOver(float horizontalDirection)
 {
 	SetEnabledForCollisionDetection(false);
 	state.SetHandler(&Goomba::StateKnockOver);
+	SetAnimation(colorCode + "GoombaKO");
 	velocity = KNOCK_OVER_VELOCITY;
 	velocity.x *= horizontalDirection;
+
+	parentScene->AddEntity(new BoomFX(position));
 }

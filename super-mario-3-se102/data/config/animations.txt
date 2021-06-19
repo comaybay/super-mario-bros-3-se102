@@ -7,7 +7,7 @@
 #If SpriteboxHandlingMode = Auto => StartPosition (X, Y), Dimension (Width, Height), Space, FrameCount, [Offset (X, Y) (Default=0)]
 #If SpriteboxHandlingMode = Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
 
-##Small mario##
+##Small mario##====================================
 #Move#
 MarioSML, Normal, 0.066, Auto
 PlayableCharacters
@@ -49,7 +49,7 @@ MarioDeath, Normal, -1, Manual
 PlayableCharacters
 307, 16, 322, 31
 
-##Goomba##
+##Goomba##====================================
 BGoombaM, Normal, 0.15, Auto
 Enemies
 0, 0, 16, 16, 0, 2
@@ -58,7 +58,11 @@ BGoombaDeath, Normal, -1, Manual
 Enemies
 32, 0, 47, 15
 
-##Koopa##
+BGoombaKO, Normal, -1, Manual
+Enemies
+0, 16, 15, 31
+
+##Koopa##====================================
 GKoopaML, Normal, 0.15, Auto
 Enemies
 0, 48, 16, 32, 0, 2
@@ -80,12 +84,17 @@ GKoopaSM, Normal, 0.035, Auto
 Enemies
 32, 48, 16, 16, 0, 4
 
-##QuestionBlocks##
+##QuestionBlocks##====================================
 QuestionBlockNormal, Fixed, 0.14, Auto
 Tiles
 1140, 1, 16, 16, 1, 4 
 
-##Coin##
+##Coin##====================================
 Coin, Fixed, 0.125, Auto
 Tiles
 936, 69, 16, 16, 1, 4
+
+##Effects##====================================
+BoomFX, Normal, 0.025, Auto
+Enemies
+160, 0, 16, 16, 0, 4
