@@ -1,5 +1,6 @@
 #include "Koopa.h"
 #include "Mario.h"
+#include "Goomba.h"
 #include "Groups.h"
 #include "Game.h"
 #include "CollisionHandling.h"
@@ -53,8 +54,6 @@ void Koopa::OnCollision(CollisionData data)
 			SetAnimation(colorCode + anim);
 		}
 	}
-
-
 }
 
 void Koopa::HandlePlayerCollision(const CollisionData& data)
@@ -113,8 +112,10 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 			float speed = (state.GetHandler() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
 			velocity.x = speed * data.edge.x;
 
-			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
-			SetAnimation(colorCode + anim);
+			if (state.GetHandler() == &Koopa::MoveAround) {
+				std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+				SetAnimation(colorCode + anim);
+			}
 		}
 	}
 
