@@ -52,6 +52,13 @@ void Koopa::OnCollision(CollisionData data)
 
 			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 			SetAnimation(colorCode + anim);
+			return;
+		}
+
+		if (state.GetHandler() == &Koopa::ShellSlide &&
+			VectorHas(std::string("Goombas"), data.who->GetEntityGroups())) {
+			static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
+			return;
 		}
 	}
 }

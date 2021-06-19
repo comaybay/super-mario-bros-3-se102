@@ -7,12 +7,13 @@
 using namespace Entities;
 using namespace Utils;
 
+const float Goomba::WALK_SPEED = 30.0f;
+const Vector2<float> Goomba::KNOCK_OVER_VELOCITY(60, -200);
 
 Goomba::Goomba(std::string colorCode, Vector2<float> position)
 	: Entity(position, colorCode + "GoombaM", "HitboxGoomba", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(colorCode),
-	speed(Vector2<float>(30, 0)),
-	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
+	state(EntityState<Goomba>(this, &Goomba::StateMoveAround)),
 	time(0)
 {}
 
@@ -20,29 +21,33 @@ void Goomba::OnReady()
 {
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
 	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
-	velocity = (player->GetPosition().x < position.x) ? Vector2<float>(-30, 0) : Vector2<float>(30, 0);
+	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 }
 
-void Goomba::MoveAround(float delta) {
+
+void Goomba::Update(float delta)
+{
+	Entity::Update(delta);
+
+	state.Handle(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
-void Goomba::Die(float delta) {
-	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+void Goomba::StateMoveAround(float delta) {
 
+}
+
+void Goomba::StateDie(float delta) {
 	time += delta;
 
 	if (time >= 0.25f)
 		parentScene->QueueFree(this);
 }
 
-void Goomba::Update(float delta)
+void Goomba::StateKnockOver(float delta)
 {
-	Entity::Update(delta);
-
-	state.Handle(delta);;
 }
 
 void Goomba::OnCollision(CollisionData data)
@@ -54,14 +59,14 @@ void Goomba::OnCollision(CollisionData data)
 
 		if (data.edge.y == 1.0f) {
 			mario->SwitchState(&Mario::Bounce);
-			state.SetHandler(&Goomba::Die);
+			state.SetHandler(&Goomba::StateDie);
 			SetAnimation(colorCode + "GoombaDeath");
 			velocity.x = 0;
 			return;
 		}
 
 		mario->TakeDamage();
-		velocity.x = (position.x < data.who->GetPosition().x) ? speed.x : -speed.x;
+		velocity.x = (position.x < data.who->GetPosition().x) ? WALK_SPEED : -WALK_SPEED;
 		return;
 	}
 
@@ -78,6 +83,14 @@ void Goomba::OnCollision(CollisionData data)
 		velocity.y = 0;
 
 	else if (data.edge.x != 0.0f)
-		velocity.x = speed.x * -Sign(velocity.x);
+		velocity.x = WALK_SPEED * -Sign(velocity.x);
 
+}
+
+void Goomba::KnockOver(float horizontalDirection)
+{
+	SetEnabledForCollisionDetection(false);
+	state.SetHandler(&Goomba::StateKnockOver);
+	velocity = KNOCK_OVER_VELOCITY;
+	velocity.x *= horizontalDirection;
 }

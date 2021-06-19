@@ -10,17 +10,21 @@ namespace Entities {
 	public:
 		Goomba(std::string color, Utils::Vector2<float> position);
 		void Update(float delta) override;
+		void KnockOver(float horizontalDirection);
 
 	private:
-		void MoveAround(float delta);
-		void Die(float delta);
+		virtual void OnReady() override;
+		void OnCollision(CollisionData data);
+
+		void StateMoveAround(float delta);
+		void StateDie(float delta);
+		void StateKnockOver(float delta);
 
 		std::string colorCode;
 		float time;
-		Utils::Vector2<float> speed;
 		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
-		virtual void OnReady() override;
-		void OnCollision(CollisionData data);
+		static const float WALK_SPEED;
+		static const Utils::Vector2<float> KNOCK_OVER_VELOCITY;
 	};
 }

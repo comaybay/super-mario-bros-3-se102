@@ -160,9 +160,7 @@ void Scene::_Ready()
 	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
 	entityManager->AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
 
-	entityManager->ForEach([](LPEntity entity) {
-		entity->OnReady();
-		});
+	entityManager->ForEach([](LPEntity entity) {entity->OnReady(); });
 	camera.FollowEntity(entityManager->GetEntitiesByGroup(Groups::PLAYER).front());
 }
 
