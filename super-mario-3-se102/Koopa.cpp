@@ -28,28 +28,33 @@ void Koopa::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::PLAYER, groups)) {
-		HandlePlayerCollision(data);
-		return;
-	}
-
 	if (VectorHas(Groups::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
 		return;
 	}
 
-	if (VectorHas(Groups::ENEMIES, groups) && state.GetHandler() == &Koopa::ShellIdle)
+	if (VectorHas(Groups::PLAYER, groups)) {
+		HandlePlayerCollision(data);
 		return;
+	}
 
-	if (state.GetHandler() == &Koopa::MoveAround) {
-		CollisionHandling::Slide(this, data);
-		if (data.edge.x != 0.0f) {
+	if (VectorHas(Groups::ENEMIES, groups)) {
+		if (state.GetHandler() == &Koopa::ShellIdle)
+			return;
+
+		if (state.GetHandler() == &Koopa::MoveAround) {
+			CollisionHandling::Slide(this, data);
+			if (data.edge.x == 0.0f)
+				return;
+
 			velocity.x = WALK_SPEED * data.edge.x;
 
 			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 			SetAnimation(colorCode + anim);
 		}
 	}
+
+
 }
 
 void Koopa::HandlePlayerCollision(const CollisionData& data)
