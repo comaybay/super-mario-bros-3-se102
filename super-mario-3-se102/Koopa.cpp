@@ -112,6 +112,9 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		if (data.edge.x != 0.0f) {
 			float speed = (state.GetHandler() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
 			velocity.x = speed * data.edge.x;
+
+			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+			SetAnimation(colorCode + anim);
 		}
 	}
 
