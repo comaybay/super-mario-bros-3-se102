@@ -33,11 +33,14 @@ void CollisionEngine::Update(float delta) {
 
 	for (auto& pair : targetGroupsByLPEntity) {
 		LPEntity entity = pair.first;
+		if (!entity->_IsEnabledForCollisionDetection())
+			continue;
+
 		//get target entities (use set data structure to avoid duplications)
 		std::unordered_set<LPEntity> targetSet;
 		for (std::string& groupName : pair.second)
 			for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
-				if (target != entity)
+				if (target != entity && target->_IsEnabledForCollisionDetection())
 					targetSet.insert(target);
 
 		std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
@@ -72,9 +75,14 @@ void CollisionEngine::Update(float delta) {
 
 			if (dataForEntity.value == 1.0f)
 				continue;
+
 			collisionEventByLPEntity[entity]->Notify(dataForEntity);
-			//if target also subscribed and it's target groups include entity
-			if (MapHas(target, collisionEventByLPEntity) && VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByLPEntity[target])) {
+
+			//if after notification, target still enabled, also subscribed and it's target groups include entity
+			if (target->_IsEnabledForCollisionDetection() &&
+				MapHas(target, collisionEventByLPEntity) &&
+				VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByLPEntity[target]))
+			{
 				collisionEventByLPEntity[target]->Notify(dataForTarget);
 				hasPreviouslyNotified.insert(toKey(target, entity));
 			}

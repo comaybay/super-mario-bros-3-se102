@@ -48,6 +48,12 @@ void Entity::Init()
 {
 	groups.push_back(Groups::ALL);
 	destroyEvent = new Event<LPEntity>();
+	enabledForCollisionDetection = true;
+}
+
+bool Entity::_IsEnabledForCollisionDetection()
+{
+	return enabledForCollisionDetection;
 }
 
 Entity::~Entity() {
@@ -81,6 +87,11 @@ void Entity::SetPosition(const Vector2<float>& position)
 void Entity::SetVelocity(const Vector2<float>& velocity)
 {
 	this->velocity = velocity;
+}
+
+void Entity::SetEnabledForCollisionDetection(bool enabled)
+{
+	enabledForCollisionDetection = enabled;
 }
 
 GridType Entity::GetGridType() {

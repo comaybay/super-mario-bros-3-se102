@@ -14,20 +14,17 @@ class EntityManager
 {
 public:
 	EntityManager(LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid);
-	void ForEach(std::function<void(LPEntity)> handler);
+	void Add(LPEntity entity);
 	void AddToGroup(std::string groupName, LPEntity entity);
 	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
+	void ForEach(std::function<void(LPEntity)> handler);
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
 	const LPGrid GetGrid(GridType gridType);
 	const std::list<LPEntity>& GetNonGridEntities();
-
 	void QueueFree(LPEntity entity);
 	void FreeEntitiesInQueue();
 
-	/// <summary>
-	/// Add entity at runtime, only used by Scene.
-	/// </summary>
-	void Add(LPEntity entity);
+
 
 	/// <summary>
 	/// Used internally by SceneManager

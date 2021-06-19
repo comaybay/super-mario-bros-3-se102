@@ -33,6 +33,7 @@ public:
 	Utils::Vector2<float> GetPosition();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
+	void SetEnabledForCollisionDetection(bool enabled);
 
 	/// <summary>
 	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
@@ -40,9 +41,16 @@ public:
 	virtual void OnReady();
 
 	/// <summary>
-	/// Used internaly SceneManager to inject entity's parent scene
+	/// Used internaly by SceneManager to inject entity's parent scene
 	/// </summary>
 	void _SetParentScene(LPScene scene);
+
+
+	/// <summary>
+	/// Used internaly by CollisionEngine to see if entity want to detect collision.
+	/// </summary>
+	/// <returns></returns>
+	bool _IsEnabledForCollisionDetection();
 
 	/// <summary>
 	/// remainging velocity is used internaly by CollisionEngine and CollisionHandling
@@ -74,6 +82,7 @@ protected:
 	LPConstHitbox hitbox;
 private:
 	void Init();
+	bool enabledForCollisionDetection;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;
 	LPEvent<LPEntity> destroyEvent; //use LPEvent instead of Event to avoid circular dependency
