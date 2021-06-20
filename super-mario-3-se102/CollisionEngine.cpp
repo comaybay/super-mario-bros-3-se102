@@ -30,6 +30,9 @@ void CollisionEngine::Update(float delta) {
 
 	unsubscribeWaitList.clear();
 
+	//keep tracks of what has been notified
+	std::unordered_set<std::string> hasPreviouslyNotified;
+
 	for (auto& pair : targetGroupsByLPEntity) {
 		LPEntity entity = pair.first;
 		if (!entity->_IsEnabledForCollisionDetection())
@@ -60,7 +63,6 @@ void CollisionEngine::Update(float delta) {
 		};
 
 		std::sort(targetEntities.begin(), targetEntities.end(), ascending);
-		std::unordered_set<std::string> hasPreviouslyNotified;
 
 		auto toKey = [](LPEntity a, LPEntity b) -> std::string {
 			return 	std::to_string(reinterpret_cast<intptr_t>(a))
