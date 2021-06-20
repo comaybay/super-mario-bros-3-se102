@@ -16,8 +16,12 @@ public:
 	template<class T>
 	void Subscribe(T* handlerThis, void(T::* handler)(Args...));
 
+	void Subscribe(void(*handler)(Args...));
+
 	template<class T>
 	void Unsubscribe(T* handlerThis, void(T::* handler)(Args...));
+
+	void Unsubscribe(void(*handler)(Args...));
 
 	void Notify(Args...);
 
@@ -46,7 +50,20 @@ private:
 		ToRemoveProps(intptr_t thisId, intptr_t handlerId) : thisId(thisId), handlerId(handlerId) {}
 	};
 	std::list<ToRemoveProps> unsubscribeWaitList;
+
+
+	/// <summary>
+	/// Since ordinary functions do not have "this", an id represent a null pointer will be used for all subscribed ordinary functions
+	/// </summary>
+	const intptr_t ORDINARY_FUNC_THIS_ID = 0;
 };
+
+template<class ...Args>
+inline Event<Args...>::~Event()
+{
+	for (auto& pair : eventHandlersById)
+		delete pair.second;
+}
 
 template<class ...Args>
 template<class T>
@@ -71,6 +88,19 @@ inline void Event<Args...>::Subscribe(T* handlerThis, void(T::* handler)(Args...
 }
 
 template<class ...Args>
+inline void Event<Args...>::Subscribe(void(*handler)(Args...))
+{
+	using namespace std::placeholders;
+
+	LPEventHandler<Args...> eventHandler = new EventHandler<Args...>(GetAddressOf(handler), handler);
+
+	if (!Utils::MapHas(ORDINARY_FUNC_THIS_ID, eventHandlersById))
+		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new std::list<LPEventHandler<Args...>>;
+
+	eventHandlersById[ORDINARY_FUNC_THIS_ID]->push_back(eventHandler);
+}
+
+template<class ...Args>
 template<class T>
 inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args...))
 {
@@ -83,10 +113,10 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args.
 }
 
 template<class ...Args>
-inline Event<Args...>::~Event()
+inline void Event<Args...>::Unsubscribe(void(*handler)(Args...))
 {
-	for (auto& pair : eventHandlersById)
-		delete pair.second;
+	intptr_t handlerId = GetAddressOf(handler);
+	unsubscribeWaitList.push_back(ToRemoveProps(ORDINARY_FUNC_THIS_ID, handlerId));
 }
 
 template<class ...Args>
