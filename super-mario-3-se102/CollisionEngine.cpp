@@ -130,6 +130,10 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 	dataForE2 = CollisionData(
 		e1, -dataForE1.edge, 0, delta
 	);
+
+	//give value to moving entity
+	if (e1->GetGridType() == GridType::STATIC_ENTITIES || e1->GetGridType() == GridType::WALL_ENTITIES)
+		std::swap(dataForE1.value, dataForE2.value);
 }
 
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
