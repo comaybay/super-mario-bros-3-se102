@@ -58,12 +58,17 @@ void CollisionEngine::Update(float delta) {
 			else
 				return aVal < bVal;
 		};
+
 		std::sort(targetEntities.begin(), targetEntities.end(), ascending);
 		std::unordered_set<std::string> hasPreviouslyNotified;
+
 		auto toKey = [](LPEntity a, LPEntity b) -> std::string {
-			return reinterpret_cast<const char*>(a) + std::string(",") + reinterpret_cast<const char*>(b);
+			return 	std::to_string(reinterpret_cast<intptr_t>(a))
+				+ std::string(",")
+				+ std::to_string(reinterpret_cast<intptr_t>(b));
 		};
-		//notify both if collided, need to notify right away so the next detections can give accurate results
+
+		//notify both if collided, need to notify right away so next detections can give accurate results
 		for (const LPEntity& target : targetEntities) {
 			if (SetHas(toKey(entity, target), hasPreviouslyNotified))
 				continue;
