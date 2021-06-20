@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
+#include "PointUpFactory.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -72,6 +73,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
 			position.y += Game::TILE_SIZE;
+			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
 		else
 			mario->TakeDamage();
@@ -87,6 +89,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			bool isPlayerOnLeftSide = (position.x < mario->GetPosition().x + GetCurrentSpriteDimension().width / 2);
 			float direction = isPlayerOnLeftSide ? 1.0f : -1.0f;
 			velocity.x = SHELL_SLIDE_SPEED * direction;
+			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
 
 		SwitchState(&Koopa::ShellSlide);
@@ -101,6 +104,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 
 		mario->SwitchState(&Mario::Bounce);
 		SwitchState(&Koopa::ShellIdle);
+		parentScene->AddEntity(PointUpFactory::Create(position));
 		return;
 	}
 }
