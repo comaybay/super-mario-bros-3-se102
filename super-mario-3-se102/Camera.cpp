@@ -42,7 +42,7 @@ void Camera::Update()
 void Camera::FollowEntity(LPEntity entity)
 {
 	target = entity;
-	entity->GetDestroyEvent()->Subscribe(this, &Camera::OnEntityDestroy);
+	entity->GetDestroyEvent().Subscribe(this, &Camera::OnEntityDestroy);
 }
 
 void Camera::OnEntityDestroy(LPEntity _)

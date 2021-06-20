@@ -28,7 +28,7 @@ void DynamicGrid::UpdateCells(const CellRange& range)
 void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex)
 {
 	Grid::AddToCell(entity, cellIndex);
-	entity->GetDestroyEvent()->Subscribe(this, &DynamicGrid::OnEntityDestroy);
+	entity->GetDestroyEvent().Subscribe(this, &DynamicGrid::OnEntityDestroy);
 	indexbyLPEntity[entity] = cellIndex;
 }
 

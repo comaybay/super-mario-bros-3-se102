@@ -89,12 +89,12 @@ void CollisionEngine::Update(float delta) {
 	}
 }
 
-LPEvent<CollisionData> CollisionEngine::GetCollisionEventOf(LPEntity entity)
+Event<CollisionData>& CollisionEngine::GetCollisionEventOf(LPEntity entity)
 {
 	if (!Utils::MapHas(entity, collisionEventByLPEntity))
 		collisionEventByLPEntity[entity] = new Event<CollisionData>();
 
-	return collisionEventByLPEntity[entity];
+	return *collisionEventByLPEntity[entity];
 }
 
 void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2)

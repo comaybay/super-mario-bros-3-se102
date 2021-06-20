@@ -23,7 +23,7 @@ Grid::~Grid()
 void Grid::AddToCell(LPEntity entity, const Vector2<int>& cellIndex)
 {
 	cells[int(cellIndex.y * numOfCols + cellIndex.x)]->push_back(entity);
-	entity->GetDestroyEvent()->Subscribe(this, &Grid::OnEntityDestroy);
+	entity->GetDestroyEvent().Subscribe(this, &Grid::OnEntityDestroy);
 }
 
 Grid::LPConstEntitiesInCell Grid::EntitiesAt(const Vector2<int>& cellIndex)

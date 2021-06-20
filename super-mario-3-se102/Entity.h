@@ -26,7 +26,8 @@ public:
 		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
 		const std::string& entityGroup, GridType gridType
 	);
-	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroup, GridType gridType);
+	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType);
+	Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType);
 	~Entity();
 	void SetAnimation(std::string id);
 	void SetHitbox(std::string id);
@@ -72,7 +73,7 @@ public:
 	virtual void PostUpdate();
 	virtual void Render();
 	const std::vector<std::string>& GetEntityGroups();
-	LPEvent<LPEntity> const GetDestroyEvent();
+	Event<LPEntity>& GetDestroyEvent();
 protected:
 	LPScene parentScene;
 	std::vector<std::string> groups;

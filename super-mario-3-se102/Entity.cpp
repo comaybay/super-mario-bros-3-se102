@@ -44,6 +44,16 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::vector<std::str
 	Init();
 }
 
+Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType) :
+	position(position),
+	animation(AnimationManager::GetNew(AnimationId::NONE)),
+	hitbox(HitboxManager::Get(HitboxId::NONE)),
+	groups(std::vector<std::string> {entityGroup}),
+	gridType(gridType)
+{
+	Init();
+}
+
 void Entity::Init()
 {
 	groups.push_back(Groups::ALL);
@@ -133,9 +143,9 @@ void Entity::Render()
 	animation->Render(position);
 }
 
-LPEvent<LPEntity> const Entity::GetDestroyEvent()
+Event<LPEntity>& Entity::GetDestroyEvent()
 {
-	return destroyEvent;
+	return *destroyEvent;
 }
 
 const std::vector<std::string>& Entity::GetEntityGroups()

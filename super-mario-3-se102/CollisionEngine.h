@@ -29,7 +29,7 @@ public:
 	static void Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
 	static float DetectCollisionValue(LPEntity e1, LPEntity e2, float delta);
 private:
-	static LPEvent<CollisionData> GetCollisionEventOf(LPEntity entity);
+	static Event<CollisionData>& GetCollisionEventOf(LPEntity entity);
 	static CollisionData SweptAABB(const CBox& mBox, const CBox& sBox);
 	static bool AABBCheck(const CBox& box1, const CBox& box2);
 	static CBox GetSweptBroadphaseBox(const CBox& box);
@@ -55,14 +55,14 @@ template<class TEntity, class ...Args>
 static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
 	//entites in these groups will be check for collision with entity
 	targetGroupsByLPEntity[handlerThis] = collisionTargetGroups;
-	GetCollisionEventOf(handlerThis)->Subscribe(handlerThis, handler);
-	handlerThis->GetDestroyEvent()->Subscribe(&OnEntityUnsubscribe);
+	GetCollisionEventOf(handlerThis).Subscribe(handlerThis, handler);
+	handlerThis->GetDestroyEvent().Subscribe(&OnEntityUnsubscribe);
 }
 
 template<class TEntity, class ...Args>
 static void CollisionEngine::Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...)) {
-	GetCollisionEventOf(handlerThis)->Unsubscribe(handlerThis, handler);
-	handlerThis->GetDestroyEvent()->Unsubscribe(&OnEntityUnsubscribe);
+	GetCollisionEventOf(handlerThis).Unsubscribe(handlerThis, handler);
+	handlerThis->GetDestroyEvent().Unsubscribe(&OnEntityUnsubscribe);
 
 	unsubscribeWaitList.push_back(handlerThis);
 }
