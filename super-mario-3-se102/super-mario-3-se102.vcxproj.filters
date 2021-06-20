@@ -147,6 +147,12 @@
     <ClCompile Include="Groups.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PointUp.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="PointUpFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -261,6 +267,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BoomFX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointUpFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

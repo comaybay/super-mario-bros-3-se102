@@ -83,7 +83,7 @@ inline void Event<Args...>::Subscribe(T* handlerThis, void(T::* handler)(Args...
 	//unregister when entity is destroy
 	//if is other type, let user unsubscribe manually
 	if (std::is_base_of<Entity, T>::value) {
-		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent()->Subscribe(this, &Event<Args...>::OnEntityDestroy);
+		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent().Subscribe(this, &Event<Args...>::OnEntityDestroy);
 	}
 }
 

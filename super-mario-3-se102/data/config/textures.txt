@@ -14,5 +14,5 @@ Tiles, spritesheets/tiles.png
 Fonts, spritesheets/fonts.png
 0, 224, 142	
 
-Fonts, spritesheets/HUD.png
+HUD, spritesheets/HUD.png
 0, 224, 142	

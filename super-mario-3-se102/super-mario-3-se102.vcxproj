@@ -188,6 +188,7 @@
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
+    <ClCompile Include="PointUpFactory.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="CollisionWallType1.cpp" />
     <ClCompile Include="CollisionEngine.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="PointUp.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -241,11 +243,13 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Groups.h" />
+    <ClInclude Include="PointUpFactory.h" />
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="RectSequence.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="PointUp.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

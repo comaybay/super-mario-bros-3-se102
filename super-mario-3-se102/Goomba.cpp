@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Mario.h"
 #include "BoomFX.h"
+#include "PointUpFactory.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -40,7 +41,7 @@ void Goomba::StateMoveAround(float delta) {
 
 }
 
-void Goomba::StateDie(float delta) {
+void Goomba::StompedOn(float delta) {
 	time += delta;
 
 	if (time >= 0.25f)
@@ -60,9 +61,10 @@ void Goomba::OnCollision(CollisionData data)
 
 		if (data.edge.y == 1.0f) {
 			mario->SwitchState(&Mario::Bounce);
-			state.SetHandler(&Goomba::StateDie);
+			state.SetHandler(&Goomba::StompedOn);
 			SetAnimation(colorCode + "GoombaDeath");
 			velocity.x = 0;
+			parentScene->AddEntity(PointUpFactory::Create(position));
 			return;
 		}
 
@@ -97,4 +99,5 @@ void Goomba::KnockOver(float horizontalDirection)
 	velocity.x *= horizontalDirection;
 
 	parentScene->AddEntity(new BoomFX(position));
+	parentScene->AddEntity(PointUpFactory::Create(position));
 }

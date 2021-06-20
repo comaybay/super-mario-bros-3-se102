@@ -28,6 +28,10 @@ namespace Entities {
 		void Update(float delta) override;
 		void SetPowerLevel(Mario::PowerLevel level);
 		void TakeDamage();
+		/// <summary>
+		/// Event will notify when mario jump (meaning point up combo need to restart)
+		/// </summary>
+		Event<LPEntity>& GetRestartPointUpEvent();
 
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
@@ -47,6 +51,7 @@ namespace Entities {
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
 
+		Event<LPEntity> restartPointUp;
 		EventHandler<Mario, CollisionData> onCollision;
 		EntityState<Mario> state;
 		Utils::Vector2<float> dir;

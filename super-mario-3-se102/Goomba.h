@@ -17,7 +17,7 @@ namespace Entities {
 		void OnCollision(CollisionData data);
 
 		void StateMoveAround(float delta);
-		void StateDie(float delta);
+		void StompedOn(float delta);
 		void StateKnockOver(float delta);
 
 		std::string colorCode;

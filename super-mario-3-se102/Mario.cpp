@@ -45,6 +45,11 @@ void Mario::TakeDamage()
 		SwitchState(&Mario::Die);
 }
 
+Event<LPEntity>& Mario::GetRestartPointUpEvent()
+{
+	return restartPointUp;
+}
+
 void Mario::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
@@ -110,6 +115,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
 		dir.y = 1;
 		onGround = false;
+		restartPointUp.Notify(this);
 	}
 
 	else if (stateHandler == &Mario::Fall) {
