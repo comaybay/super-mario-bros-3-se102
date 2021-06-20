@@ -54,9 +54,6 @@
     <ClCompile Include="ResourceLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Groups.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
     </ClCompile>
     <ClCompile Include="CollisionWallType1.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Colors.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBlock.cpp">
       <Filter>Source Files\Entities</Filter>
@@ -126,9 +120,6 @@
     <ClCompile Include="DynamicGrid.cpp">
       <Filter>Source Files\SpatialGrid</Filter>
     </ClCompile>
-    <ClCompile Include="GridType.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Koopa.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -145,6 +136,15 @@
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="BoomFX.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="GridType.cpp">
+      <Filter>Source Files\SpatialGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="Colors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Groups.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
