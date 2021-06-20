@@ -1,5 +1,6 @@
 #pragma once
-#include "Entities.h"
+#include "Utils.h"
+#include "Entity.h"
 
 namespace Entities {
 	class BoomFX : public Entity
