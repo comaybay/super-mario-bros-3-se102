@@ -11,3 +11,8 @@ Enemies, spritesheets/enemies.png
 Tiles, spritesheets/tiles.png
 224, 163, 216
 
+Fonts, spritesheets/fonts.png
+0, 224, 142	
+
+Fonts, spritesheets/HUD.png
+0, 224, 142	
