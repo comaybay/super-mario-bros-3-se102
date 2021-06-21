@@ -28,7 +28,7 @@ public:
 	);
 	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType);
 	Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType);
-	~Entity();
+	virtual ~Entity();
 	void SetAnimation(std::string id);
 	void SetHitbox(std::string id);
 	Utils::Vector2<float> GetPosition();
