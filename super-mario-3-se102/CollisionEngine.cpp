@@ -12,9 +12,11 @@ CollisionData::CollisionData(LPEntity who, Vector2<float> edge, float value, flo
 	: who(who), edge(edge), value(value), delta(delta) {};
 
 std::unordered_map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
-std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByLPEntity;
+std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByMovableLPEntity;
+std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByNonMovingLPEntity;
+//keep tracks of what has been notified
+std::unordered_set<std::string> CollisionEngine::hasPreviouslyNotified;
 std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
-
 
 /// <summary>
 /// <para>This algorithm do collision detection on entities that subsribe to the CollisionEngine, and only do detection between entity and it's given target groups.</para>
@@ -29,69 +31,78 @@ void CollisionEngine::Update(float delta) {
 		OnEntityUnsubscribe(entity);
 
 	unsubscribeWaitList.clear();
+	hasPreviouslyNotified.clear();
 
-	//keep tracks of what has been notified
-	std::unordered_set<std::string> hasPreviouslyNotified;
+	for (auto& pair : targetGroupsByMovableLPEntity)
+		DetectAndNotify(pair.first, pair.second, delta);
 
-	for (auto& pair : targetGroupsByLPEntity) {
-		LPEntity entity = pair.first;
-		if (!entity->_IsEnabledForCollisionDetection())
+	for (auto& pair : targetGroupsByNonMovingLPEntity)
+		DetectAndNotify(pair.first, pair.second, delta);
+}
+
+void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta)
+{
+	auto toKey = [](LPEntity a, LPEntity b) -> std::string {
+		return 	std::to_string(reinterpret_cast<intptr_t>(a))
+			+ std::string(",")
+			+ std::to_string(reinterpret_cast<intptr_t>(b));
+	};
+
+	if (!entity->_IsEnabledForCollisionDetection())
+		return;
+
+	//get target entities (use set data structure to avoid duplications)
+	std::unordered_set<LPEntity> targetSet;
+	for (const std::string& groupName : targetGroups)
+		for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
+			if (target != entity && target->_IsEnabledForCollisionDetection())
+				targetSet.insert(target);
+
+	std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
+
+	//sort target entities by time of collision/closeness
+	auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
+		float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
+		float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
+
+		if (aVal == bVal && aVal != 1.0f) {
+			Vector2<float> ePos = entity->GetPosition();
+			float da = a->GetPosition().DistanceTo(ePos);
+			float db = b->GetPosition().DistanceTo(ePos);
+			return da < db;
+		}
+		//sort by time of collision
+		else
+			return aVal < bVal;
+	};
+
+	std::sort(targetEntities.begin(), targetEntities.end(), ascending);
+
+	//notify both if collided, need to notify right away so next detections can give accurate results
+	for (const LPEntity& target : targetEntities) {
+		if (SetHas(toKey(entity, target), hasPreviouslyNotified))
 			continue;
 
-		//get target entities (use set data structure to avoid duplications)
-		std::unordered_set<LPEntity> targetSet;
-		for (std::string& groupName : pair.second)
-			for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
-				if (target != entity && target->_IsEnabledForCollisionDetection())
-					targetSet.insert(target);
+		CollisionData dataForEntity;
+		CollisionData dataForTarget;
+		CollisionEngine::Detect(entity, target, delta, dataForEntity, dataForTarget);
 
-		std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
+		if (dataForEntity.value == 1.0f)
+			continue;
 
-		//sort target entities by time of collision/closeness
-		auto ascending = [entity, delta](const LPEntity& a, const LPEntity& b) -> bool {
-			float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
-			float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
+		collisionEventByLPEntity[entity]->Notify(dataForEntity);
 
-			//if equal and time = 0, sort by distance to entity
-			if (aVal == bVal && aVal != 1.0f) {
-				Vector2<float> ePos = entity->GetPosition();
-				return a->GetPosition().DistanceTo(ePos) < b->GetPosition().DistanceTo(ePos);
-			}
-			//sort by time of collision
-			else
-				return aVal < bVal;
-		};
+		//if after notification, target still enabled, also subscribed and it's target groups include entity
+		bool targetHasThisEntityAsTarget =
+			VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByMovableLPEntity[target]) ||
+			VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByNonMovingLPEntity[target]);
 
-		std::sort(targetEntities.begin(), targetEntities.end(), ascending);
-
-		auto toKey = [](LPEntity a, LPEntity b) -> std::string {
-			return 	std::to_string(reinterpret_cast<intptr_t>(a))
-				+ std::string(",")
-				+ std::to_string(reinterpret_cast<intptr_t>(b));
-		};
-
-		//notify both if collided, need to notify right away so next detections can give accurate results
-		for (const LPEntity& target : targetEntities) {
-			if (SetHas(toKey(entity, target), hasPreviouslyNotified))
-				continue;
-
-			CollisionData dataForEntity;
-			CollisionData dataForTarget;
-			CollisionEngine::Detect(entity, target, delta, dataForEntity, dataForTarget);
-
-			if (dataForEntity.value == 1.0f)
-				continue;
-
-			collisionEventByLPEntity[entity]->Notify(dataForEntity);
-
-			//if after notification, target still enabled, also subscribed and it's target groups include entity
-			if (target->_IsEnabledForCollisionDetection() &&
-				MapHas(target, collisionEventByLPEntity) &&
-				VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByLPEntity[target]))
-			{
-				collisionEventByLPEntity[target]->Notify(dataForTarget);
-				hasPreviouslyNotified.insert(toKey(target, entity));
-			}
+		if (target->_IsEnabledForCollisionDetection() &&
+			MapHas(target, collisionEventByLPEntity) &&
+			targetHasThisEntityAsTarget)
+		{
+			collisionEventByLPEntity[target]->Notify(dataForTarget);
+			hasPreviouslyNotified.insert(toKey(target, entity));
 		}
 	}
 }
@@ -104,7 +115,7 @@ Event<CollisionData>& CollisionEngine::GetCollisionEventOf(LPEntity entity)
 	return *collisionEventByLPEntity[entity];
 }
 
-void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2)
+bool CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2)
 {
 	CBox mBox(
 		e1->GetPosition() + e1->GetHitbox()->GetRelativePosition(),
@@ -118,12 +129,15 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 		Utils::Vector2<float>(0, 0)
 	);
 
-	//Broadphase check
+	//broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);
 	if (!AABBCheck(mbb, sBox))
-		return;
+		return false;
 
 	dataForE1 = SweptAABB(mBox, sBox);
+	if (dataForE1.value == 1.0f)
+		return false;
+
 	dataForE1.who = e2;
 	dataForE1.delta = delta;
 
@@ -134,6 +148,8 @@ void CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 	//give value to moving entity
 	if (e1->GetGridType() == GridType::STATIC_ENTITIES || e1->GetGridType() == GridType::WALL_ENTITIES)
 		std::swap(dataForE1.value, dataForE2.value);
+
+	return true;
 }
 
 float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delta)
@@ -150,7 +166,7 @@ float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delt
 		Utils::Vector2<float>(0, 0)
 	);
 
-	//Broadphase check
+	//broadphase check
 	CBox mbb = GetSweptBroadphaseBox(mBox);
 	if (!AABBCheck(mbb, sBox))
 		return 1.0f;
@@ -159,7 +175,8 @@ float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delt
 }
 
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ 
-CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box) {
+CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box)
+{
 	CBox b;
 	b.position = Vector2<float>(
 		box.velocity.x > 0 ? box.position.x : box.position.x + box.velocity.x,
@@ -177,8 +194,15 @@ void CollisionEngine::OnEntityUnsubscribe(LPEntity entity)
 {
 	auto itCE = collisionEventByLPEntity.find(entity);
 	collisionEventByLPEntity.erase(itCE);
-	auto itTG = targetGroupsByLPEntity.find(entity);
-	targetGroupsByLPEntity.erase(itTG);
+
+	if (entity->GetGridType() == GridType::MOVABLE_ENTITIES || entity->GetGridType() == GridType::NONE) {
+		auto itTG = targetGroupsByMovableLPEntity.find(entity);
+		targetGroupsByMovableLPEntity.erase(itTG);
+	}
+	else {
+		auto itTG = targetGroupsByNonMovingLPEntity.find(entity);
+		targetGroupsByNonMovingLPEntity.erase(itTG);
+	}
 }
 
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ with modifications

@@ -26,7 +26,8 @@ public:
 	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
 
 	static void Update(float delta);
-	static void Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
+	static void DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta);
+	static bool Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
 	static float DetectCollisionValue(LPEntity e1, LPEntity e2, float delta);
 private:
 	static Event<CollisionData>& GetCollisionEventOf(LPEntity entity);
@@ -36,8 +37,10 @@ private:
 	static void OnEntityDestroy(LPEntity entity);
 	static void OnEntityUnsubscribe(LPEntity entity);
 	static std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
-	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByLPEntity;
+	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByMovableLPEntity;
+	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByNonMovingLPEntity;
 	static std::list<LPEntity> unsubscribeWaitList;
+	static std::unordered_set<std::string> hasPreviouslyNotified;
 
 	struct CBox {
 		Utils::Vector2<float> position;
@@ -53,8 +56,12 @@ private:
 
 template<class TEntity, class ...Args>
 static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
-	//entites in these groups will be check for collision with entity
-	targetGroupsByLPEntity[handlerThis] = collisionTargetGroups;
+	//entites that have group in one of collisionTargetGroups will be check for collision with entity
+	if (handlerThis->GetGridType() == GridType::MOVABLE_ENTITIES || handlerThis->GetGridType() == GridType::NONE)
+		targetGroupsByMovableLPEntity[handlerThis] = collisionTargetGroups;
+	else
+		targetGroupsByNonMovingLPEntity[handlerThis] = collisionTargetGroups;
+
 	GetCollisionEventOf(handlerThis).Subscribe(handlerThis, handler);
 	handlerThis->GetDestroyEvent().Subscribe(&OnEntityUnsubscribe);
 }
