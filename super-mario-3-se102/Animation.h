@@ -13,8 +13,10 @@ public:
 	virtual void Render(Utils::Vector2<float> position);
 	virtual void Update(float delta);
 	Utils::SpriteBox GetCurrentSpriteBox();
+	void SetAnimationSpeed(float speed);
 	const std::string id;
 protected:
+	float animSpeed;
 	int currentFrame;
 	float frameDuration;
 	LPDIRECT3DTEXTURE9 texture;
