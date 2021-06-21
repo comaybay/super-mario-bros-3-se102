@@ -1,7 +1,7 @@
 #include "ParaGoomba.h"
 #include "Goomba.h"
 #include "CollisionHandling.h"
-#include "Groups.h"
+#include "Group.h"
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
@@ -17,7 +17,7 @@ const float ParaGoomba::JUMP_SPEED = 250;
 const float ParaGoomba::JUMP_FLAP_ANIM_SPEED = 3;
 
 ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
-	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<ParaGoomba>(this, &ParaGoomba::MoveAround)),
@@ -32,8 +32,8 @@ ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
 
 void ParaGoomba::OnReady()
 {
-	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
+	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
 	velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 }
 
@@ -72,7 +72,7 @@ void ParaGoomba::MoveAround(float delta) {
 		wingRight.AutoFlap();
 		state.SetHandler(&ParaGoomba::PrepareToJump);
 
-		LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
 		velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 }
@@ -128,7 +128,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::PLAYER, groups)) {
+	if (VectorHas(Group::PLAYER, groups)) {
 		Mario* mario = static_cast<Mario*>(data.who);
 
 		if (data.edge.y == 1.0f) {
@@ -144,7 +144,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups)) {
+	if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups)) {
 		if (data.edge.y == -1.0f) {
 			CollisionHandling::Slide(this, data);
 			onGround = true;

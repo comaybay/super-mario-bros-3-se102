@@ -1,6 +1,7 @@
 #include "Goomba.h"
+#include "Color.h"
 #include "CollisionHandling.h"
-#include "Groups.h"
+#include "Group.h"
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
@@ -12,17 +13,19 @@ using namespace Utils;
 const float Goomba::WALK_SPEED = 30.0f;
 const Vector2<float> Goomba::KNOCK_OVER_VELOCITY(60, -250);
 
-Goomba::Goomba(std::string colorCode, Vector2<float> position)
-	: Entity(position, colorCode + "GoombaM", "HitboxGoomba", { "Goombas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
-	colorCode(colorCode),
-	state(EntityState<Goomba>(this, &Goomba::StateMoveAround)),
+Goomba::Goomba(std::string colorType, Vector2<float> position)
+	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "Goombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	colorCode(Color::ToColorCode(colorType)),
+	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
 	time(0)
-{}
+{
+	SetAnimation(colorCode + "GoombaM");
+}
 
 void Goomba::OnReady()
 {
-	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
+	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 }
 
@@ -37,7 +40,7 @@ void Goomba::Update(float delta)
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
-void Goomba::StateMoveAround(float delta) {
+void Goomba::MoveAround(float delta) {
 
 }
 
@@ -48,7 +51,7 @@ void Goomba::StompedOn(float delta) {
 		parentScene->QueueFree(this);
 }
 
-void Goomba::StateKnockOver(float delta)
+void Goomba::KnockedOver(float delta)
 {
 }
 
@@ -56,7 +59,7 @@ void Goomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::PLAYER, groups)) {
+	if (VectorHas(Group::PLAYER, groups)) {
 		Mario* mario = static_cast<Mario*>(data.who);
 
 		if (data.edge.y == 1.0f) {
@@ -73,7 +76,7 @@ void Goomba::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups)) {
+	if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups)) {
 		if (data.edge.y == -1.0f)
 			CollisionHandling::Slide(this, data);
 
@@ -93,7 +96,7 @@ void Goomba::OnCollision(CollisionData data)
 void Goomba::KnockOver(float horizontalDirection)
 {
 	SetEnabledForCollisionDetection(false);
-	state.SetHandler(&Goomba::StateKnockOver);
+	state.SetHandler(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
 	velocity = KNOCK_OVER_VELOCITY;
 	velocity.x *= horizontalDirection;

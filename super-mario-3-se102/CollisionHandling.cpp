@@ -1,5 +1,5 @@
 #include "CollisionHandling.h"
-#include "Groups.h"
+#include "Group.h"
 
 void CollisionHandling::Slide(LPEntity entity, const CollisionData& data)
 {

@@ -4,7 +4,7 @@
 #include "AnimationManager.h"
 #include "Event.h"
 #include "Scene.h"
-#include "Groups.h"
+#include "Group.h"
 
 using namespace Utils;
 
@@ -56,7 +56,7 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityG
 
 void Entity::Init()
 {
-	groups.push_back(Groups::ALL);
+	groups.push_back(Group::ALL);
 	destroyEvent = new Event<LPEntity>();
 	enabledForCollisionDetection = true;
 }

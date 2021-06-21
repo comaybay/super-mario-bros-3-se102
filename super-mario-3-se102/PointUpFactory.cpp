@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Utils.h"
 #include "Event.h"
-#include "Groups.h"
+#include "Group.h"
 #include <array>
 using namespace Utils;
 using namespace Entities;
@@ -26,7 +26,7 @@ std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 {
 	if (player == nullptr) {
-		player = static_cast<Mario*>(Game::GetActiveScene()->GetEntitiesByGroup(Groups::PLAYER).front());
+		player = static_cast<Mario*>(Game::GetActiveScene()->GetEntitiesByGroup(Group::PLAYER).front());
 		player->GetRestartPointUpEvent().Subscribe(&OnRestartPointUp);
 		player->GetDestroyEvent().Subscribe(&OnEntityDestroy);
 	}

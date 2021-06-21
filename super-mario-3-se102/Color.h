@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-class Colors
+class Color
 {
 public:
 	static std::string GREEN;

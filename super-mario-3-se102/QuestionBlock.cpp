@@ -1,5 +1,5 @@
 #include "QuestionBlock.h"
-#include "Groups.h"
+#include "Group.h"
 #include "EntityManager.h"
 #include "Scene.h"
 using namespace Entities;
@@ -11,12 +11,12 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 		position,
 		"QuestionBlockNormal",
 		HitboxId::TILE_SIZE_HITBOX,
-		{ "Blocks", Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 },
+		{ "Blocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
 	content(content)
 {
-	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Groups::PLAYER });
+	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYER });
 }
 
 void QuestionBlock::OnCollision(CollisionData data)

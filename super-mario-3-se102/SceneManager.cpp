@@ -2,9 +2,7 @@
 #include "EncodedWorld.h"
 #include "EntityManager.h"
 #include "Utils.h"
-#include "Colors.h"
 #include "Entities.h"
-
 #include <fstream>
 
 using namespace Utils;
@@ -14,7 +12,7 @@ std::unordered_map <std::string, SceneManager::ParseEntityMethod> SceneManager::
 {
 	{"Mario", &SceneManager::ParseMario},
 	{"Goomba", &SceneManager::ParseGoomba},
-	//{"ParaGoomba",&SceneManager::ParseParaGoomba},
+	{"ParaGoomba",&SceneManager::ParseParaGoomba},
 	{"Koopa",&SceneManager::ParseKoopa},
 	//{"ParaKoopa", &SceneManager::ParseParaKoopa},
 	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
@@ -244,12 +242,15 @@ LPEntity SceneManager::ParseGoomba(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw Utils::InvalidTokenSizeException(5);
 
-	return new Entities::Goomba(Colors::ToColorCode(tokens[1]), Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::Goomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
 LPEntity SceneManager::ParseParaGoomba(const std::vector<std::string>& tokens)
 {
-	return LPEntity();
+	if (tokens.size() != 5)
+		throw Utils::InvalidTokenSizeException(5);
+
+	return new Entities::ParaGoomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
 LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
@@ -257,7 +258,7 @@ LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw Utils::InvalidTokenSizeException(5);
 
-	return new Entities::Koopa(Colors::ToColorCode("Green"), Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
+	return new Entities::Koopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
 }
 
 LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
@@ -271,7 +272,7 @@ LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens
 		throw Utils::InvalidTokenSizeException(5);
 
 	//TODO: REMOVE TEST CODE
-	LPEntity content = new Entities::Goomba(Colors::ToColorCode("Brown"), Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
+	LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
 
 	return new Entities::QuestionBlock(content, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }

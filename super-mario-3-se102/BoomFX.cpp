@@ -1,13 +1,13 @@
 #include "BoomFX.h"
 #include "Scene.h"
-#include "Groups.h"
+#include "Group.h"
 using namespace Entities;
 using namespace Utils;
 
 const float BoomFX::EXIST_DURATION = 0.2f;
 
 BoomFX::BoomFX(const Vector2<float>& position)
-	: Entity::Entity(position, "BoomFX", HitboxId::NONE, Groups::EFFECTS, GridType::NONE),
+	: Entity::Entity(position, "BoomFX", HitboxId::NONE, Group::EFFECTS, GridType::NONE),
 	time(0)
 {
 }

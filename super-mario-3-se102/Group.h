@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-class Groups {
+class Group {
 public:
 	static const std::string COLLISION_WALLS;
 	static const std::string COLLISION_WALLS_TYPE_1;

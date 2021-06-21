@@ -1,5 +1,5 @@
 #include "PointUp.h"
-#include "Groups.h"
+#include "Group.h"
 #include "Scene.h"
 using namespace Entities;
 using namespace Utils;
@@ -16,7 +16,7 @@ const std::unordered_map<PointUp::Type, std::string> PointUp::animationIdByType{
 
 
 PointUp::PointUp(const Vector2<float>& position, Type pointType)
-	: Entity::Entity(position, Groups::EFFECTS, GridType::NONE),
+	: Entity::Entity(position, Group::EFFECTS, GridType::NONE),
 	time(0)
 {
 	velocity.y = -MOVE_UP_SPEED;

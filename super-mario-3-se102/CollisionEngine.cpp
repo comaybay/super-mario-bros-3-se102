@@ -1,7 +1,7 @@
 #include "CollisionEngine.h"
 #include "EntityManager.h"
 #include "Game.h"
-#include "Groups.h"
+#include "Group.h"
 #include <algorithm>
 #include <unordered_set>
 using namespace Utils;

@@ -3,13 +3,14 @@
 #include "Entities.h"
 #include "EntityManager.h"
 #include "TextureManager.h"
-#include "Groups.h"
+#include "Group.h"
 using namespace Utils;
 
 Scene::Scene()
 {
 	updateMovablesInSPGridEnabled = true;
 	renderMovablesInSPGridEnabled = true;
+	Game::EnableCollisionEngine(true);
 }
 
 Scene::~Scene()
@@ -23,8 +24,6 @@ void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEnc
 	this->backgroundColor = backgroundColor;
 	this->encodedWorld = encodedWorld;
 	this->entityManager = entityManager;
-	Game::EnableCollisionEngine(true);
-
 }
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
@@ -33,7 +32,7 @@ void Scene::Update(float delta)
 {
 	/*i++;
 	if (i == 60) {
-		EntityManager::QueueFree(EntityManager::GetGroup(Groups::PLAYER).front());
+		EntityManager::QueueFree(EntityManager::GetGroup(Group::PLAYER).front());
 	}*/
 
 	//if (EntityManager::GetGroup("Player").size() != 0) {
@@ -150,18 +149,21 @@ void Scene::PlayerDeath()
 	Game::EnableCollisionEngine(false);
 }
 
+#include "ParaGoomba.h"
 void Scene::_Ready()
 {
 	//TODO: REMOVE DEBUG CODE
 	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup(Groups::PLAYER, mario);
+	//EntityManager::AddToGroup(Group::PLAYER, mario);
 	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup("Goombas", goomba);
 	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
-	entityManager->AddToGroups({ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 }, ground);
+	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
+	entityManager->Add(new Entities::ParaGoomba("Brown", Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2)));
 
-	entityManager->ForEach([](LPEntity entity) {entity->OnReady(); });
-	camera.FollowEntity(entityManager->GetEntitiesByGroup(Groups::PLAYER).front());
+
+	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
+	camera.FollowEntity(entityManager->GetEntitiesByGroup(Group::PLAYER).front());
 }
 
 Utils::Dimension Scene::GetWorldDimension()

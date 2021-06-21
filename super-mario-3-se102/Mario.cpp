@@ -3,7 +3,7 @@
 #include "EventHandler.h"
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
-#include "Groups.h"
+#include "Group.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -21,7 +21,7 @@ const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
 const std::string Mario::AnimationSet::DEATH = "MarioDeath";
 
 Mario::Mario(Vector2<float> position) :
-	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Groups::PLAYER, GridType::NONE),
+	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
 	state(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),
@@ -30,7 +30,7 @@ Mario::Mario(Vector2<float> position) :
 	powerLevel(PowerLevel::SMALL)
 {
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
-	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Groups::COLLISION_WALLS });
+	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
 void Mario::SetPowerLevel(Mario::PowerLevel level)
@@ -54,7 +54,7 @@ void Mario::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups)) {
+	if (VectorHas(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
 		if (data.edge.y != 0.0f)
@@ -67,7 +67,7 @@ void Mario::OnCollision(CollisionData data)
 			onGround = true;
 	}
 
-	else if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	else if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
 		CollisionHandling::Slide(this, data);
 		onGround = true;
 		velocity.y = 0;

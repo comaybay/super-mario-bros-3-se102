@@ -1,12 +1,12 @@
 #include "CollisionWallType1.h"
-#include "Groups.h"
+#include "Group.h"
 using namespace Entities;
 using namespace Utils;
 
 CollisionWallType1::CollisionWallType1(Vector2<float> position, Dimension dimension)
 	: Entity::Entity(
 		position,
-		{ Groups::COLLISION_WALLS, Groups::COLLISION_WALLS_TYPE_1 },
+		{ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::WALL_ENTITIES
 	),
 	hitbox(Hitbox(Vector2<float>(0, 0), dimension))

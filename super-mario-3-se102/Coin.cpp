@@ -1,6 +1,6 @@
 #include "Entities.h"
 #include "EntityManager.h"
-#include "Groups.h"
+#include "Group.h"
 #include "PlayerVariables.h"
 #include "Game.h"
 using namespace Entities;
@@ -9,7 +9,7 @@ using namespace Utils;
 Coin::Coin(const Vector2<float>& position)
 	: Entity::Entity(position, "Coin", HitboxId::TILE_SIZE_HITBOX, "Coins", GridType::STATIC_ENTITIES)
 {
-	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Groups::PLAYER });
+	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Group::PLAYER });
 }
 
 void Coin::OnCollision(CollisionData data)

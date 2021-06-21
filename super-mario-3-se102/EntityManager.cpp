@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "Groups.h"
+#include "Group.h"
 #include "Game.h"
 #include "Entity.h"
 #include "Scene.h"

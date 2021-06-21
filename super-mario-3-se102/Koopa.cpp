@@ -3,7 +3,7 @@
 #include "Mario.h"
 #include "Goomba.h"
 #include "ParaGoomba.h"
-#include "Groups.h"
+#include "Group.h"
 #include "Game.h"
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
@@ -16,15 +16,15 @@ const float Koopa::SHELL_SLIDE_SPEED = 240;
 const float Koopa::FRICTION = 2600;
 
 Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
-	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround))
 {}
 
 void Koopa::OnReady()
 {
-	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
+	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 }
@@ -33,17 +33,17 @@ void Koopa::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::COLLISION_WALLS, groups)) {
+	if (VectorHas(Group::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
 		return;
 	}
 
-	if (VectorHas(Groups::PLAYER, groups)) {
+	if (VectorHas(Group::PLAYER, groups)) {
 		HandlePlayerCollision(data);
 		return;
 	}
 
-	if (VectorHas(Groups::ENEMIES, groups)) {
+	if (VectorHas(Group::ENEMIES, groups)) {
 		if (state.GetHandler() == &Koopa::ShellIdle)
 			return;
 
@@ -122,7 +122,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_1, groups)) {
+	if (VectorHas(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
 		if (data.edge.y != 0.0f)
@@ -139,7 +139,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		}
 	}
 
-	if (VectorHas(Groups::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = 0;
 	}

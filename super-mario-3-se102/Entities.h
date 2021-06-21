@@ -7,3 +7,5 @@
 #include "CollisionWallType1.h"
 #include "CollisionWallType2.h"
 #include "Coin.h"
+#include "ParaGoomba.h"
+#include "Wing.h"
