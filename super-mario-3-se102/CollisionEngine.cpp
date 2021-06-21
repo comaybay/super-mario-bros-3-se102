@@ -33,10 +33,8 @@ void CollisionEngine::Update(float delta) {
 	unsubscribeWaitList.clear();
 	hasPreviouslyNotified.clear();
 
+	//Only movable entities can cause collision
 	for (auto& pair : targetGroupsByMovableLPEntity)
-		DetectAndNotify(pair.first, pair.second, delta);
-
-	for (auto& pair : targetGroupsByNonMovingLPEntity)
 		DetectAndNotify(pair.first, pair.second, delta);
 }
 
