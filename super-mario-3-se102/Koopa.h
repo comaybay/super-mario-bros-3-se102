@@ -8,7 +8,7 @@ namespace Entities {
 	class Koopa : public Entity
 	{
 	public:
-		Koopa(const std::string& colorCode, const Utils::Vector2<float>& position);
+		Koopa(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 
 	private:

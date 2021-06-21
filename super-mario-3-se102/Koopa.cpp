@@ -1,6 +1,8 @@
 #include "Koopa.h"
+#include "Color.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "ParaGoomba.h"
 #include "Groups.h"
 #include "Game.h"
 #include "CollisionHandling.h"
@@ -13,9 +15,9 @@ const float Koopa::WALK_SPEED = 30;
 const float Koopa::SHELL_SLIDE_SPEED = 240;
 const float Koopa::FRICTION = 2600;
 
-Koopa::Koopa(const std::string& colorCode, const Utils::Vector2<float>& position)
-	: Entity(position, colorCode + "KoopaML", "HitboxKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
-	colorCode(colorCode),
+Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
+	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Groups::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround))
 {}
 
@@ -24,6 +26,7 @@ void Koopa::OnReady()
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Groups::COLLISION_WALLS, Groups::ENEMIES, Groups::PLAYER });
 	LPEntity player = parentScene->GetEntitiesByGroup(Groups::PLAYER).front();
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
+	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 }
 
 void Koopa::OnCollision(CollisionData data)
@@ -56,10 +59,16 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (state.GetHandler() == &Koopa::ShellSlide &&
-			VectorHas(std::string("Goombas"), data.who->GetEntityGroups())) {
-			static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
-			return;
+		if (state.GetHandler() == &Koopa::ShellSlide) {
+			if (VectorHas(std::string("Goombas"), data.who->GetEntityGroups())) {
+				static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
+				return;
+			}
+
+			if (VectorHas(std::string("ParaGoombas"), data.who->GetEntityGroups())) {
+				static_cast<ParaGoomba*>(data.who)->KnockOver(-data.edge.x);
+				return;
+			}
 		}
 	}
 }
