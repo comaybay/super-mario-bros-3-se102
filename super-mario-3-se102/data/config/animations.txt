@@ -63,6 +63,18 @@ BGoombaKO, Normal, -1, Manual
 Enemies
 0, 16, 15, 31
 
+RGoombaM, Normal, 0.15, Auto
+Enemies
+88, 0, 16, 16, 0, 2
+
+RGoombaDeath, Normal, -1, Manual
+Enemies
+120, 0, 135, 15
+
+RGoombaKO, Normal, -1, Manual
+Enemies
+88, 16, 103, 31
+
 ##Koopa##====================================
 GKoopaML, Normal, 0.15, Auto
 Enemies
@@ -94,6 +106,31 @@ Tiles
 Coin, Fixed, 0.125, Auto
 Tiles
 936, 69, 16, 16, 1, 4
+
+##Wings##====================================
+WingFlapR, Normal, 0.125, Auto
+Enemies
+136, 0, 8, 16, 0, 2
+
+WingUpR, Normal, -1, Manual
+Enemies
+136, 0, 143, 15
+
+WingDownR, Normal, -1, Manual
+Enemies
+144, 0, 151, 15
+
+WingFlapL, Normal, 0.125, Auto
+Enemies
+136, 16, 8, 16, 0, 2
+
+WingUpL, Normal, -1, Manual
+Enemies
+136, 16, 143, 31
+
+WingDownL, Normal, -1, Manual
+Enemies
+144, 16, 151, 31
 
 ##Effects##====================================
 BoomFX, Normal, 0.025, Auto
