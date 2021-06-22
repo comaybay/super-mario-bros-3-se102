@@ -37,6 +37,9 @@ void CollisionEngine::Update(float delta) {
 	//Only movable entities can cause collision
 	for (auto& pair : targetGroupsByMovableLPEntity)
 		DetectAndNotify(pair.first, pair.second, delta);
+
+	for (auto& pair : targetGroupsByNonMovingLPEntity)
+		DetectAndNotify(pair.first, pair.second, delta);
 }
 
 void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta)
