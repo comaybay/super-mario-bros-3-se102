@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "Entity.h"
 #include "Event.h"
+#include <unordered_set>
 
 struct CollisionData {
 	LPEntity who = nullptr;

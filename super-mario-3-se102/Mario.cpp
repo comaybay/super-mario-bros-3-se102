@@ -4,6 +4,7 @@
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
 #include "Group.h"
+#include "Contains.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -54,7 +55,7 @@ void Mario::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Group::COLLISION_WALLS_TYPE_1, groups)) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
 		if (data.edge.y != 0.0f)
@@ -67,7 +68,7 @@ void Mario::OnCollision(CollisionData data)
 			onGround = true;
 	}
 
-	else if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	else if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
 		CollisionHandling::Slide(this, data);
 		onGround = true;
 		velocity.y = 0;

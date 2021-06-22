@@ -1,6 +1,7 @@
 #include "TextureManager.h"
 #include "Utils.h"
 #include "Game.h"
+#include "Contains.h"
 
 std::string TextureID::TILES = "__TILES__";
 
@@ -39,7 +40,7 @@ void TextureManager::Load(std::string id, std::string path, D3DCOLOR color_key)
 }
 
 LPDIRECT3DTEXTURE9 TextureManager::Get(std::string id) {
-	if (Utils::MapHas(id, textureById))
+	if (Utils::Contains(id, textureById))
 		return textureById[id];
 	else {
 		std::string msg = "No texture with id=\"" + id + "\" found";

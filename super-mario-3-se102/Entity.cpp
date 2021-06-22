@@ -113,7 +113,7 @@ LPConstHitbox Entity::GetHitbox()
 	return hitbox;
 }
 
-Utils::SpriteBox Entity::GetSpriteBox() {
+SpriteBox Entity::GetSpriteBox() {
 	return animation->GetCurrentSpriteBox();
 }
 

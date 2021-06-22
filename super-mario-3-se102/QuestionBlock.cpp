@@ -2,6 +2,7 @@
 #include "Koopa.h"
 #include "Group.h"
 #include "EntityManager.h"
+#include "Contains.h"
 #include "Scene.h"
 using namespace Entities;
 using namespace Utils;
@@ -23,12 +24,12 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
-	if (VectorHas(Group::PLAYER, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
 		ExposeContent();
 		return;
 	}
 
-	if (VectorHas(std::string("Koopas"), groups)) {
+	if (Contains(std::string("Koopas"), groups)) {
 		Koopa* koopa = static_cast<Koopa*>(data.who);
 
 		if (koopa->IsSliding())

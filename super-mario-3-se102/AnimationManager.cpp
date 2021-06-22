@@ -1,12 +1,13 @@
 #include "AnimationManager.h"
 #include "EmptyAnimation.h"
 #include "FixedAnimation.h"
+#include "Contains.h"
 
 std::unordered_map<std::string, AnimationProps> AnimationManager::animationPropsById;
 
 AnimationProps::AnimationProps() {}
 
-AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence)
+AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence)
 	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence)
 {}
 
@@ -20,7 +21,7 @@ LPAnimation AnimationManager::GetNew(const std::string& id)
 	if (id == AnimationId::NONE)
 		return new EmptyAnimation();
 
-	if (!Utils::MapHas(id, animationPropsById)) {
+	if (!Utils::Contains(id, animationPropsById)) {
 		std::string msg = "Animation \"" + id + "\" not found";
 		throw std::exception(msg.c_str());
 	}

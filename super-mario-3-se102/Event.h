@@ -4,9 +4,10 @@
 #include <unordered_map>
 #include <string>
 #include <type_traits>
-#include "Utils.h"
 #include "EventHandler.h"
 #include "Entity.h"
+#include "Utils.h"
+#include "Contains.h"
 
 template <class... Args>
 class Event
@@ -26,6 +27,9 @@ public:
 	void Notify(Args...);
 
 private:
+	template<typename R, typename T, typename U>
+	std::function<R(Args...)> Attach(R(T::* f)(Args...), U p);
+
 	template<class T>
 	intptr_t GetAddressOf(void(T::* handler)(Args...));
 
@@ -65,17 +69,25 @@ inline Event<Args...>::~Event()
 		delete pair.second;
 }
 
+//taken from https://stackoverflow.com/questions/21192659/variadic-templates-and-stdbind
+template<class ...Args>
+template<typename R, typename T, typename U>
+inline std::function<R(Args...)> Event<Args...>::Attach(R(T::* f)(Args...), U p)
+{
+	return [p, f](Args... args)->R { return (p->*f)(args...); };
+};
+
 template<class ...Args>
 template<class T>
 inline void Event<Args...>::Subscribe(T* handlerThis, void(T::* handler)(Args...))
 {
 	using namespace std::placeholders;
-	std::function<void(Args...)> bindedHandler = Utils::Attach(handler, handlerThis);
+	std::function<void(Args...)> bindedHandler = Attach(handler, handlerThis);
 
 	LPEventHandler<Args...> eventHandler = new EventHandler<Args...>(GetAddressOf(handler), bindedHandler);
 
 	intptr_t tId = GetAddressOf(handlerThis);
-	if (!Utils::MapHas(tId, eventHandlersById))
+	if (!Utils::Contains(tId, eventHandlersById))
 		eventHandlersById[tId] = new std::list<LPEventHandler<Args...>>;
 
 	eventHandlersById[tId]->push_back(eventHandler);
@@ -94,7 +106,7 @@ inline void Event<Args...>::Subscribe(void(*handler)(Args...))
 
 	LPEventHandler<Args...> eventHandler = new EventHandler<Args...>(GetAddressOf(handler), handler);
 
-	if (!Utils::MapHas(ORDINARY_FUNC_THIS_ID, eventHandlersById))
+	if (!Utils::Contains(ORDINARY_FUNC_THIS_ID, eventHandlersById))
 		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new std::list<LPEventHandler<Args...>>;
 
 	eventHandlersById[ORDINARY_FUNC_THIS_ID]->push_back(eventHandler);

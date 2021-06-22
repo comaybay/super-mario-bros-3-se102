@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Entity.h"
 #include "Scene.h"
+#include "Contains.h"
 using namespace Utils;
 
 EntityManager::EntityManager
@@ -77,7 +78,7 @@ void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
 
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
 {
-	if (!Utils::MapHas(groupName, entitiesByGroup))
+	if (!Contains(groupName, entitiesByGroup))
 		entitiesByGroup[groupName] = new std::list<LPEntity>();
 
 	entitiesByGroup[groupName]->push_back(entity);
@@ -91,7 +92,7 @@ void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity
 
 const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupName)
 {
-	if (Utils::MapHas(groupName, entitiesByGroup))
+	if (Contains(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];
 	else {
 		std::string msg = "No group with name=\"" + groupName + "\" found";

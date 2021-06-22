@@ -1,18 +1,19 @@
 #pragma once
 #include <string>
-#include "RectSequence.h"
 #include <d3dx9.h>
 #include <vector>
+#include "RectSequence.h"
 #include "Hitbox.h"
 #include "Utils.h"
+#include "SpriteBox.h"
 
 class Animation
 {
 public:
-	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence);
+	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence);
 	virtual void Render(Utils::Vector2<float> position);
 	virtual void Update(float delta);
-	Utils::SpriteBox GetCurrentSpriteBox();
+	SpriteBox GetCurrentSpriteBox();
 	void SetAnimationSpeed(float speed);
 	const std::string id;
 protected:
@@ -20,7 +21,7 @@ protected:
 	int currentFrame;
 	float frameDuration;
 	LPDIRECT3DTEXTURE9 texture;
-	std::vector<Utils::SpriteBox> sequence;
+	std::vector<SpriteBox> sequence;
 private:
 	float currentDuration;
 };

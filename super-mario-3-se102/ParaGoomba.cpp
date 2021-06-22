@@ -8,6 +8,7 @@
 #include "BoomFX.h"
 #include "PointUpFactory.h"
 #include "Wing.h"
+#include "Contains.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -128,7 +129,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Group::PLAYER, groups)) {
+	if (Contains(Group::PLAYER, groups)) {
 		Mario* mario = static_cast<Mario*>(data.who);
 
 		if (data.edge.y == 1.0f) {
@@ -144,7 +145,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups)) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {
 		if (data.edge.y == -1.0f) {
 			CollisionHandling::Slide(this, data);
 			onGround = true;

@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "Game.h"
 #include "Group.h"
+#include "Contains.h"
 #include <algorithm>
 #include <unordered_set>
 using namespace Utils;
@@ -78,7 +79,7 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 	//notify both if collided, need to notify right away so next detections can give accurate results
 	for (const LPEntity& target : targetEntities) {
-		if (SetHas(toKey(entity, target), hasPreviouslyNotified))
+		if (Contains(toKey(entity, target), hasPreviouslyNotified))
 			continue;
 
 		CollisionData dataForEntity;
@@ -92,11 +93,11 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 		//if after notification, target still enabled, also subscribed and it's target groups include entity
 		bool targetHasThisEntityAsTarget =
-			VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByMovableLPEntity[target]) ||
-			VectorHasAnyOf(entity->GetEntityGroups(), targetGroupsByNonMovingLPEntity[target]);
+			ContainsAnyOf(entity->GetEntityGroups(), targetGroupsByMovableLPEntity[target]) ||
+			ContainsAnyOf(entity->GetEntityGroups(), targetGroupsByNonMovingLPEntity[target]);
 
 		if (target->_IsEnabledForCollisionDetection() &&
-			MapHas(target, collisionEventByLPEntity) &&
+			Contains(target, collisionEventByLPEntity) &&
 			targetHasThisEntityAsTarget)
 		{
 			collisionEventByLPEntity[target]->Notify(dataForTarget);
@@ -107,7 +108,7 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 Event<CollisionData>& CollisionEngine::GetCollisionEventOf(LPEntity entity)
 {
-	if (!Utils::MapHas(entity, collisionEventByLPEntity))
+	if (!Utils::Contains(entity, collisionEventByLPEntity))
 		collisionEventByLPEntity[entity] = new Event<CollisionData>();
 
 	return *collisionEventByLPEntity[entity];

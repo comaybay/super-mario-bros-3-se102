@@ -5,6 +5,7 @@
 #include "ParaGoomba.h"
 #include "Group.h"
 #include "Game.h"
+#include "Contains.h"
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
 #include "PointUpFactory.h"
@@ -33,17 +34,17 @@ void Koopa::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Group::COLLISION_WALLS, groups)) {
+	if (Contains(Group::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
 		return;
 	}
 
-	if (VectorHas(Group::PLAYER, groups)) {
+	if (Contains(Group::PLAYER, groups)) {
 		HandlePlayerCollision(data);
 		return;
 	}
 
-	if (VectorHas(Group::ENEMIES, groups)) {
+	if (Contains(Group::ENEMIES, groups)) {
 		if (state.GetHandler() == &Koopa::ShellIdle)
 			return;
 
@@ -60,12 +61,12 @@ void Koopa::OnCollision(CollisionData data)
 		}
 
 		if (state.GetHandler() == &Koopa::ShellSlide) {
-			if (VectorHas(std::string("Goombas"), data.who->GetEntityGroups())) {
+			if (Contains(std::string("Goombas"), data.who->GetEntityGroups())) {
 				static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
 				return;
 			}
 
-			if (VectorHas(std::string("ParaGoombas"), data.who->GetEntityGroups())) {
+			if (Contains(std::string("ParaGoombas"), data.who->GetEntityGroups())) {
 				static_cast<ParaGoomba*>(data.who)->KnockOver(-data.edge.x);
 				return;
 			}
@@ -122,7 +123,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (VectorHas(Group::COLLISION_WALLS_TYPE_1, groups)) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
 		if (data.edge.y != 0.0f)
@@ -139,7 +140,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		}
 	}
 
-	if (VectorHas(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = 0;
 	}

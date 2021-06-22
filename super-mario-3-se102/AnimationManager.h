@@ -7,9 +7,9 @@ struct AnimationProps {
 	std::string id;
 	float frameDuration;
 	LPDIRECT3DTEXTURE9 texture;
-	std::vector<Utils::SpriteBox> sequence;
+	std::vector<SpriteBox> sequence;
 	AnimationProps();
-	AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<Utils::SpriteBox>& sequence);
+	AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence);
 };
 
 class AnimationManager

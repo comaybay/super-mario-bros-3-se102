@@ -1,6 +1,8 @@
 #pragma once
 #include <list>
 #include <unordered_map>
+#include <functional>
+
 #include "Entity.h"
 #include "Utils.h"
 

@@ -68,7 +68,7 @@ public:
 
 	virtual Utils::Dimension GetCurrentSpriteDimension();
 	virtual LPConstHitbox GetHitbox();
-	Utils::SpriteBox GetSpriteBox();
+	SpriteBox GetSpriteBox();
 	virtual void Update(float delta);
 	virtual void PostUpdate();
 	virtual void Render();
