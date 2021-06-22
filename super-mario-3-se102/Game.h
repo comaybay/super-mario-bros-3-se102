@@ -28,6 +28,8 @@ public:
 	static void EnableCollisionEngine(bool state);
 	static const int TILE_SIZE = 16;
 private:
+	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
+	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 	static int scale;
 	static Utils::Dimension gameDim;
 	static D3DXMATRIX scaleMatrix;

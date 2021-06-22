@@ -15,5 +15,6 @@ public:
 
 private:
 	int GetIndex(char* ground, int x, int y);
+	int HexCharToInt(const char& ch);
 };
 typedef EncodedWorld* LPEncodedWorld;

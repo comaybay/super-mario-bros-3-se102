@@ -5,8 +5,6 @@
 #include <d3d9.h>
 #include <dinput.h>
 #include <functional>
-#include <unordered_map>
-#include <unordered_set>
 
 namespace Utils
 {
@@ -88,35 +86,11 @@ namespace Utils
 
 	int HexCharToInt(const char& ch);
 
-	template<class K, class V>
-	bool MapHas(const K& key, const std::unordered_map<K, V>& map);
-
-	template<class T>
-	bool SetHas(const T& key, const std::unordered_set<T>& set);
-
-	template<class T>
-	bool VectorHas(const T& elem, const std::vector<T>& vector);
-
-	template<class T>
-	bool VectorHasAnyOf(const std::vector<T>& elems, const std::vector<T>& vector);
-
 	template<typename R, typename T, typename U, typename... Args>
 	std::function<R(Args...)> Attach(R(T::* f)(Args...), U p);
 
 	template <typename T>
 	inline T Clip(const T& n, const T& lower, const T& upper);
-}
-
-template<class K, class V>
-inline bool Utils::MapHas(const K& key, const std::unordered_map<K, V>& map) {
-	auto it = map.find(key);
-	return (it != map.end());
-}
-
-template<class T>
-inline bool Utils::SetHas(const T& key, const std::unordered_set<T>& set) {
-	auto it = set.find(key);
-	return (it != set.end());
 }
 
 //taken from https://stackoverflow.com/questions/21192659/variadic-templates-and-stdbind
@@ -125,21 +99,6 @@ inline std::function<R(Args...)> Utils::Attach(R(T::* f)(Args...), U p)
 {
 	return [p, f](Args... args)->R { return (p->*f)(args...); };
 };
-
-template<class T>
-inline bool Utils::VectorHas(const T& elem, const std::vector<T>& vector) {
-	return (std::find(vector.begin(), vector.end(), elem) != vector.end());
-}
-
-
-template<class T>
-inline bool Utils::VectorHasAnyOf(const std::vector<T>& elems, const std::vector<T>& vector) {
-	for (auto& elem : elems)
-		if (std::find(vector.begin(), vector.end(), elem) != vector.end())
-			return true;
-
-	return false;
-}
 
 template <typename T>
 inline T Utils::Clip(const T& n, const T& lower, const T& upper) {

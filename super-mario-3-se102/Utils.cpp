@@ -301,8 +301,6 @@ int Utils::HexCharToInt(const char& ch) {
 	throw std::exception("charToInt failed: invaild hex char");
 }
 
-
-
 const char* Utils::InvalidTokenSizeException::what() const throw () {
 	return message;
 }
@@ -311,4 +309,3 @@ Utils::InvalidTokenSizeException::InvalidTokenSizeException(int numberOfArgsExpe
 	std::string m = "Invalid token size: expected " + std::to_string(numberOfArgsExpected) + " params";
 	message = m.c_str();
 }
-
