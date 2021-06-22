@@ -2,7 +2,8 @@
 #include "Utils.h"
 
 EncodedWorld::EncodedWorld(int size, int width, char* background, char* foreground)
-	: size(size), width(width), background(background), foreground(foreground)
+	: size(size - 1), //-1 null terminate char
+	width(width), background(background), foreground(foreground)
 {}
 
 EncodedWorld::~EncodedWorld()
@@ -22,15 +23,15 @@ int EncodedWorld::GetForegroundIndex(int x, int y) {
 int EncodedWorld::GetIndex(char* ground, int x, int y)
 {
 	int i = x * 3 + y * width;
-	if (i >= size - 1) //-1 null terminate char
-		return 4095; //FFF
-
-	//convert 3 digits hex to int
-	return
+	if (i < size)
+		//convert 3 digits hex to int
+		return
 		HexCharToInt(ground[i]) * 16 * 16 +
 		HexCharToInt(ground[i + 1]) * 16 +
 		HexCharToInt(ground[i + 2]);
 
+	else
+		return 4095; //FFF
 }
 
 int EncodedWorld::HexCharToInt(const char& ch) {
