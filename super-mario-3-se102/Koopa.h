@@ -10,6 +10,7 @@ namespace Entities {
 	public:
 		Koopa(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
+		bool IsSliding();
 
 	private:
 		void OnReady() override;

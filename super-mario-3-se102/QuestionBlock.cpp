@@ -1,4 +1,5 @@
 #include "QuestionBlock.h"
+#include "Koopa.h"
 #include "Group.h"
 #include "EntityManager.h"
 #include "Scene.h"
@@ -16,20 +17,32 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 	),
 	content(content)
 {
-	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYER });
+	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYER, "Koopas" });
 }
 
 void QuestionBlock::OnCollision(CollisionData data)
 {
-	if (data.edge.y == -1.0f) {
-		parentScene->QueueFree(this);
-		parentScene->AddEntity(content);
-		content = nullptr;
+	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	if (VectorHas(Group::PLAYER, groups) && data.edge.y == -1.0f) {
+		ExposeContent();
+		return;
+	}
+
+	if (VectorHas(std::string("Koopas"), groups)) {
+		Koopa* koopa = static_cast<Koopa*>(data.who);
+
+		if (koopa->IsSliding())
+			ExposeContent();
+
+		return;
 	}
 }
 
-void QuestionBlock::Update(float delta)
+void QuestionBlock::ExposeContent()
 {
-	Entity::Update(delta);
+	parentScene->QueueFree(this);
+	parentScene->AddEntity(content);
+	content = nullptr;
 }
+
 

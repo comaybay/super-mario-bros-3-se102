@@ -155,6 +155,11 @@ void Koopa::Update(float delta)
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
+bool Entities::Koopa::IsSliding()
+{
+	return state.GetHandler() == &Koopa::ShellSlide;
+}
+
 void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
 {
 	state.SetHandler(handler);

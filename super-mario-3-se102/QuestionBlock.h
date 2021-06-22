@@ -7,8 +7,8 @@ namespace Entities {
 	class QuestionBlock : public Entity {
 	public:
 		QuestionBlock(LPEntity content, const Utils::Vector2<float>& position);
-		void Update(float delta) override;
 	private:
+		void ExposeContent();
 		void OnCollision(CollisionData data);
 		LPEntity content;
 	};
