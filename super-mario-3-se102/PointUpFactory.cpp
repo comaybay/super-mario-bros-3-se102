@@ -17,7 +17,7 @@ std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 	PointUp::Type::FOUR_HUNDRED_POINTS,
 	PointUp::Type::EIGHT_HUNDRED_POINTS,
 	PointUp::Type::ONE_THOUSAND_POINTS,
-	PointUp::Type::TWO_HUNDRED_POINTS,
+	PointUp::Type::TWO_THOUSAND_POINTS,
 	PointUp::Type::FOUR_THOUSAND_POINTS,
 	PointUp::Type::EIGHT_THOUSAND_POINTS,
 	PointUp::Type::ONE_UP
