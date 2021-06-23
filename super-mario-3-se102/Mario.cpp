@@ -17,7 +17,8 @@ const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
 const float Mario::JUMP_SPEED = 310;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
-const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED * 1.25;
+const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1;
+const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5;
 
 const std::string Mario::AnimationSet::DEATH = "MarioDeath";
 
@@ -273,9 +274,8 @@ void Mario::Die(float delta) {
 }
 
 void Mario::DieFall(float delta) {
-	Vector2<float> acc(0, EntityConstants::GRAVITY / 1.5);
-	Vector2<float> maxSpeed(0, MAX_FALL_SPEED);
-	velocity += dir * acc * delta;
+	velocity.y += DEATH_FALL_ACCEL * delta;
+	velocity.y = min(velocity.y, MAX_FALL_SPEED);
 }
 
 void Mario::ApplyHorizontalMovement(float delta)

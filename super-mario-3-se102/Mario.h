@@ -71,5 +71,6 @@ namespace Entities {
 		static const float BOUNCE_SPEED;
 		static const float BOUNCE_SPEED_HOLD_JUMP;
 		static const float DEATH_JUMP_SPEED;
+		static const float DEATH_FALL_ACCEL;
 	};
 }
