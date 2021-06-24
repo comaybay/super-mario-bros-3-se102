@@ -9,7 +9,6 @@ Wing::Wing(LPEntity whoToFollow, Direction dir, const Vector2<float>& offset)
 	offset(offset)
 {
 	SetDirection(dir);
-	SetAnimation("WingFlap" + dirCode);
 }
 
 void Wing::AutoFlap()
@@ -20,6 +19,7 @@ void Wing::AutoFlap()
 void Wing::SetDirection(Direction dir)
 {
 	dirCode = (dir == Direction::LEFT) ? "L" : "R";
+	SetAnimation("WingFlap" + dirCode);
 }
 
 void Wing::SetOffset(const Vector2<float>& offset)

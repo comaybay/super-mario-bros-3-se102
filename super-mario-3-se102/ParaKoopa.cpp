@@ -103,6 +103,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 		velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
 		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+		SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
 		SetAnimation(colorCode + anim);
 		return;
 	}
@@ -138,6 +139,7 @@ void ParaKoopa::HandleWallCollision(const CollisionData& data)
 			velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
 			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+			SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
 			SetAnimation(colorCode + anim);
 		}
 	}
