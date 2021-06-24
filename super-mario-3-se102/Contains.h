@@ -20,14 +20,12 @@ namespace Utils {
 
 template<class K, class V>
 inline bool Utils::Contains(const K& key, const std::unordered_map<K, V>& map) {
-	auto it = map.find(key);
-	return (it != map.end());
+	return (map.find(key) != map.end());
 }
 
 template<class T>
 inline bool Utils::Contains(const T& key, const std::unordered_set<T>& set) {
-	auto it = set.find(key);
-	return (it != set.end());
+	return (set.find(key) != set.end());
 }
 
 template<class T>
