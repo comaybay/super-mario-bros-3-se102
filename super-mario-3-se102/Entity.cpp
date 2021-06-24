@@ -58,7 +58,7 @@ void Entity::Init()
 {
 	groups.push_back(Group::ALL);
 	destroyEvent = new Event<LPEntity>();
-	id = reinterpret_cast<intptr_t>(this);
+	id = std::to_string(reinterpret_cast<intptr_t>(this));
 	enabledForCollisionDetection = true;
 }
 
