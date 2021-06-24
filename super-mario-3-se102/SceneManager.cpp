@@ -5,6 +5,7 @@
 #include "ProcessingUtils.h"
 #include "Contains.h"
 #include "Entities.h"
+
 #include <fstream>
 
 using namespace Utils;
@@ -18,8 +19,9 @@ std::unordered_map <std::string, SceneManager::ParseEntityMethod> SceneManager::
 	{"ParaGoomba",&SceneManager::ParseParaGoomba},
 	{"Koopa",&SceneManager::ParseKoopa},
 	{"ParaKoopa", &SceneManager::ParseParaKoopa},
-	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
 	{"Coin", &SceneManager::ParseCoin},
+	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
+	{"Brick", &SceneManager::ParseBrick},
 };
 
 void SceneManager::AddScenePath(std::string scenePath, std::string id) {
@@ -212,18 +214,17 @@ std::string SceneManager::ParseAndAddOtherEntities
 
 		std::string isInAnyGrid = entityTokens[entityTokens.size() - 1];
 
+		LPEntity entity = parseMethodByEntityName[name](entityTokens);
+
 		if (isInAnyGrid == "False") {
-			LPEntity entity = parseMethodByEntityName[name](entityTokens);
 			entityManager->_AddWithoutPutToGrid(entity);
 			continue;
 		}
-
 
 		std::getline(file, line);
 		std::vector<std::string> cellTokens = SplitByComma(line);
 		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
 
-		LPEntity entity = parseMethodByEntityName[name](entityTokens);
 		entityManager->_AddToNonWallSPGrid(entity, cellIndex);
 	}
 
@@ -271,6 +272,13 @@ LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
 	return new Entities::ParaKoopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
+LPEntity SceneManager::ParseCoin(const std::vector<std::string>& tokens) {
+	if (tokens.size() != 4)
+		throw InvalidTokenSizeException(4);
+
+	return new Entities::Coin(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+}
+
 LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
@@ -282,9 +290,11 @@ LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens
 	return new Entities::QuestionBlock(content, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseCoin(const std::vector<std::string>& tokens) {
-	if (tokens.size() != 4)
-		throw InvalidTokenSizeException(4);
+LPEntity SceneManager::ParseBrick(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 5)
+		throw InvalidTokenSizeException(5);
 
-	return new Entities::Coin(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	return new Entities::Brick(nullptr, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
+

@@ -42,7 +42,8 @@ void QuestionBlock::OnCollision(CollisionData data)
 void QuestionBlock::ExposeContent()
 {
 	parentScene->QueueFree(this);
-	parentScene->AddEntity(content);
+	if (content != nullptr)
+		parentScene->AddEntity(content);
 	content = nullptr;
 }
 

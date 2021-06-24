@@ -6,6 +6,7 @@
 #include "Koopa.h"
 #include "ParaKoopa.h"
 #include "QuestionBlock.h"
+#include "Brick.h"
 #include "CollisionWallType1.h"
 #include "CollisionWallType2.h"
 #include "Coin.h"
