@@ -5,6 +5,7 @@
 #include "Contains.h"
 #include <algorithm>
 #include <unordered_set>
+#include <memory>
 using namespace Utils;
 
 CollisionData::CollisionData() {};
@@ -44,12 +45,6 @@ void CollisionEngine::Update(float delta) {
 
 void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta)
 {
-	auto toKey = [](LPEntity a, LPEntity b) -> std::string {
-		return 	std::to_string(reinterpret_cast<intptr_t>(a))
-			+ std::string(",")
-			+ std::to_string(reinterpret_cast<intptr_t>(b));
-	};
-
 	if (!entity->_IsEnabledForCollisionDetection())
 		return;
 
@@ -79,6 +74,10 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 	};
 
 	std::sort(targetEntities.begin(), targetEntities.end(), ascending);
+
+	auto toKey = [](LPEntity a, LPEntity b) -> std::string {
+		return 	a->GetId() + "," + b->GetId();
+	};
 
 	//notify both if collided, need to notify right away so next detections can give accurate results
 	for (const LPEntity& target : targetEntities) {

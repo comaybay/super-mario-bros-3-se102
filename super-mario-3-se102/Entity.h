@@ -35,6 +35,7 @@ public:
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
 	void SetEnabledForCollisionDetection(bool enabled);
+	const std::string& GetId();
 
 	/// <summary>
 	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
@@ -83,6 +84,7 @@ protected:
 	LPConstHitbox hitbox;
 private:
 	void Init();
+	std::string id;
 	bool enabledForCollisionDetection;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;
