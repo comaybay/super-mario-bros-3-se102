@@ -189,6 +189,7 @@
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
+    <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
     <ClCompile Include="PointUpFactory.cpp" />
     <ClCompile Include="ProcessingUtils.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="ParaGoomba.h" />
+    <ClInclude Include="ParaKoopa.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Group.h" />
     <ClInclude Include="PointUpFactory.h" />

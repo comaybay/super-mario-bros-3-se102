@@ -13,6 +13,8 @@ namespace Entities {
 		Wing(LPEntity whoToFollow, Direction dir, const Utils::Vector2<float>& offset);
 		void Update(float delta) override;
 		void AutoFlap();
+		void SetDirection(Direction dir);
+		void SetOffset(const Utils::Vector2<float>& offset);
 		void SetFlapSpeed(float speed);
 		void FlapUp();
 		void FlapDown();

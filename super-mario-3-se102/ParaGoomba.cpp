@@ -47,13 +47,13 @@ ParaGoomba::~ParaGoomba()
 void ParaGoomba::Update(float delta)
 {
 	Entity::Update(delta);
-	wingLeft.Update(delta);
-	wingRight.Update(delta);
 
 	state.Handle(delta);
-
-	velocity.y += EntityConstants::GRAVITY / 1.75 * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+
+	wingLeft.Update(delta);
+	wingRight.Update(delta);
 
 	onGround = false;
 }
@@ -61,7 +61,7 @@ void ParaGoomba::Update(float delta)
 void ParaGoomba::Render() {
 	wingLeft.Render();
 	wingRight.Render();
-	animation->Render(position);
+	Entity::Render();
 }
 
 void ParaGoomba::MoveAround(float delta) {

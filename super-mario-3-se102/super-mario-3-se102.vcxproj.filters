@@ -171,6 +171,9 @@
     <ClCompile Include="SpriteBox.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
+    <ClCompile Include="ParaKoopa.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -306,6 +309,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpriteBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParaKoopa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

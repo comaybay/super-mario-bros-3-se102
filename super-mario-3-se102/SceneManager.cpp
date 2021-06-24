@@ -17,7 +17,7 @@ std::unordered_map <std::string, SceneManager::ParseEntityMethod> SceneManager::
 	{"Goomba", &SceneManager::ParseGoomba},
 	{"ParaGoomba",&SceneManager::ParseParaGoomba},
 	{"Koopa",&SceneManager::ParseKoopa},
-	//{"ParaKoopa", &SceneManager::ParseParaKoopa},
+	{"ParaKoopa", &SceneManager::ParseParaKoopa},
 	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
 	{"Coin", &SceneManager::ParseCoin},
 };
@@ -260,12 +260,15 @@ LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::Koopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
+	return new Entities::Koopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
 LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
 {
-	return LPEntity();
+	if (tokens.size() != 5)
+		throw InvalidTokenSizeException(5);
+
+	return new Entities::ParaKoopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
 LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens)
@@ -274,7 +277,7 @@ LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens
 		throw InvalidTokenSizeException(5);
 
 	//TODO: REMOVE TEST CODE
-	LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3]) - 16 * 2));
+	LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 
 	return new Entities::QuestionBlock(content, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }

@@ -6,15 +6,25 @@ using namespace Utils;
 Wing::Wing(LPEntity whoToFollow, Direction dir, const Vector2<float>& offset)
 	: Entity::Entity(whoToFollow->GetPosition() + offset, AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
 	target(whoToFollow),
-	offset(offset),
-	dirCode((dir == Direction::LEFT) ? "L" : "R")
+	offset(offset)
 {
+	SetDirection(dir);
 	SetAnimation("WingFlap" + dirCode);
 }
 
 void Wing::AutoFlap()
 {
 	SetAnimation("WingFlap" + dirCode);
+}
+
+void Wing::SetDirection(Direction dir)
+{
+	dirCode = (dir == Direction::LEFT) ? "L" : "R";
+}
+
+void Wing::SetOffset(const Vector2<float>& offset)
+{
+	this->offset = offset;
 }
 
 void Wing::SetFlapSpeed(float speed)
