@@ -24,7 +24,9 @@ void Wing::SetDirection(Direction dir)
 
 void Wing::SetOffset(const Vector2<float>& offset)
 {
+	position -= this->offset;
 	this->offset = offset;
+	position += this->offset;
 }
 
 void Wing::SetFlapSpeed(float speed)

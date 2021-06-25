@@ -85,8 +85,11 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			position.y += Game::TILE_SIZE;
 			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
-		else
+		else {
 			mario->TakeDamage();
+			velocity.x = (mario->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
+			SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
+		}
 
 		return;
 	}

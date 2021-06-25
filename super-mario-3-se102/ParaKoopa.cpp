@@ -100,10 +100,10 @@ void ParaKoopa::OnCollision(CollisionData data)
 		if (data.edge.x == 0.0f)
 			return;
 
-		velocity.x = Koopa::WALK_SPEED * data.edge.x;
+		velocity.x = -velocity.x;
 
-		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 		SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
+		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 		SetAnimation(colorCode + anim);
 		return;
 	}
@@ -118,8 +118,14 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);
 	}
-	else
+	else {
 		mario->TakeDamage();
+		velocity.x = (mario->GetPosition().x < position.x) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
+
+		SetWingDirection((velocity.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
+		std::string anim = (velocity.x < 0) ? "KoopaML" : "KoopaMR";
+		SetAnimation(colorCode + anim);
+	}
 }
 
 void ParaKoopa::HandleWallCollision(const CollisionData& data)
