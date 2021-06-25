@@ -130,8 +130,9 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 
 	else if (stateHandler == &Mario::Die) {
 		parentScene->PlayerDeath();
-		time = 0;
 		SetAnimation(AnimationSet::DEATH);
+		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
+		time = 0;
 		velocity = Vector2<float>(0, 0);
 	}
 

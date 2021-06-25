@@ -121,7 +121,7 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args.
 	unsubscribeWaitList.push_back(ToRemoveProps(thisId, handlerId));
 
 	if (std::is_base_of<Entity, T>::value)
-		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent()->Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
+		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent().Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
 }
 
 template<class ...Args>
