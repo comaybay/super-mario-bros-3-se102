@@ -110,7 +110,7 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 Event<CollisionData>& CollisionEngine::GetCollisionEventOf(LPEntity entity)
 {
-	if (!Utils::Contains(entity, collisionEventByLPEntity))
+	if (!Contains(entity, collisionEventByLPEntity))
 		collisionEventByLPEntity[entity] = new Event<CollisionData>();
 
 	return *collisionEventByLPEntity[entity];

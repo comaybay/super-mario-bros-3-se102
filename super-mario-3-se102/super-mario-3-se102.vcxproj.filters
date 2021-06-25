@@ -132,9 +132,6 @@
     <ClCompile Include="Hitbox.cpp">
       <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
-    <ClCompile Include="EntityConstants.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="BoomFX.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -176,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityConstants.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

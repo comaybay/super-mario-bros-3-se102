@@ -30,7 +30,6 @@ void Goomba::OnReady()
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 }
 
-
 void Goomba::Update(float delta)
 {
 	Entity::Update(delta);
