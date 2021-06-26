@@ -37,7 +37,9 @@ class MapEncoder(Encoder):
             self.mistake_file = None
 
     def _write_nodes_header(self, encode_file):
-        pass
+        encode_file.write("\n#NodeId...\n")
+        encode_file.write("#NodeId, ContentPath (relative to Root), TopNodeId, LeftNodeId, DownNodeId, RightNodeId\n")
+        encode_file.write("[NODES]\n")
 
     def _encode_nodes(self, second_layer_line, encode_file):
         pass
