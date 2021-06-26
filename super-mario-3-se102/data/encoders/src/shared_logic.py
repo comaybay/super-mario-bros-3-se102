@@ -15,13 +15,12 @@ class ColorKey:
 
 
 class Encoder:
-    def __init__(self, input_img, number_of_layers, game_dim, output_file_path):
+    def __init__(self, input_img, number_of_layers, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
         self.output_file_path = output_file_path
         self.mistake_file = None
 
-        data_dir_path = path.dirname(sys.argv[0])
-        self.tiles_img = Image.open(path.join(data_dir_path, "data", "tile_annotations.png"))
-        self.entities_img = Image.open(path.join(data_dir_path, "data", "entity_annotations.png"))
+        self.tile_anno_img = Image.open(tile_anno_path)
+        self.entity_anno_img = Image.open(entity_anno_path)
         self.input_img_pixels = input_img.load()
         self.input_img_tiles_size = (math.floor(input_img.width/16), math.floor(input_img.height/16))
         self.layer_tiles_size = (math.floor(input_img.width/16),
@@ -29,16 +28,18 @@ class Encoder:
 
         self.world_bg_color = self.input_img_pixels[0, 0]
         self.tile_identifier = TileIdentifier(
-            self.tiles_img, self.input_img_pixels, ColorKey.TRANSPARENT, self.world_bg_color)
-        self.entity_identifier = WorldEntityIdentifier(
-            self.entities_img, self.input_img_pixels, ColorKey.TRANSPARENT, self.world_bg_color)
+            self.tile_anno_img, self.input_img_pixels, ColorKey.TRANSPARENT, self.world_bg_color
+        )
+        self.entity_identifier = EntityIdentifier(
+            self.entity_anno_img, entity_anno_map, self.input_img_pixels, ColorKey.TRANSPARENT, self.world_bg_color
+        )
 
         # spatial partition cell size
         self.sp_cell_dim = (game_dim[0] / 2, game_dim[1] / 2)
 
     def __del__(self):
-        self.tiles_img.close()
-        self.entities_img.close()
+        self.tile_anno_img.close()
+        self.entity_anno_img.close()
 
     def _write_world_props_header(self, encode_file):
         encode_file.write("#Dimension (Width, Height)\n")
@@ -57,7 +58,7 @@ class Encoder:
         encode_file.write("#Foreground Tile Indices (3 digits Hex)\n")
         encode_file.write("[ENCODED WORLD]\n")
 
-    def _encode_background(self, start_line, encode_file):
+    def _encode_world_tiles(self, start_line, encode_file):
         for y in range(start_line, start_line + self.layer_tiles_size[1]):
             for x in range(self.input_img_tiles_size[0]):
                 code = self.tile_identifier.get_tile_code((x, y))
@@ -71,10 +72,6 @@ class Encoder:
                 else:
                     encode_file.write(code)
         encode_file.write("\n")
-
-    def _encode_foreground(self, start_line, encode_file):
-        # same process as background
-        return self._encode_background(start_line, encode_file)
 
     def _write_grid_props_header(self, encode_file):
         encode_file.write("\n#CellDimension (Width, Height)\n")
@@ -174,14 +171,14 @@ class IdentifierCode(Enum):
 
 
 class Identifier(ABC):
-    def __init__(self, reference_tiles_img, target_img_pixels, ref_tiles_img_transparent_color, target_img_bg_color):
+    def __init__(self, tile_anno_img, target_img_pixels, anno_img_transparent_color, target_img_bg_color):
         self.target_img_pixels = target_img_pixels
         self.target_img_bg_color = target_img_bg_color
-        self.ref_tiles_img_transparent_color = ref_tiles_img_transparent_color
+        self.tile_anno_img_transparent_color = anno_img_transparent_color
 
-        self.ref_tiles_tiles_pixels = reference_tiles_img.load()
-        self.ref_tiles_img_size = (math.floor((reference_tiles_img.width - 1) / 17),
-                                   math.floor((reference_tiles_img.height - 1) / 17))
+        self.ref_tiles_tiles_pixels = tile_anno_img.load()
+        self.ref_tiles_img_size = (math.floor((tile_anno_img.width - 1) / 17),
+                                   math.floor((tile_anno_img.height - 1) / 17))
 
     def is_void_tile(self, world_position_in_tile) -> bool:
         x, y = world_position_in_tile
@@ -226,7 +223,7 @@ class Identifier(ABC):
                 world_pixel = self.target_img_pixels[sx + j, sy + i]
 
                 if (tile_pixel == world_pixel or
-                   (tile_pixel == self.ref_tiles_img_transparent_color and world_pixel == self.target_img_bg_color)):
+                   (tile_pixel == self.tile_anno_img_transparent_color and world_pixel == self.target_img_bg_color)):
                     continue
 
                 return False
@@ -235,8 +232,8 @@ class Identifier(ABC):
 
 
 class TileIdentifier(Identifier):
-    def __init__(self, reference_tiles_img, target_img_pixels, ref_tiles_img_transparent_color, target_img_bg_color):
-        super().__init__(reference_tiles_img, target_img_pixels, ref_tiles_img_transparent_color, target_img_bg_color)
+    def __init__(self, tile_anno_img, target_img_pixels, tile_anno_img_transparent_color, target_img_bg_color):
+        super().__init__(tile_anno_img, target_img_pixels, tile_anno_img_transparent_color, target_img_bg_color)
 
     def _convertToCode(self, position_in_tile) -> str:
         x, y = position_in_tile
@@ -244,6 +241,7 @@ class TileIdentifier(Identifier):
 
 
 class EntityCode(Enum):
+    # WORLD
     WALL_TYPE_1 = "WallType1"
     WALL_TYPE_2 = "WallType2"
     GOOMBA = "Goomba, Brown"
@@ -268,34 +266,16 @@ class EntityCode(Enum):
     BRICK_1UP = "Brick, 1Up"
     BRICK_P_SWITCH = "Brick, PSwitch"
     MARIO = "Mario"
+    # WORLD MAP
+    WM_BUSH = "WMBush"
+    WM_HELP_BUBBLE = "WMHelpBubble"
 
 
-class WorldEntityIdentifier(Identifier):
-    _codeByPosition = {
-        (0, 0): EntityCode.QUESTION_BLOCK_COIN,
-        (1, 0): EntityCode.QUESTION_BLOCK_SUPER_LEAF,
-        (0, 1): EntityCode.BRICK,
-        (1, 1): EntityCode.BRICK_P_SWITCH,
-        (2, 1): EntityCode.BRICK_1UP,
-        (0, 2): EntityCode.COIN,
-        (1, 2): EntityCode.GOAL,
-        (2, 2): EntityCode.PORTAL_1,
-        (3, 2): EntityCode.PORTAL_2,
-        (0, 3): EntityCode.GOOMBA,
-        (1, 3): EntityCode.GOOMBA_RED,
-        (2, 3): EntityCode.PARA_GOOMBA,
-        (3, 3): EntityCode.PARA_GOOMBA_RED,
-        (0, 4): EntityCode.KOOPA,
-        (1, 4): EntityCode.PARA_KOOPA,
-        (2, 4): EntityCode.KOOPA_RED,
-        (0, 5): EntityCode.PIRANHA_RED,
-        (1, 5): EntityCode.PIRANHA_GREEN,
-        (2, 5): EntityCode.VENUS_GREEN,
-        (0, 6): EntityCode.MARIO,
-    }
+class EntityIdentifier(Identifier):
 
-    def __init__(self, reference_tiles_img, target_img_pixels, ref_tiles_img_transparent_color, target_img_bg_color):
-        super().__init__(reference_tiles_img, target_img_pixels, ref_tiles_img_transparent_color, target_img_bg_color)
+    def __init__(self, entity_anno_img, entity_anno_map, target_img_pixels, entity_anno_img_transparent_color, target_img_bg_color):
+        super().__init__(entity_anno_img, target_img_pixels, entity_anno_img_transparent_color, target_img_bg_color)
+        self._codeByPosition = entity_anno_map
 
     def _convertToCode(self, position_in_tile) -> str:
         return self._codeByPosition.get(position_in_tile, IdentifierCode.NOT_IMPLEMENTED)

@@ -1,4 +1,4 @@
-from .shared_logic import ColorKey, Encoder,  WorldEntityIdentifier, EntityCode
+from .shared_logic import ColorKey, Encoder,  EntityIdentifier, EntityCode
 import math
 
 # THIS PROGRAM WILL CONVERT IMAGES OF A WORLD IN SMB3 TO AN ENCODED FORMAT USED IN SMB3 MOCK PROJECT
@@ -18,8 +18,8 @@ import math
 
 
 class WorldEncoder(Encoder):
-    def __init__(self, world_img, game_dim, output_file_path):
-        super().__init__(world_img, 4, game_dim, output_file_path)
+    def __init__(self, world_img, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
+        super().__init__(world_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
 
     def encode(self):
         with open(self.output_file_path, "w+") as encode_file:
@@ -31,8 +31,8 @@ class WorldEncoder(Encoder):
             self._encode_world_props(encode_file)
 
             self._write_encoded_world_header(encode_file)
-            self._encode_background(first_layer_line, encode_file)
-            self._encode_foreground(second_layer_line, encode_file)
+            self._encode_world_tiles(first_layer_line, encode_file)
+            self._encode_world_tiles(second_layer_line, encode_file)
 
             self._write_grid_props_header(encode_file)
             self._encode_grid_props(encode_file)
