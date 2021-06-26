@@ -29,15 +29,15 @@ def main():
     # automatically encode all images from ./worlds
     if len(sys.argv) == 1:
         default_input_worlds_dir = path.join(this_dir, "worlds")
-        # encoding_files_form_folder(
-        #     ImageType.WORLD,
-        #     default_input_worlds_dir,
-        #     default_output_world_dir,
-        #     game_dim,
-        #     default_world_tile_anno_path,
-        #     default_world_entity_anno_path,
-        #     world_entity_anno_map,
-        # )
+        encoding_files_form_folder(
+            ImageType.WORLD,
+            default_input_worlds_dir,
+            default_output_world_dir,
+            game_dim,
+            default_world_tile_anno_path,
+            default_world_entity_anno_path,
+            world_entity_anno_map,
+        )
 
         default_input_world_maps_dir = path.join(this_dir, "world maps")
         encoding_files_form_folder(

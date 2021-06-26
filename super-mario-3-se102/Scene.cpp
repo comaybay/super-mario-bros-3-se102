@@ -161,6 +161,7 @@ void Scene::_Ready()
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Utils::Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	entityManager->Add(new Entities::ParaKoopa("Green", Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 3)));
+	entityManager->Add(new Entities::ParaKoopa("Green", Utils::Vector2<float>(16 * 11, worldTileDim.height * 16 - 16 * 3)));
 
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
