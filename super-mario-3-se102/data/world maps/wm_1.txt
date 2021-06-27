@@ -1,0 +1,143 @@
+#Dimension (Width, Height)
+#BackgroundColor (R, G, B)
+[WORLD PROPERTIES]
+16, 13
+0, 0, 0
+
+#Background Tile Indices (3 digits Hex)
+#Foreground Tile Indices (3 digits Hex)
+[ENCODED WORLD]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFF000000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00600700700700700700700700700700700700700700700800CFFFFFFFFF00901C01D01C00A01C00B01C01DFFFFFF00E00CFFFFFFFFF021FFFFFFFFF021FFFFFFFFF021FFFFFF00E00C01C00D01C029FFFFFFFFF02701C00F01C030FFFFFF00E00CFFFFFFFFF031FFFFFFFFF021FFFFFFFFFFFFFFFFFF00E00CFFFFFFFFF02701C03201C034FFFFFF01E01F020FFF00E00CFFFFFFFFF021FFFFFFFFFFFF01E01F02C02D024FFF00E00CFFFFFF01902701903001C01D02201D01C033024FFF00E00CFFF019019021019019FFF021024FFFFFFFFF024FFF00E00CFFF01901901001C01D01C01102A01F01F01F02CFFF00E012013013013013013013013013013013013013013013014FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+#CellDimension (Width, Height)
+#GridSize (Column, Row)
+[SPATIAL PARTITION GRID]
+128.0, 120.0
+2, 2
+
+#EntityName, [Entity specific properties...], Position (X, Y), IsInAnyGrid
+#[SpatialPartitionGridCellIndex (X, Y) (If IsInAnyGrid = True)]
+[WORLD ENTITIES]
+WMBush, 16, 32, True
+0, 0
+WMBush, 32, 32, True
+0, 0
+WMBush, 48, 32, True
+0, 0
+WMBush, 208, 32, True
+1, 0
+WMBush, 224, 32, True
+1, 0
+WMBush, 16, 48, True
+0, 0
+WMBush, 32, 48, True
+0, 0
+WMBush, 48, 48, True
+0, 0
+WMBush, 80, 48, True
+0, 0
+WMBush, 96, 48, True
+0, 0
+WMBush, 112, 48, True
+0, 0
+WMBush, 144, 48, True
+1, 0
+WMBush, 160, 48, True
+1, 0
+WMBush, 176, 48, True
+1, 0
+WMBush, 208, 48, True
+1, 0
+WMBush, 224, 48, True
+1, 0
+WMBush, 80, 64, True
+0, 0
+WMBush, 96, 64, True
+0, 0
+WMBush, 112, 64, True
+0, 0
+WMBush, 208, 64, True
+1, 0
+WMBush, 224, 64, True
+1, 0
+WMBush, 16, 80, True
+0, 0
+WMBush, 32, 80, True
+0, 0
+WMBush, 48, 80, True
+0, 0
+WMBush, 80, 80, True
+0, 0
+WMBush, 96, 80, True
+0, 0
+WMBush, 112, 80, True
+0, 0
+WMBush, 144, 80, True
+1, 0
+WMBush, 160, 80, True
+1, 0
+WMBush, 176, 80, True
+1, 0
+WMBush, 192, 80, True
+1, 0
+WMBush, 208, 80, True
+1, 0
+WMBush, 224, 80, True
+1, 0
+WMBush, 16, 96, True
+0, 0
+WMBush, 32, 96, True
+0, 0
+WMBush, 48, 96, True
+0, 0
+WMBush, 144, 96, True
+1, 0
+WMBush, 160, 96, True
+1, 0
+WMBush, 224, 96, True
+1, 0
+WMBush, 16, 112, True
+0, 0
+WMBush, 96, 112, True
+0, 0
+WMBush, 112, 112, True
+0, 0
+WMBush, 128, 112, True
+1, 0
+WMHelpBubble, 208, 112, True
+1, 0
+WMBush, 224, 112, True
+1, 0
+WMBush, 224, 128, True
+1, 1
+WMBush, 224, 144, True
+1, 1
+WMBush, 224, 160, True
+1, 1
+
+#NodeId...
+#NodeId, ContentPath (relative to Root), TopNodeId, LeftNodeId, DownNodeId, RightNodeId, Position (X, Y)
+[NODES]
+NLevel1(4, 45), NStop(4, 47), NStop(6, 45), NLevel2(8, 45), NStop(8, 47), NLevel3(10, 45), NStop(12, 45), NLevel10(12, 47), NStart, NLevel13(8, 49), NLevel4(10, 47), NStop(4, 49), NStop(4, 51), NLevel11(6, 49), NLevel5(4, 53), NLevel10(6, 51), NStop(8, 51), NLevel6(8, 53), NStop(10, 51), NLevel12(12, 51), NStop(6, 53)
+NLevel1(4, 45), worlds/w_1_1_1.txt, None, None, NStop(4, 47), NStop(6, 45), 64, 720
+NStop(6, 45), None, None, NLevel1(4, 45), None, NLevel2(8, 45), 96, 720
+NLevel2(8, 45), worlds/w_1_2_1.txt, None, NStop(6, 45), NStop(8, 47), NLevel3(10, 45), 128, 720
+NLevel3(10, 45), worlds/w_1_3_1.txt, None, NLevel2(8, 45), None, NStop(12, 45), 160, 720
+NStop(12, 45), None, None, NLevel3(10, 45), NLevel10(12, 47), None, 192, 720
+NStart, None, None, None, None, NStop(4, 47), 32, 752
+NStop(4, 47), None, NLevel1(4, 45), NStart, None, None, 64, 752
+NStop(8, 47), None, NLevel2(8, 45), None, NLevel13(8, 49), NLevel4(10, 47), 128, 752
+NLevel4(10, 47), worlds/w_1_4_1.txt, None, NStop(8, 47), None, NLevel10(12, 47), 160, 752
+NLevel10(12, 47), worlds/w_1_10_1.txt, NStop(12, 45), NLevel4(10, 47), None, None, 192, 752
+NStop(4, 49), None, None, None, NStop(4, 51), NLevel11(6, 49), 64, 784
+NLevel11(6, 49), worlds/w_1_11_1.txt, None, NStop(4, 49), None, NLevel13(8, 49), 96, 784
+NLevel13(8, 49), worlds/w_1_13_1.txt, NStop(8, 47), NLevel11(6, 49), None, None, 128, 784
+NStop(4, 51), None, NStop(4, 49), None, NLevel5(4, 53), None, 64, 816
+NLevel10(6, 51), worlds/w_1_10_1.txt, None, None, None, NStop(8, 51), 96, 816
+NStop(8, 51), None, None, NLevel10(6, 51), NLevel6(8, 53), NStop(10, 51), 128, 816
+NStop(10, 51), None, None, NStop(8, 51), None, NLevel12(12, 51), 160, 816
+NLevel12(12, 51), worlds/w_1_12_1.txt, None, NStop(10, 51), None, None, 192, 816
+NLevel5(4, 53), worlds/w_1_5_1.txt, NStop(4, 51), None, None, NStop(6, 53), 64, 848
+NStop(6, 53), None, None, NLevel5(4, 53), None, NLevel6(8, 53), 96, 848
+NLevel6(8, 53), worlds/w_1_6_1.txt, NStop(8, 51), NStop(6, 53), None, None, 128, 848

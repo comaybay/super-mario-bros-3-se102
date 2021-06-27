@@ -1,25 +1,10 @@
-from .shared_logic import ColorKey, Encoder,  EntityIdentifier, EntityCode
+from .shared_logic import ColorKey, Encoder, EntityCode
 import math
-
-# THIS PROGRAM WILL CONVERT IMAGES OF A WORLD IN SMB3 TO AN ENCODED FORMAT USED IN SMB3 MOCK PROJECT
-# INPUT FILES ARE PUT INSIDE THE 'worlds' FOLDER, OUTPUT FILES ARE PUT INSIDE '../worlds' FOLDER
-# YOU CAN ALSO MANUALLY CONVERT ONE IMAGE BY GIVING IT AN IMAGE FILE PATH AND (OPTIONAL) AN OUTPUT FILE PATH (.txt FILE)
-
-# World image format:
-# image must be a grid of tiles.
-# tiles must be taken from 'data/tiles.png'
-# in the last row, the first tile will specify the color of the world background,
-# this will be use when compare tiles between world image and tiles.png
-# if no tile was found to match world image. it's cordinate will be written in unidentifiable_tiles.txt,
-# this can be use to spot mistakes in world image or in tile_annotations.png
-
-# world images are taken from https://www.nesmaps.com/maps/SuperMarioBrothers3/SuperMarioBrothers3BG.html#other with modifications
-# but you can make your own custom world using tiles in tile_annotations.png
 
 
 class WorldEncoder(Encoder):
-    def __init__(self, world_img, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
-        super().__init__(world_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
+    def __init__(self, input_img, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
+        super().__init__(input_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
 
     def encode(self):
         with open(self.output_file_path, "w+") as encode_file:

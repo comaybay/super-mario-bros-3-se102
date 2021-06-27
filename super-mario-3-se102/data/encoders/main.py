@@ -2,10 +2,18 @@
 import sys
 from os import path, walk
 from PIL import Image
-
 from src.world_encoder import WorldEncoder
-from src.map_encoder import MapEncoder
+from src.world_map_encoder import WorldMapEncoder
 from src.entity_anno_map import world_entity_anno_map, world_map_entity_anno_map
+
+# THIS PROGRAM WILL CONVERT IMAGES OF A WORLD/WORLD MAP IN SMB3 TO AN ENCODED FORMAT USED IN SMB3 MOCK PROJECT
+# BY DEFAULT, INPUT WORLD IMAGES ARE PUT INSIDE THE 'worlds' FOLDER, OUTPUT FILES ARE PUT INSIDE '../worlds' FOLDER
+# BY DEFAULT, INPUT MAP IMAGES ARE PUT INSIDE THE 'maps' FOLDER, OUTPUT FILES ARE PUT INSIDE '../maps' FOLDER
+
+# INPUT FILE MUST FOLLOW THIS NAMING CONVENTION:
+# World map image name: wm_{number}.png
+# world image name: w_{world map number}_{world number}_{scene number}.png
+# image file can only use tiles taken from "data/*.png"
 
 
 def main():
@@ -25,12 +33,12 @@ def main():
 
     default_world_map_tile_anno_path = path.join(this_dir, "data", "world_map_tile_annotations.png")
     default_world_map_entity_anno_path = path.join(this_dir, "data", "world_map_entity_annotations.png")
+    default_world_map_node_anno_path = path.join(this_dir, "data", "world_map_node_annotations.png")
 
     # automatically encode all images from ./worlds
     if len(sys.argv) == 1:
         default_input_worlds_dir = path.join(this_dir, "worlds")
-        encoding_files_form_folder(
-            ImageType.WORLD,
+        encoding_world_files_form_folder(
             default_input_worlds_dir,
             default_output_world_dir,
             game_dim,
@@ -40,28 +48,33 @@ def main():
         )
 
         default_input_world_maps_dir = path.join(this_dir, "world maps")
-        encoding_files_form_folder(
-            ImageType.WORLD_MAP,
+        encoding_world_map_files_form_folder(
             default_input_world_maps_dir,
             default_output_world_map_dir,
             game_dim,
             default_world_map_tile_anno_path,
             default_world_map_entity_anno_path,
             world_map_entity_anno_map,
+            default_world_map_node_anno_path
         )
+        print("Done.")
 
     # manually provide image_type and target folder
     elif len(sys.argv) == 3:
         image_type = sys.argv[1]
         input_folder_dir = sys.argv[2]
         if (image_type == ImageType.WORLD):
-            encoding_files_form_folder(image_type, input_folder_dir, default_output_world_dir,
-                                       game_dim, default_world_tile_anno_path, default_world_entity_anno_path,
-                                       world_entity_anno_map)
+            encoding_world_files_form_folder(input_folder_dir, default_output_world_dir,
+                                             game_dim, default_world_tile_anno_path, default_world_entity_anno_path,
+                                             world_entity_anno_map)
+            print("Done.")
+
         elif (image_type == ImageType.WORLD_MAP):
-            encoding_files_form_folder(image_type, input_folder_dir, default_output_world_dir,
-                                       game_dim, default_world_map_tile_anno_path, default_world_map_entity_anno_path,
-                                       world_map_entity_anno_map)
+            encoding_world_map_files_form_folder(input_folder_dir, default_output_world_dir,
+                                                 game_dim, default_world_map_tile_anno_path, default_world_map_entity_anno_path,
+                                                 world_map_entity_anno_map)
+            print("Done.")
+
         else:
             print("Error: Invalid ImageType")
 
@@ -69,7 +82,7 @@ def main():
         print("Error: invalid amount of input arguments")
 
 
-def encoding_files_form_folder(img_type, input_folder_dir, output_folder_dir, game_dim, tile_anno_path, entity_anno_path, entity_anno_map):
+def encoding_world_files_form_folder(input_folder_dir, output_folder_dir, game_dim, tile_anno_path, entity_anno_path, entity_anno_map):
     _, _, input_img_filenames = next(walk(input_folder_dir))
 
     for filename in input_img_filenames:
@@ -78,23 +91,30 @@ def encoding_files_form_folder(img_type, input_folder_dir, output_folder_dir, ga
         world_img = Image.open(file_path)
         output_path = path.join(output_folder_dir, path.splitext(filename)[0] + ".txt")
 
-        get_encoder(img_type, world_img, game_dim, output_path,
-                    tile_anno_path, entity_anno_path, entity_anno_map).encode()
+        WorldEncoder(world_img, game_dim, output_path, tile_anno_path, entity_anno_path, entity_anno_map).encode()
+
         world_img.close()
 
-    print("Done.")
+
+def encoding_world_map_files_form_folder(input_folder_dir, output_folder_dir, game_dim, tile_anno_path,
+                                         entity_anno_path, entity_anno_map, node_anno_path):
+    _, _, input_img_filenames = next(walk(input_folder_dir))
+
+    for filename in input_img_filenames:
+        print(f"Working on {filename}...")
+        file_path = path.join(input_folder_dir, filename)
+        world_img = Image.open(file_path)
+        output_path = path.join(output_folder_dir, path.splitext(filename)[0] + ".txt")
+
+        WorldMapEncoder(world_img, game_dim, output_path, tile_anno_path,
+                        entity_anno_path, entity_anno_map, node_anno_path).encode()
+
+        world_img.close()
 
 
 class ImageType():
     WORLD = "-world"
     WORLD_MAP = "-map"
-
-
-def get_encoder(img_type, world_img, game_dim, output_path, tile_anno_path, entity_anno_path, entity_anno_map):
-    return {
-        ImageType.WORLD: WorldEncoder,
-        ImageType.WORLD_MAP: MapEncoder
-    }[img_type](world_img, game_dim, output_path, tile_anno_path, entity_anno_path, entity_anno_map)
 
 
 def get_game_dim(path):
