@@ -14,13 +14,14 @@ public:
 	static LPScene LoadWorld(std::string id);
 private:
 	static std::unordered_map<std::string, std::string> scenePathById;
-	static std::string ParseWorldProperties(std::ifstream& file, Utils::Dimension& dim, D3DCOLOR& bgColor);
-	static std::string ParseEncodedWorld(std::ifstream& file, int world_width, LPEncodedWorld& encodedWorld);
+	static std::string ParseWorldProperties(std::ifstream& file, std::string& sceneType, Utils::Dimension& dim, D3DCOLOR& bgColor);
+	static std::string ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld);
 	static std::string ParseSpatialPartitionGrid
 	(std::ifstream& file, LPGrid& wallEntitySpatialGrid, LPGrid& staticEntitySpatialGrid, LPDynamicGrid& movableEntitySpatialGrid);
 	static std::string ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid);
 	static std::string ParseAndAddOtherEntities
 	(std::ifstream& file, LPEntityManager entityManager, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid);
+	static std::string ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager);
 
 	typedef LPEntity(*ParseEntityMethod)(const std::vector<std::string>& tokens);
 	static std::unordered_map <std::string, ParseEntityMethod> parseMethodByEntityName;

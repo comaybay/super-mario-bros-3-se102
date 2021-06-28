@@ -7,6 +7,7 @@
 #include "Entities.h"
 
 #include <fstream>
+#include "TextureManager.h"
 
 using namespace Utils;
 using namespace ProcessingUtils;
@@ -38,6 +39,7 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	}
 
 	std::string section;
+	std::string sceneType;
 	Dimension worldDim;
 	D3DCOLOR bgColor{};
 	char* background;
@@ -56,9 +58,9 @@ LPScene SceneManager::LoadWorld(std::string id) {
 		//TODO: Replace geline with GetNextNonCommentLine
 		while (section[0] == '[') {
 			if (section == "[WORLD PROPERTIES]")
-				section = ParseWorldProperties(file, worldDim, bgColor);
+				section = ParseWorldProperties(file, sceneType, worldDim, bgColor);
 			else if (section == "[ENCODED WORLD]")
-				section = ParseEncodedWorld(file, worldDim.width, encodedWorld);
+				section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
 			else if (section == "[SPATIAL PARTITION GRID]") {
 				section = ParseSpatialPartitionGrid(file, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
 				entityManager = new EntityManager(scene, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
@@ -67,8 +69,10 @@ LPScene SceneManager::LoadWorld(std::string id) {
 				section = ParseAndAddWallsEntities(file, entityManager, wallEntitySpatialGrid);
 			else if (section == "[WORLD ENTITIES]")
 				section = ParseAndAddOtherEntities(file, entityManager, staticEntitySpatialGrid, movableEntitySpatialGrid);
+			else if (section == "[WORLD MAP NODES]")
+				section = ParseWorldMapNodes(file, entityManager);
 			else
-				continue;
+				break;
 		}
 	}
 	file.close();
@@ -78,13 +82,18 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	return scene;
 }
 
-std::string SceneManager::ParseWorldProperties(std::ifstream& file, Dimension& dim, D3DCOLOR& bgColor)
+std::string SceneManager::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor)
 {
 	std::string line;
 	while (std::getline(file, line))
 	{
 		if (line[0] == '#' || line == "")
 			continue;
+
+		std::vector<std::string> sceneTypeToken = SplitByComma(line);
+		if (sceneTypeToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+		line = GetNextNonCommentLine(file);
 
 		std::vector<std::string> dimTokens = SplitByComma(line);
 		if (dimTokens.size() != 2)
@@ -95,6 +104,7 @@ std::string SceneManager::ParseWorldProperties(std::ifstream& file, Dimension& d
 		if (colorTokens.size() != 3)
 			throw InvalidTokenSizeException(3);
 
+		sceneType = sceneTypeToken[0];
 		dim = Dimension(stof(dimTokens[0]), stof(dimTokens[1]));
 		bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
 
@@ -103,7 +113,7 @@ std::string SceneManager::ParseWorldProperties(std::ifstream& file, Dimension& d
 	return line;
 }
 
-std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width, LPEncodedWorld& encodedWorld)
+std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -119,7 +129,9 @@ std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width
 		std::getline(file, line);
 		strcpy_s(foreground, sizeof(char) * size, line.c_str());
 
-		encodedWorld = new EncodedWorld(size, world_width * 3, background, foreground);
+		std::string textureId = (sceneType == "WorldMap") ? TextureId::WORLD_MAP_TILES : TextureId::WORLD_TILES;
+
+		encodedWorld = new EncodedWorld(size, world_width * 3, background, foreground, textureId);
 		std::getline(file, line);
 
 		return line;
@@ -229,6 +241,44 @@ std::string SceneManager::ParseAndAddOtherEntities
 	}
 
 	return line;
+}
+
+std::string SceneManager::ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager)
+{
+	using namespace Entities;
+	std::string line;
+	while (true) {
+		line = GetNextNonCommentLine(file);
+		if (line[0] == '[' || line == "EOF")
+			return line;
+
+		std::vector<std::string> nodeIds = SplitByComma(line);
+		std::unordered_map<std::string, LPWMNode> nodeById;
+		for (auto& id : nodeIds)
+			nodeById[id] = new WMNode();
+
+		for (int i = 0; i < nodeIds.size(); i++) {
+			line = GetNextNonCommentLine(file);
+			std::vector<std::string> nodeTokens = SplitByComma(line);
+			if (nodeTokens.size() != 10)
+				throw InvalidTokenSizeException(10);
+
+			std::string nodeId = nodeTokens[0];
+			std::string scenePath = nodeTokens[1];
+			LPWMNode topNode = nodeById[nodeTokens[2]];
+			LPWMNode leftNode = nodeById[nodeTokens[3]];
+			LPWMNode bottomNode = nodeById[nodeTokens[4]];
+			LPWMNode rightNode = nodeById[nodeTokens[5]];
+			Vector2<float> pos(stoi(nodeTokens[6]), stoi(nodeTokens[7]));
+			Vector2<int> cellIndex(stoi(nodeTokens[8]), stoi(nodeTokens[9]));
+
+			LPWMNode node = nodeById[nodeId];
+			node->_Init(pos, scenePath, topNode, leftNode, bottomNode, rightNode);
+			entityManager->_AddToNonWallSPGrid(node, cellIndex);
+		}
+
+		return line;
+	}
 }
 
 LPEntity SceneManager::ParseMario(const std::vector<std::string>& tokens)

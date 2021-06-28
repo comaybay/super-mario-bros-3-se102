@@ -217,6 +217,7 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Wing.cpp" />
+    <ClCompile Include="WMNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="CollisionWallType2.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Contains.h" />
+    <ClInclude Include="Direction.h" />
     <ClInclude Include="DynamicGrid.h" />
     <ClInclude Include="EmptyAnimation.h" />
     <ClInclude Include="EncodedWorld.h" />
@@ -266,6 +268,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Wing.h" />
+    <ClInclude Include="WMNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
