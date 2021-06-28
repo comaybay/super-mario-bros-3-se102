@@ -25,7 +25,15 @@ Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position
 void Koopa::OnReady()
 {
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+
+	if (playerGroup.empty()) {
+		SetAnimation(colorCode + "KoopaML");
+		velocity.x = -WALK_SPEED;
+		return;
+	}
+
+	LPEntity player = playerGroup.front();
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 }

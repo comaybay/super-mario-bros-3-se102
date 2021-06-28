@@ -34,7 +34,14 @@ ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
 void ParaGoomba::OnReady()
 {
 	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+
+	if (playerGroup.empty()) {
+		velocity.x = -Goomba::WALK_SPEED;
+		return;
+	}
+
+	LPEntity player = playerGroup.front();
 	velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 }
 
@@ -73,7 +80,11 @@ void ParaGoomba::MoveAround(float delta) {
 		wingRight.AutoFlap();
 		state.SetHandler(&ParaGoomba::PrepareToJump);
 
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+		std::list<LPEntity> playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+		if (playerGroup.empty())
+			return;
+
+		LPEntity player = playerGroup.front();
 		velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 }

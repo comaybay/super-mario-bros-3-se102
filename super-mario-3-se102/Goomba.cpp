@@ -26,7 +26,14 @@ Goomba::Goomba(std::string colorType, Vector2<float> position)
 void Goomba::OnReady()
 {
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+
+	if (playerGroup.empty()) {
+		velocity.x = -WALK_SPEED;
+		return;
+	}
+
+	LPEntity player = playerGroup.front();
 	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
 }
 

@@ -32,13 +32,22 @@ ParaKoopa::~ParaKoopa()
 
 void ParaKoopa::OnReady()
 {
+	wing = new Wing(this);
 	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+
+	if (playerGroup.empty()) {
+		velocity.x = -Koopa::WALK_SPEED;
+		SetAnimation(colorCode + "KoopaML");
+		SetWingDirection(Wing::Direction::RIGHT);
+		return;
+	}
+
 	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
 	velocity.x = (player->GetPosition().x < position.x) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 
 	Wing::Direction wingDir = (player->GetPosition().x < position.x) ? Wing::Direction::RIGHT : Wing::Direction::LEFT;
-	wing = new Wing(this, wingDir, { 8, 2 });
 	SetWingDirection(wingDir);
 }
 
