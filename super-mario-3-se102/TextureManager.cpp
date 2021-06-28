@@ -3,11 +3,13 @@
 #include "Game.h"
 #include "Contains.h"
 
-std::string TextureID::TILES = "__TILES__";
+std::string TextureId::WORLD_TILES = "__TEX_W_TILES__";
+std::string TextureId::WORLD_MAP_TILES = "__TEX_WM_TILES__";
 
 std::unordered_map<std::string, LPDIRECT3DTEXTURE9> TextureManager::textureById;
+std::unordered_map<std::string, Utils::Dimension> TextureManager::textureImgDimById;
 
-void TextureManager::Load(std::string id, std::string path, D3DCOLOR color_key)
+void TextureManager::Load(const std::string& id, const std::string& path, const D3DCOLOR& color_key)
 {
 	D3DXIMAGE_INFO image_info;
 	HRESULT result = D3DXGetImageInfoFromFile(path.c_str(), &image_info);
@@ -37,11 +39,22 @@ void TextureManager::Load(std::string id, std::string path, D3DCOLOR color_key)
 		throw "Fail to create texture from image, image path: " + path;
 
 	textureById[id] = texture;
+	textureImgDimById[id] = Utils::Dimension(image_info.Width, image_info.Height);
 }
 
-LPDIRECT3DTEXTURE9 TextureManager::Get(std::string id) {
+LPDIRECT3DTEXTURE9 TextureManager::Get(const std::string& id) {
 	if (Utils::Contains(id, textureById))
 		return textureById[id];
+	else {
+		std::string msg = "No texture with id=\"" + id + "\" found";
+		throw std::exception(msg.c_str());
+	}
+}
+
+const Utils::Dimension& TextureManager::GetDimensionOf(const std::string& id)
+{
+	if (Utils::Contains(id, textureImgDimById))
+		return textureImgDimById[id];
 	else {
 		std::string msg = "No texture with id=\"" + id + "\" found";
 		throw std::exception(msg.c_str());
