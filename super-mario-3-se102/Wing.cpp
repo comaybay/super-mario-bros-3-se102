@@ -3,6 +3,13 @@
 using namespace Entities;
 using namespace Utils;
 
+Entities::Wing::Wing(LPEntity whoToFollow)
+	: Entity::Entity(whoToFollow->GetPosition(), AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
+	target(whoToFollow),
+	offset({ 0, 0 })
+{
+}
+
 Wing::Wing(LPEntity whoToFollow, Direction dir, const Vector2<float>& offset)
 	: Entity::Entity(whoToFollow->GetPosition() + offset, AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
 	target(whoToFollow),

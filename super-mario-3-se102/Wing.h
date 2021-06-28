@@ -10,6 +10,7 @@ namespace Entities {
 			LEFT, RIGHT
 		};
 
+		Wing(LPEntity whoToFollow);
 		Wing(LPEntity whoToFollow, Direction dir, const Utils::Vector2<float>& offset);
 		void Update(float delta) override;
 		void AutoFlap();
