@@ -5,6 +5,7 @@
 #include "ProcessingUtils.h"
 #include "Contains.h"
 #include "Entities.h"
+#include "Game.h"
 
 #include <fstream>
 #include "TextureManager.h"
@@ -276,6 +277,10 @@ std::string SceneManager::ParseWorldMapNodes(std::ifstream& file, LPEntityManage
 			node->_Init(pos, scenePath, topNode, leftNode, bottomNode, rightNode);
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
+
+		//test code
+		LPWMNode startNode = nodeById["NStart"];
+		startNode->Activate(new Mario(startNode->GetPosition()));
 
 		return line;
 	}

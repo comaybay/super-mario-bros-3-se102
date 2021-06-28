@@ -98,12 +98,9 @@ void Scene::Render()
 		d3ddv->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
 
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
-
-		RenderEntitiesInGrids();
-
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
-		//non grid entites (like Mario) are rendered last
+		RenderEntitiesInGrids();
 		for (LPEntity entity : entityManager->GetNonGridEntities())
 			entity->Render();
 
@@ -170,13 +167,13 @@ void Scene::_Ready()
 		camera.FollowEntity(playerGroup.front());
 }
 
-Utils::Dimension Scene::GetWorldDimension()
+Dimension Scene::GetWorldDimension()
 {
 	int scale = Game::GetScale();
 	return Utils::Dimension(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
 }
 
-Utils::Vector2<float> Scene::GetCameraPosition()
+Vector2<float> Scene::GetCameraPosition()
 {
 	return camera.GetPosition();
 }
