@@ -15,7 +15,8 @@ class ColorKey:
 
 
 class Encoder:
-    def __init__(self, input_img, number_of_layers, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
+    def __init__(self, scene_type, input_img, number_of_layers, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
+        self.scene_type = scene_type
         self.output_file_path = output_file_path
         self.mistake_file = None
 
@@ -42,12 +43,14 @@ class Encoder:
         self.entity_anno_img.close()
 
     def _write_world_props_header(self, encode_file):
+        encode_file.write("#SceneType (World or WorldMap)\n")
         encode_file.write("#Dimension (Width, Height)\n")
         encode_file.write("#BackgroundColor (R, G, B)\n")
         encode_file.write("[WORLD PROPERTIES]\n")
 
     def _encode_world_props(self, encode_file):
         # exclude 2 row of tiles, get height of one of the world in the image.
+        encode_file.write(f"{self.scene_type}\n")
         encode_file.write(f"{self.layer_tiles_size[0]}, {self.layer_tiles_size[1]}\n")
         encode_file.write(
             f"{self.world_bg_color[0]}, {self.world_bg_color[1]}, {self.world_bg_color[2]}\n"

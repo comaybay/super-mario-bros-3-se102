@@ -15,7 +15,7 @@ class NodeType(Enum):
 
 class WorldMapEncoder(Encoder):
     def __init__(self, input_img, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map, node_anno_path):
-        super().__init__(input_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
+        super().__init__("WorldMap", input_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
         node_anno_img = Image.open(node_anno_path)
         self.node_identifier = NodeIdentifier(node_anno_img, self.input_img_pixels,
                                               ColorKey.TRANSPARENT, self.world_bg_color)
@@ -55,8 +55,8 @@ class WorldMapEncoder(Encoder):
     def _write_nodes_header(self, encode_file):
         encode_file.write("\n#NodeId...\n")
         encode_file.write(
-            "#NodeId, ContentPath (relative to Root), TopNodeId, LeftNodeId, DownNodeId, RightNodeId, Position (X, Y)\n")
-        encode_file.write("[NODES]\n")
+            "#NodeId, ContentPath (relative to Root), TopNodeId, LeftNodeId, DownNodeId, RightNodeId, Position (X, Y), GridPosition (X, Y)\n")
+        encode_file.write("[WORLD MAP NODES]\n")
 
     def _encode_nodes(self, start_line, encode_file):
         serialized_nodes = []
@@ -88,11 +88,12 @@ class WorldMapEncoder(Encoder):
                 node_id_by_position[position_in_tile] = to_node_id(node_type, index, position_in_tile)
 
         def to_node_id(node_type, index, position_in_tile):
+            x, y = position_in_tile
             if node_type == NodeType.LEVEL:
-                return f"NLevel{index + 1}{position_in_tile}"
+                return f"NLevel{index + 1}_{x}x{y}"
 
             elif node_type == NodeType.STOP:
-                return f"NStop{position_in_tile}"
+                return f"NStop_{x}x{y}"
 
             elif node_type == NodeType.START:
                 return "NStart"
@@ -153,7 +154,9 @@ class WorldMapEncoder(Encoder):
         if node_type == NodeType.LEVEL:
             content_path = f"worlds/w_{self.world_map_number}_{index + 1}_1.txt"
 
-        return f"{node_id}, {content_path}, {top_node_id}, {left_node_id}, {bottom_node_id}, {right_node_id}, {x*16}, {y*16}"
+        grid_x, grid_y, _, _ = self._find_cell_positions(start_line, position_in_tile)
+
+        return f"{node_id}, {content_path}, {top_node_id}, {left_node_id}, {bottom_node_id}, {right_node_id}, {x*16}, {y*16}, {grid_x}, {grid_y}"
 
 
 class NodeIdentifier(Identifier):

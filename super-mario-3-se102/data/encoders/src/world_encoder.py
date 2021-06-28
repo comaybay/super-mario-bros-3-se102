@@ -4,7 +4,7 @@ import math
 
 class WorldEncoder(Encoder):
     def __init__(self, input_img, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
-        super().__init__(input_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
+        super().__init__("World", input_img, 4, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map)
 
     def encode(self):
         with open(self.output_file_path, "w+") as encode_file:
