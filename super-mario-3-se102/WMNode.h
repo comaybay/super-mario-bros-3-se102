@@ -19,12 +19,13 @@ namespace Entities {
 			LPWMNode topNode, LPWMNode leftNode, LPWMNode bottomNode, LPWMNode rightNode);
 
 		void Update(float delta) override;
+		void Render() override;
 		void SetScenePath(const std::string& scenePath);
 
 		/// <summary>
 		/// Set node to be the active node (where the player stand)
 		/// </summary>
-		void Activate(LPEntity wmPlayer, const Utils::Vector2<float> offset);
+		void Activate(LPEntity wmPlayer);
 
 	private:
 		void Inactive(float delta);
@@ -38,13 +39,11 @@ namespace Entities {
 
 		EntityState<WMNode> state;
 		std::string scenePath;
-		bool isActiveNode;
 		LPWMNode topNode;
 		LPWMNode leftNode;
 		LPWMNode bottomNode;
 		LPWMNode rightNode;
 		LPEntity wmPlayer;
-		Utils::Vector2<float> playerOffset;
 		static const float TRANSFER_SPEED;
 	};
 }
