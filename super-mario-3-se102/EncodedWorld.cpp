@@ -1,15 +1,20 @@
 #include "EncodedWorld.h"
 #include "Utils.h"
 
-EncodedWorld::EncodedWorld(int size, int width, char* background, char* foreground)
+EncodedWorld::EncodedWorld(int size, int width, char* background, char* foreground, const std::string& textureId)
 	: size(size - 1), //-1 null terminate char
-	width(width), background(background), foreground(foreground)
+	width(width), background(background), foreground(foreground), textureId(textureId)
 {}
 
 EncodedWorld::~EncodedWorld()
 {
 	delete foreground;
 	delete background;
+}
+
+const std::string& EncodedWorld::GetTextureId()
+{
+	return textureId;
 }
 
 int EncodedWorld::GetBackgroundIndex(int x, int y) {
