@@ -44,6 +44,7 @@ private:
 	std::unordered_map<std::string, std::list<LPEntity>*> entitiesByGroup;
 	std::unordered_set<LPEntity> freeQueue;
 	std::unordered_set<LPEntity> nonGridEntities;
+	const std::list<LPEntity> emptyGroup;
 
 	LPGrid wallEntitySPGrid = nullptr;
 	LPGrid staticEntitySPGrid = nullptr;

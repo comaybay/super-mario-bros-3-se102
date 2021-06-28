@@ -94,9 +94,8 @@ const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupNa
 {
 	if (Contains(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];
-	else {
-		std::string msg = "No group with name=\"" + groupName + "\" found";
-	}
+	else
+		return emptyGroup;
 }
 
 const LPGrid EntityManager::GetGrid(GridType gridType)
