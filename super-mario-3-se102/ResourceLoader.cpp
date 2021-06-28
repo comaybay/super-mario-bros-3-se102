@@ -63,7 +63,7 @@ void ResourceLoader::Load() const
 		else if (section == "[ANIMATIONS]")
 			LoadAnimations(path);
 		else if (section == "[TILES]")
-			LoadTiles(path);
+			LoadTilesTextures(path);
 		else if (section == "[HITBOXES]")
 			LoadHitboxes(path);
 	}
@@ -232,32 +232,31 @@ std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
 	return sequence;
 }
 
-void ResourceLoader::LoadTiles(const std::string& configPath) const
+void ResourceLoader::LoadTilesTextures(const std::string& configPath) const
 {
 	std::ifstream file(configPath);
 
-	std::string line;
-	while (std::getline(file, line))
-	{
-		if (line[0] == '#' || line == "")
-			continue;
-
-		std::vector<std::string> paramTokens = SplitByComma(line);
-		if (paramTokens.size() != 1)
-			throw InvalidTokenSizeException(1);
-
-		std::getline(file, line);
-		std::vector<std::string> colorKeyTokens = SplitByComma(line);
-		if (colorKeyTokens.size() != 3)
-			throw InvalidTokenSizeException(3);
-
-		std::string path = JoinPath(root, paramTokens[0]);
-		D3DCOLOR colorKey = D3DCOLOR_XRGB(stoi(colorKeyTokens[0]), stoi(colorKeyTokens[1]), stoi(colorKeyTokens[2]));
-
-		TextureManager::Load(TextureID::TILES, path, colorKey);
-	}
+	LoadTilesTexture(file, TextureId::WORLD_TILES);
+	LoadTilesTexture(file, TextureId::WORLD_MAP_TILES);
 
 	file.close();
+}
+void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& textureId) const
+{
+	std::string line = GetNextNonCommentLine(file);
+	std::vector<std::string> paramTokens = SplitByComma(line);
+	if (paramTokens.size() != 1)
+		throw InvalidTokenSizeException(1);
+
+	line = GetNextNonCommentLine(file);
+	std::vector<std::string> colorKeyTokens = SplitByComma(line);
+	if (colorKeyTokens.size() != 3)
+		throw InvalidTokenSizeException(3);
+
+	std::string path = JoinPath(root, paramTokens[0]);
+	D3DCOLOR colorKey = D3DCOLOR_XRGB(stoi(colorKeyTokens[0]), stoi(colorKeyTokens[1]), stoi(colorKeyTokens[2]));
+
+	TextureManager::Load(textureId, path, colorKey);
 }
 
 void ResourceLoader::LoadHitboxes(const std::string& configPath) const
@@ -282,3 +281,5 @@ void ResourceLoader::LoadHitboxes(const std::string& configPath) const
 		HitboxManager::Add(tokens[0], hitbox);
 	}
 }
+
+
