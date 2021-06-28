@@ -165,7 +165,9 @@ void Scene::_Ready()
 
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
-	camera.FollowEntity(entityManager->GetEntitiesByGroup(Group::PLAYER).front());
+	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
+	if (!playerGroup.empty())
+		camera.FollowEntity(playerGroup.front());
 }
 
 Utils::Dimension Scene::GetWorldDimension()
@@ -181,10 +183,10 @@ Utils::Vector2<float> Scene::GetCameraPosition()
 
 RECT Scene::GetTileBoundingBox(int id)
 {
-	//tile map taken from https://www.spriters-resource.com/nes/supermariobros3/sheet/81122 with modifications
-	//tile map consists of 73 columns and 21 rows
-	int row = id / 73;
-	int col = id % 73;
+	Dimension texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
+	int numOfCols = texDim.width / Game::TILE_SIZE;
+	int row = id / numOfCols;
+	int col = id % numOfCols;
 
 	int left = 1 + (Game::TILE_SIZE + 1) * col; //+1 for space between tiles
 	int top = 1 + (Game::TILE_SIZE + 1) * row; //+1 for space between tiles
@@ -218,7 +220,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 			if (index != 4095) {
 				D3DXVECTOR3 p(round(x * Game::TILE_SIZE) - cp.x, round(y * Game::TILE_SIZE) - cp.y, 0);
 				RECT rect = GetTileBoundingBox(index);
-				Game::GetD3DXSprite()->Draw(TextureManager::Get(TextureID::TILES), &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
+				Game::GetD3DXSprite()->Draw(TextureManager::Get(encodedWorld->GetTextureId()), &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 			}
 		}
 	}
