@@ -64,7 +64,8 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	ResourceLoader(dataDirectory).Load();
 
 	//TODO: remove test code
-	SceneManager::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
+	//SceneManager::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
+	SceneManager::AddScenePath("data/world maps/wm_1.txt", "World 1-1-1");
 
 	activeScene = SceneManager::LoadWorld("World 1-1-1");
 	SwitchScene(activeScene);
