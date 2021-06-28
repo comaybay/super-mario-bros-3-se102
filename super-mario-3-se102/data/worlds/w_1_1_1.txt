@@ -1,6 +1,8 @@
+#SceneType (World or WorldMap)
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
 [WORLD PROPERTIES]
+World
 176, 27
 156, 252, 240
 
