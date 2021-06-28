@@ -122,24 +122,24 @@ WMBush, 224, 160, True
 #NodeId, ContentPath (relative to Root), TopNodeId, LeftNodeId, DownNodeId, RightNodeId, Position (X, Y), GridPosition (X, Y)
 [WORLD MAP NODES]
 NLevel1_4x45, NStop_4x47, NStop_6x45, NLevel2_8x45, NStop_8x47, NLevel3_10x45, NStop_12x45, NLevel10_12x47, NStart, NLevel13_8x49, NLevel4_10x47, NStop_4x49, NStop_4x51, NLevel11_6x49, NLevel5_4x53, NLevel10_6x51, NStop_8x51, NLevel6_8x53, NStop_10x51, NLevel12_12x51, NStop_6x53
-NLevel1_4x45, worlds/w_1_1_1.txt, None, None, NStop_4x47, NStop_6x45, 64, 720, 0, 0
-NStop_6x45, None, None, NLevel1_4x45, None, NLevel2_8x45, 96, 720, 0, 0
-NLevel2_8x45, worlds/w_1_2_1.txt, None, NStop_6x45, NStop_8x47, NLevel3_10x45, 128, 720, 1, 0
-NLevel3_10x45, worlds/w_1_3_1.txt, None, NLevel2_8x45, None, NStop_12x45, 160, 720, 1, 0
-NStop_12x45, None, None, NLevel3_10x45, NLevel10_12x47, None, 192, 720, 1, 0
-NStart, None, None, None, None, NStop_4x47, 32, 752, 0, 0
-NStop_4x47, None, NLevel1_4x45, NStart, None, None, 64, 752, 0, 0
-NStop_8x47, None, NLevel2_8x45, None, NLevel13_8x49, NLevel4_10x47, 128, 752, 1, 0
-NLevel4_10x47, worlds/w_1_4_1.txt, None, NStop_8x47, None, NLevel10_12x47, 160, 752, 1, 0
-NLevel10_12x47, worlds/w_1_10_1.txt, NStop_12x45, NLevel4_10x47, None, None, 192, 752, 1, 0
-NStop_4x49, None, None, None, NStop_4x51, NLevel11_6x49, 64, 784, 0, 0
-NLevel11_6x49, worlds/w_1_11_1.txt, None, NStop_4x49, None, NLevel13_8x49, 96, 784, 0, 0
-NLevel13_8x49, worlds/w_1_13_1.txt, NStop_8x47, NLevel11_6x49, None, None, 128, 784, 1, 0
-NStop_4x51, None, NStop_4x49, None, NLevel5_4x53, None, 64, 816, 0, 1
-NLevel10_6x51, worlds/w_1_10_1.txt, None, None, None, NStop_8x51, 96, 816, 0, 1
-NStop_8x51, None, None, NLevel10_6x51, NLevel6_8x53, NStop_10x51, 128, 816, 1, 1
-NStop_10x51, None, None, NStop_8x51, None, NLevel12_12x51, 160, 816, 1, 1
-NLevel12_12x51, worlds/w_1_12_1.txt, None, NStop_10x51, None, None, 192, 816, 1, 1
-NLevel5_4x53, worlds/w_1_5_1.txt, NStop_4x51, None, None, NStop_6x53, 64, 848, 0, 1
-NStop_6x53, None, None, NLevel5_4x53, None, NLevel6_8x53, 96, 848, 0, 1
-NLevel6_8x53, worlds/w_1_6_1.txt, NStop_8x51, NStop_6x53, None, None, 128, 848, 1, 1
+NLevel1_4x45, worlds/w_1_1_1.txt, None, None, NStop_4x47, NStop_6x45, 64, 32, 0, 0
+NStop_6x45, None, None, NLevel1_4x45, None, NLevel2_8x45, 96, 32, 0, 0
+NLevel2_8x45, worlds/w_1_2_1.txt, None, NStop_6x45, NStop_8x47, NLevel3_10x45, 128, 32, 1, 0
+NLevel3_10x45, worlds/w_1_3_1.txt, None, NLevel2_8x45, None, NStop_12x45, 160, 32, 1, 0
+NStop_12x45, None, None, NLevel3_10x45, NLevel10_12x47, None, 192, 32, 1, 0
+NStart, None, None, None, None, NStop_4x47, 32, 64, 0, 0
+NStop_4x47, None, NLevel1_4x45, NStart, None, None, 64, 64, 0, 0
+NStop_8x47, None, NLevel2_8x45, None, NLevel13_8x49, NLevel4_10x47, 128, 64, 1, 0
+NLevel4_10x47, worlds/w_1_4_1.txt, None, NStop_8x47, None, NLevel10_12x47, 160, 64, 1, 0
+NLevel10_12x47, worlds/w_1_10_1.txt, NStop_12x45, NLevel4_10x47, None, None, 192, 64, 1, 0
+NStop_4x49, None, None, None, NStop_4x51, NLevel11_6x49, 64, 96, 0, 0
+NLevel11_6x49, worlds/w_1_11_1.txt, None, NStop_4x49, None, NLevel13_8x49, 96, 96, 0, 0
+NLevel13_8x49, worlds/w_1_13_1.txt, NStop_8x47, NLevel11_6x49, None, None, 128, 96, 1, 0
+NStop_4x51, None, NStop_4x49, None, NLevel5_4x53, None, 64, 128, 0, 1
+NLevel10_6x51, worlds/w_1_10_1.txt, None, None, None, NStop_8x51, 96, 128, 0, 1
+NStop_8x51, None, None, NLevel10_6x51, NLevel6_8x53, NStop_10x51, 128, 128, 1, 1
+NStop_10x51, None, None, NStop_8x51, None, NLevel12_12x51, 160, 128, 1, 1
+NLevel12_12x51, worlds/w_1_12_1.txt, None, NStop_10x51, None, None, 192, 128, 1, 1
+NLevel5_4x53, worlds/w_1_5_1.txt, NStop_4x51, None, None, NStop_6x53, 64, 160, 0, 1
+NStop_6x53, None, None, NLevel5_4x53, None, NLevel6_8x53, 96, 160, 0, 1
+NLevel6_8x53, worlds/w_1_6_1.txt, NStop_8x51, NStop_6x53, None, None, 128, 160, 1, 1

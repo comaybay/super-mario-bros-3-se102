@@ -156,7 +156,7 @@ class WorldMapEncoder(Encoder):
 
         grid_x, grid_y, _, _ = self._find_cell_positions(start_line, position_in_tile)
 
-        return f"{node_id}, {content_path}, {top_node_id}, {left_node_id}, {bottom_node_id}, {right_node_id}, {x*16}, {y*16}, {grid_x}, {grid_y}"
+        return f"{node_id}, {content_path}, {top_node_id}, {left_node_id}, {bottom_node_id}, {right_node_id}, {x*16}, {(y- start_line)*16}, {grid_x}, {grid_y}"
 
 
 class NodeIdentifier(Identifier):
