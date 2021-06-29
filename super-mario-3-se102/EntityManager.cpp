@@ -6,6 +6,27 @@
 #include "Contains.h"
 using namespace Utils;
 
+EntityManager::~EntityManager()
+{
+	std::unordered_set<LPEntity> entities;
+	for (auto& pair : entitiesByGroup)
+		for (LPEntity e : *pair.second)
+			entities.insert(e);
+
+	for (LPEntity e : entities)
+		delete e;
+
+	for (LPEntity e : nonGridEntities)
+		delete e;
+
+	for (auto& pair : entitiesByGroup)
+		delete pair.second;
+
+	delete wallEntitySPGrid;
+	delete staticEntitySPGrid;
+	delete movableEntitySPGrid;
+}
+
 EntityManager::EntityManager
 (LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid)
 	: parentScene(parentScene), wallEntitySPGrid(wallEntitySPGrid), staticEntitySPGrid(staticEntitySPGrid),

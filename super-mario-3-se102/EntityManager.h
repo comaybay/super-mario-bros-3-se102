@@ -14,6 +14,7 @@ typedef Entity* LPEntity;
 class EntityManager
 {
 public:
+	~EntityManager();
 	EntityManager(LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid);
 	void Add(LPEntity entity);
 	void AddToGroup(std::string groupName, LPEntity entity);

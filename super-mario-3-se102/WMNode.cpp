@@ -67,7 +67,7 @@ void WMNode::Active(float delta)
 		state.SetHandler(&WMNode::TransferAnimRight);
 
 	else if (rightNode && Game::IsKeyPressed(DIK_S))
-		Game::SwitchScene(SceneLoader::LoadScene(absoluteScenePath));
+		Game::QueueFreeAndSwitchScene(SceneLoader::LoadScene(absoluteScenePath));
 }
 
 void WMNode::TransferAnimTop(float delta)

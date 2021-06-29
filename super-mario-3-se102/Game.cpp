@@ -26,6 +26,7 @@ BYTE Game::keyStates[256];
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 LPScene Game::activeScene = nullptr;
+LPScene Game::waitForDeletionScene = nullptr;
 bool Game::enableCollisionEngine = true;
 
 void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimension gameDim)
@@ -154,6 +155,11 @@ void Game::SwitchScene(LPScene scene) {
 	activeScene = scene;
 }
 
+void Game::QueueFreeAndSwitchScene(LPScene scene) {
+	waitForDeletionScene = activeScene;
+	activeScene = scene;
+}
+
 int Game::GetScale()
 {
 	return scale;
@@ -212,6 +218,11 @@ void Game::Run()
 		}
 
 		activeScene->Render();
+
+		if (waitForDeletionScene != nullptr) {
+			delete waitForDeletionScene;
+			waitForDeletionScene = nullptr;
+		}
 	}
 }
 

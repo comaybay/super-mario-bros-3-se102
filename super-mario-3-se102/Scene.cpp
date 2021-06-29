@@ -16,6 +16,7 @@ Scene::Scene()
 Scene::~Scene()
 {
 	delete encodedWorld;
+	delete entityManager;
 }
 
 void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
