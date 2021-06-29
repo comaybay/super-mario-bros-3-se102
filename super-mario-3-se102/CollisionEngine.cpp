@@ -21,7 +21,7 @@ std::unordered_set<std::string> CollisionEngine::hasPreviouslyNotified;
 std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 
 
-void CollisionEngine::HandleUnsubscribeWaitList() {
+void CollisionEngine::_HandleUnsubscribeWaitList() {
 	for (LPEntity entity : unsubscribeWaitList)
 		OnEntityUnsubscribe(entity);
 

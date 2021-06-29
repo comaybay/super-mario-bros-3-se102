@@ -239,7 +239,7 @@ void Game::Run()
 			if (waitForDeletionScene != nullptr) {
 				LPScene scene = waitForDeletionScene;
 				delete waitForDeletionScene;
-				//entities need to be destroyed before event
+				//all entities must all be destroyed before event destructions
 				CollisionEngine::_RemoveCED(scene);
 				waitForDeletionScene = nullptr;
 			}

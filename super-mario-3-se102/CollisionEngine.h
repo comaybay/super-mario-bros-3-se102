@@ -14,6 +14,9 @@ struct CollisionData {
 	CollisionData(LPEntity who, Utils::Vector2<float> edge, float value, float delta);
 };
 
+/// <summary>
+/// Data needed to calculate collision of entities in a scene
+/// </summary>
 struct CollisionEngineData {
 	std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
 	std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByMovableLPEntity;
@@ -32,17 +35,34 @@ public:
 	template<class TEntity, class ...Args>
 	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
 
-	static void HandleUnsubscribeWaitList();
 	static void Update(float delta);
-	static void DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta);
 	static bool Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
 	static float DetectCollisionValue(LPEntity e1, LPEntity e2, float delta);
 
+	/// <summary>
+	/// Add new CollisionEngineData for a scene. Used internally by SceneLoader
+	/// </summary>
 	static void _AddCED(LPScene scene);
+
+	/// <summary>
+	/// Remove CollisionEngineData of a scene. Used internally by SceneLoader
+	/// </summary>
 	static void _RemoveCED(LPScene scene);
+
+	/// <summary>
+	/// Set Active CollisionEngineData. Used internally by Game
+	/// </summary>
 	static void _SetActiveCED(LPScene scene);
 
+	/// <summary>
+	/// <para> Remove entities inside of unsubscribeWaitList from collision event. Used internally by Game </para>
+	/// <para> This method must be called after Scene Update method, before CollisionEngine Update method and before 
+	/// scene switching in order to prevent deleted entities or entities that are in previously active CED inside of unsubscribeWaitList</para>
+	/// </summary>
+	static void _HandleUnsubscribeWaitList();
+
 private:
+	static void DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta);
 	static Event<CollisionData>& GetCollisionEventOf(LPEntity entity);
 	static CollisionData SweptAABB(const CBox& mBox, const CBox& sBox);
 	static bool AABBCheck(const CBox& box1, const CBox& box2);
