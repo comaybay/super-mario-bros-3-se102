@@ -226,7 +226,7 @@ void Game::Run()
 			activeScene->Update(dt);
 			accumulator -= frameTime;
 
-			CollisionEngine::HandleUnsubscribeWaitList();
+			CollisionEngine::_HandleUnsubscribeWaitList();
 		}
 
 		activeScene->Render();

@@ -174,7 +174,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 		onGround = true;
 
 	else if (data.edge.x != 0.0f)
-		velocity.x = Goomba::WALK_SPEED * -Sign(velocity.x);
+		velocity.x = Goomba::WALK_SPEED * data.edge.x;
 
 }
 

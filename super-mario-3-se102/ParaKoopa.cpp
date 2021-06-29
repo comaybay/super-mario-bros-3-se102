@@ -2,8 +2,6 @@
 #include "Koopa.h"
 #include "Color.h"
 #include "Mario.h"
-#include "Goomba.h"
-#include "ParaGoomba.h"
 #include "Group.h"
 #include "Game.h"
 #include "Contains.h"
@@ -109,7 +107,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 		if (data.edge.x == 0.0f)
 			return;
 
-		velocity.x = -velocity.x;
+		velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
 		SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
 		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
