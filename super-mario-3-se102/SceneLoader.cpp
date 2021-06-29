@@ -36,6 +36,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	std::string sceneType;
 	Dimension worldDim;
 	D3DCOLOR bgColor{};
+	std::string prevScenePath;
 	char* background;
 	char* foreground;
 	LPEntityManager entityManager = nullptr;
@@ -52,7 +53,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 		//TODO: Replace geline with GetNextNonCommentLine
 		while (section[0] == '[') {
 			if (section == "[WORLD PROPERTIES]")
-				section = ParseWorldProperties(file, sceneType, worldDim, bgColor);
+				section = ParseWorldProperties(file, sceneType, worldDim, bgColor, prevScenePath);
 			else if (section == "[ENCODED WORLD]")
 				section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
 			else if (section == "[SPATIAL PARTITION GRID]") {
@@ -71,12 +72,12 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	}
 	file.close();
 
-	scene->_Init(worldDim, bgColor, encodedWorld, entityManager);
+	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, JoinPath(Game::GetDataDirectory(), prevScenePath));
 	scene->_Ready();
 	return scene;
 }
 
-std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -87,8 +88,8 @@ std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& 
 		std::vector<std::string> sceneTypeToken = SplitByComma(line);
 		if (sceneTypeToken.size() != 1)
 			throw InvalidTokenSizeException(1);
-		line = GetNextNonCommentLine(file);
 
+		line = GetNextNonCommentLine(file);
 		std::vector<std::string> dimTokens = SplitByComma(line);
 		if (dimTokens.size() != 2)
 			throw InvalidTokenSizeException(2);
@@ -98,9 +99,15 @@ std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& 
 		if (colorTokens.size() != 3)
 			throw InvalidTokenSizeException(3);
 
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> pathToken = SplitByComma(line);
+		if (sceneTypeToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
 		sceneType = sceneTypeToken[0];
 		dim = Dimension(stof(dimTokens[0]), stof(dimTokens[1]));
 		bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
+		prevScenePath = pathToken[0];
 
 		return line;
 	}
@@ -267,7 +274,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			Vector2<int> cellIndex(stoi(nodeTokens[8]), stoi(nodeTokens[9]));
 
 			LPWMNode node = nodeById[nodeId];
-			node->_Init(pos, scenePath, topNode, leftNode, bottomNode, rightNode);
+			node->_Init(pos, JoinPath(Game::GetDataDirectory(), scenePath), topNode, leftNode, bottomNode, rightNode);
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
 

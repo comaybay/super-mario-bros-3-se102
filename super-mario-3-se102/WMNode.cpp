@@ -18,7 +18,7 @@ void WMNode::_Init(const Utils::Vector2<float>& position, const std::string& sce
 
 {
 	this->position = position;
-	this->absoluteScenePath = ProcessingUtils::JoinPath(Game::GetDataDirectory(), scenePath);
+	this->absoluteScenePath = scenePath;
 	this->topNode = topNode;
 	this->leftNode = leftNode;
 	this->bottomNode = bottomNode;

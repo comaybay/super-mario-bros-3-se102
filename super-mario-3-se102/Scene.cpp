@@ -19,12 +19,14 @@ Scene::~Scene()
 	delete entityManager;
 }
 
-void Scene::_Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager)
+void Scene::_Init(const Dimension& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
+	LPEntityManager entityManager, const std::string& prevScenePath)
 {
 	this->worldTileDim = worldTileDim;
 	this->backgroundColor = backgroundColor;
 	this->encodedWorld = encodedWorld;
 	this->entityManager = entityManager;
+	this->prevScenePath = prevScenePath;
 }
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);

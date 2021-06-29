@@ -36,6 +36,7 @@ private:
 	Utils::Dimension worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
+	std::string prevScenePath;
 	Camera camera;
 	LPEntityManager entityManager;
 	bool updateMovablesInSPGridEnabled;
@@ -47,7 +48,7 @@ public:
 	/// initialize scene, this method exist because some operations require scene to exist before 
 	/// it's constructor's arguments are provided, used internally by SceneLoader.
 	/// </summary>
-	void _Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager);
+	void _Init(const Utils::Dimension& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager, const std::string& prevScenePath);
 
 	/// <summary>
 	/// called when everything in the scene is loaded, used internally by SceneLoader.
