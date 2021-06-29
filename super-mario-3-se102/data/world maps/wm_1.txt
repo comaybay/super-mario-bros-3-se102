@@ -1,10 +1,12 @@
 #SceneType (World or WorldMap)
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
+#PreviousScenePath (Relative to Root)
 [WORLD PROPERTIES]
 WorldMap
 16, 13
 0, 0, 0
+None
 
 #Background Tile Indices (3 digits Hex)
 #Foreground Tile Indices (3 digits Hex)

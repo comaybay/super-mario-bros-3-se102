@@ -1,7 +1,5 @@
 from enum import Enum
-import os
 from PIL import Image
-import re
 from .shared_logic import Encoder, Identifier, IdentifierCode, ColorKey
 
 
@@ -19,12 +17,6 @@ class WorldMapEncoder(Encoder):
         node_anno_img = Image.open(node_anno_path)
         self.node_identifier = NodeIdentifier(node_anno_img, self.input_img_pixels,
                                               ColorKey.TRANSPARENT, self.world_bg_color)
-
-        input_img_file_name = os.path.split(input_img.filename)[1]
-        self.world_map_number = re.search(r"^wm_(\d+)", input_img_file_name).group(1)
-
-        if self.world_map_number == None:
-            raise Exception("Invalid world map name.")
 
     def encode(self):
         with open(self.output_file_path, "w+") as encode_file:
@@ -51,6 +43,9 @@ class WorldMapEncoder(Encoder):
         if (self.mistake_file != None):
             self.mistake_file.close()
             self.mistake_file = None
+
+    def _get_prev_scene_path(self):
+        return f"None"
 
     def _write_nodes_header(self, encode_file):
         encode_file.write("\n#NodeId...\n")

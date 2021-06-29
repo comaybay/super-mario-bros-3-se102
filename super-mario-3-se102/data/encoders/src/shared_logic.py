@@ -3,8 +3,9 @@ from enum import Enum
 import math
 import sys
 import ntpath
-from os import path
 from PIL import Image
+import re
+import os
 
 
 class ColorKey:
@@ -14,11 +15,16 @@ class ColorKey:
     WALL_TYPE_2 = (203, 216, 184, 255)  # color in data/wall_annotations.png
 
 
-class Encoder:
+class Encoder(ABC):
     def __init__(self, scene_type, input_img, number_of_layers, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
         self.scene_type = scene_type
         self.output_file_path = output_file_path
         self.mistake_file = None
+
+        input_img_file_name = os.path.split(input_img.filename)[1]
+        self.world_map_number = re.search(r"^wm?_(\d+)", input_img_file_name).group(1)
+        if self.world_map_number == None:
+            raise Exception('Invalid input file name. Expected "wm_{number}.png or w_{number}_{number}_{number}.png"')
 
         self.tile_anno_img = Image.open(tile_anno_path)
         self.entity_anno_img = Image.open(entity_anno_path)
@@ -46,6 +52,7 @@ class Encoder:
         encode_file.write("#SceneType (World or WorldMap)\n")
         encode_file.write("#Dimension (Width, Height)\n")
         encode_file.write("#BackgroundColor (R, G, B)\n")
+        encode_file.write("#PreviousScenePath (Relative to Root)\n")
         encode_file.write("[WORLD PROPERTIES]\n")
 
     def _encode_world_props(self, encode_file):
@@ -55,6 +62,11 @@ class Encoder:
         encode_file.write(
             f"{self.world_bg_color[0]}, {self.world_bg_color[1]}, {self.world_bg_color[2]}\n"
         )
+        encode_file.write(f"{self._get_prev_scene_path()}\n")
+
+    @ abstractmethod
+    def _get_prev_scene_path(self):
+        pass
 
     def _write_encoded_world_header(self, encode_file):
         encode_file.write("\n#Background Tile Indices (3 digits Hex)\n")
