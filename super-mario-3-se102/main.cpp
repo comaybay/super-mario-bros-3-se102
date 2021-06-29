@@ -15,13 +15,14 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_  HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow)
 {
-	std::string dataDir;
 	Utils::Dimension gameDim;
 	int scale;
-	ResourceLoader("data").GetGameSettings(gameDim, scale, dataDir);
+	int maxFPS;
+	std::string dataDir;
+	ResourceLoader("data").GetGameSettings(gameDim, scale, maxFPS, dataDir);
 	HWND gameWindowHandler = CreateGameWindow(hInst, cmdshow, gameDim.width * scale, gameDim.height * scale);
 
-	Game::Init(gameWindowHandler, scale, dataDir, gameDim);
+	Game::Init(gameWindowHandler, gameDim, scale, maxFPS, dataDir);
 	Game::Run();
 
 	return 0;

@@ -8,6 +8,9 @@ std::vector<std::string> ProcessingUtils::SplitByComma(const std::string& line) 
 	std::istringstream iss(line);
 
 	for (std::string token; iss >> token;) {
+		if (token[0] == '#')
+			break;
+
 		if (token == ",")
 			continue;
 

@@ -14,6 +14,7 @@
 std::string Game::dataDir;
 HWND Game::windowHandle;
 Utils::Dimension Game::gameDim;
+int Game::maxFPS;
 int Game::scale;
 D3DXMATRIX Game::scaleMatrix;
 LPDIRECT3D9 Game::d3d;
@@ -30,9 +31,10 @@ LPScene Game::newActiveScene = nullptr;
 LPScene Game::waitForDeletionScene = nullptr;
 bool Game::enableCollisionEngine = true;
 
-void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimension gameDim)
+void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int maxFPS, const std::string& dataDirectory)
 {
 	Game::dataDir = dataDirectory;
+	Game::maxFPS = maxFPS;
 	Game::windowHandle = hWnd;
 	Game::scale = scale;
 	Game::gameDim = gameDim;
@@ -70,7 +72,7 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	//TODO: remove test code
 
 	activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
-	//activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
+	activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 
@@ -191,8 +193,8 @@ void Game::Run()
 {
 	MSG msg;
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
-	int frameTime = round(1000.0f / 60.0f);
-	const float dt = 1.0f / 60.0f;
+	int frameTime = round(1000.0f / maxFPS);
+	const float dt = 1.0f / maxFPS;
 	int accumulator = 0;
 
 	while (true)
@@ -214,9 +216,10 @@ void Game::Run()
 
 		accumulator += duration;
 
-		ProcessKeyboard();
 		if (accumulator >= frameTime)
 		{
+			ProcessKeyboard();
+
 			if (enableCollisionEngine)
 				CollisionEngine::Update(dt);
 

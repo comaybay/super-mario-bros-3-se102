@@ -11,7 +11,7 @@
 class Game
 {
 public:
-	static void Init(HWND windowHandle, float scale, std::string dataDirectory, Utils::Dimension gameDim);
+	static void Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int maxFPS, const std::string& dataDirectory);
 	static LPDIRECT3D9 GetD3D9() { return d3d; };
 	static LPDIRECT3DDEVICE9 GetDirect3DDevice() { return d3ddv; };
 	static LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; };
@@ -34,8 +34,9 @@ private:
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 	static std::string dataDir;
-	static int scale;
 	static Utils::Dimension gameDim;
+	static int scale;
+	static int maxFPS;
 	static D3DXMATRIX scaleMatrix;
 	static HWND windowHandle;
 	static LPDIRECT3D9 d3d;
