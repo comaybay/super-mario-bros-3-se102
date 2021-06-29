@@ -26,6 +26,7 @@ BYTE Game::keyStates[256];
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 LPScene Game::activeScene = nullptr;
+LPScene Game::newActiveScene = nullptr;
 LPScene Game::waitForDeletionScene = nullptr;
 bool Game::enableCollisionEngine = true;
 
@@ -67,10 +68,10 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	ResourceLoader(dataDirectory).Load();
 
 	//TODO: remove test code
-	//SceneLoader::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
 
-	activeScene = SceneLoader::LoadScene("data/world maps/wm_1.txt");
-	SwitchScene(activeScene);
+	activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
+	//activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
+	CollisionEngine::_SetActiveCED(activeScene);
 }
 
 LPDIRECT3DDEVICE9 Game::CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle) {
@@ -152,12 +153,18 @@ void Game::EnableCollisionEngine(bool state) {
 }
 
 void Game::SwitchScene(LPScene scene) {
-	activeScene = scene;
+	newActiveScene = scene;
 }
 
 void Game::QueueFreeAndSwitchScene(LPScene scene) {
 	waitForDeletionScene = activeScene;
-	activeScene = scene;
+	newActiveScene = scene;
+}
+
+void Game::QueueFreeAndSwitchScene(std::string scenePath)
+{
+	LPScene newScene = SceneLoader::LoadScene(scenePath);
+	QueueFreeAndSwitchScene(newScene);
 }
 
 int Game::GetScale()
@@ -215,13 +222,24 @@ void Game::Run()
 
 			activeScene->Update(dt);
 			accumulator -= frameTime;
+
+			CollisionEngine::HandleUnsubscribeWaitList();
 		}
 
 		activeScene->Render();
 
-		if (waitForDeletionScene != nullptr) {
-			delete waitForDeletionScene;
-			waitForDeletionScene = nullptr;
+		if (newActiveScene != nullptr) {
+			activeScene = newActiveScene;
+			CollisionEngine::_SetActiveCED(activeScene);
+			newActiveScene = nullptr;
+
+			if (waitForDeletionScene != nullptr) {
+				LPScene scene = waitForDeletionScene;
+				delete waitForDeletionScene;
+				//entities need to be destroyed before event
+				CollisionEngine::_RemoveCED(scene);
+				waitForDeletionScene = nullptr;
+			}
 		}
 	}
 }

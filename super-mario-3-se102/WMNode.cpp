@@ -1,6 +1,5 @@
 #include "WMNode.h"
 #include "Game.h"
-#include "SceneLoader.h"
 #include "ProcessingUtils.h"
 using namespace Entities;
 using namespace Utils;
@@ -18,7 +17,7 @@ void WMNode::_Init(const Utils::Vector2<float>& position, const std::string& sce
 
 {
 	this->position = position;
-	this->absoluteScenePath = scenePath;
+	this->scenePath = scenePath;
 	this->topNode = topNode;
 	this->leftNode = leftNode;
 	this->bottomNode = bottomNode;
@@ -67,7 +66,7 @@ void WMNode::Active(float delta)
 		state.SetHandler(&WMNode::TransferAnimRight);
 
 	else if (rightNode && Game::IsKeyPressed(DIK_S))
-		Game::QueueFreeAndSwitchScene(SceneLoader::LoadScene(absoluteScenePath));
+		Game::QueueFreeAndSwitchScene(scenePath);
 }
 
 void WMNode::TransferAnimTop(float delta)

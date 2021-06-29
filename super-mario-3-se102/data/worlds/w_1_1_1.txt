@@ -6,7 +6,7 @@
 World
 176, 27
 156, 252, 240
-world maps/wm_1.txt
+world_maps/wm_1.txt
 
 #Background Tile Indices (3 digits Hex)
 #Foreground Tile Indices (3 digits Hex)

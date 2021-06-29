@@ -16,9 +16,6 @@ EntityManager::~EntityManager()
 	for (LPEntity e : entities)
 		delete e;
 
-	for (LPEntity e : nonGridEntities)
-		delete e;
-
 	for (auto& pair : entitiesByGroup)
 		delete pair.second;
 
@@ -95,6 +92,8 @@ void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
 	wallEntitySPGrid->ForEachEntity(handler);
 	staticEntitySPGrid->ForEachEntity(handler);
 	movableEntitySPGrid->ForEachEntity(handler);
+	for (LPEntity e : nonGridEntities)
+		handler(e);
 }
 
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)

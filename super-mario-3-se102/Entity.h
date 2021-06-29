@@ -36,6 +36,7 @@ public:
 	void SetVelocity(const Utils::Vector2<float>& velocity);
 	void SetEnabledForCollisionDetection(bool enabled);
 	const std::string& GetId();
+	LPScene GetParentScene();
 
 	/// <summary>
 	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager

@@ -18,6 +18,10 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 	),
 	content(content)
 {
+}
+
+void QuestionBlock::OnReady()
+{
 	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYER, "Koopas" });
 }
 

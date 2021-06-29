@@ -72,6 +72,11 @@ Entity::~Entity() {
 	delete destroyEvent;
 }
 
+LPScene Entity::GetParentScene()
+{
+	return parentScene;
+}
+
 void Entity::SetAnimation(std::string id)
 {
 	if (id != animation->id) {

@@ -46,6 +46,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	LPGrid staticEntitySpatialGrid = nullptr;
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
 	LPScene scene = new Scene();
+	CollisionEngine::_AddCED(scene);
 	while (std::getline(file, section)) {
 		if (section[0] != '[')
 			continue;
@@ -71,8 +72,8 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 		}
 	}
 	file.close();
-
-	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, JoinPath(Game::GetDataDirectory(), prevScenePath));
+	std::string absPrevScenePath = (prevScenePath == "None") ? "" : JoinPath(Game::GetDataDirectory(), prevScenePath);
+	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, absPrevScenePath);
 	scene->_Ready();
 	return scene;
 }

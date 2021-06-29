@@ -1,17 +1,19 @@
 #include "Camera.h"
+#include "Scene.h"
 #include "Game.h"
 #include "Entity.h"
 #include "Event.h"
 
 using namespace Utils;
-Camera::Camera()
+Camera::Camera(LPScene parentScene) :
+	parentScene(parentScene)
 {
 	target = nullptr;
 	position = Vector2<float>(0, 0);
 	onTargetDestroy = nullptr;
 }
 
-Vector2<float> Camera::GetPosition() const
+const Vector2<float>& Camera::GetPosition() const
 {
 	return position;
 }
@@ -22,7 +24,7 @@ void Camera::Update()
 	if (target == nullptr)
 		return;
 
-	Dimension worldDim = Game::GetActiveScene()->GetWorldDimension();
+	Dimension worldDim = parentScene->GetWorldDimension();
 	Dimension gameDim = Game::GetGameDimension();
 	Dimension targetDim = target->GetCurrentSpriteDimension();
 	Vector2<float> targetPos = target->GetPosition();
@@ -43,6 +45,7 @@ void Camera::FollowEntity(LPEntity entity)
 {
 	target = entity;
 	entity->GetDestroyEvent().Subscribe(this, &Camera::OnEntityDestroy);
+	Update();
 }
 
 void Camera::OnEntityDestroy(LPEntity _)

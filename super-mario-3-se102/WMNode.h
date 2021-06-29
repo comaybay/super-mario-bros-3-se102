@@ -38,7 +38,7 @@ namespace Entities {
 		void Transfer(LPWMNode targetNode);
 
 		EntityState<WMNode> state;
-		std::string absoluteScenePath;
+		std::string scenePath;
 		LPWMNode topNode;
 		LPWMNode leftNode;
 		LPWMNode bottomNode;

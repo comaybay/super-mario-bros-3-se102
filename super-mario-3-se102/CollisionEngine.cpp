@@ -13,13 +13,20 @@ CollisionData::CollisionData() {};
 CollisionData::CollisionData(LPEntity who, Vector2<float> edge, float value, float delta)
 	: who(who), edge(edge), value(value), delta(delta) {};
 
-std::unordered_map<LPEntity, LPEvent<CollisionData>> CollisionEngine::collisionEventByLPEntity;
-std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByMovableLPEntity;
-std::unordered_map<LPEntity, std::vector<std::string>> CollisionEngine::targetGroupsByNonMovingLPEntity;
+std::unordered_map<LPScene, CollisionEngineData> CollisionEngine::CEDByLPScene;
+CollisionEngineData* CollisionEngine::activeCED;
+
 //keep tracks of what has been notified
 std::unordered_set<std::string> CollisionEngine::hasPreviouslyNotified;
 std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 
+
+void CollisionEngine::HandleUnsubscribeWaitList() {
+	for (LPEntity entity : unsubscribeWaitList)
+		OnEntityUnsubscribe(entity);
+
+	unsubscribeWaitList.clear();
+}
 /// <summary>
 /// <para>This algorithm do collision detection on entities that subsribe to the CollisionEngine, and only do detection between entity and it's given target groups.</para>
 /// <para>The downside of this algorithm is that it do not take into account the sptial partition grid.</para>
@@ -28,18 +35,13 @@ std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
 /// and do not simmulate complex particle interactions, like SMB3.</para>
 /// </summary>
 void CollisionEngine::Update(float delta) {
-	//keep events and targetGroups up to date before doing collision detection
-	for (LPEntity entity : unsubscribeWaitList)
-		OnEntityUnsubscribe(entity);
-
-	unsubscribeWaitList.clear();
 	hasPreviouslyNotified.clear();
 
 	//Only movable entities can cause collision
-	for (auto& pair : targetGroupsByMovableLPEntity)
+	for (auto& pair : activeCED->targetGroupsByMovableLPEntity)
 		DetectAndNotify(pair.first, pair.second, delta);
 
-	for (auto& pair : targetGroupsByNonMovingLPEntity)
+	for (auto& pair : activeCED->targetGroupsByNonMovingLPEntity)
 		DetectAndNotify(pair.first, pair.second, delta);
 }
 
@@ -91,18 +93,18 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 		if (dataForEntity.value == 1.0f)
 			continue;
 
-		collisionEventByLPEntity[entity]->Notify(dataForEntity);
+		activeCED->collisionEventByLPEntity[entity]->Notify(dataForEntity);
 
 		//if after notification, target still enabled, also subscribed and it's target groups include entity
 		bool targetHasThisEntityAsTarget =
-			ContainsAnyOf(entity->GetEntityGroups(), targetGroupsByMovableLPEntity[target]) ||
-			ContainsAnyOf(entity->GetEntityGroups(), targetGroupsByNonMovingLPEntity[target]);
+			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByMovableLPEntity[target]) ||
+			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByNonMovingLPEntity[target]);
 
 		if (target->_IsEnabledForCollisionDetection() &&
-			Contains(target, collisionEventByLPEntity) &&
+			Contains(target, activeCED->collisionEventByLPEntity) &&
 			targetHasThisEntityAsTarget)
 		{
-			collisionEventByLPEntity[target]->Notify(dataForTarget);
+			activeCED->collisionEventByLPEntity[target]->Notify(dataForTarget);
 			hasPreviouslyNotified.insert(toKey(target, entity));
 		}
 	}
@@ -110,10 +112,12 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 Event<CollisionData>& CollisionEngine::GetCollisionEventOf(LPEntity entity)
 {
-	if (!Contains(entity, collisionEventByLPEntity))
-		collisionEventByLPEntity[entity] = new Event<CollisionData>();
+	CollisionEngineData& ced = CEDByLPScene[entity->GetParentScene()];
 
-	return *collisionEventByLPEntity[entity];
+	if (!Contains(entity, ced.collisionEventByLPEntity))
+		ced.collisionEventByLPEntity[entity] = new Event<CollisionData>();
+
+	return *ced.collisionEventByLPEntity[entity];
 }
 
 bool CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2)
@@ -175,6 +179,25 @@ float CollisionEngine::DetectCollisionValue(LPEntity e1, LPEntity e2, float delt
 		return SweptAABB(mBox, sBox).value;
 }
 
+void CollisionEngine::_AddCED(LPScene scene)
+{
+	if (!Contains(scene, CEDByLPScene))
+		CEDByLPScene[scene] = CollisionEngineData();
+}
+
+void CollisionEngine::_RemoveCED(LPScene scene)
+{
+	for (auto pair : CEDByLPScene[scene].collisionEventByLPEntity)
+		delete pair.second;
+
+	CEDByLPScene.erase(scene);
+}
+
+void CollisionEngine::_SetActiveCED(LPScene scene)
+{
+	activeCED = &CEDByLPScene[scene];
+}
+
 //taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ 
 CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box)
 {
@@ -193,16 +216,18 @@ CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box)
 
 void CollisionEngine::OnEntityUnsubscribe(LPEntity entity)
 {
-	auto itCE = collisionEventByLPEntity.find(entity);
-	collisionEventByLPEntity.erase(itCE);
+	CollisionEngineData& ced = CEDByLPScene[entity->GetParentScene()];
+
+	auto itCE = ced.collisionEventByLPEntity.find(entity);
+	ced.collisionEventByLPEntity.erase(itCE);
 
 	if (entity->GetGridType() == GridType::MOVABLE_ENTITIES || entity->GetGridType() == GridType::NONE) {
-		auto itTG = targetGroupsByMovableLPEntity.find(entity);
-		targetGroupsByMovableLPEntity.erase(itTG);
+		auto itTG = ced.targetGroupsByMovableLPEntity.find(entity);
+		ced.targetGroupsByMovableLPEntity.erase(itTG);
 	}
 	else {
-		auto itTG = targetGroupsByNonMovingLPEntity.find(entity);
-		targetGroupsByNonMovingLPEntity.erase(itTG);
+		auto itTG = ced.targetGroupsByNonMovingLPEntity.find(entity);
+		ced.targetGroupsByNonMovingLPEntity.erase(itTG);
 	}
 }
 

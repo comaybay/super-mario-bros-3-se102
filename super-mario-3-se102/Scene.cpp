@@ -6,7 +6,8 @@
 #include "Group.h"
 using namespace Utils;
 
-Scene::Scene()
+Scene::Scene() :
+	camera(Camera(this))
 {
 	updateMovablesInSPGridEnabled = true;
 	renderMovablesInSPGridEnabled = true;
@@ -170,15 +171,20 @@ void Scene::_Ready()
 		camera.FollowEntity(playerGroup.front());
 }
 
-Dimension Scene::GetWorldDimension()
+const Dimension& Scene::GetWorldDimension()
 {
 	int scale = Game::GetScale();
 	return Utils::Dimension(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
 }
 
-Vector2<float> Scene::GetCameraPosition()
+const Vector2<float>& Scene::GetCameraPosition()
 {
 	return camera.GetPosition();
+}
+
+const std::string& Scene::GetPrevScenePath()
+{
+	return prevScenePath;
 }
 
 RECT Scene::GetTileBoundingBox(int id)

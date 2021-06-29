@@ -14,6 +14,12 @@ struct CollisionData {
 	CollisionData(LPEntity who, Utils::Vector2<float> edge, float value, float delta);
 };
 
+struct CollisionEngineData {
+	std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
+	std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByMovableLPEntity;
+	std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByNonMovingLPEntity;
+};
+
 class CollisionEngine
 {
 private:
@@ -26,20 +32,24 @@ public:
 	template<class TEntity, class ...Args>
 	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
 
+	static void HandleUnsubscribeWaitList();
 	static void Update(float delta);
 	static void DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta);
 	static bool Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
 	static float DetectCollisionValue(LPEntity e1, LPEntity e2, float delta);
+
+	static void _AddCED(LPScene scene);
+	static void _RemoveCED(LPScene scene);
+	static void _SetActiveCED(LPScene scene);
+
 private:
 	static Event<CollisionData>& GetCollisionEventOf(LPEntity entity);
 	static CollisionData SweptAABB(const CBox& mBox, const CBox& sBox);
 	static bool AABBCheck(const CBox& box1, const CBox& box2);
 	static CBox GetSweptBroadphaseBox(const CBox& box);
-	static void OnEntityDestroy(LPEntity entity);
 	static void OnEntityUnsubscribe(LPEntity entity);
-	static std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
-	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByMovableLPEntity;
-	static std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByNonMovingLPEntity;
+	static std::unordered_map<LPScene, CollisionEngineData> CEDByLPScene;
+	static CollisionEngineData* activeCED;
 	static std::list<LPEntity> unsubscribeWaitList;
 	static std::unordered_set<std::string> hasPreviouslyNotified;
 
@@ -59,9 +69,9 @@ template<class TEntity, class ...Args>
 static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
 	//entites that have group in one of collisionTargetGroups will be check for collision with entity
 	if (handlerThis->GetGridType() == GridType::MOVABLE_ENTITIES || handlerThis->GetGridType() == GridType::NONE)
-		targetGroupsByMovableLPEntity[handlerThis] = collisionTargetGroups;
+		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByMovableLPEntity[handlerThis] = collisionTargetGroups;
 	else
-		targetGroupsByNonMovingLPEntity[handlerThis] = collisionTargetGroups;
+		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByNonMovingLPEntity[handlerThis] = collisionTargetGroups;
 
 	GetCollisionEventOf(handlerThis).Subscribe(handlerThis, handler);
 	handlerThis->GetDestroyEvent().Subscribe(&OnEntityUnsubscribe);

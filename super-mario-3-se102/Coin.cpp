@@ -9,8 +9,13 @@ using namespace Utils;
 Coin::Coin(const Vector2<float>& position)
 	: Entity::Entity(position, "Coin", HitboxId::TILE_SIZE_HITBOX, "Coins", GridType::STATIC_ENTITIES)
 {
+}
+
+void Coin::OnReady()
+{
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Group::PLAYER });
 }
+
 
 void Coin::OnCollision(CollisionData data)
 {

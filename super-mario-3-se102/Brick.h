@@ -7,6 +7,7 @@ namespace Entities {
 	class Brick : public Entity {
 	public:
 		Brick(LPEntity content, const Utils::Vector2<float>& position);
+		void OnReady() override;
 	private:
 		void ExposeContent();
 		void OnCollision(CollisionData data);

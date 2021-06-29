@@ -21,8 +21,9 @@ public:
 	Scene();
 	void Update(float delta);
 	void Render();
-	Utils::Dimension GetWorldDimension();
-	Utils::Vector2<float> GetCameraPosition();
+	const Utils::Dimension& GetWorldDimension();
+	const Utils::Vector2<float>& GetCameraPosition();
+	const std::string& GetPrevScenePath();
 	void AddEntity(LPEntity entity);
 	void QueueFree(LPEntity entity);
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);

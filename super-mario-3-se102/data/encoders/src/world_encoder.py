@@ -33,7 +33,7 @@ class WorldEncoder(Encoder):
             self.mistake_file = None
 
     def _get_prev_scene_path(self):
-        return f"world maps/wm_{self.world_map_number}.txt"
+        return f"world_maps/wm_{self.world_map_number}.txt"
 
     def _write_walls_header(self, encode_file):
         encode_file.write("\n#WallType, Position (X, Y), Dimension (Width, Height), GridPosition (X, Y)\n")

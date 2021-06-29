@@ -8,6 +8,7 @@ namespace Entities {
 	public:
 		Coin(const Utils::Vector2<float>& position);
 		void OnCollision(CollisionData data);
+		void OnReady() override;
 	};
 }
 

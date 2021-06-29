@@ -25,6 +25,7 @@ namespace Entities {
 		};
 
 		Mario(Utils::Vector2<float> position);
+		void OnReady() override;
 		void Update(float delta) override;
 		void SetPowerLevel(Mario::PowerLevel level);
 		void TakeDamage();

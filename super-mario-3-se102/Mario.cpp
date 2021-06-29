@@ -5,6 +5,7 @@
 #include "EntityConstants.h"
 #include "Group.h"
 #include "Contains.h"
+#include "Scene.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -32,6 +33,10 @@ Mario::Mario(Vector2<float> position) :
 	powerLevel(PowerLevel::SMALL)
 {
 	animationSet = GetAnimationSetByPowerLevel(powerLevel);
+}
+
+void Mario::OnReady()
+{
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
@@ -132,12 +137,15 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 		parentScene->PlayerDeath();
 		SetAnimation(AnimationSet::DEATH);
 		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
+
 		time = 0;
 		velocity = Vector2<float>(0, 0);
 	}
 
-	else if (stateHandler == &Mario::DieFall)
+	else if (stateHandler == &Mario::DieFall) {
+		time = 0;
 		velocity.y = -DEATH_JUMP_SPEED;
+	}
 }
 
 void Mario::Idle(float delta)
@@ -277,6 +285,10 @@ void Mario::Die(float delta) {
 void Mario::DieFall(float delta) {
 	velocity.y += DEATH_FALL_ACCEL * delta;
 	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+
+	time += delta;
+	if (time >= 3.0f)
+		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
 }
 
 void Mario::ApplyHorizontalMovement(float delta)

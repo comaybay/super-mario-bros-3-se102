@@ -26,7 +26,7 @@ def main():
         return
 
     default_output_world_dir = path.join(this_dir, "..", "worlds")
-    default_output_world_map_dir = path.join(this_dir, "..", "world maps")
+    default_output_world_map_dir = path.join(this_dir, "..", "world_maps")
 
     default_world_tile_anno_path = path.join(this_dir, "data", "world_tile_annotations.png")
     default_world_entity_anno_path = path.join(this_dir, "data", "world_entity_annotations.png")
@@ -47,7 +47,7 @@ def main():
             world_entity_anno_map,
         )
 
-        default_input_world_maps_dir = path.join(this_dir, "world maps")
+        default_input_world_maps_dir = path.join(this_dir, "world_maps")
         encoding_world_map_files_form_folder(
             default_input_world_maps_dir,
             default_output_world_map_dir,
