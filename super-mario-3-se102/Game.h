@@ -27,6 +27,9 @@ public:
 	static bool IsKeyPressed(int keyCode);
 	static void SwitchScene(LPScene scene);
 	static void QueueFreeAndSwitchScene(LPScene scene);
+	/// <summary>
+	/// Queue free old scene and switch scene 
+	/// </summary>
 	static void QueueFreeAndSwitchScene(std::string scenePath);
 	static void EnableCollisionEngine(bool state);
 	static const int TILE_SIZE = 16;

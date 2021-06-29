@@ -72,7 +72,7 @@ void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int max
 	//TODO: remove test code
 
 	activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
-	activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
+	//activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 
@@ -165,8 +165,11 @@ void Game::QueueFreeAndSwitchScene(LPScene scene) {
 
 void Game::QueueFreeAndSwitchScene(std::string scenePath)
 {
-	LPScene newScene = SceneLoader::LoadScene(scenePath);
-	QueueFreeAndSwitchScene(newScene);
+	try {
+		LPScene newScene = SceneLoader::LoadScene(scenePath);
+		QueueFreeAndSwitchScene(newScene);
+	}
+	catch (std::exception e) {}
 }
 
 int Game::GetScale()
