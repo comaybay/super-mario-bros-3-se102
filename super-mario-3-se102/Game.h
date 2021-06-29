@@ -17,8 +17,9 @@ public:
 	static LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; };
 	static LPD3DXSPRITE GetD3DXSprite() { return d3dxSprite; };
 	static int GetScale();
-	static Utils::Dimension GetGameDimension();
+	static const Utils::Dimension& GetGameDimension();
 	static const LPScene GetActiveScene();
+	static const std::string& GetDataDirectory();
 	static void Run();
 	static void Release();
 	static void ProcessKeyboard();
@@ -30,6 +31,7 @@ public:
 private:
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
+	static std::string dataDir;
 	static int scale;
 	static Utils::Dimension gameDim;
 	static D3DXMATRIX scaleMatrix;

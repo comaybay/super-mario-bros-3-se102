@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+#include "SceneLoader.h"
 #include "EncodedWorld.h"
 #include "EntityManager.h"
 #include "Utils.h"
@@ -13,26 +13,19 @@
 using namespace Utils;
 using namespace ProcessingUtils;
 
-std::unordered_map<std::string, std::string> SceneManager::scenePathById;
-std::unordered_map <std::string, SceneManager::ParseEntityMethod> SceneManager::parseMethodByEntityName =
+std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoader::parseMethodByEntityName =
 {
-	{"Mario", &SceneManager::ParseMario},
-	{"Goomba", &SceneManager::ParseGoomba},
-	{"ParaGoomba",&SceneManager::ParseParaGoomba},
-	{"Koopa",&SceneManager::ParseKoopa},
-	{"ParaKoopa", &SceneManager::ParseParaKoopa},
-	{"Coin", &SceneManager::ParseCoin},
-	{"QuestionBlock", &SceneManager::ParseQuestionBlock},
-	{"Brick", &SceneManager::ParseBrick},
+	{"Mario", &SceneLoader::ParseMario},
+	{"Goomba", &SceneLoader::ParseGoomba},
+	{"ParaGoomba",&SceneLoader::ParseParaGoomba},
+	{"Koopa",&SceneLoader::ParseKoopa},
+	{"ParaKoopa", &SceneLoader::ParseParaKoopa},
+	{"Coin", &SceneLoader::ParseCoin},
+	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
+	{"Brick", &SceneLoader::ParseBrick},
 };
 
-void SceneManager::AddScenePath(std::string scenePath, std::string id) {
-	scenePathById[id] = scenePath;
-}
-
-LPScene SceneManager::LoadWorld(std::string id) {
-	std::string scenePath = scenePathById[id];
-
+LPScene SceneLoader::LoadScene(std::string scenePath) {
 	std::ifstream file(scenePath);
 	if (!file.is_open()) {
 		std::string msg = "LoadWorld Failed: file not found: " + scenePath;
@@ -83,7 +76,7 @@ LPScene SceneManager::LoadWorld(std::string id) {
 	return scene;
 }
 
-std::string SceneManager::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -114,7 +107,7 @@ std::string SceneManager::ParseWorldProperties(std::ifstream& file, std::string&
 	return line;
 }
 
-std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld)
+std::string SceneLoader::ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -140,7 +133,7 @@ std::string SceneManager::ParseEncodedWorld(std::ifstream& file, int world_width
 	throw std::exception("Error parsing encoded world");
 }
 
-std::string SceneManager::ParseSpatialPartitionGrid
+std::string SceneLoader::ParseSpatialPartitionGrid
 (std::ifstream& file, LPGrid& wallEntitySpatialGrid, LPGrid& staticEntitySpatialGrid, LPDynamicGrid& movableEntitySpatialGrid)
 {
 	std::string line;
@@ -166,7 +159,7 @@ std::string SceneManager::ParseSpatialPartitionGrid
 	return line;
 }
 
-std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid)
+std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid)
 {
 	//TODO:
 	std::string line;
@@ -207,7 +200,7 @@ std::string SceneManager::ParseAndAddWallsEntities(std::ifstream& file, LPEntity
 	return line;
 }
 
-std::string SceneManager::ParseAndAddOtherEntities
+std::string SceneLoader::ParseAndAddOtherEntities
 (std::ifstream& file, LPEntityManager entityManager, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid)
 {
 	std::string line;
@@ -244,7 +237,7 @@ std::string SceneManager::ParseAndAddOtherEntities
 	return line;
 }
 
-std::string SceneManager::ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager)
+std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager)
 {
 	using namespace Entities;
 	std::string line;
@@ -286,7 +279,7 @@ std::string SceneManager::ParseWorldMapNodes(std::ifstream& file, LPEntityManage
 	}
 }
 
-LPEntity SceneManager::ParseMario(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
@@ -295,7 +288,7 @@ LPEntity SceneManager::ParseMario(const std::vector<std::string>& tokens)
 }
 
 
-LPEntity SceneManager::ParseGoomba(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseGoomba(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
@@ -303,7 +296,7 @@ LPEntity SceneManager::ParseGoomba(const std::vector<std::string>& tokens)
 	return new Entities::Goomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseParaGoomba(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseParaGoomba(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
@@ -311,7 +304,7 @@ LPEntity SceneManager::ParseParaGoomba(const std::vector<std::string>& tokens)
 	return new Entities::ParaGoomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
@@ -319,7 +312,7 @@ LPEntity SceneManager::ParseKoopa(const std::vector<std::string>& tokens)
 	return new Entities::Koopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseParaKoopa(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
@@ -327,14 +320,14 @@ LPEntity SceneManager::ParseParaKoopa(const std::vector<std::string>& tokens)
 	return new Entities::ParaKoopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseCoin(const std::vector<std::string>& tokens) {
+LPEntity SceneLoader::ParseCoin(const std::vector<std::string>& tokens) {
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
 	return new Entities::Coin(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
 }
 
-LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
@@ -345,7 +338,7 @@ LPEntity SceneManager::ParseQuestionBlock(const std::vector<std::string>& tokens
 	return new Entities::QuestionBlock(content, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
-LPEntity SceneManager::ParseBrick(const std::vector<std::string>& tokens)
+LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
 {
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);

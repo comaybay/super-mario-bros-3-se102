@@ -1,5 +1,7 @@
 #include "WMNode.h"
 #include "Game.h"
+#include "SceneLoader.h"
+#include "ProcessingUtils.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -16,7 +18,7 @@ void WMNode::_Init(const Utils::Vector2<float>& position, const std::string& sce
 
 {
 	this->position = position;
-	this->scenePath = scenePath;
+	this->absoluteScenePath = ProcessingUtils::JoinPath(Game::GetDataDirectory(), scenePath);
 	this->topNode = topNode;
 	this->leftNode = leftNode;
 	this->bottomNode = bottomNode;
@@ -52,18 +54,20 @@ void WMNode::Inactive(float delta)
 
 void WMNode::Active(float delta)
 {
-	if (topNode && Game::IsKeyPressed(DIK_UP)) {
+	if (topNode && Game::IsKeyPressed(DIK_UP))
 		state.SetHandler(&WMNode::TransferAnimTop);
-	}
-	else if (leftNode && Game::IsKeyPressed(DIK_LEFT)) {
+
+	else if (leftNode && Game::IsKeyPressed(DIK_LEFT))
 		state.SetHandler(&WMNode::TransferAnimLeft);
-	}
-	else if (bottomNode && Game::IsKeyPressed(DIK_DOWN)) {
+
+	else if (bottomNode && Game::IsKeyPressed(DIK_DOWN))
 		state.SetHandler(&WMNode::TransferAnimDown);
-	}
-	else if (rightNode && Game::IsKeyPressed(DIK_RIGHT)) {
+
+	else if (rightNode && Game::IsKeyPressed(DIK_RIGHT))
 		state.SetHandler(&WMNode::TransferAnimRight);
-	}
+
+	else if (rightNode && Game::IsKeyPressed(DIK_S))
+		Game::SwitchScene(SceneLoader::LoadScene(absoluteScenePath));
 }
 
 void WMNode::TransferAnimTop(float delta)

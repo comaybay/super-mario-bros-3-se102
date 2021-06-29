@@ -210,7 +210,7 @@
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="RectSequence.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="PointUp.cpp" />
     <ClCompile Include="SpriteBox.cpp" />
@@ -261,7 +261,7 @@
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="RectSequence.h" />
     <ClInclude Include="ResourceLoader.h" />
-    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="PointUp.h" />
     <ClInclude Include="SpriteBox.h" />

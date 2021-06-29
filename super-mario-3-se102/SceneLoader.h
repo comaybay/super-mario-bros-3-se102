@@ -7,13 +7,11 @@
 #include "Grid.h"
 #include "DynamicGrid.h"
 
-class SceneManager
+class SceneLoader
 {
 public:
-	static void AddScenePath(std::string scenePath, std::string id);
-	static LPScene LoadWorld(std::string id);
+	static LPScene LoadScene(std::string scenePath);
 private:
-	static std::unordered_map<std::string, std::string> scenePathById;
 	static std::string ParseWorldProperties(std::ifstream& file, std::string& sceneType, Utils::Dimension& dim, D3DCOLOR& bgColor);
 	static std::string ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld);
 	static std::string ParseSpatialPartitionGrid

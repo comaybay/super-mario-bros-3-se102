@@ -181,7 +181,7 @@ Vector2<float> Scene::GetCameraPosition()
 RECT Scene::GetTileBoundingBox(int id)
 {
 	Dimension texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
-	int numOfCols = texDim.width / Game::TILE_SIZE;
+	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
 	int row = id / numOfCols;
 	int col = id % numOfCols;
 

@@ -13,7 +13,7 @@ namespace Entities {
 
 		/// <summary>
 		/// initialize WMNode, this method exist because some operations require scene to exist before 
-		/// it's constructor's arguments are provided, used internally by SceneManager.
+		/// it's constructor's arguments are provided, used internally by SceneLoader.
 		/// </summary>
 		void _Init(const Utils::Vector2<float>& position, const std::string& scenePath,
 			LPWMNode topNode, LPWMNode leftNode, LPWMNode bottomNode, LPWMNode rightNode);
@@ -38,7 +38,7 @@ namespace Entities {
 		void Transfer(LPWMNode targetNode);
 
 		EntityState<WMNode> state;
-		std::string scenePath;
+		std::string absoluteScenePath;
 		LPWMNode topNode;
 		LPWMNode leftNode;
 		LPWMNode bottomNode;

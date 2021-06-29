@@ -43,7 +43,7 @@ public:
 	virtual void OnReady();
 
 	/// <summary>
-	/// Used internaly by SceneManager to inject entity's parent scene
+	/// Used internaly by SceneLoader to inject entity's parent scene
 	/// </summary>
 	void _SetParentScene(LPScene scene);
 

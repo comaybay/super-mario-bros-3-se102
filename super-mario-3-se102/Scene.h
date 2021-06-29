@@ -45,12 +45,12 @@ private:
 public:
 	/// <summary>
 	/// initialize scene, this method exist because some operations require scene to exist before 
-	/// it's constructor's arguments are provided, used internally by SceneManager.
+	/// it's constructor's arguments are provided, used internally by SceneLoader.
 	/// </summary>
 	void _Init(Utils::Dimension worldTileDim, D3DCOLOR backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager);
 
 	/// <summary>
-	/// called when everything in the scene is loaded, used internally by SceneManager.
+	/// called when everything in the scene is loaded, used internally by SceneLoader.
 	/// </summary>
 	void _Ready();
 };

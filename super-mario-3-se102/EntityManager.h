@@ -26,15 +26,15 @@ public:
 	void FreeEntitiesInQueue();
 
 	/// <summary>
-	/// Used internally by SceneManager
+	/// Used internally by SceneLoader
 	/// </summary>
 	void _AddToNonWallSPGrid(LPEntity entity, const Utils::Vector2<int>& cellIndex);
 	/// <summary>
-	/// Used internally by SceneManager
+	/// Used internally by SceneLoader
 	/// </summary>
 	void _AddToWallSPGrid(LPEntity entity, const CellRange& cellRange);
 	/// <summary>
-	/// Used internally by SceneManager
+	/// Used internally by SceneLoader
 	/// </summary>
 	void _AddWithoutPutToGrid(LPEntity entity);
 private:

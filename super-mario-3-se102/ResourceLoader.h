@@ -7,7 +7,7 @@ class ResourceLoader
 {
 public:
 	ResourceLoader(const std::string& rootDirectory);
-	void GetGameSettings(Utils::Dimension& gameDimension, int& pixelScale) const;
+	void GetGameSettings(Utils::Dimension& gameDimension, int& pixelScale, std::string& dataDirectory) const;
 	void Load() const;
 private:
 	void LoadTextures(const std::string& configPath) const;

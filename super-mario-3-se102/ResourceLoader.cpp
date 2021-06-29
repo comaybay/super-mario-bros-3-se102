@@ -11,7 +11,7 @@ using namespace Utils;
 ResourceLoader::ResourceLoader(const std::string& rootDirectory)
 	: root(rootDirectory) {}
 
-void ResourceLoader::GetGameSettings(Dimension& gameDimension, int& pixelScale) const
+void ResourceLoader::GetGameSettings(Dimension& gameDimension, int& pixelScale, std::string& dataDirectory) const
 {
 	std::string configPath = JoinPath(root, "/config.txt");
 	std::ifstream file(configPath);
@@ -30,11 +30,18 @@ void ResourceLoader::GetGameSettings(Dimension& gameDimension, int& pixelScale) 
 		gameDimension = Dimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
 
 		line = GetNextNonCommentLine(file);
-		std::vector<std::string> scaleTokens = SplitByComma(line);
-		if (scaleTokens.size() != 1)
+		std::vector<std::string> scaleToken = SplitByComma(line);
+		if (scaleToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
-		pixelScale = stoi(scaleTokens[0]);
+		pixelScale = stoi(scaleToken[0]);
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> dirToken = SplitByComma(line);
+		if (dirToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		dataDirectory = dirToken[0];
 
 		file.close();
 		return;

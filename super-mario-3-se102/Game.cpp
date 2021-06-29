@@ -9,8 +9,9 @@
 #include <thread>
 #include <chrono>
 #include "ResourceLoader.h"
-#include "SceneManager.h"
+#include "SceneLoader.h"
 
+std::string Game::dataDir;
 HWND Game::windowHandle;
 Utils::Dimension Game::gameDim;
 int Game::scale;
@@ -29,6 +30,7 @@ bool Game::enableCollisionEngine = true;
 
 void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimension gameDim)
 {
+	Game::dataDir = dataDirectory;
 	Game::windowHandle = hWnd;
 	Game::scale = scale;
 	Game::gameDim = gameDim;
@@ -64,10 +66,9 @@ void Game::Init(HWND hWnd, float scale, std::string dataDirectory, Utils::Dimens
 	ResourceLoader(dataDirectory).Load();
 
 	//TODO: remove test code
-	//SceneManager::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
-	SceneManager::AddScenePath("data/world maps/wm_1.txt", "World 1-1-1");
+	//SceneLoader::AddScenePath("data/worlds/w_1_1_1.txt", "World 1-1-1");
 
-	activeScene = SceneManager::LoadWorld("World 1-1-1");
+	activeScene = SceneLoader::LoadScene("data/world maps/wm_1.txt");
 	SwitchScene(activeScene);
 }
 
@@ -150,7 +151,7 @@ void Game::EnableCollisionEngine(bool state) {
 }
 
 void Game::SwitchScene(LPScene scene) {
-	Game::activeScene = scene;
+	activeScene = scene;
 }
 
 int Game::GetScale()
@@ -158,7 +159,7 @@ int Game::GetScale()
 	return scale;
 }
 
-Utils::Dimension Game::GetGameDimension()
+const Utils::Dimension& Game::GetGameDimension()
 {
 	return gameDim;
 }
@@ -166,6 +167,11 @@ Utils::Dimension Game::GetGameDimension()
 const LPScene Game::GetActiveScene()
 {
 	return activeScene;
+}
+
+const std::string& Game::GetDataDirectory()
+{
+	return dataDir;
 }
 
 void Game::Run()
