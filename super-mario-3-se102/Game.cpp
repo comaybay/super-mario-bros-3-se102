@@ -198,6 +198,9 @@ void Game::Run()
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
 	int frameTime = round(1000.0f / maxFPS);
 	const float dt = 1.0f / maxFPS;
+
+	const int longFrameTime = 1000.0f / 10.0f;
+	const float longDt = 1.0f / 10.0f;
 	int accumulator = 0;
 
 	while (true)
@@ -219,15 +222,16 @@ void Game::Run()
 
 		accumulator += duration;
 
-		if (accumulator >= frameTime)
+		while (accumulator >= frameTime)
 		{
+			bool fast = (accumulator < longFrameTime);
+			accumulator -= (fast) ? frameTime : longFrameTime;
 			ProcessKeyboard();
 
 			if (enableCollisionEngine)
-				CollisionEngine::Update(dt);
+				CollisionEngine::Update(fast ? dt : longDt);
 
-			activeScene->Update(dt);
-			accumulator -= frameTime;
+			activeScene->Update(fast ? dt : longDt);
 
 			CollisionEngine::_HandleUnsubscribeWaitList();
 		}
@@ -247,6 +251,7 @@ void Game::Run()
 				waitForDeletionScene = nullptr;
 			}
 		}
+
 	}
 }
 
