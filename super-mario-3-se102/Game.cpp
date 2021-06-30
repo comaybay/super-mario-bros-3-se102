@@ -34,7 +34,7 @@ bool Game::enableCollisionEngine = true;
 void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int maxFPS, const std::string& dataDirectory)
 {
 	Game::dataDir = dataDirectory;
-	Game::maxFPS = maxFPS;
+	Game::maxFPS = Utils::Clip(maxFPS, 20, 120);
 	Game::windowHandle = hWnd;
 	Game::scale = scale;
 	Game::gameDim = gameDim;
@@ -194,14 +194,16 @@ const std::string& Game::GetDataDirectory()
 
 void Game::Run()
 {
-	MSG msg;
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
-	int frameTime = round(1000.0f / maxFPS);
-	const float dt = 1.0f / maxFPS;
+	const int smallFrameTime = round(1000.0f / maxFPS);
+	const float smallDt = 1.0f / maxFPS;
 
-	const int longFrameTime = 1000.0f / 10.0f;
-	const float longDt = 1.0f / 10.0f;
+	//long frame time and long delta is used when game is lag (longest delta value for processing the game)
+	const int longFrameTime = 1000.0f / 20.0f;
+	const float longDt = 1.0f / 20.0f;
+
 	int accumulator = 0;
+	MSG msg;
 
 	while (true)
 	{
@@ -222,16 +224,18 @@ void Game::Run()
 
 		accumulator += duration;
 
+		float dt = (accumulator < longFrameTime) ? smallDt : longDt;
+		float frameTime = (accumulator < longFrameTime) ? smallFrameTime : longFrameTime;
+
 		while (accumulator >= frameTime)
 		{
-			bool fast = (accumulator < longFrameTime);
-			accumulator -= (fast) ? frameTime : longFrameTime;
+			accumulator -= frameTime;
 			ProcessKeyboard();
 
 			if (enableCollisionEngine)
-				CollisionEngine::Update(fast ? dt : longDt);
+				CollisionEngine::Update(dt);
 
-			activeScene->Update(fast ? dt : longDt);
+			activeScene->Update(dt);
 
 			CollisionEngine::_HandleUnsubscribeWaitList();
 		}
