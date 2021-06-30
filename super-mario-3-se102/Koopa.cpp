@@ -168,17 +168,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 
 void Koopa::Update(float delta)
 {
-	if (!onGround && !lock) {
-		lock = true;
-		//revert to previous position (before falling) and change direction
-		velocity.x = -velocity.x;
-		position = prevPosition;
-		position.x += velocity.x * delta;
-		std::string anim = (Sign(velocity.x) < 0) ? "KoopaML" : "KoopaMR";
-		SetAnimation(colorCode + anim);
-	}
-	else
-		Entity::Update(delta);
+	Entity::Update(delta);
 
 	state.Handle(delta);
 	prevPosition = position;
@@ -208,6 +198,15 @@ void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
 
 void Koopa::MoveAround(float delta)
 {
+	if (!onGround && !lock) {
+		lock = true;
+		//revert to previous position (before falling) and change direction
+		velocity.x = -velocity.x;
+		position = prevPosition;
+		position.x += velocity.x * delta;
+		std::string anim = (Sign(velocity.x) < 0) ? "KoopaML" : "KoopaMR";
+		SetAnimation(colorCode + anim);
+	}
 }
 
 void Koopa::ShellIdle(float delta)
