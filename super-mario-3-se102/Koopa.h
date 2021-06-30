@@ -25,6 +25,9 @@ namespace Entities {
 
 		std::string colorCode;
 		EntityState<Koopa> state;
+		Utils::Vector2<float> prevPosition;
+		bool onGround;
+		bool lock;
 	public:
 		static const float WALK_SPEED;
 		static const float SHELL_SLIDE_SPEED;
