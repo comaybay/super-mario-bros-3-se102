@@ -201,9 +201,8 @@ void Koopa::MoveAround(float delta)
 	if (!onGround && !lock) {
 		lock = true;
 		//revert to previous position (before falling) and change direction
-		velocity.x = -velocity.x;
-		position = prevPosition;
-		position.x += velocity.x * delta;
+		velocity = { -velocity.x , 0 };
+		position = prevPosition + velocity * delta;
 		std::string anim = (Sign(velocity.x) < 0) ? "KoopaML" : "KoopaMR";
 		SetAnimation(colorCode + anim);
 	}
