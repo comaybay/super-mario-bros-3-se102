@@ -14,6 +14,9 @@ Tiles, spritesheets/tiles.png
 WMTiles, spritesheets/world_map_tiles.png
 224, 163, 216
 
+WMAnims, spritesheets/world_map_animations.png
+224, 163, 216
+
 Fonts, spritesheets/fonts.png
 0, 224, 142	
 

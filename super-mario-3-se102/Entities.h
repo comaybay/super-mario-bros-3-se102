@@ -11,3 +11,4 @@
 #include "CollisionWallType2.h"
 #include "Coin.h"
 #include "WMNode.h"
+#include "WMBush.h"

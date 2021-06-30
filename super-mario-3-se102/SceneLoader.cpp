@@ -4,11 +4,11 @@
 #include "Utils.h"
 #include "ProcessingUtils.h"
 #include "Contains.h"
-#include "Entities.h"
 #include "Game.h"
+#include "TextureManager.h"
+#include "Entities.h"
 
 #include <fstream>
-#include "TextureManager.h"
 
 using namespace Utils;
 using namespace ProcessingUtils;
@@ -23,6 +23,7 @@ std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoader::pa
 	{"Coin", &SceneLoader::ParseCoin},
 	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
 	{"Brick", &SceneLoader::ParseBrick},
+	{"WMBush", &SceneLoader::ParseWMBush},
 };
 
 LPScene SceneLoader::LoadScene(std::string scenePath) {
@@ -352,5 +353,13 @@ LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(5);
 
 	return new Entities::Brick(nullptr, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+}
+
+LPEntity SceneLoader::ParseWMBush(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 4)
+		throw InvalidTokenSizeException(4);
+
+	return new Entities::WMBush(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
 }
 

@@ -177,3 +177,8 @@ Fonts
 1UP, Normal, -1, Manual
 Fonts
 135, 62, 150, 69
+
+##WMBush##====================================
+WMBush, Fixed, 0.30, Auto
+WMAnims
+1, 1, 16, 16, 1, 4

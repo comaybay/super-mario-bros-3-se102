@@ -219,6 +219,7 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Wing.cpp" />
+    <ClCompile Include="WMBush.cpp" />
     <ClCompile Include="WMNode.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +271,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Wing.h" />
+    <ClInclude Include="WMBush.h" />
     <ClInclude Include="WMNode.h" />
   </ItemGroup>
   <ItemGroup>
