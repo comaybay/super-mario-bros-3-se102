@@ -116,6 +116,10 @@ void Mario::Update(float delta) {
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
+	//if died, do not allow to switch to state that require mario to be alive
+	if (state.GetHandler() == &Mario::Die && stateHandler != &Mario::DieFall)
+		return;
+
 	state.SetHandler(stateHandler);
 
 	if (stateHandler == &Mario::Jump) {
