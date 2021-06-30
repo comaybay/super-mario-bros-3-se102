@@ -220,6 +220,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Wing.cpp" />
     <ClCompile Include="WMBush.cpp" />
+    <ClCompile Include="WMHelpBubble.cpp" />
     <ClCompile Include="WMMario.cpp" />
     <ClCompile Include="WMNode.cpp" />
   </ItemGroup>
@@ -273,6 +274,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Wing.h" />
     <ClInclude Include="WMBush.h" />
+    <ClInclude Include="WMHelpBubble.h" />
     <ClInclude Include="WMMario.h" />
     <ClInclude Include="WMNode.h" />
   </ItemGroup>

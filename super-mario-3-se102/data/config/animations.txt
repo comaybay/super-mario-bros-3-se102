@@ -187,3 +187,8 @@ WMAnims
 WMMario, Normal, 0.15, Auto
 WMAnims
 1, 18, 16, 16, 1, 2
+
+##WMHelpBubble##====================================
+WMHelpBubble, Normal, -1, Manual
+WMAnims
+69, 1, 84, 16

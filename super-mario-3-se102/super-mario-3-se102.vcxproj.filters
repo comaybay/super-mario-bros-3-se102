@@ -192,6 +192,9 @@
     <ClCompile Include="WMMario.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WMHelpBubble.cpp">
+      <Filter>Source Files\Entities\WorldMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -345,6 +348,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WMMario.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WMHelpBubble.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,7 +23,9 @@ std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoader::pa
 	{"Coin", &SceneLoader::ParseCoin},
 	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
 	{"Brick", &SceneLoader::ParseBrick},
+
 	{"WMBush", &SceneLoader::ParseWMBush},
+	{"WMHelpBubble", &SceneLoader::ParseWMHelpBubble},
 };
 
 LPScene SceneLoader::LoadScene(std::string scenePath) {
@@ -360,5 +362,13 @@ LPEntity SceneLoader::ParseWMBush(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(4);
 
 	return new Entities::WMBush(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+}
+
+LPEntity SceneLoader::ParseWMHelpBubble(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 4)
+		throw InvalidTokenSizeException(4);
+
+	return new Entities::WMHelpBubble(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
 }
 
