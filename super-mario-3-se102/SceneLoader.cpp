@@ -280,9 +280,8 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
 
-		//test code
 		LPWMNode startNode = nodeById["NStart"];
-		startNode->Activate(new Mario(startNode->GetPosition()));
+		startNode->Activate(new WMMario(startNode->GetPosition()));
 
 		return line;
 	}

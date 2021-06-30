@@ -37,6 +37,12 @@
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{78a75a17-a527-467c-a679-abf82c4c714d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entities\WorldMap">
+      <UniqueIdentifier>{43fc06f2-310a-4005-9c47-e4d1319f891d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\World">
+      <UniqueIdentifier>{1dc76b07-2817-4d03-aaf0-4a05469130d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,26 +54,8 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mario.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceLoader.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Goomba.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionWallType1.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="QuestionBlock.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionWallType2.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="PlayerVariables.cpp">
       <Filter>Source Files</Filter>
@@ -84,17 +72,11 @@
     <ClCompile Include="AnimationManager.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="EmptyAnimation.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -117,9 +99,6 @@
     <ClCompile Include="DynamicGrid.cpp">
       <Filter>Source Files\SpatialGrid</Filter>
     </ClCompile>
-    <ClCompile Include="Koopa.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="FixedAnimation.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
@@ -129,23 +108,8 @@
     <ClCompile Include="Hitbox.cpp">
       <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
-    <ClCompile Include="BoomFX.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="GridType.cpp">
       <Filter>Source Files\SpatialGrid</Filter>
-    </ClCompile>
-    <ClCompile Include="PointUp.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="PointUpFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Wing.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="ParaGoomba.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Source Files</Filter>
@@ -165,20 +129,68 @@
     <ClCompile Include="SpriteBox.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
-    <ClCompile Include="ParaKoopa.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="EntityConstants.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="WMNode.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="BoomFX.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionWallType1.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionWallType2.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopa.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Mario.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaGoomba.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaKoopa.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="PointUp.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestionBlock.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Wing.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="WMNode.cpp">
+      <Filter>Source Files\Entities\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="PointUpFactory.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="WMBush.cpp">
+      <Filter>Source Files\Entities\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="WMMario.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -327,6 +339,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WMBush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WMMario.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

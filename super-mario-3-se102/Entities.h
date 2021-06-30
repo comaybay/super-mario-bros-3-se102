@@ -12,3 +12,4 @@
 #include "Coin.h"
 #include "WMNode.h"
 #include "WMBush.h"
+#include "WMMario.h"
