@@ -21,18 +21,14 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5;
 
-const std::string Mario::AnimationSet::DEATH = "MarioDeath";
-
 Mario::Mario(Vector2<float> position) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
 	state(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),
 	time(0),
-	onGround(false),
-	powerLevel(PowerLevel::SMALL)
+	onGround(false)
 {
-	animationSet = GetAnimationSetByPowerLevel(powerLevel);
 }
 
 void Mario::OnReady()
@@ -40,16 +36,9 @@ void Mario::OnReady()
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
-void Mario::SetPowerLevel(Mario::PowerLevel level)
-{
-	powerLevel = level;
-	animationSet = GetAnimationSetByPowerLevel(powerLevel);
-}
-
 void Mario::TakeDamage()
 {
-	if (powerLevel == PowerLevel::SMALL)
-		SwitchState(&Mario::Die);
+	SwitchState(&Mario::Die);
 }
 
 Event<LPEntity>& Mario::GetRestartPointUpEvent()
@@ -96,16 +85,6 @@ void Mario::UpdateHorizontalDirection()
 	}
 }
 
-Mario::AnimationSet Mario::GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel)
-{
-	switch (powerLevel) {
-	case PowerLevel::SMALL:
-		return AnimationSet{ "MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSML", "MarioSMR", "MarioSJL" , "MarioSJR" };
-	case PowerLevel::BIG:
-		return AnimationSet{ "MarioBIL", "MarioBIR", "MarioBTL", "MarioBTR", "MarioBML", "MarioBMR", "MarioBJL" , "MarioBJR" };
-	}
-}
-
 void Mario::Update(float delta) {
 	Entity::Update(delta);
 
@@ -139,7 +118,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 
 	else if (stateHandler == &Mario::Die) {
 		parentScene->PlayerDeath();
-		SetAnimation(AnimationSet::DEATH);
+		SetAnimation("MarioDeath");
 		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
 
 		time = 0;
@@ -161,9 +140,9 @@ void Mario::Idle(float delta)
 		ApplyFriction(delta);
 
 	if (velocity.x == 0)
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.idleLeft : animationSet.idleRight);
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSIL" : "MarioSIR");
 	else
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
 
 	if (!onGround)
 		SwitchState(&Mario::Fall);
@@ -187,9 +166,9 @@ void Mario::Walk(float delta)
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
 		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSTL" : "MarioSTR");
 	}
 
 	if (Game::IsKeyDown(DIK_A))
@@ -213,9 +192,9 @@ void Mario::Run(float delta)
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
 		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSTL" : "MarioSTR");
 	}
 
 	if (!Game::IsKeyDown(DIK_A))
@@ -240,7 +219,7 @@ void Mario::Jump(float delta)
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSJL" : "MarioSJR");
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
@@ -263,7 +242,7 @@ void Mario::Fall(float delta) {
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSJL" : "MarioSJR");
 
 	if (!onGround)
 		return;

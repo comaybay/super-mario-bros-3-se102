@@ -7,28 +7,11 @@
 namespace Entities {
 	class Mario : public Entity {
 	public:
-		struct AnimationSet {
-			std::string idleLeft;
-			std::string idleRight;
-			std::string turnLeft;
-			std::string turnRight;
-			std::string walkLeft;
-			std::string walkRight;
-			std::string jumpLeft;
-			std::string jumpRight;
-			static const std::string DEATH;
-		};
-
-		enum class PowerLevel {
-			SMALL,
-			BIG,
-		};
-
 		Mario(Utils::Vector2<float> position);
 		void OnReady() override;
 		void Update(float delta) override;
-		void SetPowerLevel(Mario::PowerLevel level);
 		void TakeDamage();
+
 		/// <summary>
 		/// Event will notify when mario jump (meaning point up combo need to restart)
 		/// </summary>
@@ -47,7 +30,6 @@ namespace Entities {
 	private:
 		void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();
-		Mario::AnimationSet GetAnimationSetByPowerLevel(Mario::PowerLevel powerLevel);
 
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
@@ -60,8 +42,6 @@ namespace Entities {
 		bool onGround;
 		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
-		Mario::PowerLevel powerLevel;
-		Mario::AnimationSet animationSet;
 		static const float MAX_FALL_SPEED;
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
