@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "TextureManager.h"
 #include "Entities.h"
+#include "PlayerVariables.h"
 
 #include <fstream>
 
@@ -294,7 +295,12 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
-	return new Entities::Mario(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	switch (PlayerVariables::GetPlayerPowerLevel()) {
+	case PlayerPowerLevel::SMALL:
+		return new Entities::MarioSmall(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	default:
+		throw std::exception("ParseMario failed: not implemented player power level");
+	}
 }
 
 

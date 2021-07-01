@@ -7,15 +7,37 @@
 namespace Entities {
 	class Mario : public Entity {
 	public:
-		Mario(Utils::Vector2<float> position);
+		struct AnimationSet {
+			std::string idleLeft;
+			std::string idleRight;
+			std::string turnLeft;
+			std::string turnRight;
+			std::string walkLeft;
+			std::string walkRight;
+			std::string jumpLeft;
+			std::string jumpRight;
+			AnimationSet(
+				const std::string& idleLeft,
+				const std::string& idleRight,
+				const std::string& turnLeft,
+				const std::string& turnRight,
+				const std::string& walkLeft,
+				const std::string& walkRight,
+				const std::string& jumpLeft,
+				const std::string& jumpRight
+			);
+		};
+
+		virtual void TakeDamage() = 0;
+
+		Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet);
 		void OnReady() override;
-		void Update(float delta) override;
-		void TakeDamage();
+		virtual void Update(float delta) override;
 
 		/// <summary>
 		/// Event will notify when mario jump (meaning point up combo need to restart)
 		/// </summary>
-		Event<LPEntity>& GetRestartPointUpEvent();
+		Event<>& GetRestartPointUpEvent();
 
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
@@ -24,19 +46,16 @@ namespace Entities {
 		void Jump(float delta);
 		void Fall(float delta);
 		void Bounce(float delta);
-		void Die(float delta);
-		void DieFall(float delta);
 
-	private:
+	protected:
 		void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();
+		void UnsubscribeToCollisionEngine();
 
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
 
-		Event<LPEntity> restartPointUp;
-		EventHandler<Mario, CollisionData> onCollision;
-		EntityState<Mario> state;
+		EntityState<Mario> marioState;
 		Utils::Vector2<float> dir;
 		float time;
 		bool onGround;
@@ -53,5 +72,10 @@ namespace Entities {
 		static const float BOUNCE_SPEED_HOLD_JUMP;
 		static const float DEATH_JUMP_SPEED;
 		static const float DEATH_FALL_ACCEL;
+
+	private:
+		Event<> restartPointUp;
+		EventHandler<Mario, CollisionData> onCollision;
+		AnimationSet animationSet;
 	};
 }

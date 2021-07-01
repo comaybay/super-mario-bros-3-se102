@@ -48,7 +48,7 @@ PlayableCharacters
 #Death#
 MarioDeath, Normal, -1, Manual
 PlayableCharacters
-307, 16, 322, 31
+289, 16, 304, 31
 
 ##Goomba##====================================
 BGoombaM, Normal, 0.15, Auto

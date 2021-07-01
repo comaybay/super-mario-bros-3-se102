@@ -1,8 +1,19 @@
 #include "PlayerVariables.h"
 
+PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::numberOfCoins = 0;
 int PlayerVariables::numberOfLives = 0;
 float PlayerVariables::powerMeterLevel = 0;
+
+PlayerPowerLevel PlayerVariables::GetPlayerPowerLevel()
+{
+	return playerPowerLevel;
+}
+
+void PlayerVariables::SetPlayerPowerLevel(PlayerPowerLevel powerLevel)
+{
+	playerPowerLevel = powerLevel;
+}
 
 int PlayerVariables::GetNumberOfCoins()
 {

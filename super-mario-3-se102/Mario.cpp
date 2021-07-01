@@ -9,6 +9,13 @@
 using namespace Entities;
 using namespace Utils;
 
+Mario::AnimationSet::AnimationSet(const std::string& idleLeft, const std::string& idleRight, const std::string& turnLeft,
+	const std::string& turnRight, const std::string& walkLeft, const std::string& walkRight, const std::string& jumpLeft, const std::string& jumpRight)
+	: idleLeft(idleLeft), idleRight(idleRight), turnLeft(turnLeft), turnRight(turnRight),
+	walkLeft(walkLeft), walkRight(walkRight), jumpLeft(jumpLeft), jumpRight(jumpRight)
+{
+}
+
 const float Mario::MAX_FALL_SPEED = EntityConstants::MAX_FALL_SPEED;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
@@ -21,13 +28,15 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5;
 
-Mario::Mario(Vector2<float> position) :
+Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
-	state(EntityState<Mario>(this, &Mario::Idle)),
+	animationSet(animationSet),
+	marioState(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),
 	time(0),
-	onGround(false)
+	onGround(false),
+	runBeforeJump(false)
 {
 }
 
@@ -36,12 +45,7 @@ void Mario::OnReady()
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
-void Mario::TakeDamage()
-{
-	SwitchState(&Mario::Die);
-}
-
-Event<LPEntity>& Mario::GetRestartPointUpEvent()
+Event<>& Mario::GetRestartPointUpEvent()
 {
 	return restartPointUp;
 }
@@ -85,27 +89,28 @@ void Mario::UpdateHorizontalDirection()
 	}
 }
 
+void Mario::UnsubscribeToCollisionEngine()
+{
+	CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
+}
+
 void Mario::Update(float delta) {
 	Entity::Update(delta);
 
 	UpdateHorizontalDirection();
-	state.Handle(delta);
+	marioState.Handle(delta);
 
 	onGround = false;
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
-	//if died, do not allow to switch to state that require mario to be alive
-	if (state.GetHandler() == &Mario::Die && stateHandler != &Mario::DieFall)
-		return;
-
-	state.SetHandler(stateHandler);
+	marioState.SetHandler(stateHandler);
 
 	if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
 		dir.y = 1;
 		onGround = false;
-		restartPointUp.Notify(this);
+		restartPointUp.Notify();
 	}
 
 	else if (stateHandler == &Mario::Fall) {
@@ -115,20 +120,6 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 
 	else if (stateHandler == &Mario::Bounce)
 		velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
-
-	else if (stateHandler == &Mario::Die) {
-		parentScene->PlayerDeath();
-		SetAnimation("MarioDeath");
-		CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
-
-		time = 0;
-		velocity = Vector2<float>(0, 0);
-	}
-
-	else if (stateHandler == &Mario::DieFall) {
-		time = 0;
-		velocity.y = -DEATH_JUMP_SPEED;
-	}
 }
 
 void Mario::Idle(float delta)
@@ -140,9 +131,9 @@ void Mario::Idle(float delta)
 		ApplyFriction(delta);
 
 	if (velocity.x == 0)
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSIL" : "MarioSIR");
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.idleLeft : animationSet.idleRight);
 	else
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
 
 	if (!onGround)
 		SwitchState(&Mario::Fall);
@@ -166,9 +157,9 @@ void Mario::Walk(float delta)
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
 		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSTL" : "MarioSTR");
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
 	}
 
 	if (Game::IsKeyDown(DIK_A))
@@ -192,9 +183,9 @@ void Mario::Run(float delta)
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSWL" : "MarioSWR");
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
 		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSTL" : "MarioSTR");
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
 	}
 
 	if (!Game::IsKeyDown(DIK_A))
@@ -219,7 +210,7 @@ void Mario::Jump(float delta)
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSJL" : "MarioSJR");
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
@@ -242,7 +233,7 @@ void Mario::Fall(float delta) {
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? "MarioSJL" : "MarioSJR");
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (!onGround)
 		return;
@@ -256,22 +247,6 @@ void Mario::Fall(float delta) {
 		SwitchState(&Mario::Run);
 	else
 		SwitchState(&Mario::Walk);
-}
-
-void Mario::Die(float delta) {
-	time += delta;
-
-	if (time >= 0.75f)
-		SwitchState(&Mario::DieFall);
-}
-
-void Mario::DieFall(float delta) {
-	velocity.y += DEATH_FALL_ACCEL * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
-
-	time += delta;
-	if (time >= 3.0f)
-		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
 }
 
 void Mario::ApplyHorizontalMovement(float delta)
@@ -304,3 +279,4 @@ void Mario::ApplyFriction(float delta) {
 	if (Sign(velocity.x) == frictionDirX)
 		velocity.x = 0;
 }
+
