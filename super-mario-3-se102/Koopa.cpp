@@ -90,7 +90,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	Mario* mario = static_cast<Mario*>(data.who);
 	if (state.GetHandler() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
-			mario->SwitchState(&Mario::Bounce);
+			mario->Bounce();
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
 			position.y += Game::TILE_SIZE;
@@ -126,7 +126,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			return;
 		}
 
-		mario->SwitchState(&Mario::Bounce);
+		mario->Bounce();
 		SwitchState(&Koopa::ShellIdle);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		return;

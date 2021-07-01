@@ -120,7 +120,7 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
 	Mario* mario = static_cast<Mario*>(data.who);
 	if (data.edge.y == 1.0f) {
-		mario->SwitchState(&Mario::Bounce);
+		mario->Bounce();
 		SwitchState(&ParaKoopa::StompedOn);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);

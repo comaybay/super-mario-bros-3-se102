@@ -50,6 +50,11 @@ Event<>& Mario::GetRestartPointUpEvent()
 	return restartPointUp;
 }
 
+void Entities::Mario::Bounce()
+{
+	SwitchState(&Mario::Bounce);
+}
+
 void Mario::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();

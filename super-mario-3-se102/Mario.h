@@ -39,6 +39,9 @@ namespace Entities {
 		/// </summary>
 		Event<>& GetRestartPointUpEvent();
 
+		void Bounce();
+
+	protected:
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
 		void Walk(float delta);
@@ -47,7 +50,6 @@ namespace Entities {
 		void Fall(float delta);
 		void Bounce(float delta);
 
-	protected:
 		void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();
 		void UnsubscribeToCollisionEngine();
