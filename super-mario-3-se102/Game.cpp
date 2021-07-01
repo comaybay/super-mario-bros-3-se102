@@ -36,8 +36,7 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	Game::gameSettings.maxFPS = Utils::Clip(gameSettings.maxFPS, 20, 120);
 	Game::windowHandle = hWnd;
 
-	//if (gameSettings.)
-	toPositionRelativeToCamera = &Game::ToPixelPerfectPosition;
+	toPositionRelativeToCamera = (gameSettings.pixelPerfectRendering) ? &Game::ToPixelPerfectPosition : &Game::ToPrecisePosition;
 
 	d3d = Direct3DCreate9(D3D_SDK_VERSION);
 
