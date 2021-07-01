@@ -8,27 +8,71 @@
 
 #include "Game.h"
 #include "Utils.h"
-#include "ResourceLoader.h"
+#include "ProcessingUtils.h"
+using namespace ProcessingUtils;
 
-HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int ScreenHeight);
+GameSettings ParseGameSettings();
+HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, Utils::Dimension screenDim);
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_  HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow)
 {
-	Utils::Dimension gameDim;
-	int scale;
-	int maxFPS;
-	std::string dataDir;
-	ResourceLoader("data").GetGameSettings(gameDim, scale, maxFPS, dataDir);
-	HWND gameWindowHandler = CreateGameWindow(hInst, cmdshow, gameDim.width * scale, gameDim.height * scale);
+	GameSettings gameSettings = ParseGameSettings();
+	HWND gameWindowHandler = CreateGameWindow(hInst, cmdshow, gameSettings.gameDimension * gameSettings.pixelScale);
 
-	Game::Init(gameWindowHandler, gameDim, scale, maxFPS, dataDir);
+	Game::Init(gameWindowHandler, gameSettings);
 	Game::Run();
 
 	return 0;
 }
 
-HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int screenWidth, int screenHeight)
+GameSettings ParseGameSettings()
+{
+	std::ifstream file("data/config.txt");
+
+	std::string line = "";
+	while (line != "EOF") {
+		line = GetNextNonCommentLine(file);
+		if (line[0] != '[' || line != "[GAME SETTINGS]")
+			continue;
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> dimTokens = SplitByComma(line);
+		if (dimTokens.size() != 2)
+			throw InvalidTokenSizeException(2);
+
+		Utils::Dimension gameDimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> scaleToken = SplitByComma(line);
+		if (scaleToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		int pixelScale = stoi(scaleToken[0]);
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> fpsToken = SplitByComma(line);
+		if (fpsToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		int maxFPS = stoi(fpsToken[0]);
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> dirToken = SplitByComma(line);
+		if (dirToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		std::string dataDirectory = dirToken[0];
+
+		file.close();
+		return GameSettings(gameDimension, pixelScale, maxFPS, dataDirectory);
+	}
+
+	file.close();
+	throw std::exception("GetGameSettings Failed: missing [GAME SETTINGS] section");
+}
+
+HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, Utils::Dimension screenDim)
 {
 	WNDCLASSEX wc{};
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -51,7 +95,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int screenWidth, int sc
 	//CreateWindow() nWidth and nHeight take into account window's title bar and borders
 	//use AdjustWindowRect to calculate the overall dimension:
 	//taken from https://stackoverflow.com/questions/11783086/get-exact-window-region-size-createwindow-window-size-isnt-correct-size-of-wi
-	RECT rect{ 0, 0, screenWidth, screenHeight };
+	RECT rect{ 0, 0, screenDim.width, screenDim.height };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	HWND hWnd =
 		CreateWindow(

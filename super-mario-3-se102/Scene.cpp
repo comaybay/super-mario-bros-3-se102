@@ -74,10 +74,10 @@ void Scene::Update(float delta)
 
 CellRange Scene::GetCellRangeAroundCamera() {
 	Vector2<float> camPos = GetCameraPosition();
-	Dimension dim = Game::GetGameDimension();
+	Dimension dim = Game::GetGameSettings().gameDimension;
 
 	//add margin
-	int marginSize = Game::GetGameDimension().width / 4;
+	int marginSize = dim.width / 4;
 	camPos = camPos - Vector2<float>(marginSize, marginSize);
 	dim.width += marginSize;
 	dim.height += marginSize;
@@ -187,7 +187,6 @@ void Scene::_Ready()
 
 const Dimension& Scene::GetWorldDimension()
 {
-	int scale = Game::GetScale();
 	return Utils::Dimension(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
 }
 
@@ -220,7 +219,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 	Utils::Vector2<int> cp = camera.GetPosition().Rounded();
 	Utils::Vector2<float> tileOffset(cp.x / Game::TILE_SIZE, cp.y / Game::TILE_SIZE);
 
-	Utils::Dimension gameDim = Game::GetGameDimension();
+	Utils::Dimension gameDim = Game::GetGameSettings().gameDimension;
 
 	//tiles need for rendering, +1 for seemless display when camera move
 	Utils::Dimension tileRange(

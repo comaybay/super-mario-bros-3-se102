@@ -13,6 +13,8 @@ namespace Utils
 		Dimension();
 		Dimension(float width, float height);
 		Dimension operator/(float value) const;
+		Dimension operator*(int value) const;
+		Dimension operator*(float value) const;
 		Dimension operator+(const Dimension& other) const;
 		Dimension Rounded();
 	};

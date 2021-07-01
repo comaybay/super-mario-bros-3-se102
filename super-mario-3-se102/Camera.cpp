@@ -25,7 +25,7 @@ void Camera::Update()
 		return;
 
 	Dimension worldDim = parentScene->GetWorldDimension();
-	Dimension gameDim = Game::GetGameDimension();
+	Dimension gameDim = Game::GetGameSettings().gameDimension;
 	Dimension targetDim = target->GetCurrentSpriteDimension();
 	Vector2<float> targetPos = target->GetPosition();
 

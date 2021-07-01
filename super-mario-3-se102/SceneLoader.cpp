@@ -76,7 +76,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 		}
 	}
 	file.close();
-	std::string absPrevScenePath = (prevScenePath == "None") ? "" : JoinPath(Game::GetDataDirectory(), prevScenePath);
+	std::string absPrevScenePath = (prevScenePath == "None") ? "" : JoinPath(Game::GetGameSettings().dataDirectory, prevScenePath);
 	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, absPrevScenePath);
 	scene->_Ready();
 	return scene;
@@ -279,7 +279,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			Vector2<int> cellIndex(stoi(nodeTokens[8]), stoi(nodeTokens[9]));
 
 			LPWMNode node = nodeById[nodeId];
-			node->_Init(pos, JoinPath(Game::GetDataDirectory(), scenePath), topNode, leftNode, bottomNode, rightNode);
+			node->_Init(pos, JoinPath(Game::GetGameSettings().dataDirectory, scenePath), topNode, leftNode, bottomNode, rightNode);
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
 

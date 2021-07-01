@@ -39,7 +39,6 @@ void Animation::Render(Vector2<float> position)
 	SpriteBox sb = sequence[currentFrame];
 	Vector2<int> cp = Game::GetActiveScene()->GetCameraPosition().Rounded();
 	D3DXVECTOR3 p(round(position.x + sb.offset.x) - cp.x, round(position.y + sb.offset.y) - cp.y, 0);
-
 	Game::GetD3DXSprite()->Draw(texture, &sb.rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 }
 

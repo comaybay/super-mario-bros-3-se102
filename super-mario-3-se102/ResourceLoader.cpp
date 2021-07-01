@@ -11,52 +11,6 @@ using namespace Utils;
 ResourceLoader::ResourceLoader(const std::string& rootDirectory)
 	: root(rootDirectory) {}
 
-void ResourceLoader::GetGameSettings(Dimension& gameDimension, int& pixelScale, int& maxFPS, std::string& dataDirectory) const
-{
-	std::string configPath = JoinPath(root, "/config.txt");
-	std::ifstream file(configPath);
-
-	std::string line = "";
-	while (line != "EOF") {
-		line = GetNextNonCommentLine(file);
-		if (line[0] != '[' || line != "[GAME SETTINGS]")
-			continue;
-
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> dimTokens = SplitByComma(line);
-		if (dimTokens.size() != 2)
-			throw InvalidTokenSizeException(2);
-
-		gameDimension = Dimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
-
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> scaleToken = SplitByComma(line);
-		if (scaleToken.size() != 1)
-			throw InvalidTokenSizeException(1);
-
-		pixelScale = stoi(scaleToken[0]);
-
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> fpsToken = SplitByComma(line);
-		if (fpsToken.size() != 1)
-			throw InvalidTokenSizeException(1);
-
-		maxFPS = stoi(fpsToken[0]);
-
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> dirToken = SplitByComma(line);
-		if (dirToken.size() != 1)
-			throw InvalidTokenSizeException(1);
-
-		dataDirectory = dirToken[0];
-
-		file.close();
-		return;
-	}
-
-	file.close();
-	throw std::exception("GetGameSettings Failed: missing [GAME SETTINGS] section");
-}
 
 void ResourceLoader::Load() const
 {

@@ -11,11 +11,8 @@
 #include "ResourceLoader.h"
 #include "SceneLoader.h"
 
-std::string Game::dataDir;
+GameSettings Game::gameSettings;
 HWND Game::windowHandle;
-Utils::Dimension Game::gameDim;
-int Game::maxFPS;
-int Game::scale;
 D3DXMATRIX Game::scaleMatrix;
 LPDIRECT3D9 Game::d3d;
 LPDIRECT3DDEVICE9 Game::d3ddv;
@@ -31,13 +28,11 @@ LPScene Game::newActiveScene = nullptr;
 LPScene Game::waitForDeletionScene = nullptr;
 bool Game::enableCollisionEngine = true;
 
-void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int maxFPS, const std::string& dataDirectory)
+void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 {
-	Game::dataDir = dataDirectory;
-	Game::maxFPS = Utils::Clip(maxFPS, 20, 120);
+	Game::gameSettings = gameSettings;
+	Game::gameSettings.maxFPS = Utils::Clip(gameSettings.maxFPS, 20, 120);
 	Game::windowHandle = hWnd;
-	Game::scale = scale;
-	Game::gameDim = gameDim;
 
 	d3d = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -58,6 +53,7 @@ void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int max
 	didv->Acquire();
 
 	//used for rendering
+	float scale = gameSettings.pixelScale;
 	Game::scaleMatrix = {
 		scale,           0.0f,            0.0f,            0.0f,
 		0.0f,            scale,           0.0f,            0.0f,
@@ -67,10 +63,9 @@ void Game::Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int max
 	D3DXCreateSprite(d3ddv, &d3dxSprite);
 	d3dxSprite->SetTransform(&scaleMatrix);
 
-	ResourceLoader(dataDirectory).Load();
+	ResourceLoader(gameSettings.dataDirectory).Load();
 
 	//TODO: remove test code
-
 	activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
 	//activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
 	CollisionEngine::_SetActiveCED(activeScene);
@@ -150,6 +145,16 @@ LPDIRECTINPUTDEVICE8 Game::CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND hWnd,
 	return didv;
 }
 
+LPDIRECT3D9 Game::GetD3D9() { return d3d; };
+LPDIRECT3DDEVICE9 Game::GetDirect3DDevice() { return d3ddv; };
+LPDIRECT3DSURFACE9 Game::GetBackBuffer() { return backBuffer; };
+LPD3DXSPRITE Game::GetD3DXSprite() { return d3dxSprite; };
+
+LPScene Game::GetActiveScene() {
+	return activeScene;
+}
+
+
 void Game::EnableCollisionEngine(bool state) {
 	enableCollisionEngine = state;
 }
@@ -172,31 +177,16 @@ void Game::QueueFreeAndSwitchScene(std::string scenePath)
 	catch (std::exception e) {}
 }
 
-int Game::GetScale()
-{
-	return scale;
+const GameSettings& Game::GetGameSettings() {
+	return gameSettings;
 }
 
-const Utils::Dimension& Game::GetGameDimension()
-{
-	return gameDim;
-}
-
-const LPScene Game::GetActiveScene()
-{
-	return activeScene;
-}
-
-const std::string& Game::GetDataDirectory()
-{
-	return dataDir;
-}
 
 void Game::Run()
 {
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
-	const int smallFrameTime = round(1000.0f / maxFPS);
-	const float smallDt = 1.0f / maxFPS;
+	const int smallFrameTime = round(1000.0f / gameSettings.maxFPS);
+	const float smallDt = 1.0f / gameSettings.maxFPS;
 
 	//long frame time and long delta is used when game is lag (longest delta value for processing the game)
 	const int longFrameTime = 1000.0f / 20.0f;

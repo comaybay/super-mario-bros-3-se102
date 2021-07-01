@@ -139,7 +139,7 @@ const std::unordered_set<LPEntity>& EntityManager::GetNonGridEntities()
 
 CellRange EntityManager::GetCellRangeAroundCamera() {
 	Vector2<float> camPos = parentScene->GetCameraPosition();
-	Dimension dim = Game::GetGameDimension();
+	Dimension dim = Game::GetGameSettings().gameDimension;
 
 	//add margin
 	int marginSize = 16 * 1;

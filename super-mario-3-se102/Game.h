@@ -5,21 +5,19 @@
 #include <windows.h>
 #include <d3dx9.h>
 #include <dinput.h>
-#include "Utils.h"
+#include "GameSettings.h"
 #include "Scene.h"
 
 class Game
 {
 public:
-	static void Init(HWND hWnd, const Utils::Dimension& gameDim, float scale, int maxFPS, const std::string& dataDirectory);
-	static LPDIRECT3D9 GetD3D9() { return d3d; };
-	static LPDIRECT3DDEVICE9 GetDirect3DDevice() { return d3ddv; };
-	static LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; };
-	static LPD3DXSPRITE GetD3DXSprite() { return d3dxSprite; };
-	static int GetScale();
-	static const Utils::Dimension& GetGameDimension();
-	static const LPScene GetActiveScene();
-	static const std::string& GetDataDirectory();
+	static void Init(HWND hWnd, const GameSettings& gameSettings);
+	static const GameSettings& GetGameSettings();
+	static LPDIRECT3D9 GetD3D9();
+	static LPDIRECT3DDEVICE9 GetDirect3DDevice();
+	static LPDIRECT3DSURFACE9 GetBackBuffer();
+	static LPD3DXSPRITE GetD3DXSprite();
+	static LPScene GetActiveScene();
 	static void Run();
 	static void Release();
 	static void ProcessKeyboard();
@@ -36,10 +34,8 @@ public:
 private:
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
-	static std::string dataDir;
-	static Utils::Dimension gameDim;
-	static int scale;
-	static int maxFPS;
+
+	static GameSettings gameSettings;
 	static D3DXMATRIX scaleMatrix;
 	static HWND windowHandle;
 	static LPDIRECT3D9 d3d;

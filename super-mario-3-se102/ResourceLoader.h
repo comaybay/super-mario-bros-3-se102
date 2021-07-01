@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
-#include "Utils.h"
+#include "GameSettings.h"
 #include "Animation.h"
 
 class ResourceLoader
 {
 public:
 	ResourceLoader(const std::string& rootDirectory);
-	void GetGameSettings(Utils::Dimension& gameDimension, int& pixelScale, int& maxFPS, std::string& dataDirectory) const;
+	GameSettings GetGameSettings() const;
 	void Load() const;
 private:
 	void LoadTextures(const std::string& configPath) const;
