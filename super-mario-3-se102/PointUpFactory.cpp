@@ -36,11 +36,12 @@ PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 	return new PointUp(pos, pointUpTypes[index]);
 }
 
-void PointUpFactory::OnRestartPointUp(LPEntity player) {
+void PointUpFactory::OnRestartPointUp() {
 	index = -1;
 }
+void PointUpFactory::OnEntityDestroy(LPEntity _) {
 
-void PointUpFactory::OnEntityDestroy(LPEntity player) {
-	player = nullptr;
+	PointUpFactory::player = nullptr;
+	index = -1;
 }
 
