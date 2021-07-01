@@ -58,6 +58,13 @@ GameSettings ParseGameSettings()
 		int maxFPS = stoi(fpsToken[0]);
 
 		line = GetNextNonCommentLine(file);
+		std::vector<std::string> pprToken = SplitByComma(line);
+		if (pprToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		bool pixelPerfectRendering = (pprToken[0] == "True") ? true : false;
+
+		line = GetNextNonCommentLine(file);
 		std::vector<std::string> dirToken = SplitByComma(line);
 		if (dirToken.size() != 1)
 			throw InvalidTokenSizeException(1);
@@ -65,7 +72,7 @@ GameSettings ParseGameSettings()
 		std::string dataDirectory = dirToken[0];
 
 		file.close();
-		return GameSettings(gameDimension, pixelScale, maxFPS, dataDirectory);
+		return GameSettings(gameDimension, pixelScale, maxFPS, pixelPerfectRendering, dataDirectory);
 	}
 
 	file.close();

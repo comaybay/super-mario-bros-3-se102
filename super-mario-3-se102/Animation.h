@@ -11,12 +11,14 @@ class Animation
 {
 public:
 	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence);
-	virtual void Render(Utils::Vector2<float> position);
+	virtual void Render(const Utils::Vector2<float>& position);
 	virtual void Update(float delta);
-	SpriteBox GetCurrentSpriteBox();
 	void SetAnimationSpeed(float speed);
-	const std::string id;
+	const SpriteBox& GetCurrentSpriteBox();
+	const std::string& GetId();
+
 protected:
+	std::string id;
 	float animSpeed;
 	int currentFrame;
 	float frameDuration;

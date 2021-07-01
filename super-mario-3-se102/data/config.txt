@@ -2,7 +2,8 @@
 256, 240	#GamePixelDimension (Width, Height) (Standard display resolution of NES console is 256x240)
 3	#PixelScale (Window Resolution = GamePixelDimension * PixelScale)
 60	#Max FPS (Lowest = 20, Highest = 120)
-data	#DataDirectory
+True	#PixelPerfectRendering
+data/	#DataDirectory
 
 [TEXTURES]
 config/textures.txt

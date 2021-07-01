@@ -5,7 +5,7 @@ class EmptyAnimation : public Animation
 {
 public:
 	EmptyAnimation();
-	void Render(Utils::Vector2<float> position) override;
+	void Render(const Utils::Vector2<float>& position) override;
 	void Update(float delta) override;
 };
 

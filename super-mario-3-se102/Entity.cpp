@@ -94,7 +94,7 @@ LPScene Entity::GetParentScene()
 
 void Entity::SetAnimation(std::string id)
 {
-	if (id != animation->id) {
+	if (id != animation->GetId()) {
 		delete animation;
 		animation = AnimationManager::GetNew(id);
 	}

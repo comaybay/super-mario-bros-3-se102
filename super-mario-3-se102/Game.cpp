@@ -10,8 +10,10 @@
 #include <chrono>
 #include "ResourceLoader.h"
 #include "SceneLoader.h"
+using namespace Utils;
 
 GameSettings Game::gameSettings;
+Game::ToPositionRelativeToCameraHandler Game::toPositionRelativeToCamera;
 HWND Game::windowHandle;
 D3DXMATRIX Game::scaleMatrix;
 LPDIRECT3D9 Game::d3d;
@@ -33,6 +35,9 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	Game::gameSettings = gameSettings;
 	Game::gameSettings.maxFPS = Utils::Clip(gameSettings.maxFPS, 20, 120);
 	Game::windowHandle = hWnd;
+
+	//if (gameSettings.)
+	toPositionRelativeToCamera = &Game::ToPixelPerfectPosition;
 
 	d3d = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -150,10 +155,25 @@ LPDIRECT3DDEVICE9 Game::GetDirect3DDevice() { return d3ddv; };
 LPDIRECT3DSURFACE9 Game::GetBackBuffer() { return backBuffer; };
 LPD3DXSPRITE Game::GetD3DXSprite() { return d3dxSprite; };
 
+void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float>& position) {
+	Vector2<float> adjustedPos = toPositionRelativeToCamera(position);
+	D3DXVECTOR3 p(adjustedPos.x, adjustedPos.y, 0);
+
+	Game::GetD3DXSprite()->Draw(texure, &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
+}
+
+Vector2<float> Game::ToPixelPerfectPosition(const Vector2<float>& position) {
+	Vector2<int> roundedPos = position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
+	return Vector2<float>(roundedPos.x, roundedPos.y);
+}
+
+Vector2<float> Game::ToPrecisePosition(const Vector2<float>& position) {
+	return position - GetActiveScene()->GetCameraPosition();
+}
+
 LPScene Game::GetActiveScene() {
 	return activeScene;
 }
-
 
 void Game::EnableCollisionEngine(bool state) {
 	enableCollisionEngine = state;

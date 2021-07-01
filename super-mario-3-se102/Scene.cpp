@@ -235,11 +235,12 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 		for (int x = tileOffset.x; x < tileOffset.x + tileRange.width; x++) {
 			int index = (encodedWorld->*getIndex)(x, y);
 
-			//FFF = 4095, no tile
-			if (index != 4095) {
-				D3DXVECTOR3 p(round(x * Game::TILE_SIZE) - cp.x, round(y * Game::TILE_SIZE) - cp.y, 0);
+			//0xFFF means no tile
+			if (index != 0xFFF) {
+				LPDIRECT3DTEXTURE9 texure = TextureManager::Get(encodedWorld->GetTextureId());
 				RECT rect = GetTileBoundingBox(index);
-				Game::GetD3DXSprite()->Draw(TextureManager::Get(encodedWorld->GetTextureId()), &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
+				Vector2<float> renderPos(x * Game::TILE_SIZE, y * Game::TILE_SIZE);
+				Game::Draw(texure, rect, renderPos);
 			}
 		}
 	}

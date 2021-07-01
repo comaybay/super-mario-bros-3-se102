@@ -18,6 +18,7 @@ public:
 	static LPDIRECT3DSURFACE9 GetBackBuffer();
 	static LPD3DXSPRITE GetD3DXSprite();
 	static LPScene GetActiveScene();
+	static void Draw(LPDIRECT3DTEXTURE9 texure, const RECT& boundingBox, const Utils::Vector2<float>& position);
 	static void Run();
 	static void Release();
 	static void ProcessKeyboard();
@@ -32,6 +33,11 @@ public:
 	static void EnableCollisionEngine(bool state);
 	static const int TILE_SIZE = 16;
 private:
+	typedef Utils::Vector2<float>(*ToPositionRelativeToCameraHandler)(const Utils::Vector2<float>&);
+	static ToPositionRelativeToCameraHandler toPositionRelativeToCamera;
+	static Utils::Vector2<float> ToPixelPerfectPosition(const Utils::Vector2<float>& position);
+	static Utils::Vector2<float> ToPrecisePosition(const Utils::Vector2<float>& position);
+
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 
