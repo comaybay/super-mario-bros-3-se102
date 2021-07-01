@@ -10,26 +10,39 @@ using namespace Utils;
 
 Entity::Entity(
 	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-	const std::vector<std::string>& entityGroups, GridType gridType
-)
-	: position(position),
+	const std::vector<std::string>& entityGroups, GridType gridType, bool isRenderedBeforeWorld) :
+	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
 	groups(entityGroups),
-	gridType(gridType)
+	gridType(gridType),
+	isRenderedBeforeWorld(isRenderedBeforeWorld)
 {
 	Init();
 }
 
 Entity::Entity(
 	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-	const std::string& entityGroup, GridType gridType
-) :
+	const std::vector<std::string>& entityGroups, GridType gridType) :
+	position(position),
+	animation(AnimationManager::GetNew(initialAnimation)),
+	hitbox(HitboxManager::Get(hitbox)),
+	groups(entityGroups),
+	gridType(gridType),
+	isRenderedBeforeWorld(false)
+{
+	Init();
+}
+
+Entity::Entity(
+	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+	const std::string& entityGroup, GridType gridType) :
 	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
 	groups(std::vector<std::string> {entityGroup}),
-	gridType(gridType)
+	gridType(gridType),
+	isRenderedBeforeWorld(false)
 {
 	Init();
 }
@@ -39,7 +52,8 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::vector<std::str
 	animation(AnimationManager::GetNew(AnimationId::NONE)),
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
 	groups(entityGroups),
-	gridType(gridType)
+	gridType(gridType),
+	isRenderedBeforeWorld(false)
 {
 	Init();
 }
@@ -49,7 +63,8 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityG
 	animation(AnimationManager::GetNew(AnimationId::NONE)),
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
 	groups(std::vector<std::string> {entityGroup}),
-	gridType(gridType)
+	gridType(gridType),
+	isRenderedBeforeWorld(false)
 {
 	Init();
 }
@@ -157,6 +172,11 @@ void Entity::Render()
 Event<LPEntity>& Entity::GetDestroyEvent()
 {
 	return *destroyEvent;
+}
+
+bool Entity::_IsRenderedBeforeWorld()
+{
+	return isRenderedBeforeWorld;
 }
 
 const std::vector<std::string>& Entity::GetEntityGroups()

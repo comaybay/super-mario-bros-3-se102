@@ -87,6 +87,8 @@ CellRange Scene::GetCellRangeAroundCamera() {
 
 void Scene::Render()
 {
+	GetRenderEntities(entitiesRenderedBeforeWorld, entitiesRenderedrAfterWorld);
+
 	LPDIRECT3DDEVICE9 d3ddv = Game::GetDirect3DDevice();
 	if (d3ddv->BeginScene() == S_OK)
 	{
@@ -101,11 +103,13 @@ void Scene::Render()
 		d3ddv->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
 		d3ddv->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
 
+		for (LPEntity entity : entitiesRenderedBeforeWorld)
+			entity->Render();
+
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
-		RenderEntitiesInGrids();
-		for (LPEntity entity : entityManager->GetNonGridEntities())
+		for (LPEntity entity : entitiesRenderedrAfterWorld)
 			entity->Render();
 
 		d3dxSprite->End();
@@ -116,17 +120,27 @@ void Scene::Render()
 	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 
-void Scene::RenderEntitiesInGrids()
-{
-	CellRange range = GetCellRangeAroundCamera();
-	auto renderEntity = [](LPEntity entity) { entity->Render(); };
 
-	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, renderEntity);
+void Scene::GetRenderEntities(std::unordered_set<LPEntity>& entitiesRenderedBeforeWorld, std::unordered_set<LPEntity>& entitiesRenderedrAfterWorld) {
+	auto addByRenderOrder = [&entitiesRenderedBeforeWorld, &entitiesRenderedrAfterWorld](LPEntity entity) {
+		if (entity->_IsRenderedBeforeWorld())
+			entitiesRenderedBeforeWorld.insert(entity);
+		else
+			entitiesRenderedrAfterWorld.insert(entity);
+	};
+
+	CellRange range = GetCellRangeAroundCamera();
+	entitiesRenderedBeforeWorld.clear();
+	entitiesRenderedrAfterWorld.clear();
+
+	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, addByRenderOrder);
 
 	if (renderMovablesInSPGridEnabled)
-		entityManager->GetGrid(GridType::MOVABLE_ENTITIES)->ForEachEntityIn(range, renderEntity);
-}
+		entityManager->GetGrid(GridType::MOVABLE_ENTITIES)->ForEachEntityIn(range, addByRenderOrder);
 
+	for (LPEntity entity : entityManager->GetNonGridEntities())
+		addByRenderOrder(entity);
+}
 
 void Scene::AddEntity(LPEntity entity)
 {

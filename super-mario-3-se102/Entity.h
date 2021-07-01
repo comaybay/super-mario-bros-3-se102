@@ -20,6 +20,10 @@ class Entity
 public:
 	Entity(
 		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
+		const std::vector<std::string>& entityGroups, GridType gridType, bool isRenderedBeforeWorld
+	);
+	Entity(
+		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
 		const std::vector<std::string>& entityGroups, GridType gridType
 	);
 	Entity(
@@ -48,6 +52,11 @@ public:
 	/// </summary>
 	void _SetParentScene(LPScene scene);
 
+	/// <summary>
+	/// Used internaly by Scene to see if entity want to render before or after world.
+	/// </summary>
+	/// <returns></returns>
+	bool _IsRenderedBeforeWorld();
 
 	/// <summary>
 	/// Used internaly by CollisionEngine to see if entity want to detect collision.
@@ -86,6 +95,7 @@ protected:
 private:
 	void Init();
 	std::string id;
+	bool isRenderedBeforeWorld;
 	bool enabledForCollisionDetection;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;

@@ -111,9 +111,6 @@
     <ClCompile Include="GridType.cpp">
       <Filter>Source Files\SpatialGrid</Filter>
     </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Group.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -189,9 +186,6 @@
     <ClCompile Include="WMBush.cpp">
       <Filter>Source Files\Entities\WorldMap</Filter>
     </ClCompile>
-    <ClCompile Include="WMMario.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WMHelpBubble.cpp">
       <Filter>Source Files\Entities\WorldMap</Filter>
     </ClCompile>
@@ -200,6 +194,12 @@
     </ClCompile>
     <ClCompile Include="MarioSmall.cpp">
       <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="WMMario.cpp">
+      <Filter>Source Files\Entities\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
