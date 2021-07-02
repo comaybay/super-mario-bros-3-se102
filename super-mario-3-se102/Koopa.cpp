@@ -110,7 +110,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
 
 		else {
-			bool isPlayerOnLeftSide = (position.x < mario->GetPosition().x + GetCurrentSpriteDimension().width / 2);
+			bool isPlayerOnLeftSide = (mario->GetPosition().x < position.x + GetCurrentSpriteDimension().width / 2);
 			float direction = isPlayerOnLeftSide ? 1.0f : -1.0f;
 			velocity.x = SHELL_SLIDE_SPEED * direction;
 			parentScene->AddEntity(PointUpFactory::Create(position));
