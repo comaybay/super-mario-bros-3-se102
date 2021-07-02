@@ -25,12 +25,13 @@ namespace Entities {
 
 		std::string colorCode;
 		EntityState<Koopa> state;
-		Utils::Vector2<float> prevPosition;
+		Utils::Vector2<float> prevOnGroundPosition;
 		bool onGround;
 		bool lock;
 	public:
 		static const float WALK_SPEED;
 		static const float SHELL_SLIDE_SPEED;
+		static const float SHELL_SLIDE_FALL_SPEED;
 		static const float FRICTION;
 	};
 }

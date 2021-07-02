@@ -13,7 +13,8 @@ using namespace Entities;
 using namespace Utils;
 
 const float Koopa::WALK_SPEED = 30;
-const float Koopa::SHELL_SLIDE_SPEED = 240;
+const float Koopa::SHELL_SLIDE_SPEED = 180;
+const float Koopa::SHELL_SLIDE_FALL_SPEED = 1850;
 const float Koopa::FRICTION = 2600;
 
 Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
@@ -135,6 +136,9 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 
 void Koopa::HandleWallCollision(const CollisionData& data)
 {
+	//get position before affected by collision handling
+	prevOnGroundPosition = position;
+
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
@@ -169,12 +173,15 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 void Koopa::Update(float delta)
 {
 	Entity::Update(delta);
-
 	state.Handle(delta);
-	prevPosition = position;
 
-	velocity.y += EntityConstants::GRAVITY * delta;
+	if (state.GetHandler() == &Koopa::ShellSlide)
+		velocity.y += Koopa::SHELL_SLIDE_FALL_SPEED * delta;
+	else
+		velocity.y += EntityConstants::GRAVITY * delta;
+
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+
 	onGround = false;
 }
 
@@ -198,14 +205,16 @@ void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
 
 void Koopa::MoveAround(float delta)
 {
-	if (!onGround && !lock) {
-		lock = true;
-		//revert to previous position (before falling) and change direction
-		velocity = { -velocity.x , 0 };
-		position = prevPosition + velocity * delta;
-		std::string anim = (Sign(velocity.x) < 0) ? "KoopaML" : "KoopaMR";
-		SetAnimation(colorCode + anim);
-	}
+	if (onGround || lock)
+		return;
+
+	lock = true;
+	//revert to previous position (before falling) and change direction
+	velocity = { -velocity.x , 0 };
+	position = prevOnGroundPosition;
+
+	std::string anim = (Sign(velocity.x) < 0) ? "KoopaML" : "KoopaMR";
+	SetAnimation(colorCode + anim);
 }
 
 void Koopa::ShellIdle(float delta)
