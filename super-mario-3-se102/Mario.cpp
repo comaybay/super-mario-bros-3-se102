@@ -50,9 +50,9 @@ Event<>& Mario::GetRestartPointUpEvent()
 	return restartPointUp;
 }
 
-void Entities::Mario::Bounce()
+void Mario::Bounce()
 {
-	SwitchState(&Mario::Bounce);
+	SwitchState(&Mario::BounceUp);
 }
 
 void Mario::OnCollision(CollisionData data)
@@ -123,7 +123,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 		dir.y = 1;
 	}
 
-	else if (stateHandler == &Mario::Bounce)
+	else if (stateHandler == &Mario::BounceUp)
 		velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
 }
 
@@ -224,7 +224,7 @@ void Mario::Jump(float delta)
 	}
 }
 
-void Mario::Bounce(float delta)
+void Mario::BounceUp(float delta)
 {
 	//same as fall
 	Fall(delta);

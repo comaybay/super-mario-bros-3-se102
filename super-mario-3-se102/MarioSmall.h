@@ -8,6 +8,8 @@ namespace Entities {
 		MarioSmall(Utils::Vector2<float> position);
 		void TakeDamage() override;
 		void Update(float delta) override;
+		void OnCollision(CollisionData data) override;
+
 	private:
 		void Die(float delta);
 		void DieFall(float delta);

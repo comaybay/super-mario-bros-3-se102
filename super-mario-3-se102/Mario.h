@@ -48,9 +48,9 @@ namespace Entities {
 		void Run(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
-		void Bounce(float delta);
+		void BounceUp(float delta);
 
-		void OnCollision(CollisionData data);
+		virtual void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();
 		void UnsubscribeToCollisionEngine();
 

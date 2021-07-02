@@ -27,16 +27,18 @@ void MarioSmall::TakeDamage()
 
 void MarioSmall::Update(float delta)
 {
-	Entity::Update(delta);
-
-	UpdateHorizontalDirection();
-
-	if (died)
+	if (died) {
+		Entity::Update(delta);
 		smallMarioState.Handle(delta);
+	}
 	else
-		marioState.Handle(delta);
+		Mario::Update(delta);
+}
 
-	onGround = false;
+void MarioSmall::OnCollision(CollisionData data)
+{
+	if (!died)
+		Mario::OnCollision(data);
 }
 
 
