@@ -1,4 +1,5 @@
 #include "Brick.h"
+#include "EmptyBlock.h"
 #include "Koopa.h"
 #include "Group.h"
 #include "Scene.h"
@@ -41,8 +42,11 @@ void Brick::OnCollision(CollisionData data)
 
 void Brick::ExposeContent()
 {
-	parentScene->QueueFree(this);
-	if (content != nullptr)
+	if (content != nullptr) {
 		parentScene->AddEntity(content);
-	content = nullptr;
+		parentScene->AddEntity(new EmptyBlock(position));
+		content = nullptr;
+	}
+
+	parentScene->QueueFree(this);
 }

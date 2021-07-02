@@ -1,4 +1,5 @@
 #include "QuestionBlock.h"
+#include "EmptyBlock.h"
 #include "Koopa.h"
 #include "Group.h"
 #include "EntityManager.h"
@@ -45,10 +46,13 @@ void QuestionBlock::OnCollision(CollisionData data)
 
 void QuestionBlock::ExposeContent()
 {
-	parentScene->QueueFree(this);
-	if (content != nullptr)
+	if (content != nullptr) {
 		parentScene->AddEntity(content);
-	content = nullptr;
+		content = nullptr;
+	}
+
+	parentScene->QueueFree(this);
+	parentScene->AddEntity(new EmptyBlock(position));
 }
 
 

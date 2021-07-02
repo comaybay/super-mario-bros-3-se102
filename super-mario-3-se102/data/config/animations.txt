@@ -102,6 +102,11 @@ QuestionBlockNormal, Fixed, 0.14, Auto
 Tiles
 1140, 1, 16, 16, 1, 4 
 
+##EmptyBlock##
+EmptyBlock, Normal, -1, Manual
+Tiles
+1208, 1, 1223, 16
+
 ##Brick##====================================
 BrickNormal, Fixed, 0.14, Auto
 Tiles
