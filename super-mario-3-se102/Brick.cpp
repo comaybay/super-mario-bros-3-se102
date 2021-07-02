@@ -32,7 +32,7 @@ void Brick::OnCollision(CollisionData data)
 
 	if (Contains(std::string("Koopas"), groups)) {
 		Koopa* koopa = static_cast<Koopa*>(data.who);
-		if (koopa->IsSliding())
+		if (data.edge.x != 0 && koopa->IsSliding())
 			ExposeContent();
 
 		return;
