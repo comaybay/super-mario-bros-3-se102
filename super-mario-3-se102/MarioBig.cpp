@@ -9,7 +9,7 @@ const Mario::AnimationSet MarioBig::animationSet = Mario::AnimationSet(
 );
 
 MarioBig::MarioBig(const Utils::Vector2<float>& position)
-	: Mario(position, animationSet)
+	: Mario(position, animationSet, PlayerPowerLevel::BIG)
 {
 }
 

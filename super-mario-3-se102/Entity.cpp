@@ -110,6 +110,11 @@ Vector2<float> Entity::GetPosition()
 	return position;
 }
 
+Vector2<float> Entity::GetVelocity()
+{
+	return velocity;
+}
+
 void Entity::SetPosition(const Vector2<float>& position)
 {
 	this->position = position;

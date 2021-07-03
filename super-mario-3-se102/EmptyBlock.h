@@ -1,6 +1,6 @@
 #include "Entity.h"
+#include "BlockHitMovement.h"
 #include "EntityState.h"
-#include "Utils.h"
 
 namespace Entities {
 	class EmptyBlock : public Entity {
@@ -13,8 +13,6 @@ namespace Entities {
 		void HitAnimation(float delta);
 
 		EntityState<EmptyBlock> state;
-		Utils::Vector2<float> initialPos;
-		static const float UP_SPEED;
-		static const float FALL_SPEED;
+		LPBlockHitMovement blockHitMovement;
 	};
 }

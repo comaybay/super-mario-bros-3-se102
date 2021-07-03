@@ -36,6 +36,7 @@ public:
 	void SetAnimation(std::string id);
 	void SetHitbox(std::string id);
 	Utils::Vector2<float> GetPosition();
+	Utils::Vector2<float> GetVelocity();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
 	void SetEnabledForCollisionDetection(bool enabled);

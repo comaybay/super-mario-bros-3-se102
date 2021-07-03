@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Entities\World">
       <UniqueIdentifier>{1dc76b07-2817-4d03-aaf0-4a05469130d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Movements">
+      <UniqueIdentifier>{1f86aa10-4acb-4ced-baa1-5e17db5836c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -206,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="EmptyBlock.cpp">
       <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockHitMovement.cpp">
+      <Filter>Source Files\Movements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -378,6 +384,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EmptyBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockHitMovement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

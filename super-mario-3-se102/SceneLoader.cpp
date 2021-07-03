@@ -349,9 +349,9 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(5);
 
 	//TODO: REMOVE TEST CODE
-	LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	//LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 
-	return new Entities::QuestionBlock(content, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::QuestionBlock(nullptr, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)

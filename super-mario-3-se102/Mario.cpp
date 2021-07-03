@@ -28,9 +28,10 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5;
 
-Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet) :
+Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet, PlayerPowerLevel powerLevel) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
 	animationSet(animationSet),
+	powerLevel(powerLevel),
 	marioState(EntityState<Mario>(this, &Mario::Idle)),
 	lastPressedKeyHorizontal(DIK_RIGHT),
 	dir(Vector2<float>(0, 1)),
@@ -106,6 +107,11 @@ void Mario::Update(float delta) {
 	marioState.Handle(delta);
 
 	onGround = false;
+}
+
+PlayerPowerLevel Entities::Mario::GetPowerLevel()
+{
+	return powerLevel;
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {

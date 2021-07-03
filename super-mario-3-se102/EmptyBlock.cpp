@@ -3,10 +3,6 @@
 #include "Group.h"
 using namespace Entities;
 
-const float EmptyBlock::UP_SPEED = 250;
-const float EmptyBlock::FALL_SPEED = EntityConstants::GRAVITY * 3;
-
-
 EmptyBlock::EmptyBlock(const Utils::Vector2<float>& position)
 	: Entity::Entity(
 		position,
@@ -15,10 +11,9 @@ EmptyBlock::EmptyBlock(const Utils::Vector2<float>& position)
 		{ "EmptyBlocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
-	state(EntityState<EmptyBlock>(this, &EmptyBlock::HitAnimation))
+	state(EntityState<EmptyBlock>(this, &EmptyBlock::HitAnimation)),
+	blockHitMovement(new BlockHitMovement(this, position))
 {
-	initialPos = position;
-	velocity.y = -UP_SPEED;
 }
 
 void EmptyBlock::Update(float delta)
@@ -28,12 +23,10 @@ void EmptyBlock::Update(float delta)
 }
 
 void EmptyBlock::HitAnimation(float delta) {
-	velocity.y += FALL_SPEED * delta;
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
-
-	if (position.y > initialPos.y) {
-		velocity = { 0, 0 };
-		position = initialPos;
+	bool done = blockHitMovement->Update(delta);
+	if (done) {
+		delete blockHitMovement;
+		blockHitMovement = nullptr;
 		state.SetHandler(&EmptyBlock::Idle);
 	}
 }

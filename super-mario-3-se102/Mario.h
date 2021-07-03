@@ -1,8 +1,7 @@
 #pragma once
-#include "Entity.h"
-#include "Utils.h"
 #include "CollisionEngine.h"
 #include "EntityState.h"
+#include "PlayerPowerLevel.h"
 
 namespace Entities {
 	class Mario : public Entity {
@@ -30,9 +29,10 @@ namespace Entities {
 
 		virtual void TakeDamage() = 0;
 
-		Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet);
+		Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet, PlayerPowerLevel powerLevel);
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		PlayerPowerLevel GetPowerLevel();
 
 		/// <summary>
 		/// Event will notify when mario jump (meaning point up combo need to restart)
@@ -63,6 +63,7 @@ namespace Entities {
 		bool onGround;
 		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
+		PlayerPowerLevel powerLevel;
 		static const float MAX_FALL_SPEED;
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;

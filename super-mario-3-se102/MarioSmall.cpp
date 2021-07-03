@@ -7,7 +7,7 @@ const Mario::AnimationSet MarioSmall::animationSet = Mario::AnimationSet(
 );
 
 MarioSmall::MarioSmall(Utils::Vector2<float> position)
-	: Mario(position, animationSet),
+	: Mario(position, animationSet, PlayerPowerLevel::SMALL),
 	smallMarioState(this),
 	died(false)
 {

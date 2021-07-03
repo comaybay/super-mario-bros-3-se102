@@ -3,6 +3,7 @@
 #include "Koopa.h"
 #include "Group.h"
 #include "Scene.h"
+#include "Mario.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -14,7 +15,9 @@ Brick::Brick(LPEntity content, const Utils::Vector2<float>& position)
 		{ "Bricks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
-	content(content)
+	content(content),
+	state(EntityState<Brick>(this, &Brick::Idle)),
+	blockHitMovement(this, position)
 {
 }
 
@@ -22,12 +25,34 @@ void Brick::OnReady() {
 	CollisionEngine::Subscribe(this, &Brick::OnCollision, { Group::PLAYER, "Koopas" });
 }
 
+void Brick::Update(float delta)
+{
+	Entity::Update(delta);
+	state.Handle(delta);
+}
+
+void Brick::Idle(float delta) {
+}
+
+void Brick::Hit(float delta) {
+	bool done = blockHitMovement.Update(delta);
+	if (done) {
+		state.SetHandler(&Brick::Idle);
+		blockHitMovement.Reset();
+	}
+}
+
 
 void Brick::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
-		ExposeContent();
+		Mario* mario = static_cast<Mario*>(data.who);
+		if (mario->GetPowerLevel() == PlayerPowerLevel::BIG)
+			ExposeContent();
+		else
+			state.SetHandler(&Brick::Hit);
+
 		return;
 	}
 
