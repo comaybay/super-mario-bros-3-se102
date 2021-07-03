@@ -70,8 +70,8 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	ResourceLoader(gameSettings.dataDirectory).Load();
 
 	//TODO: remove test code
-	activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
-	//activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
+	//activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
+	activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 

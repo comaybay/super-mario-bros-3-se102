@@ -30,6 +30,7 @@ ParaKoopa::~ParaKoopa()
 
 void ParaKoopa::OnReady()
 {
+	Entity::OnReady();
 	wing = new Wing(this);
 	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
 	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);

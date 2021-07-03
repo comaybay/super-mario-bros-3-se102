@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_set>
+
 #include "Utils.h"
 #include "EncodedWorld.h"
 #include "Camera.h"
-#include "Event.h"
 #include "Grid.h"
 
 //avoid circular dependecies
@@ -29,7 +30,22 @@ public:
 	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
 	void PlayerDeath();
 
+	template<class ENTITY>
+	using Handler = void(ENTITY::*)();
+
+	template<class ENTITY>
+	void SubscribeToOutOfWorldEvent(ENTITY* entity, Handler<ENTITY> handler);
+
+	template<class ENTITY>
+	void UnsubscribeToOutOfWorldEvent(ENTITY* entity);
+
 private:
+	void OnEntityDestroy(LPEntity entity);
+	void NotifyOutOfWorldEntities();
+	bool IsOutOfWorld(LPEntity entity);
+	std::list<std::pair<LPEntity, Handler<Entity>>> notifyList;
+	std::unordered_map<LPEntity, Handler<Entity>> subscriptions;
+
 	CellRange GetCellRangeAroundCamera();
 	RECT GetTileBoundingBox(int id);
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
@@ -59,3 +75,18 @@ public:
 };
 typedef Scene* LPScene;
 
+
+template<class ENTITY>
+inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Handler<ENTITY> handler)
+{
+	subscriptions[entity] = handler;
+	entity->GetDestroyEvent().Subscribe(this, &Scene::OnEntityDestroy);
+}
+
+
+template<class ENTITY>
+inline void Scene::UnsubscribeToOutOfWorldEvent(ENTITY* entity)
+{
+	subscriptions.erase(entity);
+	entity->GetDestroyEvent().Unsubscribe(this, &Scene::OnEntityDestroy);
+}

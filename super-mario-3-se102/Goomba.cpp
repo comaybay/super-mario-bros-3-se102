@@ -25,6 +25,7 @@ Goomba::Goomba(std::string colorType, Vector2<float> position)
 
 void Goomba::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
 	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 

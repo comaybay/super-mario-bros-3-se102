@@ -42,6 +42,8 @@ namespace Entities {
 		void Bounce();
 
 	protected:
+		virtual void OnOutOfWorld() override;
+
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
 		void Walk(float delta);
@@ -49,6 +51,7 @@ namespace Entities {
 		void Jump(float delta);
 		void Fall(float delta);
 		void BounceUp(float delta);
+		void OutOfWorldDeath(float delta);
 
 		virtual void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();

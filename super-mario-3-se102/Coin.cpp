@@ -13,6 +13,7 @@ Coin::Coin(const Vector2<float>& position)
 
 void Coin::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Coin::OnCollision, { Group::PLAYER });
 }
 

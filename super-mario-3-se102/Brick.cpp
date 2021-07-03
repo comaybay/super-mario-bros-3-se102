@@ -22,6 +22,7 @@ Brick::Brick(LPEntity content, const Utils::Vector2<float>& position)
 }
 
 void Brick::OnReady() {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Brick::OnCollision, { Group::PLAYER, "Koopas" });
 }
 

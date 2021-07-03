@@ -33,6 +33,7 @@ ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
 
 void ParaGoomba::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
 	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 

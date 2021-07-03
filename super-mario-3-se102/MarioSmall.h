@@ -9,8 +9,8 @@ namespace Entities {
 		void TakeDamage() override;
 		void Update(float delta) override;
 		void OnCollision(CollisionData data) override;
-
 	private:
+		void OnOutOfWorld() override;
 		void Die(float delta);
 		void DieFall(float delta);
 

@@ -42,6 +42,22 @@ public:
 	void SetEnabledForCollisionDetection(bool enabled);
 	const std::string& GetId();
 	LPScene GetParentScene();
+	void UnsubscribeToOutOfWorldEvent();
+	void SubscribeToOutOfWorldEvent();
+
+	/// <summary>
+	/// GridType will be used for spatial parititoning
+	/// </summary>
+	GridType GetGridType();
+
+	virtual Utils::Dimension GetCurrentSpriteDimension();
+	virtual LPConstHitbox GetHitbox();
+	SpriteBox GetSpriteBox();
+	virtual void Update(float delta);
+	virtual void PostUpdate();
+	virtual void Render();
+	const std::vector<std::string>& GetEntityGroups();
+	Event<LPEntity>& GetDestroyEvent();
 
 	/// <summary>
 	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
@@ -72,20 +88,6 @@ public:
 	/// </summary>
 	Utils::Vector2<float> _GetRemainingVelocity();
 	void _SetRemainingVelocity(Utils::Vector2<float> vel);
-
-	/// <summary>
-	/// GridType will be used for spatial parititoning
-	/// </summary>
-	GridType GetGridType();
-
-	virtual Utils::Dimension GetCurrentSpriteDimension();
-	virtual LPConstHitbox GetHitbox();
-	SpriteBox GetSpriteBox();
-	virtual void Update(float delta);
-	virtual void PostUpdate();
-	virtual void Render();
-	const std::vector<std::string>& GetEntityGroups();
-	Event<LPEntity>& GetDestroyEvent();
 protected:
 	LPScene parentScene;
 	std::vector<std::string> groups;
@@ -93,6 +95,7 @@ protected:
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
 	LPConstHitbox hitbox;
+	virtual void OnOutOfWorld();
 private:
 	void Init();
 	std::string id;

@@ -42,6 +42,14 @@ void MarioSmall::OnCollision(CollisionData data)
 }
 
 
+void MarioSmall::OnOutOfWorld()
+{
+	if (smallMarioState.GetHandler() != &MarioSmall::Die || smallMarioState.GetHandler() != &MarioSmall::DieFall)
+		Mario::OnOutOfWorld();
+	else
+		UnsubscribeToOutOfWorldEvent();
+}
+
 void MarioSmall::Die(float delta) {
 	time += delta;
 

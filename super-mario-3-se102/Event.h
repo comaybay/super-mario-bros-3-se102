@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <string>
 #include <type_traits>
+
 #include "EventHandler.h"
 #include "Entity.h"
 #include "Utils.h"
@@ -13,25 +14,31 @@ template <class... Args>
 class Event
 {
 public:
+	typedef void(*FuncHandler)(Args...);
+	template <class T>
+	using MethodHandler = void(T::*)(Args...);
+
+
 	~Event();
 	template<class T>
-	void Subscribe(T* handlerThis, void(T::* handler)(Args...));
+	void Subscribe(T* handlerThis, MethodHandler<T> handler);
 
-	void Subscribe(void(*handler)(Args...));
+	void Subscribe(FuncHandler handler);
 
 	template<class T>
-	void Unsubscribe(T* handlerThis, void(T::* handler)(Args...));
+	void Unsubscribe(T* handlerThis, MethodHandler<T> handler);
 
-	void Unsubscribe(void(*handler)(Args...));
+	void Unsubscribe(FuncHandler handler);
 
 	void Notify(Args...);
 
 private:
+	//taken from https://stackoverflow.com/questions/21192659/variadic-templates-and-stdbind
 	template<typename R, typename T, typename U>
 	std::function<R(Args...)> Attach(R(T::* f)(Args...), U p);
 
 	template<class T>
-	intptr_t GetAddressOf(void(T::* handler)(Args...));
+	intptr_t GetAddressOf(MethodHandler<T>  handler);
 
 	template<class T>
 	intptr_t GetAddressOf(T* handlerThis);
@@ -69,7 +76,6 @@ inline Event<Args...>::~Event()
 		delete pair.second;
 }
 
-//taken from https://stackoverflow.com/questions/21192659/variadic-templates-and-stdbind
 template<class ...Args>
 template<typename R, typename T, typename U>
 inline std::function<R(Args...)> Event<Args...>::Attach(R(T::* f)(Args...), U p)
@@ -79,7 +85,7 @@ inline std::function<R(Args...)> Event<Args...>::Attach(R(T::* f)(Args...), U p)
 
 template<class ...Args>
 template<class T>
-inline void Event<Args...>::Subscribe(T* handlerThis, void(T::* handler)(Args...))
+inline void Event<Args...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 {
 	using namespace std::placeholders;
 	std::function<void(Args...)> bindedHandler = Attach(handler, handlerThis);
@@ -100,7 +106,7 @@ inline void Event<Args...>::Subscribe(T* handlerThis, void(T::* handler)(Args...
 }
 
 template<class ...Args>
-inline void Event<Args...>::Subscribe(void(*handler)(Args...))
+inline void Event<Args...>::Subscribe(FuncHandler handler)
 {
 	using namespace std::placeholders;
 
@@ -114,7 +120,7 @@ inline void Event<Args...>::Subscribe(void(*handler)(Args...))
 
 template<class ...Args>
 template<class T>
-inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args...))
+inline void Event<Args...>::Unsubscribe(T* handlerThis, MethodHandler<T> handler)
 {
 	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t thisId = GetAddressOf(handlerThis);
@@ -125,7 +131,7 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, void(T::* handler)(Args.
 }
 
 template<class ...Args>
-inline void Event<Args...>::Unsubscribe(void(*handler)(Args...))
+inline void Event<Args...>::Unsubscribe(FuncHandler handler)
 {
 	intptr_t handlerId = GetAddressOf(handler);
 	unsubscribeWaitList.push_back(ToRemoveProps(ORDINARY_FUNC_THIS_ID, handlerId));
@@ -172,7 +178,7 @@ inline void Event<Args...>::UnsubscribeFromEvent(intptr_t thisId, intptr_t handl
 
 template<class ...Args>
 template<class T>
-inline intptr_t Event<Args...>::GetAddressOf(void(T::* handler)(Args...))
+inline intptr_t Event<Args...>::GetAddressOf(MethodHandler<T>  handler)
 {
 	//explaination for the weird void*& cast: https://stackoverflow.com/questions/8121320/get-memory-address-of-member-function/8122891
 	return reinterpret_cast<intptr_t>((void*&)handler);

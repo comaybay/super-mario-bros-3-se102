@@ -12,7 +12,7 @@
 using namespace Entities;
 using namespace Utils;
 
-const float Koopa::WALK_SPEED = 30;
+const float Koopa::WALK_SPEED = 29;
 const float Koopa::SHELL_SLIDE_SPEED = 180;
 const float Koopa::SHELL_SLIDE_FALL_SPEED = 1850;
 const float Koopa::FRICTION = 2600;
@@ -28,6 +28,7 @@ Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position
 
 void Koopa::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
 	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 

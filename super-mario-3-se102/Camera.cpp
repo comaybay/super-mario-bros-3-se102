@@ -10,7 +10,6 @@ Camera::Camera(LPScene parentScene) :
 {
 	target = nullptr;
 	position = Vector2<float>(0, 0);
-	onTargetDestroy = nullptr;
 }
 
 const Vector2<float>& Camera::GetPosition() const

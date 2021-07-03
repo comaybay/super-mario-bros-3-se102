@@ -17,6 +17,5 @@ private:
 	LPScene parentScene;
 	LPEntity target;
 	Utils::Vector2<float> position;
-	LPEventHandler<Camera, LPEntity> onTargetDestroy;
 };
 

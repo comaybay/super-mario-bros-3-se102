@@ -43,6 +43,7 @@ Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animatio
 
 void Mario::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
@@ -107,6 +108,20 @@ void Mario::Update(float delta) {
 	marioState.Handle(delta);
 
 	onGround = false;
+}
+
+void Mario::OnOutOfWorld()
+{
+	Dimension worldDim = parentScene->GetWorldDimension();
+	Dimension marioDim = GetCurrentSpriteDimension();
+
+	if (position.y + marioDim.height > worldDim.height) {
+		UnsubscribeToOutOfWorldEvent();
+		parentScene->PlayerDeath();
+		SwitchState(&Mario::OutOfWorldDeath);
+	}
+	else
+		position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
 }
 
 PlayerPowerLevel Entities::Mario::GetPowerLevel()
@@ -234,6 +249,13 @@ void Mario::BounceUp(float delta)
 {
 	//same as fall
 	Fall(delta);
+}
+
+void Mario::OutOfWorldDeath(float delta)
+{
+	time += delta;
+	if (time >= 3.0f)
+		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
 }
 
 void Mario::Fall(float delta) {

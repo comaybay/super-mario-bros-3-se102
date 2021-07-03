@@ -47,6 +47,7 @@ void Scene::Update(float delta)
 	//	std::advance(pBlock, 1);
 	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
 	//}
+	NotifyOutOfWorldEntities();
 	CellRange range = GetCellRangeAroundCamera();
 
 	auto forEachEntity = [this, range](std::function<void(LPEntity)> handler) {
@@ -70,6 +71,37 @@ void Scene::Update(float delta)
 	forEachEntity(postUpdate);
 
 	entityManager->FreeEntitiesInQueue();
+}
+
+void Scene::OnEntityDestroy(LPEntity entity)
+{
+	subscriptions.erase(entity);
+}
+
+void Scene::NotifyOutOfWorldEntities()
+{
+	notifyList.clear();
+
+	for (auto& pair : subscriptions)
+		//avoid deletion during iteration
+		if (IsOutOfWorld(pair.first))
+			notifyList.push_back(pair);
+
+	for (auto& pair : notifyList)
+		(pair.first->*pair.second)();
+}
+
+bool Scene::IsOutOfWorld(LPEntity entity)
+{
+	Vector2<float> pos = entity->GetPosition();
+	Dimension dim = entity->GetCurrentSpriteDimension();
+
+	return (
+		pos.x + dim.width < 0 ||
+		pos.x > worldTileDim.width * Game::TILE_SIZE ||
+		pos.y < 0 ||
+		pos.y > worldTileDim.height * Game::TILE_SIZE
+		);
 }
 
 CellRange Scene::GetCellRangeAroundCamera() {
@@ -175,9 +207,8 @@ void Scene::_Ready()
 	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Utils::Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
-	entityManager->Add(new Entities::ParaKoopa("Green", Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 3)));
-	entityManager->Add(new Entities::ParaKoopa("Green", Utils::Vector2<float>(16 * 11, worldTileDim.height * 16 - 16 * 3)));
-
+	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 1500, 200 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);

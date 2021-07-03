@@ -148,8 +148,25 @@ SpriteBox Entity::GetSpriteBox() {
 	return animation->GetCurrentSpriteBox();
 }
 
-//do nothing by default
-void Entity::OnReady() {}
+void Entity::OnReady() {
+	if (gridType != GridType::STATIC_ENTITIES && gridType != GridType::WALL_ENTITIES)
+		SubscribeToOutOfWorldEvent();
+}
+
+void Entity::SubscribeToOutOfWorldEvent()
+{
+	parentScene->SubscribeToOutOfWorldEvent(this, &Entity::OnOutOfWorld);
+}
+
+void Entity::UnsubscribeToOutOfWorldEvent()
+{
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
+}
+
+void Entity::OnOutOfWorld()
+{
+	parentScene->QueueFree(this);
+}
 
 Utils::Dimension Entity::GetCurrentSpriteDimension()
 {
