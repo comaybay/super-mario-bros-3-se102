@@ -116,6 +116,7 @@ void Mario::OnOutOfWorld()
 	Dimension marioDim = GetCurrentSpriteDimension();
 
 	if (position.y + marioDim.height > worldDim.height) {
+		velocity = { 0,0 };
 		UnsubscribeToOutOfWorldEvent();
 		parentScene->PlayerDeath();
 		SwitchState(&Mario::OutOfWorldDeath);

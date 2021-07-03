@@ -15,6 +15,9 @@ MarioSmall::MarioSmall(Utils::Vector2<float> position)
 
 void MarioSmall::TakeDamage()
 {
+	if (died)
+		return;
+
 	parentScene->PlayerDeath();
 	SetAnimation("MarioDeath");
 	UnsubscribeToCollisionEngine();
