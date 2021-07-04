@@ -43,7 +43,7 @@ namespace Utils
 		bool operator==(const Vector2<T>& other) const;
 		bool operator!=(const Vector2<T>& other) const;
 		Vector2<int> Rounded() const;
-		float DistanceTo(const Vector2<T>& v);
+		float DistanceTo(const Vector2<T>& v) const;
 	};
 
 	template <typename T>
@@ -87,91 +87,107 @@ template <typename T>
 inline Utils::Vector2<T>::Vector2(T x, T y) : x(x), y(y) {};
 
 template <typename T>
-inline Utils::Vector2<int> Utils::Vector2<T>::Rounded() const {
+inline Utils::Vector2<int> Utils::Vector2<T>::Rounded() const
+{
 	return Vector2<int>(round(x), round(y));
 }
 
 template <typename T>
-inline float Utils::Vector2<T>::DistanceTo(const Utils::Vector2<T>& v)
+inline float Utils::Vector2<T>::DistanceTo(const Utils::Vector2<T>& v) const
 {
 	return sqrt(pow(x - v.x, 2) + pow(y - v.y, 2));
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Vector2<T>& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Vector2<T>& other) const
+{
 	return Vector2<T>(x + other.x, y + other.y);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Dimension& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Dimension& other) const
+{
 	return Vector2<T>(x + other.width, y + other.height);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Vector2<T>& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Vector2<T>& other) const
+{
 	return Vector2<T>(x - other.x, y - other.y);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Dimension& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Dimension& other) const
+{
 	return Vector2<T>(x - other.width, y - other.height);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator- () const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator- () const
+{
 	return  Vector2<T>(-x, -y);
 }
 
 template <typename T>
-inline Utils::Vector2<T>& Utils::Vector2<T>::operator+=(const Utils::Vector2<T>& other) {
+inline Utils::Vector2<T>& Utils::Vector2<T>::operator+=(const Utils::Vector2<T>& other)
+{
 	x += other.x;
 	y += other.y;
 	return *this;
 }
 
 template <typename T>
-inline Utils::Vector2<T>& Utils::Vector2<T>::operator-=(const Utils::Vector2<T>& other) {
+inline Utils::Vector2<T>& Utils::Vector2<T>::operator-=(const Utils::Vector2<T>& other)
+{
 	x -= other.x;
 	y -= other.y;
 	return *this;
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator*(const Utils::Vector2<T>& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(const Utils::Vector2<T>& other) const
+{
 	return Vector2<T>(x * other.x, y * other.y);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator*(int value) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(int value) const
+{
 	return Vector2<T>(x * value, y * value);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator*(float value) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator*(float value) const
+{
 	return Vector2<T>(x * value, y * value);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator/(const Utils::Vector2<T>& other) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator/(const Utils::Vector2<T>& other) const
+{
 	return Vector2<T>(x / other.x, y / other.y);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator/(int value) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator/(int value) const
+{
 	return Vector2<T>(x / value, y / value);
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator/(float value) const {
+inline Utils::Vector2<T> Utils::Vector2<T>::operator/(float value) const
+{
 	return Vector2<T>(x / value, y / value);
 }
 
 template <typename T>
-inline bool Utils::Vector2<T>::operator==(const Utils::Vector2<T>& other) const {
+inline bool Utils::Vector2<T>::operator==(const Utils::Vector2<T>& other) const
+{
 	return this->x == other.x && this->y == other.y;
 }
 
 template <typename T>
-inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const {
+inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const
+{
 	return !(*this == other);
 }

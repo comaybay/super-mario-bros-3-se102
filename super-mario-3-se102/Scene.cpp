@@ -7,10 +7,12 @@
 using namespace Utils;
 
 Scene::Scene() :
-	camera(Camera(this))
+	camera(Camera(this)),
+	entityManager(nullptr),
+	updateMovablesInSPGridEnabled(true),
+	renderMovablesInSPGridEnabled(true),
+	backgroundColor(D3DCOLOR_XRGB(255, 255, 255))
 {
-	updateMovablesInSPGridEnabled = true;
-	renderMovablesInSPGridEnabled = true;
 	Game::EnableCollisionEngine(true);
 }
 
@@ -208,7 +210,7 @@ void Scene::_Ready()
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Utils::Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 1500, 200 });
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2100, 200 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);

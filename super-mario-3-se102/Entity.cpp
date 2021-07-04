@@ -105,12 +105,12 @@ void Entity::SetHitbox(std::string id)
 	hitbox = HitboxManager::Get(id);
 }
 
-Vector2<float> Entity::GetPosition()
+const Vector2<float>& Entity::GetPosition()
 {
 	return position;
 }
 
-Vector2<float> Entity::GetVelocity()
+const Vector2<float>& Entity::GetVelocity()
 {
 	return velocity;
 }

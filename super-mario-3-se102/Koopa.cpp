@@ -13,7 +13,7 @@ using namespace Entities;
 using namespace Utils;
 
 const float Koopa::WALK_SPEED = 29;
-const float Koopa::SHELL_SLIDE_SPEED = 180;
+const float Koopa::SHELL_SLIDE_SPEED = 200;
 const float Koopa::SHELL_SLIDE_FALL_SPEED = 1850;
 const float Koopa::FRICTION = 2600;
 
@@ -220,12 +220,13 @@ void Koopa::MoveAround(float delta)
 
 void Koopa::ShellIdle(float delta)
 {
-	if (velocity.x != 0) {
-		float moveDirection = Sign(velocity.x);
-		velocity.x += FRICTION * delta * -moveDirection;
-		if (moveDirection != Sign(velocity.x))
-			velocity.x = 0;
-	}
+	if (velocity.x == 0)
+		return;
+
+	int moveDirection = Sign(velocity.x);
+	velocity.x += FRICTION * delta * -moveDirection;
+	if (moveDirection != Sign(velocity.x))
+		velocity.x = 0;
 }
 
 void Koopa::ShellSlide(float delta)
