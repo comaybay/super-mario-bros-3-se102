@@ -3,7 +3,7 @@
 #include "Utils.h"
 using namespace Utils;
 
-DynamicGrid::DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize)
+DynamicGrid::DynamicGrid(int numberOfColumns, int numberOfRows, const Utils::Dimension<float>& cellSize)
 	: Grid(numberOfColumns, numberOfRows, cellSize)
 {}
 

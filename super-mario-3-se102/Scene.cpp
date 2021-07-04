@@ -7,8 +7,9 @@
 using namespace Utils;
 
 Scene::Scene() :
-	camera(Camera(this)),
 	entityManager(nullptr),
+	encodedWorld(nullptr),
+	camera(Camera(this)),
 	updateMovablesInSPGridEnabled(true),
 	renderMovablesInSPGridEnabled(true),
 	backgroundColor(D3DCOLOR_XRGB(255, 255, 255))
@@ -22,7 +23,7 @@ Scene::~Scene()
 	delete entityManager;
 }
 
-void Scene::_Init(const Dimension& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
+void Scene::_Init(const Dimension<float>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
 	LPEntityManager entityManager, const std::string& prevScenePath)
 {
 	this->worldTileDim = worldTileDim;
@@ -96,7 +97,7 @@ void Scene::NotifyOutOfWorldEntities()
 bool Scene::IsOutOfWorld(LPEntity entity)
 {
 	Vector2<float> pos = entity->GetPosition();
-	Dimension dim = entity->GetCurrentSpriteDimension();
+	Dimension<float> dim = entity->GetCurrentSpriteDimension();
 
 	return (
 		pos.x + dim.width < 0 ||
@@ -108,10 +109,10 @@ bool Scene::IsOutOfWorld(LPEntity entity)
 
 CellRange Scene::GetCellRangeAroundCamera() {
 	Vector2<float> camPos = GetCameraPosition();
-	Dimension dim = Game::GetGameSettings().gameDimension;
+	Dimension<float> dim = Game::GetGameSettings().gameDimension;
 
 	//add margin
-	int marginSize = dim.width / 4;
+	float marginSize = dim.width / 4;
 	camPos = camPos - Vector2<float>(marginSize, marginSize);
 	dim.width += marginSize;
 	dim.height += marginSize;
@@ -206,9 +207,9 @@ void Scene::_Ready()
 	//EntityManager::AddToGroup(Group::PLAYER, mario);
 	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup("Goombas", goomba);
-	LPEntity ground = new Entities::CollisionWallType1(Utils::Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Utils::Dimension(16, 16));
+	LPEntity ground = new Entities::CollisionWallType1(Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<float>(16, 16));
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
-	entityManager->Add(new Entities::ParaGoomba("Brown", Utils::Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
+	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
 		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2100, 200 });
 
@@ -218,9 +219,9 @@ void Scene::_Ready()
 		camera.FollowEntity(playerGroup.front());
 }
 
-const Dimension& Scene::GetWorldDimension()
+Dimension<float> Scene::GetWorldDimension()
 {
-	return Utils::Dimension(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
+	return Dimension<float>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
 }
 
 const Vector2<float>& Scene::GetCameraPosition()
@@ -235,8 +236,8 @@ const std::string& Scene::GetPrevScenePath()
 
 RECT Scene::GetTileBoundingBox(int id)
 {
-	Dimension texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
-	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
+	Dimension<float> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
+	int numOfCols = (int)texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
 	int row = id / numOfCols;
 	int col = id % numOfCols;
 
@@ -249,13 +250,13 @@ RECT Scene::GetTileBoundingBox(int id)
 
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 {
-	Utils::Vector2<int> cp = camera.GetPosition().Rounded();
-	Utils::Vector2<float> tileOffset(cp.x / Game::TILE_SIZE, cp.y / Game::TILE_SIZE);
+	Utils::Vector2<float> cp = camera.GetPosition().Rounded();
+	Utils::Vector2<int> tileOffset = { (int)cp.x / Game::TILE_SIZE , (int)cp.y / Game::TILE_SIZE };
 
-	Utils::Dimension gameDim = Game::GetGameSettings().gameDimension;
+	Utils::Dimension<float> gameDim = Game::GetGameSettings().gameDimension;
 
 	//tiles need for rendering, +1 for seemless display when camera move
-	Utils::Dimension tileRange(
+	Utils::Dimension<float> tileRange(
 		gameDim.width / Game::TILE_SIZE + 1,
 		gameDim.height / Game::TILE_SIZE + 1
 	);
@@ -272,7 +273,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 			if (index != 0xFFF) {
 				LPDIRECT3DTEXTURE9 texure = TextureManager::Get(encodedWorld->GetTextureId());
 				RECT rect = GetTileBoundingBox(index);
-				Vector2<float> renderPos(x * Game::TILE_SIZE, y * Game::TILE_SIZE);
+				Vector2<float> renderPos((float)x * Game::TILE_SIZE, (float)y * Game::TILE_SIZE);
 				Game::Draw(texure, rect, renderPos);
 			}
 		}

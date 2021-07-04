@@ -57,7 +57,7 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	didv->Acquire();
 
 	//used for rendering
-	float scale = gameSettings.pixelScale;
+	float scale = (float)gameSettings.pixelScale;
 	Game::scaleMatrix = {
 		scale,           0.0f,            0.0f,            0.0f,
 		0.0f,            scale,           0.0f,            0.0f,
@@ -162,8 +162,8 @@ void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float
 }
 
 Vector2<float> Game::ToPixelPerfectPosition(const Vector2<float>& position) {
-	Vector2<int> roundedPos = position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
-	return Vector2<float>(roundedPos.x, roundedPos.y);
+	Vector2<float> roundedPos = position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
+	return Vector2<float>((float)roundedPos.x, (float)roundedPos.y);
 }
 
 Vector2<float> Game::ToPrecisePosition(const Vector2<float>& position) {
@@ -204,16 +204,15 @@ const GameSettings& Game::GetGameSettings() {
 void Game::Run()
 {
 	ULONGLONG prev = GetTickCount64();	//unit is in ms
-	const int smallFrameTime = round(1000.0f / gameSettings.maxFPS);
+	const float smallFrameTime = round(1000.0f / gameSettings.maxFPS);
 	const float smallDt = 1.0f / gameSettings.maxFPS;
 
 	//long frame time and long delta is used when game is lag (longest delta value for processing the game)
-	const int longFrameTime = 1000.0f / 20.0f;
+	const float longFrameTime = 1000.0f / 20.0f;
 	const float longDt = 1.0f / 20.0f;
 
-	int accumulator = 0;
 	MSG msg;
-
+	float accumulator = 0;
 	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -228,7 +227,7 @@ void Game::Run()
 		}
 
 		ULONGLONG now = GetTickCount64();
-		ULONGLONG duration = now - prev;
+		int duration = (int)(now - prev);
 		prev = now;
 
 		accumulator += duration;

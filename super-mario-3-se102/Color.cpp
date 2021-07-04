@@ -12,4 +12,8 @@ std::string Color::ToColorCode(std::string color)
 		return "R";
 	else if (color == BROWN)
 		return "B";
+	else {
+		std::string msg = "Invalid Color: " + color;
+		throw std::exception(msg.c_str());
+	}
 }

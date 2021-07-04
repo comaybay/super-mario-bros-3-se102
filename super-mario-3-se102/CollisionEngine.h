@@ -75,11 +75,11 @@ private:
 
 	struct CBox {
 		Utils::Vector2<float> position;
-		Utils::Dimension dimension;
+		Utils::Dimension<float> dimension;
 		Utils::Vector2<float> velocity;
 
 		CBox() {};
-		CBox(Utils::Vector2<float> position, Utils::Dimension dimension, Utils::Vector2<float> velocity)
+		CBox(Utils::Vector2<float> position, Utils::Dimension<float> dimension, Utils::Vector2<float> velocity)
 			: position(position), dimension(dimension), velocity(velocity)
 		{};
 	};

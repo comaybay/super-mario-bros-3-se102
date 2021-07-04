@@ -31,7 +31,7 @@ PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 		player->GetDestroyEvent().Subscribe(&OnEntityDestroy);
 	}
 
-	index = min(index + 1, pointUpTypes.size() - 1);
+	index = min(index + 1, (int)pointUpTypes.size() - 1);
 	Vector2<float> pos(callerPosition.x, callerPosition.y - Game::TILE_SIZE);
 	return new PointUp(pos, pointUpTypes[index]);
 }

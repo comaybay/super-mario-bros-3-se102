@@ -21,21 +21,21 @@ public:
 	typedef EntitiesInCell* LPEntitiesInCell;
 	typedef const EntitiesInCell* LPConstEntitiesInCell;
 
-	Grid(int numberOfColumns, int numberOfRows, const Utils::Dimension& cellSize);
+	Grid(int numberOfColumns, int numberOfRows, const Utils::Dimension<float>& cellSize);
 	~Grid();
 	virtual void AddToCell(LPEntity entity, const Utils::Vector2<int>& cellIndex);
 	LPConstEntitiesInCell EntitiesAt(const Utils::Vector2<int>& cellIndex);
 	void ForEachEntityIn(const CellRange& range, std::function<void(LPEntity)> handler);
 	void ForEachEntity(std::function<void(LPEntity)> handler);
 	Utils::Vector2<int> GetCellIndexAtPoint(const Utils::Vector2<float>& point);
-	CellRange GetCellRangeFromRectangle(const Utils::Vector2<float>& position, const Utils::Dimension& dim);
+	CellRange GetCellRangeFromRectangle(const Utils::Vector2<float>& position, const Utils::Dimension<float>& dim);
 	void OnEntityDestroy(LPEntity entity);
 protected:
 	//each cell contains a list of entities
 	std::vector<LPEntitiesInCell> cells;
 	int numOfRows;
 	int numOfCols;
-	Utils::Dimension cellSize;
+	Utils::Dimension<float> cellSize;
 };
 typedef Grid* LPGrid;
 

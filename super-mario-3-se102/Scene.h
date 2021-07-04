@@ -22,7 +22,7 @@ public:
 	Scene();
 	void Update(float delta);
 	void Render();
-	const Utils::Dimension& GetWorldDimension();
+	Utils::Dimension<float> GetWorldDimension();
 	const Utils::Vector2<float>& GetCameraPosition();
 	const std::string& GetPrevScenePath();
 	void AddEntity(LPEntity entity);
@@ -50,7 +50,7 @@ private:
 	RECT GetTileBoundingBox(int id);
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
 	void GetRenderEntities(std::unordered_set<LPEntity>& entitiesRenderedBeforeWorld, std::unordered_set<LPEntity>& entitiesRenderedrAfterWorld);
-	Utils::Dimension worldTileDim;
+	Utils::Dimension<float> worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
 	std::string prevScenePath;
@@ -66,7 +66,7 @@ public:
 	/// initialize scene, this method exist because some operations require scene to exist before 
 	/// it's constructor's arguments are provided, used internally by SceneLoader.
 	/// </summary>
-	void _Init(const Utils::Dimension& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager, const std::string& prevScenePath);
+	void _Init(const Utils::Dimension<float>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager, const std::string& prevScenePath);
 
 	/// <summary>
 	/// called when everything in the scene is loaded, used internally by SceneLoader.

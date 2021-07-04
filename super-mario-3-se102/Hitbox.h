@@ -6,14 +6,14 @@ public:
 	/// <summary>
 	/// relativePosition: position relative to the position of entity
 	/// </summary>
-	Hitbox(const Utils::Vector2<float>& relativePosition, const Utils::Dimension& dimension);
+	Hitbox(const Utils::Vector2<float>& relativePosition, const Utils::Dimension<float>& dimension);
 	Hitbox();
 
 	const Utils::Vector2<float>& GetRelativePosition() const;
-	const Utils::Dimension& GetDimension() const;
+	const Utils::Dimension<float>& GetDimension() const;
 private:
 	Utils::Vector2<float> relativePosition;
-	Utils::Dimension dimension;
+	Utils::Dimension<float> dimension;
 };
 typedef Hitbox* LPHitbox;
 typedef const Hitbox* LPConstHitbox;

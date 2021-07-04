@@ -8,7 +8,7 @@ private:
 	void Get(int index);
 
 public:
-	Utils::Dimension dim;
+	Utils::Dimension<float> dim;
 	Utils::Vector2<float> position;
 	int size;
 };

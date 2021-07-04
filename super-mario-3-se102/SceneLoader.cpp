@@ -38,14 +38,14 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 
 	std::string section;
 	std::string sceneType;
-	Dimension worldDim;
+	Dimension<float> worldDim;
 	D3DCOLOR bgColor{};
 	std::string prevScenePath;
 	char* background;
 	char* foreground;
 	LPEntityManager entityManager = nullptr;
 	LPEncodedWorld encodedWorld = nullptr;
-	//TODO: Parse Grid dimension 
+	//TODO: Parse Grid Dimension<float> 
 	LPGrid wallEntitySpatialGrid = nullptr;
 	LPGrid staticEntitySpatialGrid = nullptr;
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
@@ -82,7 +82,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	return scene;
 }
 
-std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension<float>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -110,7 +110,7 @@ std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& 
 			throw InvalidTokenSizeException(1);
 
 		sceneType = sceneTypeToken[0];
-		dim = Dimension(stof(dimTokens[0]), stof(dimTokens[1]));
+		dim = Dimension<float>(stof(dimTokens[0]), stof(dimTokens[1]));
 		bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
 		prevScenePath = pathToken[0];
 
@@ -160,7 +160,7 @@ std::string SceneLoader::ParseSpatialPartitionGrid
 	if (gridSizeTokens.size() != 2)
 		throw InvalidTokenSizeException(2);
 
-	Dimension cellDim(stoi(cellDimTokens[0]), stoi(cellDimTokens[1]));
+	Dimension<float> cellDim(stoi(cellDimTokens[0]), stoi(cellDimTokens[1]));
 	int numOfCols = stoi(gridSizeTokens[0]);
 	int numOfRows = stoi(gridSizeTokens[1]);
 
@@ -193,7 +193,7 @@ std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityM
 			throw InvalidTokenSizeException(4);
 
 		Vector2<float> pos(stoi(entityTokens[1]), stoi(entityTokens[2]));
-		Dimension dim(stoi(entityTokens[3]), stoi(entityTokens[4]));
+		Dimension<float> dim(stoi(entityTokens[3]), stoi(entityTokens[4]));
 		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
 		Vector2<int> cellSpan(stoi(cellTokens[2]), stoi(cellTokens[3]));
 

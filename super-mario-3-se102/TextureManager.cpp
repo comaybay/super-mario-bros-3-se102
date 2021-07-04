@@ -7,7 +7,7 @@ std::string TextureId::WORLD_TILES = "__TEX_W_TILES__";
 std::string TextureId::WORLD_MAP_TILES = "__TEX_WM_TILES__";
 
 std::unordered_map<std::string, LPDIRECT3DTEXTURE9> TextureManager::textureById;
-std::unordered_map<std::string, Utils::Dimension> TextureManager::textureImgDimById;
+std::unordered_map<std::string, Utils::Dimension<float>> TextureManager::textureImgDimById;
 
 void TextureManager::Load(const std::string& id, const std::string& path, const D3DCOLOR& color_key)
 {
@@ -39,7 +39,7 @@ void TextureManager::Load(const std::string& id, const std::string& path, const 
 		throw "Fail to create texture from image, image path: " + path;
 
 	textureById[id] = texture;
-	textureImgDimById[id] = Utils::Dimension(image_info.Width, image_info.Height);
+	textureImgDimById[id] = Utils::Dimension<float>(image_info.Width, image_info.Height);
 }
 
 LPDIRECT3DTEXTURE9 TextureManager::Get(const std::string& id) {
@@ -51,7 +51,7 @@ LPDIRECT3DTEXTURE9 TextureManager::Get(const std::string& id) {
 	}
 }
 
-const Utils::Dimension& TextureManager::GetDimensionOf(const std::string& id)
+const Utils::Dimension<float>& TextureManager::GetDimensionOf(const std::string& id)
 {
 	if (Utils::Contains(id, textureImgDimById))
 		return textureImgDimById[id];

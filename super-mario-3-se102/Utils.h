@@ -7,16 +7,17 @@ namespace Utils
 	void DebugOut(std::string text);
 	void DebugOut(const char* text);
 
+	template <class T>
 	struct Dimension {
 		float width = 0;
 		float height = 0;
 		Dimension();
-		Dimension(float width, float height);
-		Dimension operator/(float value) const;
-		Dimension operator*(int value) const;
-		Dimension operator*(float value) const;
-		Dimension operator+(const Dimension& other) const;
-		Dimension Rounded();
+		Dimension(T width, T height);
+		Dimension<T> operator/(float value) const;
+		Dimension<T> operator*(int value) const;
+		Dimension<T> operator*(float value) const;
+		Dimension<T> operator+(const Dimension<T>& other) const;
+		Dimension<T> Rounded() const;
 	};
 
 	template <class T>
@@ -28,9 +29,9 @@ namespace Utils
 		Vector2(T x, T y);
 
 		Vector2<T> operator+(const Vector2<T>& other) const;
-		Vector2<T> operator+(const Dimension& other) const;
+		Vector2<T> operator+(const Dimension<T>& other) const;
 		Vector2<T> operator-(const Vector2<T>& other) const;
-		Vector2<T> operator-(const Dimension& other) const;
+		Vector2<T> operator-(const Dimension<T>& other) const;
 		Vector2<T> operator-() const;
 		Vector2<T>& operator+=(const Vector2<T>& other);
 		Vector2<T>& operator-=(const Vector2<T>& other);
@@ -42,7 +43,7 @@ namespace Utils
 		Vector2<T> operator/(float value) const;
 		bool operator==(const Vector2<T>& other) const;
 		bool operator!=(const Vector2<T>& other) const;
-		Vector2<int> Rounded() const;
+		Vector2<T> Rounded() const;
 		float DistanceTo(const Vector2<T>& v) const;
 	};
 
@@ -87,9 +88,9 @@ template <typename T>
 inline Utils::Vector2<T>::Vector2(T x, T y) : x(x), y(y) {};
 
 template <typename T>
-inline Utils::Vector2<int> Utils::Vector2<T>::Rounded() const
+inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() const
 {
-	return Vector2<int>(round(x), round(y));
+	return Vector2<T>(round(x), round(y));
 }
 
 template <typename T>
@@ -105,7 +106,7 @@ inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Vector2<T>& o
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Dimension& other) const
+inline Utils::Vector2<T> Utils::Vector2<T>::operator+(const Utils::Dimension<T>& other) const
 {
 	return Vector2<T>(x + other.width, y + other.height);
 }
@@ -117,7 +118,7 @@ inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Vector2<T>& o
 }
 
 template <typename T>
-inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Dimension& other) const
+inline Utils::Vector2<T> Utils::Vector2<T>::operator-(const Utils::Dimension<T>& other) const
 {
 	return Vector2<T>(x - other.width, y - other.height);
 }
@@ -191,3 +192,35 @@ inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const
 {
 	return !(*this == other);
 }
+
+template <typename T>
+inline Utils::Dimension<T>::Dimension() {};
+
+template <typename T>
+inline Utils::Dimension<T>::Dimension(T width, T height) : width(width), height(height) {}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::operator/(float value) const {
+	return Dimension(width / value, height / value);
+}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::operator*(float value) const {
+	return Dimension(width * value, height * value);
+}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::operator*(int value) const {
+	return Dimension(width * value, height * value);
+}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::operator+(const Utils::Dimension<T>& other) const {
+	return Dimension(width + other.width, height + other.height);
+}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::Rounded() const {
+	return Dimension<T>(round(width), round(height));
+}
+

@@ -105,8 +105,8 @@ void Mario::Update(float delta) {
 	Entity::Update(delta);
 
 	//keep mario in world horizontally
-	Dimension worldDim = parentScene->GetWorldDimension();
-	Dimension marioDim = GetCurrentSpriteDimension();
+	Dimension<float> worldDim = parentScene->GetWorldDimension();
+	Dimension<float> marioDim = GetCurrentSpriteDimension();
 	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
 
 	UpdateHorizontalDirection();
@@ -117,8 +117,8 @@ void Mario::Update(float delta) {
 
 void Mario::OnOutOfWorld()
 {
-	Dimension worldDim = parentScene->GetWorldDimension();
-	Dimension marioDim = GetCurrentSpriteDimension();
+	Dimension<float> worldDim = parentScene->GetWorldDimension();
+	Dimension<float> marioDim = GetCurrentSpriteDimension();
 
 	if (position.y + marioDim.height <= worldDim.height)
 		return;

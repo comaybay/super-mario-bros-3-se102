@@ -207,10 +207,10 @@ CollisionEngine::CBox CollisionEngine::GetSweptBroadphaseBox(const CBox& box)
 		box.velocity.y > 0 ? box.position.y : box.position.y + box.velocity.y
 		);
 
-	b.dimension = Dimension(
+	b.dimension = Dimension<float>(
 		box.dimension.width + abs(box.velocity.x),
 		box.dimension.height + abs(box.velocity.y)
-	);
+		);
 	return b;
 }
 
