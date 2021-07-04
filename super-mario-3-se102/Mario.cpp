@@ -104,6 +104,11 @@ void Mario::UnsubscribeToCollisionEngine()
 void Mario::Update(float delta) {
 	Entity::Update(delta);
 
+	//keep mario in world horizontally
+	Dimension worldDim = parentScene->GetWorldDimension();
+	Dimension marioDim = GetCurrentSpriteDimension();
+	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
+
 	UpdateHorizontalDirection();
 	marioState.Handle(delta);
 
@@ -115,14 +120,13 @@ void Mario::OnOutOfWorld()
 	Dimension worldDim = parentScene->GetWorldDimension();
 	Dimension marioDim = GetCurrentSpriteDimension();
 
-	if (position.y + marioDim.height > worldDim.height) {
-		velocity = { 0,0 };
-		UnsubscribeToOutOfWorldEvent();
-		parentScene->PlayerDeath();
-		SwitchState(&Mario::OutOfWorldDeath);
-	}
-	else
-		position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
+	if (position.y + marioDim.height <= worldDim.height)
+		return;
+
+	velocity = { 0,0 };
+	UnsubscribeToOutOfWorldEvent();
+	parentScene->PlayerDeath();
+	SwitchState(&Mario::OutOfWorldDeath);
 }
 
 PlayerPowerLevel Entities::Mario::GetPowerLevel()
@@ -131,6 +135,9 @@ PlayerPowerLevel Entities::Mario::GetPowerLevel()
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
+	if (marioState.GetHandler() == &Mario::OutOfWorldDeath)
+		return;
+
 	marioState.SetHandler(stateHandler);
 
 	if (stateHandler == &Mario::Jump) {
