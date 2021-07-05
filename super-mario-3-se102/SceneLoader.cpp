@@ -348,10 +348,10 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
+	Vector2<float> position(stof(tokens[2]), stof(tokens[3]));
+	Vector2<float> contentPosition(position.x, position.y - 16.0f);
 	//TODO: REMOVE TEST CODE
-	//LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
-
-	return new Entities::QuestionBlock(nullptr, Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+	return new Entities::QuestionBlock(new Entities::CoinUp(contentPosition), position);
 }
 
 LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)

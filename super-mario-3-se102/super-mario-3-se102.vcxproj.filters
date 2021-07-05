@@ -213,6 +213,9 @@
     <ClCompile Include="BlockHitMovement.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
+    <ClCompile Include="CoinUp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -387,6 +390,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlockHitMovement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoinUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -176,6 +176,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="BlockHitMovement.cpp" />
+    <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="EmptyBlock.cpp" />
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="MarioBig.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="BlockHitMovement.h" />
+    <ClInclude Include="CoinUp.h" />
     <ClInclude Include="EmptyBlock.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
