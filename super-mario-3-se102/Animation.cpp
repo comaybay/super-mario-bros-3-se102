@@ -29,6 +29,11 @@ const SpriteBox& Animation::GetCurrentSpriteBox()
 	return sequence[currentFrame];
 }
 
+const int Animation::GetCurrentFrame()
+{
+	return currentFrame;
+}
+
 const std::string& Animation::GetId()
 {
 	return id;

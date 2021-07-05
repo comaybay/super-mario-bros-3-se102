@@ -6,7 +6,7 @@ using namespace Entities;
 
 const float CoinUp::UP_SPEED = 300;
 const float CoinUp::FALL_SPEED = EntityConstants::GRAVITY * 1.25f;
-const float CoinUp::END_TIME = 0.7;
+const float CoinUp::EXIST_DURATION = 0.7f;
 
 CoinUp::CoinUp(const Utils::Vector2<float>& position)
 	: Entity::Entity(position, "CoinUp", HitboxId::NONE, Group::EFFECTS, GridType::NONE),
@@ -31,7 +31,7 @@ void CoinUp::Update(float delta) {
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	time += delta;
-	if (time < END_TIME)
+	if (time < EXIST_DURATION)
 		return;
 
 	parentScene->QueueFree(this);

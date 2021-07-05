@@ -14,7 +14,7 @@ namespace Entities {
 		float time;
 		static const float UP_SPEED;
 		static const float FALL_SPEED;
-		static const float END_TIME;
+		static const float EXIST_DURATION;
 	};
 }
 

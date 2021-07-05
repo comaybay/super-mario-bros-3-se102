@@ -179,6 +179,7 @@
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="EmptyBlock.cpp" />
     <ClCompile Include="GameSettings.cpp" />
+    <ClCompile Include="GoalRoulette.cpp" />
     <ClCompile Include="MarioBig.cpp" />
     <ClCompile Include="BoomFX.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="CoinUp.h" />
     <ClInclude Include="EmptyBlock.h" />
     <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="GoalRoulette.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioBig.h" />
     <ClInclude Include="BoomFX.h" />

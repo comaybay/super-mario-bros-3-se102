@@ -214,6 +214,9 @@
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
     <ClCompile Include="CoinUp.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalRoulette.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -393,6 +396,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CoinUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalRoulette.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

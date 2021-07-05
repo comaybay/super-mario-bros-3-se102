@@ -15,6 +15,7 @@ public:
 	virtual void Update(float delta);
 	void SetAnimationSpeed(float speed);
 	const SpriteBox& GetCurrentSpriteBox();
+	const int GetCurrentFrame();
 	const std::string& GetId();
 
 protected:
