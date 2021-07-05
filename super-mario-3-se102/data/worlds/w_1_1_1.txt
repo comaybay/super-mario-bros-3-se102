@@ -187,7 +187,7 @@ Piranha, Red, 360, 336, True
 2, 2
 Piranha, Green, 1864, 336, True
 14, 2
-Goal, 2688, 336, True
+GoalRoulette, 2688, 336, True
 21, 2
 QuestionBlock, Coin, 176, 352, True
 1, 2

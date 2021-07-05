@@ -127,7 +127,7 @@ def get_game_dim(path):
             if line != '[GAME SETTINGS]\n':
                 continue
 
-            tokens = get_next_non_comment_line(config_file)[:-1].split(',')
+            tokens = get_next_non_comment_line(config_file).split('#')[0].split(',')
             if (len(tokens) != 2):
                 print("Error: expected 2 tokens from GamePixelDimension in ../config.txt")
                 return None

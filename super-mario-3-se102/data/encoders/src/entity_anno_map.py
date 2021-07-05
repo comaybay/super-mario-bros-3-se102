@@ -7,7 +7,7 @@ world_entity_anno_map = {
     (1, 1): EntityCode.BRICK_P_SWITCH,
     (2, 1): EntityCode.BRICK_1UP,
     (0, 2): EntityCode.COIN,
-    (1, 2): EntityCode.GOAL,
+    (1, 2): EntityCode.GOAL_ROULETTE,
     (2, 2): EntityCode.PORTAL_1,
     (3, 2): EntityCode.PORTAL_2,
     (0, 3): EntityCode.GOOMBA,

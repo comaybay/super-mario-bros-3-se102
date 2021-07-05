@@ -271,7 +271,7 @@ class EntityCode(Enum):
     PIRANHA_GREEN = "Piranha, Green"
     PIRANHA_RED = "Piranha, Red"
     VENUS_GREEN = "Venus, Green"
-    GOAL = "Goal"
+    GOAL_ROULETTE = "GoalRoulette"
     COIN = "Coin"
     PORTAL_1 = "Portal, 1"
     PORTAL_2 = "Portal, 2"
