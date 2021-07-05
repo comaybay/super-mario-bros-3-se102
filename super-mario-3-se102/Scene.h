@@ -49,7 +49,7 @@ private:
 	CellRange GetCellRangeAroundCamera();
 	RECT GetTileBoundingBox(int id);
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
-	void GetRenderEntities(std::unordered_set<LPEntity>& entitiesRenderedBeforeWorld, std::unordered_set<LPEntity>& entitiesRenderedrAfterWorld);
+	void GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, std::list<LPEntity>& entitiesRenderedrAfterWorld);
 	Utils::Dimension<int> worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
@@ -58,8 +58,7 @@ private:
 	LPEntityManager entityManager;
 	bool updateMovablesInSPGridEnabled;
 	bool renderMovablesInSPGridEnabled;
-	std::unordered_set<LPEntity> entitiesRenderedBeforeWorld;
-	std::unordered_set<LPEntity> entitiesRenderedrAfterWorld;
+
 
 public:
 	/// <summary>

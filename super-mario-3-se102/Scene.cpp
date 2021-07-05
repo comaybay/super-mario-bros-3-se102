@@ -32,6 +32,27 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 	this->entityManager = entityManager;
 	this->prevScenePath = prevScenePath;
 }
+
+#include "ParaGoomba.h"
+void Scene::_Ready()
+{
+	//TODO: REMOVE DEBUG CODE
+	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
+	//EntityManager::AddToGroup(Group::PLAYER, mario);
+	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
+	//EntityManager::AddToGroup("Goombas", goomba);
+	LPEntity ground = new Entities::CollisionWallType1(Vector2<int>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<int>(16, 16));
+	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
+	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
+	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 170, 390 });
+
+	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
+	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
+	if (!playerGroup.empty())
+		camera.FollowEntity(playerGroup.front());
+}
+
 //TODO: REMOVE TEST CODE
 //D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
 int i = 0;
@@ -121,6 +142,8 @@ CellRange Scene::GetCellRangeAroundCamera() {
 
 void Scene::Render()
 {
+	std::list<LPEntity> entitiesRenderedBeforeWorld;
+	std::list<LPEntity> entitiesRenderedrAfterWorld;
 	GetRenderEntities(entitiesRenderedBeforeWorld, entitiesRenderedrAfterWorld);
 
 	LPDIRECT3DDEVICE9 d3ddv = Game::GetDirect3DDevice();
@@ -154,19 +177,15 @@ void Scene::Render()
 	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 
-
-void Scene::GetRenderEntities(std::unordered_set<LPEntity>& entitiesRenderedBeforeWorld, std::unordered_set<LPEntity>& entitiesRenderedrAfterWorld) {
+void Scene::GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, std::list<LPEntity>& entitiesRenderedrAfterWorld) {
 	auto addByRenderOrder = [&entitiesRenderedBeforeWorld, &entitiesRenderedrAfterWorld](LPEntity entity) {
 		if (entity->_IsRenderedBeforeWorld())
-			entitiesRenderedBeforeWorld.insert(entity);
+			entitiesRenderedBeforeWorld.push_back(entity);
 		else
-			entitiesRenderedrAfterWorld.insert(entity);
+			entitiesRenderedrAfterWorld.push_back(entity);
 	};
 
 	CellRange range = GetCellRangeAroundCamera();
-	entitiesRenderedBeforeWorld.clear();
-	entitiesRenderedrAfterWorld.clear();
-
 	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, addByRenderOrder);
 
 	if (renderMovablesInSPGridEnabled)
@@ -174,77 +193,6 @@ void Scene::GetRenderEntities(std::unordered_set<LPEntity>& entitiesRenderedBefo
 
 	for (LPEntity entity : entityManager->GetNonGridEntities())
 		addByRenderOrder(entity);
-}
-
-void Scene::AddEntity(LPEntity entity)
-{
-	entityManager->Add(entity);
-	entity->OnReady();
-}
-
-void Scene::QueueFree(LPEntity entity)
-{
-	entityManager->QueueFree(entity);
-}
-
-const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
-{
-	return entityManager->GetEntitiesByGroup(groupName);
-}
-
-void Scene::PlayerDeath()
-{
-	updateMovablesInSPGridEnabled = false;
-	Game::EnableCollisionEngine(false);
-}
-
-#include "ParaGoomba.h"
-void Scene::_Ready()
-{
-	//TODO: REMOVE DEBUG CODE
-	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup(Group::PLAYER, mario);
-	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup("Goombas", goomba);
-	LPEntity ground = new Entities::CollisionWallType1(Vector2<int>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<int>(16, 16));
-	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
-	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
-	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2100, 200 });
-
-	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
-	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
-	if (!playerGroup.empty())
-		camera.FollowEntity(playerGroup.front());
-}
-
-Dimension<int> Scene::GetWorldDimension()
-{
-	return Dimension<int>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
-}
-
-const Vector2<float>& Scene::GetCameraPosition()
-{
-	return camera.GetPosition();
-}
-
-const std::string& Scene::GetPrevScenePath()
-{
-	return prevScenePath;
-}
-
-RECT Scene::GetTileBoundingBox(int id)
-{
-	Dimension<int> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
-	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
-	int row = id / numOfCols;
-	int col = id % numOfCols;
-
-	int left = 1 + (Game::TILE_SIZE + 1) * col; //+1 for space between tiles
-	int top = 1 + (Game::TILE_SIZE + 1) * row; //+1 for space between tiles
-	int right = left + Game::TILE_SIZE;
-	int bottom = top + Game::TILE_SIZE;
-	return RECT{ left, top, right, bottom };
 }
 
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
@@ -277,5 +225,56 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 			}
 		}
 	}
+}
+
+void Scene::AddEntity(LPEntity entity)
+{
+	entityManager->Add(entity);
+	entity->OnReady();
+}
+
+void Scene::QueueFree(LPEntity entity)
+{
+	entityManager->QueueFree(entity);
+}
+
+const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
+{
+	return entityManager->GetEntitiesByGroup(groupName);
+}
+
+void Scene::PlayerDeath()
+{
+	updateMovablesInSPGridEnabled = false;
+	Game::EnableCollisionEngine(false);
+}
+
+Dimension<int> Scene::GetWorldDimension()
+{
+	return Dimension<int>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
+}
+
+const Vector2<float>& Scene::GetCameraPosition()
+{
+	return camera.GetPosition();
+}
+
+const std::string& Scene::GetPrevScenePath()
+{
+	return prevScenePath;
+}
+
+RECT Scene::GetTileBoundingBox(int id)
+{
+	Dimension<int> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
+	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
+	int row = id / numOfCols;
+	int col = id % numOfCols;
+
+	int left = 1 + (Game::TILE_SIZE + 1) * col; //+1 for space between tiles
+	int top = 1 + (Game::TILE_SIZE + 1) * row; //+1 for space between tiles
+	int right = left + Game::TILE_SIZE;
+	int bottom = top + Game::TILE_SIZE;
+	return RECT{ left, top, right, bottom };
 }
 
