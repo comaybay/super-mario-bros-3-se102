@@ -23,10 +23,10 @@ const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 740);
 const float Mario::BOUNCE_SPEED = 200;
 const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
 const float Mario::JUMP_SPEED = 310;
-const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75;
+const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75f;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
-const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1;
-const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5;
+const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
+const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
 
 Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet, PlayerPowerLevel powerLevel) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),

@@ -16,7 +16,8 @@ private:
 	void LoadTilesTexture(std::ifstream& file, const std::string& textureId) const;
 	void LoadHitboxes(const std::string& configPath) const;
 	std::vector<SpriteBox> CreateSpriteBoxSequence(
-		Utils::Vector2<int> startPosition, Utils::Dimension<float> dimension, int space, int frameCount, Utils::Vector2<int> offset) const;
+		const Utils::Vector2<int>& startPosition, const Utils::Dimension<int>& dimension, int space, int frameCount,
+		const Utils::Vector2<int>& offset) const;
 
 	std::string root;
 };

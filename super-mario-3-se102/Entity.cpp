@@ -168,10 +168,10 @@ void Entity::OnOutOfWorld()
 	parentScene->QueueFree(this);
 }
 
-Utils::Dimension<float> Entity::GetCurrentSpriteDimension()
+Utils::Dimension<int> Entity::GetCurrentSpriteDimension()
 {
 	RECT rect1 = GetSpriteBox().rect;
-	return Utils::Dimension<float>((float)(rect1.right - rect1.left), (float)(rect1.bottom - rect1.top));
+	return Utils::Dimension<int>(rect1.right - rect1.left, rect1.bottom - rect1.top);
 }
 
 void Entity::Update(float delta)

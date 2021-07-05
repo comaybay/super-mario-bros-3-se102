@@ -9,10 +9,14 @@ namespace Utils
 
 	template <class T>
 	struct Dimension {
-		float width = 0;
-		float height = 0;
+		T width = 0;
+		T height = 0;
 		Dimension();
 		Dimension(T width, T height);
+
+		template <class OTHER>
+		Dimension(const Dimension<OTHER>& other);
+
 		Dimension<T> operator/(float value) const;
 		Dimension<T> operator*(int value) const;
 		Dimension<T> operator*(float value) const;
@@ -27,6 +31,9 @@ namespace Utils
 		T y = 0;
 		Vector2();
 		Vector2(T x, T y);
+
+		template <class OTHER>
+		Vector2(const Vector2<OTHER>& other);
 
 		Vector2<T> operator+(const Vector2<T>& other) const;
 		Vector2<T> operator+(const Dimension<T>& other) const;
@@ -88,6 +95,11 @@ template <typename T>
 inline Utils::Vector2<T>::Vector2(T x, T y) : x(x), y(y) {};
 
 template <typename T>
+template <class OTHER>
+inline Utils::Vector2<T>::Vector2(const Utils::Vector2<OTHER>& other)
+	: x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {};
+
+template <typename T>
 inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() const
 {
 	return Vector2<T>(round(x), round(y));
@@ -96,7 +108,7 @@ inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() const
 template <typename T>
 inline float Utils::Vector2<T>::DistanceTo(const Utils::Vector2<T>& v) const
 {
-	return sqrt(pow(x - v.x, 2) + pow(y - v.y, 2));
+	return static_cast<float>(sqrt(pow(x - v.x, 2) + pow(y - v.y, 2)));
 }
 
 template <typename T>
@@ -198,6 +210,11 @@ inline Utils::Dimension<T>::Dimension() {};
 
 template <typename T>
 inline Utils::Dimension<T>::Dimension(T width, T height) : width(width), height(height) {}
+
+template <typename T>
+template <class OTHER>
+inline Utils::Dimension<T>::Dimension(const Dimension<OTHER>& other)
+	: width(static_cast<T>(other.width)), height(static_cast<T>(other.height)) {}
 
 template <typename T>
 inline Utils::Dimension<T> Utils::Dimension<T>::operator/(float value) const {

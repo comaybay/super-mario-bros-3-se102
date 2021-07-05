@@ -6,7 +6,7 @@ CellRange::CellRange(const Utils::Vector2<int>& cellIndex, const Utils::Vector2<
 	: index(cellIndex), span(cellSpan)
 {}
 
-Grid::Grid(int numberOfColumns, int numberOfRows, const Dimension<float>& cellSize)
+Grid::Grid(int numberOfColumns, int numberOfRows, const Dimension<int>& cellSize)
 	: numOfCols(numberOfColumns), numOfRows(numberOfRows), cellSize(cellSize),
 	cells(std::vector<LPEntitiesInCell>(numberOfRows* numberOfColumns))
 {
@@ -58,7 +58,7 @@ Vector2<int> Grid::GetCellIndexAtPoint(const Vector2<float>& point)
 	return position;
 }
 
-CellRange Grid::GetCellRangeFromRectangle(const Vector2<float>& position, const Dimension<float>& dim)
+CellRange Grid::GetCellRangeFromRectangle(const Vector2<float>& position, const Dimension<int>& dim)
 {
 	Vector2<int> topLeftPos = GetCellIndexAtPoint(position);
 	Vector2<int> bottomRightPos = GetCellIndexAtPoint(Vector2<float>(position.x + dim.width, position.y + dim.height));

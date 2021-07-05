@@ -9,10 +9,10 @@ class TextureManager
 public:
 	static void Load(const std::string&, const std::string& path, const D3DCOLOR& colorKey);
 	static LPDIRECT3DTEXTURE9 Get(const std::string& id);
-	static const Utils::Dimension<float>& GetDimensionOf(const std::string& id);
+	static const Utils::Dimension<int>& GetDimensionOf(const std::string& id);
 private:
 	static std::unordered_map<std::string, LPDIRECT3DTEXTURE9> textureById;
-	static std::unordered_map<std::string, Utils::Dimension<float>> textureImgDimById;
+	static std::unordered_map<std::string, Utils::Dimension<int>> textureImgDimById;
 };
 
 class TextureId {

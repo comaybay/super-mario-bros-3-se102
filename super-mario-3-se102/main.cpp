@@ -12,7 +12,7 @@
 using namespace ProcessingUtils;
 
 GameSettings ParseGameSettings();
-HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, Utils::Dimension<float> screenDim);
+HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, const Utils::Dimension<int>& screenDim);
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_  HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow)
@@ -41,7 +41,7 @@ GameSettings ParseGameSettings()
 		if (dimTokens.size() != 2)
 			throw InvalidTokenSizeException(2);
 
-		Utils::Dimension<float> gameDimension(stof(dimTokens[0]), stof(dimTokens[1]));
+		Utils::Dimension<int> gameDimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
 
 		line = GetNextNonCommentLine(file);
 		std::vector<std::string> scaleToken = SplitByComma(line);
@@ -79,7 +79,7 @@ GameSettings ParseGameSettings()
 	throw std::exception("GetGameSettings Failed: missing [GAME SETTINGS] section");
 }
 
-HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, Utils::Dimension<float> screenDim)
+HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, const Utils::Dimension<int>& screenDim)
 {
 	WNDCLASSEX wc{};
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -102,7 +102,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, Utils::Dimension<float>
 	//CreateWindow() nWidth and nHeight take into account window's title bar and borders
 	//use AdjustWindowRect to calculate the overall Dimension<float>:
 	//taken from https://stackoverflow.com/questions/11783086/get-exact-window-region-size-createwindow-window-size-isnt-correct-size-of-wi
-	RECT rect{ 0, 0, (LONG)screenDim.width, (LONG)screenDim.height };
+	RECT rect{ 0, 0, screenDim.width, screenDim.height };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	HWND hWnd =
 		CreateWindow(

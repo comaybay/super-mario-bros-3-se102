@@ -5,9 +5,9 @@
 namespace Entities {
 	class CollisionWallType2 : public Entity {
 	public:
-		CollisionWallType2(Utils::Vector2<float> position, Utils::Dimension<float> dimension);
+		CollisionWallType2(Utils::Vector2<float> position, Utils::Dimension<int> dimension);
 		LPConstHitbox GetHitbox() override;
-		Utils::Dimension<float> GetCurrentSpriteDimension() override;
+		Utils::Dimension<int> GetCurrentSpriteDimension() override;
 
 	private:
 		Hitbox hitbox;

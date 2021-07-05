@@ -137,19 +137,6 @@ const std::unordered_set<LPEntity>& EntityManager::GetNonGridEntities()
 	return nonGridEntities;
 }
 
-CellRange EntityManager::GetCellRangeAroundCamera() {
-	Vector2<float> camPos = parentScene->GetCameraPosition();
-	Dimension<float> dim = Game::GetGameSettings().gameDimension;
-
-	//add margin
-	float marginSize = 16 * 1;
-	camPos = camPos - Vector2<float>(marginSize, marginSize);
-	dim.width += marginSize;
-	dim.height += marginSize;
-
-	return staticEntitySPGrid->GetCellRangeFromRectangle(camPos, dim);
-}
-
 void EntityManager::QueueFree(LPEntity entity) {
 	freeQueue.insert(entity);
 }

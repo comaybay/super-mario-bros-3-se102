@@ -50,7 +50,7 @@ public:
 	/// </summary>
 	GridType GetGridType();
 
-	virtual Utils::Dimension<float> GetCurrentSpriteDimension();
+	virtual Utils::Dimension<int> GetCurrentSpriteDimension();
 	virtual LPConstHitbox GetHitbox();
 	SpriteBox GetSpriteBox();
 	virtual void Update(float delta);

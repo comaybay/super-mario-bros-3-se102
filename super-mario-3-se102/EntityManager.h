@@ -39,7 +39,6 @@ public:
 	/// </summary>
 	void _AddWithoutPutToGrid(LPEntity entity);
 private:
-	CellRange GetCellRangeAroundCamera();
 	LPScene parentScene = nullptr;
 
 	std::unordered_map<std::string, std::list<LPEntity>*> entitiesByGroup;

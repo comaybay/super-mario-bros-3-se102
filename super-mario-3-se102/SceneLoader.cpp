@@ -38,11 +38,11 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 
 	std::string section;
 	std::string sceneType;
-	Dimension<float> worldDim;
+	Dimension<int> worldDim;
 	D3DCOLOR bgColor{};
 	std::string prevScenePath;
-	char* background;
-	char* foreground;
+	char* background = nullptr;
+	char* foreground = nullptr;
 	LPEntityManager entityManager = nullptr;
 	LPEncodedWorld encodedWorld = nullptr;
 	//TODO: Parse Grid Dimension<float> 
@@ -82,7 +82,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	return scene;
 }
 
-std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension<float>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
 	std::string line;
 	while (std::getline(file, line))
@@ -110,7 +110,7 @@ std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& 
 			throw InvalidTokenSizeException(1);
 
 		sceneType = sceneTypeToken[0];
-		dim = Dimension<float>(stof(dimTokens[0]), stof(dimTokens[1]));
+		dim = Dimension<int>(stoi(dimTokens[0]), stoi(dimTokens[1]));
 		bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
 		prevScenePath = pathToken[0];
 
@@ -160,7 +160,7 @@ std::string SceneLoader::ParseSpatialPartitionGrid
 	if (gridSizeTokens.size() != 2)
 		throw InvalidTokenSizeException(2);
 
-	Dimension<float> cellDim(stoi(cellDimTokens[0]), stoi(cellDimTokens[1]));
+	Dimension<int> cellDim(stoi(cellDimTokens[0]), stoi(cellDimTokens[1]));
 	int numOfCols = stoi(gridSizeTokens[0]);
 	int numOfRows = stoi(gridSizeTokens[1]);
 
@@ -192,8 +192,8 @@ std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityM
 		if (cellTokens.size() != 4)
 			throw InvalidTokenSizeException(4);
 
-		Vector2<float> pos(stoi(entityTokens[1]), stoi(entityTokens[2]));
-		Dimension<float> dim(stoi(entityTokens[3]), stoi(entityTokens[4]));
+		Vector2<float> pos(stof(entityTokens[1]), stof(entityTokens[2]));
+		Dimension<int> dim(stoi(entityTokens[3]), stoi(entityTokens[4]));
 		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
 		Vector2<int> cellSpan(stoi(cellTokens[2]), stoi(cellTokens[3]));
 
@@ -263,7 +263,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 		for (auto& id : nodeIds)
 			nodeById[id] = new WMNode();
 
-		for (int i = 0; i < nodeIds.size(); i++) {
+		for (size_t i = 0; i < nodeIds.size(); i++) {
 			line = GetNextNonCommentLine(file);
 			std::vector<std::string> nodeTokens = SplitByComma(line);
 			if (nodeTokens.size() != 10)
@@ -275,7 +275,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			LPWMNode leftNode = nodeById[nodeTokens[3]];
 			LPWMNode bottomNode = nodeById[nodeTokens[4]];
 			LPWMNode rightNode = nodeById[nodeTokens[5]];
-			Vector2<float> pos(stoi(nodeTokens[6]), stoi(nodeTokens[7]));
+			Vector2<float> pos(stof(nodeTokens[6]), stof(nodeTokens[7]));
 			Vector2<int> cellIndex(stoi(nodeTokens[8]), stoi(nodeTokens[9]));
 
 			LPWMNode node = nodeById[nodeId];
@@ -297,7 +297,7 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 
 	switch (PlayerVariables::GetPlayerPowerLevel()) {
 	case PlayerPowerLevel::SMALL:
-		return new Entities::MarioSmall(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+		return new Entities::MarioSmall(Vector2<float>(stof(tokens[1]), stof(tokens[2])));
 	default:
 		throw std::exception("ParseMario failed: not implemented player power level");
 	}
@@ -309,7 +309,7 @@ LPEntity SceneLoader::ParseGoomba(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::Goomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::Goomba(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseParaGoomba(const std::vector<std::string>& tokens)
@@ -317,7 +317,7 @@ LPEntity SceneLoader::ParseParaGoomba(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::ParaGoomba(tokens[1], Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::ParaGoomba(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)
@@ -325,7 +325,7 @@ LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::Koopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::Koopa("Green", Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseParaKoopa(const std::vector<std::string>& tokens)
@@ -333,14 +333,14 @@ LPEntity SceneLoader::ParseParaKoopa(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::ParaKoopa("Green", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::ParaKoopa("Green", Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseCoin(const std::vector<std::string>& tokens) {
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
-	return new Entities::Coin(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	return new Entities::Coin(Vector2<float>(stof(tokens[1]), stof(tokens[2])));
 }
 
 LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
@@ -351,7 +351,7 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 	//TODO: REMOVE TEST CODE
 	//LPEntity content = new Entities::Goomba("Brown", Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
 
-	return new Entities::QuestionBlock(nullptr, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::QuestionBlock(nullptr, Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
@@ -359,7 +359,7 @@ LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::Brick(nullptr, Vector2<float>(stoi(tokens[2]), stoi(tokens[3])));
+	return new Entities::Brick(nullptr, Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseWMBush(const std::vector<std::string>& tokens)
@@ -367,7 +367,7 @@ LPEntity SceneLoader::ParseWMBush(const std::vector<std::string>& tokens)
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
-	return new Entities::WMBush(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	return new Entities::WMBush(Vector2<float>(stof(tokens[1]), stof(tokens[2])));
 }
 
 LPEntity SceneLoader::ParseWMHelpBubble(const std::vector<std::string>& tokens)
@@ -375,6 +375,6 @@ LPEntity SceneLoader::ParseWMHelpBubble(const std::vector<std::string>& tokens)
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
-	return new Entities::WMHelpBubble(Vector2<float>(stoi(tokens[1]), stoi(tokens[2])));
+	return new Entities::WMHelpBubble(Vector2<float>(stof(tokens[1]), stof(tokens[2])));
 }
 

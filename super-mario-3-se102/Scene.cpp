@@ -23,7 +23,7 @@ Scene::~Scene()
 	delete entityManager;
 }
 
-void Scene::_Init(const Dimension<float>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
+void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
 	LPEntityManager entityManager, const std::string& prevScenePath)
 {
 	this->worldTileDim = worldTileDim;
@@ -109,15 +109,14 @@ bool Scene::IsOutOfWorld(LPEntity entity)
 
 CellRange Scene::GetCellRangeAroundCamera() {
 	Vector2<float> camPos = GetCameraPosition();
-	Dimension<float> dim = Game::GetGameSettings().gameDimension;
+	Dimension<int> gameDim = Game::GetGameSettings().gameDimension;
 
 	//add margin
-	float marginSize = dim.width / 4;
-	camPos = camPos - Vector2<float>(marginSize, marginSize);
-	dim.width += marginSize;
-	dim.height += marginSize;
+	int marginSize = gameDim.width / 4;
+	Vector2<float> pos = camPos - Vector2<int>(marginSize, marginSize);
+	Dimension<int> dim = gameDim + Dimension<int>(marginSize, marginSize);
 
-	return entityManager->GetGrid(GridType::STATIC_ENTITIES)->GetCellRangeFromRectangle(camPos, dim);
+	return entityManager->GetGrid(GridType::STATIC_ENTITIES)->GetCellRangeFromRectangle(pos, dim);
 }
 
 void Scene::Render()
@@ -207,9 +206,9 @@ void Scene::_Ready()
 	//EntityManager::AddToGroup(Group::PLAYER, mario);
 	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup("Goombas", goomba);
-	LPEntity ground = new Entities::CollisionWallType1(Vector2<float>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<float>(16, 16));
+	LPEntity ground = new Entities::CollisionWallType1(Vector2<int>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<int>(16, 16));
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
-	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<float>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
+	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
 		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2100, 200 });
 
@@ -219,9 +218,9 @@ void Scene::_Ready()
 		camera.FollowEntity(playerGroup.front());
 }
 
-Dimension<float> Scene::GetWorldDimension()
+Dimension<int> Scene::GetWorldDimension()
 {
-	return Dimension<float>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
+	return Dimension<int>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
 }
 
 const Vector2<float>& Scene::GetCameraPosition()
@@ -236,8 +235,8 @@ const std::string& Scene::GetPrevScenePath()
 
 RECT Scene::GetTileBoundingBox(int id)
 {
-	Dimension<float> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
-	int numOfCols = (int)texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
+	Dimension<int> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
+	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
 	int row = id / numOfCols;
 	int col = id % numOfCols;
 
@@ -251,12 +250,12 @@ RECT Scene::GetTileBoundingBox(int id)
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 {
 	Utils::Vector2<float> cp = camera.GetPosition().Rounded();
-	Utils::Vector2<int> tileOffset = { (int)cp.x / Game::TILE_SIZE , (int)cp.y / Game::TILE_SIZE };
+	Utils::Vector2<int> tileOffset = cp / Game::TILE_SIZE;
 
-	Utils::Dimension<float> gameDim = Game::GetGameSettings().gameDimension;
+	Utils::Dimension<int> gameDim = Game::GetGameSettings().gameDimension;
 
 	//tiles need for rendering, +1 for seemless display when camera move
-	Utils::Dimension<float> tileRange(
+	Utils::Dimension<int> tileRange(
 		gameDim.width / Game::TILE_SIZE + 1,
 		gameDim.height / Game::TILE_SIZE + 1
 	);

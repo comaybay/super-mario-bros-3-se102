@@ -3,7 +3,7 @@
 using namespace Entities;
 using namespace Utils;
 
-CollisionWallType1::CollisionWallType1(Vector2<float> position, Dimension<float> dimension)
+CollisionWallType1::CollisionWallType1(const Vector2<float>& position, const Dimension<int>& dimension)
 	: Entity::Entity(
 		position,
 		{ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
@@ -17,7 +17,7 @@ LPConstHitbox CollisionWallType1::GetHitbox()
 	return &hitbox;
 }
 
-Dimension<float> CollisionWallType1::GetCurrentSpriteDimension()
+Dimension<int> CollisionWallType1::GetCurrentSpriteDimension()
 {
 	return hitbox.GetDimension();
 }

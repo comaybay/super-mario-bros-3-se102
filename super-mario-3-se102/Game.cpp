@@ -162,8 +162,7 @@ void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float
 }
 
 Vector2<float> Game::ToPixelPerfectPosition(const Vector2<float>& position) {
-	Vector2<float> roundedPos = position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
-	return Vector2<float>((float)roundedPos.x, (float)roundedPos.y);
+	return  position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
 }
 
 Vector2<float> Game::ToPrecisePosition(const Vector2<float>& position) {

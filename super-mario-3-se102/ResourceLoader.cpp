@@ -110,7 +110,7 @@ void ResourceLoader::LoadAnimations(const std::string& configPath) const
 				std::stoi(rectSequenceTokens[1])
 			);
 
-			Dimension<float> dim(
+			Dimension<int> dim(
 				std::stoi(rectSequenceTokens[2]),
 				std::stoi(rectSequenceTokens[3])
 			);
@@ -177,7 +177,7 @@ void ResourceLoader::LoadAnimations(const std::string& configPath) const
 }
 
 std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
-	Vector2<int> startPosition, Dimension<float> dimension, int space, int frameCount, Vector2<int> offset) const
+	const Vector2<int>& startPosition, const Dimension<int>& dimension, int space, int frameCount, const Vector2<int>& offset) const
 {
 	std::vector<SpriteBox> sequence;
 	for (int i = 0; i < frameCount; i++) {
@@ -243,7 +243,7 @@ void ResourceLoader::LoadHitboxes(const std::string& configPath) const
 
 		LPHitbox hitbox = new Hitbox(
 			Vector2<float>(stof(tokens[1]), stof(tokens[2])),
-			Dimension<float>(stoi(tokens[3]), stoi(tokens[4]))
+			Dimension<int>(stoi(tokens[3]), stoi(tokens[4]))
 		);
 
 		HitboxManager::Add(tokens[0], hitbox);
