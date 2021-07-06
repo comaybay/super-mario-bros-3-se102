@@ -68,6 +68,7 @@ namespace Entities {
 		static const float DEATH_JUMP_SPEED;
 		static const float DEATH_FALL_ACCEL;
 		static const float RUN_STATE_ANIM_SPEED;
+		static const float WALK_SPEED_REACHED_GOAL_ROULETTE;
 
 	private:
 		Event<> restartPointUp;

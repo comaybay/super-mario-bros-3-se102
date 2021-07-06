@@ -12,6 +12,7 @@ public:
 	const Utils::Vector2<float>& GetPosition() const;
 	void Update();
 	void FollowEntity(LPEntity entity);
+	void StopFollowingEntity();
 private:
 	void OnEntityDestroy(LPEntity _);
 	LPScene parentScene;

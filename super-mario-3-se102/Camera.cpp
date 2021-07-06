@@ -47,7 +47,12 @@ void Camera::FollowEntity(LPEntity entity)
 	Update();
 }
 
-void Camera::OnEntityDestroy(LPEntity _)
+void Camera::StopFollowingEntity()
 {
 	target = nullptr;
+}
+
+void Camera::OnEntityDestroy(LPEntity _)
+{
+	StopFollowingEntity();
 }

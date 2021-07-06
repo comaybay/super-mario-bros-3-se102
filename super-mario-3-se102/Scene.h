@@ -24,6 +24,7 @@ public:
 	void Render();
 	Utils::Dimension<int> GetWorldDimension();
 	const Utils::Vector2<float>& GetCameraPosition();
+	Camera& GetCamera();
 	const std::string& GetPrevScenePath();
 	void AddEntity(LPEntity entity);
 	void QueueFree(LPEntity entity);

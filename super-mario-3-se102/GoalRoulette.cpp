@@ -2,6 +2,7 @@
 #include "Group.h"
 #include "Scene.h"
 #include "Mario.h"
+#include "CourseClear.h"
 using namespace Entities;
 
 const float GoalRoulette::UP_SPEED = 120;
@@ -45,12 +46,15 @@ void GoalRoulette::OnCollision(CollisionData data)
 	switch (animation->GetCurrentFrame()) {
 	case 0:
 		SetAnimation("GRStar");
+		parentScene->AddEntity(new CourseClear(GoalRouletteCard::STAR));
 		break;
 	case 1:
 		SetAnimation("GRMushroom");
+		parentScene->AddEntity(new CourseClear(GoalRouletteCard::MUSHROOM));
 		break;
 	case 2:
 		SetAnimation("GRFlower");
+		parentScene->AddEntity(new CourseClear(GoalRouletteCard::FLOWER));
 		break;
 	default:
 		throw std::exception("GoalRoulette::OnCollision failed: expected index range from 0 to 2");
@@ -58,5 +62,6 @@ void GoalRoulette::OnCollision(CollisionData data)
 
 	Mario* mario = static_cast<Mario*>(data.who);
 	mario->StartReachedGoalRouletteAnimation();
+
 }
 

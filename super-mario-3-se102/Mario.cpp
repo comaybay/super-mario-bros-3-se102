@@ -20,6 +20,7 @@ const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75f;
 const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
+const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
 
 Mario::Mario(const Utils::Vector2<float>& position, const MarioAnimationSet& animationSet, PlayerPowerLevel powerLevel) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
@@ -110,11 +111,11 @@ void Mario::StartReachedGoalRouletteAnimation()
 
 void Mario::OnOutOfWorld()
 {
-	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<float> marioDim = GetCurrentSpriteDimension();
-
 	if (position.y < 0)
 		return;
+
+	Dimension<float> worldDim = parentScene->GetWorldDimension();
+	Dimension<float> marioDim = GetCurrentSpriteDimension();
 
 	velocity = { 0,0 };
 	UnsubscribeToOutOfWorldEvent();
@@ -161,7 +162,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 	if (stateHandler == &Mario::ReachedGoalRouletteWalkAway) {
 		time = 0;
 		SetAnimation(animationSet.walkRight, 1.75f);
-		velocity.x = MAX_WALK_SPEED;
+		velocity.x = WALK_SPEED_REACHED_GOAL_ROULETTE;
 		return;
 	}
 }

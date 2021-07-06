@@ -45,7 +45,7 @@ void Scene::_Ready()
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 3000, 390 });
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2500, 390 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
@@ -258,6 +258,11 @@ const Vector2<float>& Scene::GetCameraPosition()
 {
 	return camera.GetPosition();
 }
+
+Camera& Scene::GetCamera() {
+	return camera;
+}
+
 
 const std::string& Scene::GetPrevScenePath()
 {
