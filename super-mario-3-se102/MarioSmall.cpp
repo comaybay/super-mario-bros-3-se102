@@ -1,9 +1,10 @@
 #include "MarioSmall.h"
+#include "EntityConstants.h"
 #include "Game.h"
 using namespace Entities;
 
-const Mario::AnimationSet MarioSmall::animationSet = Mario::AnimationSet(
-	"MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSWL", "MarioSWR", "MarioSJL", "MarioSJR"
+const MarioAnimationSet MarioSmall::animationSet(
+	"MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSWL", "MarioSWR", "MarioSJL", "MarioSJR", "MarioSJL", "MarioSJR"
 );
 
 MarioSmall::MarioSmall(Utils::Vector2<float> position)
@@ -65,7 +66,7 @@ void MarioSmall::Die(float delta) {
 
 void MarioSmall::DieFall(float delta) {
 	velocity.y += DEATH_FALL_ACCEL * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	time += delta;
 	if (time >= 3.0f)

@@ -1,6 +1,7 @@
 #include "GoalRoulette.h"
 #include "Group.h"
 #include "Scene.h"
+#include "Mario.h"
 using namespace Entities;
 
 const float GoalRoulette::UP_SPEED = 120;
@@ -54,5 +55,8 @@ void GoalRoulette::OnCollision(CollisionData data)
 	default:
 		throw std::exception("GoalRoulette::OnCollision failed: expected index range from 0 to 2");
 	}
+
+	Mario* mario = static_cast<Mario*>(data.who);
+	mario->StartReachedGoalRouletteAnimation();
 }
 

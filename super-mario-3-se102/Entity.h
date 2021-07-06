@@ -33,8 +33,12 @@ public:
 	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType);
 	Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType);
 	virtual ~Entity();
-	void SetAnimation(std::string id);
-	void SetHitbox(std::string id);
+	/// <summary>
+	/// <para> Set entity animation and animation speed. </para>
+	/// <para> Given animation speed only affected, When new animation is set, animation speed will be reset. </para>
+	/// </summary>
+	void SetAnimation(const std::string& id, float animSpeed = 1);
+	void SetHitbox(const std::string& id);
 	const Utils::Vector2<float>& GetPosition();
 	const Utils::Vector2<float>& GetVelocity();
 	void SetPosition(const Utils::Vector2<float>& position);

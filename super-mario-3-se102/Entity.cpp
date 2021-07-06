@@ -92,15 +92,17 @@ LPScene Entity::GetParentScene()
 	return parentScene;
 }
 
-void Entity::SetAnimation(std::string id)
+void Entity::SetAnimation(const std::string& id, float animSpeed)
 {
 	if (id != animation->GetId()) {
 		delete animation;
 		animation = AnimationManager::GetNew(id);
 	}
+
+	animation->SetAnimationSpeed(animSpeed);
 }
 
-void Entity::SetHitbox(std::string id)
+void Entity::SetHitbox(const std::string& id)
 {
 	hitbox = HitboxManager::Get(id);
 }

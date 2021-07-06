@@ -16,6 +16,6 @@ namespace Entities {
 
 		bool died;
 		EntityState<MarioSmall> smallMarioState;
-		static const Mario::AnimationSet animationSet;
+		static const MarioAnimationSet animationSet;
 	};
 }

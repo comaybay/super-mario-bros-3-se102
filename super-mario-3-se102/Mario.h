@@ -2,36 +2,20 @@
 #include "CollisionEngine.h"
 #include "EntityState.h"
 #include "PlayerPowerLevel.h"
+#include "MarioAnimationSet.h"
 
 namespace Entities {
 	class Mario : public Entity {
 	public:
-		struct AnimationSet {
-			std::string idleLeft;
-			std::string idleRight;
-			std::string turnLeft;
-			std::string turnRight;
-			std::string walkLeft;
-			std::string walkRight;
-			std::string jumpLeft;
-			std::string jumpRight;
-			AnimationSet(
-				const std::string& idleLeft,
-				const std::string& idleRight,
-				const std::string& turnLeft,
-				const std::string& turnRight,
-				const std::string& walkLeft,
-				const std::string& walkRight,
-				const std::string& jumpLeft,
-				const std::string& jumpRight
-			);
-		};
+
 
 		virtual void TakeDamage() = 0;
 
-		Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet, PlayerPowerLevel powerLevel);
+		Mario(const Utils::Vector2<float>& position, const MarioAnimationSet& animationSet, PlayerPowerLevel powerLevel);
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		void StartReachedGoalRouletteAnimation();
+
 		PlayerPowerLevel GetPowerLevel();
 
 		/// <summary>
@@ -51,6 +35,8 @@ namespace Entities {
 		void Jump(float delta);
 		void Fall(float delta);
 		void BounceUp(float delta);
+		void ReachedGoalRouletteFall(float delta);
+		void ReachedGoalRouletteWalkAway(float delta);
 		void OutOfWorldDeath(float delta);
 
 		virtual void OnCollision(CollisionData data);
@@ -59,6 +45,10 @@ namespace Entities {
 
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
+		/// <summary>
+		/// Keep mario in world horizontally
+		/// </summary>
+		void ClipHorizontalPosition();
 
 		EntityState<Mario> marioState;
 		Utils::Vector2<float> dir;
@@ -67,7 +57,6 @@ namespace Entities {
 		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
 		PlayerPowerLevel powerLevel;
-		static const float MAX_FALL_SPEED;
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
 		static const Utils::Vector2<float> ACCELERATION;
@@ -78,10 +67,11 @@ namespace Entities {
 		static const float BOUNCE_SPEED_HOLD_JUMP;
 		static const float DEATH_JUMP_SPEED;
 		static const float DEATH_FALL_ACCEL;
+		static const float RUN_STATE_ANIM_SPEED;
 
 	private:
 		Event<> restartPointUp;
 		EventHandler<Mario, CollisionData> onCollision;
-		AnimationSet animationSet;
+		MarioAnimationSet animationSet;
 	};
 }

@@ -4,8 +4,8 @@
 #include "Scene.h"
 using namespace Entities;
 
-const Mario::AnimationSet MarioBig::animationSet = Mario::AnimationSet(
-	"MarioBIL", "MarioBIR", "MarioBTL", "MarioBTR", "MarioBML", "MarioBMR", "MarioBJL", "MarioBJR"
+const MarioAnimationSet MarioBig::animationSet(
+	"MarioBIL", "MarioBIR", "MarioBTL", "MarioBTR", "MarioBML", "MarioBMR", "MarioBJL", "MarioBJR", "MarioBFL", "MarioBFR"
 );
 
 MarioBig::MarioBig(const Utils::Vector2<float>& position)

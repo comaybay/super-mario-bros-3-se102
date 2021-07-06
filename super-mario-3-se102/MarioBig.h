@@ -9,6 +9,6 @@ namespace Entities {
 		virtual void TakeDamage();
 
 	private:
-		static const Mario::AnimationSet animationSet;
+		static const MarioAnimationSet animationSet;
 	};
 }

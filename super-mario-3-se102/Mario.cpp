@@ -9,16 +9,9 @@
 using namespace Entities;
 using namespace Utils;
 
-Mario::AnimationSet::AnimationSet(const std::string& idleLeft, const std::string& idleRight, const std::string& turnLeft,
-	const std::string& turnRight, const std::string& walkLeft, const std::string& walkRight, const std::string& jumpLeft, const std::string& jumpRight)
-	: idleLeft(idleLeft), idleRight(idleRight), turnLeft(turnLeft), turnRight(turnRight),
-	walkLeft(walkLeft), walkRight(walkRight), jumpLeft(jumpLeft), jumpRight(jumpRight)
-{
-}
-
-const float Mario::MAX_FALL_SPEED = EntityConstants::MAX_FALL_SPEED;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
+const float Mario::RUN_STATE_ANIM_SPEED = 2;
 const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 740);
 const float Mario::BOUNCE_SPEED = 200;
 const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
@@ -28,7 +21,7 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
 
-Mario::Mario(const Utils::Vector2<float>& position, const AnimationSet& animationSet, PlayerPowerLevel powerLevel) :
+Mario::Mario(const Utils::Vector2<float>& position, const MarioAnimationSet& animationSet, PlayerPowerLevel powerLevel) :
 	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
 	animationSet(animationSet),
 	powerLevel(powerLevel),
@@ -104,15 +97,15 @@ void Mario::UnsubscribeToCollisionEngine()
 void Mario::Update(float delta) {
 	Entity::Update(delta);
 
-	//keep mario in world horizontally
-	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<float> marioDim = GetCurrentSpriteDimension();
-	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
-
 	UpdateHorizontalDirection();
 	marioState.Handle(delta);
 
 	onGround = false;
+}
+
+void Mario::StartReachedGoalRouletteAnimation()
+{
+	SwitchState(&Mario::ReachedGoalRouletteFall);
 }
 
 void Mario::OnOutOfWorld()
@@ -120,7 +113,7 @@ void Mario::OnOutOfWorld()
 	Dimension<float> worldDim = parentScene->GetWorldDimension();
 	Dimension<float> marioDim = GetCurrentSpriteDimension();
 
-	if (position.y + marioDim.height <= worldDim.height)
+	if (position.y < 0)
 		return;
 
 	velocity = { 0,0 };
@@ -129,7 +122,7 @@ void Mario::OnOutOfWorld()
 	SwitchState(&Mario::OutOfWorldDeath);
 }
 
-PlayerPowerLevel Entities::Mario::GetPowerLevel()
+PlayerPowerLevel Mario::GetPowerLevel()
 {
 	return powerLevel;
 }
@@ -145,21 +138,39 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 		dir.y = 1;
 		onGround = false;
 		restartPointUp.Notify();
+		return;
 	}
 
-	else if (stateHandler == &Mario::Fall) {
+	if (stateHandler == &Mario::Fall) {
 		onGround = false;
 		dir.y = 1;
+		return;
 	}
 
-	else if (stateHandler == &Mario::BounceUp)
+	if (stateHandler == &Mario::BounceUp) {
 		velocity.y = (Game::IsKeyDown(DIK_S)) ? -BOUNCE_SPEED_HOLD_JUMP : -BOUNCE_SPEED;
+		return;
+	}
+
+	if (stateHandler == &Mario::ReachedGoalRouletteFall) {
+		SetAnimation(animationSet.fallRight);
+		velocity = { 0, 0 };
+		return;
+	}
+
+	if (stateHandler == &Mario::ReachedGoalRouletteWalkAway) {
+		time = 0;
+		SetAnimation(animationSet.walkRight, 1.75f);
+		velocity.x = MAX_WALK_SPEED;
+		return;
+	}
 }
 
 void Mario::Idle(float delta)
 {
+	ClipHorizontalPosition();
 	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (velocity.x != 0)
 		ApplyFriction(delta);
@@ -185,9 +196,10 @@ void Mario::Idle(float delta)
 
 void Mario::Walk(float delta)
 {
+	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
@@ -211,9 +223,10 @@ void Mario::Walk(float delta)
 
 void Mario::Run(float delta)
 {
+	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
@@ -237,9 +250,10 @@ void Mario::Run(float delta)
 
 void Mario::Jump(float delta)
 {
+	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += ACCELERATION.y * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
@@ -253,28 +267,16 @@ void Mario::Jump(float delta)
 	}
 }
 
-void Mario::BounceUp(float delta)
-{
-	//same as fall
-	Fall(delta);
-}
-
-void Mario::OutOfWorldDeath(float delta)
-{
-	time += delta;
-	if (time >= 3.0f)
-		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
-}
-
 void Mario::Fall(float delta) {
+	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += ACCELERATION.y * delta;
-	velocity.y = min(velocity.y, MAX_FALL_SPEED);
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
 
 	if (!onGround)
 		return;
@@ -288,6 +290,32 @@ void Mario::Fall(float delta) {
 		SwitchState(&Mario::Run);
 	else
 		SwitchState(&Mario::Walk);
+}
+
+void Mario::BounceUp(float delta)
+{
+	//same as fall
+	Fall(delta);
+}
+
+void Mario::ReachedGoalRouletteFall(float delta)
+{
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+
+	if (onGround)
+		SwitchState(&Mario::ReachedGoalRouletteWalkAway);
+}
+
+void Mario::ReachedGoalRouletteWalkAway(float delta)
+{
+}
+
+void Mario::OutOfWorldDeath(float delta)
+{
+	time += delta;
+	if (time >= 3.0f)
+		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
 }
 
 void Mario::ApplyHorizontalMovement(float delta)
@@ -321,3 +349,9 @@ void Mario::ApplyFriction(float delta) {
 		velocity.x = 0;
 }
 
+void Mario::ClipHorizontalPosition()
+{
+	Dimension<float> worldDim = parentScene->GetWorldDimension();
+	Dimension<float> marioDim = GetCurrentSpriteDimension();
+	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
+}
