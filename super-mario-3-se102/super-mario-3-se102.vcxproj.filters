@@ -183,9 +183,6 @@
     <ClCompile Include="PointUpFactory.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="WMBush.cpp">
       <Filter>Source Files\Entities\WorldMap</Filter>
     </ClCompile>
@@ -218,6 +215,12 @@
     </ClCompile>
     <ClCompile Include="GoalRoulette.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioAnimationSet.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -399,6 +402,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoalRoulette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioAnimationSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

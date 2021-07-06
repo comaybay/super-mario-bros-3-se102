@@ -3,11 +3,12 @@
 using namespace Entities;
 using namespace Utils;
 
-Entities::Wing::Wing(LPEntity whoToFollow)
+Wing::Wing(LPEntity whoToFollow)
 	: Entity::Entity(whoToFollow->GetPosition(), AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
 	target(whoToFollow),
 	offset({ 0, 0 })
 {
+	SetDirection(Direction::LEFT);
 }
 
 Wing::Wing(LPEntity whoToFollow, Direction dir, const Vector2<float>& offset)
@@ -26,7 +27,7 @@ void Wing::AutoFlap()
 void Wing::SetDirection(Direction dir)
 {
 	dirCode = (dir == Direction::LEFT) ? "L" : "R";
-	SetAnimation("WingFlap" + dirCode);
+	SetAnimation("WingFlap" + dirCode, animSpeed);
 }
 
 void Wing::SetOffset(const Vector2<float>& offset)
@@ -38,15 +39,16 @@ void Wing::SetOffset(const Vector2<float>& offset)
 
 void Wing::SetFlapSpeed(float speed)
 {
-	animation->SetAnimationSpeed(speed);
+	animSpeed = speed;
+	animation->SetAnimationSpeed(animSpeed);
 }
 
 void Wing::FlapUp() {
-	SetAnimation("WingDown" + dirCode);
+	SetAnimation("WingDown" + dirCode, animSpeed);
 }
 
 void Wing::FlapDown() {
-	SetAnimation("WingDown" + dirCode);
+	SetAnimation("WingDown" + dirCode, animSpeed);
 }
 
 void Wing::Destroy() {

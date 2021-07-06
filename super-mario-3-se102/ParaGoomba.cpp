@@ -14,10 +14,11 @@ using namespace Utils;
 
 const float ParaGoomba::TIME_TILL_PREPARE = 0.75f;
 const float ParaGoomba::PREPARE_JUMP_SPEED = 100;
+const int ParaGoomba::NUM_OF_PREPARE_JUMPS = 3;
 const float ParaGoomba::JUMP_SPEED = 250;
 const float ParaGoomba::JUMP_FLAP_ANIM_SPEED = 3;
 
-ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
+ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
@@ -29,6 +30,8 @@ ParaGoomba::ParaGoomba(std::string colorType, Vector2<float> position)
 	wingRight(Wing(this, Wing::Direction::RIGHT, Vector2<float>(10, -10)))
 {
 	SetAnimation(colorCode + "GoombaM");
+	wingLeft.FlapDown();
+	wingRight.FlapDown();
 }
 
 void ParaGoomba::OnReady()
@@ -96,7 +99,7 @@ void ParaGoomba::PrepareToJump(float delta) {
 
 	jumpCount++;
 
-	if (jumpCount <= 3)
+	if (jumpCount <= NUM_OF_PREPARE_JUMPS)
 		velocity.y -= PREPARE_JUMP_SPEED;
 	else
 	{

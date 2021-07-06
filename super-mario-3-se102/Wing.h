@@ -25,6 +25,7 @@ namespace Entities {
 		LPEntity target;
 		Utils::Vector2<float> offset;
 		std::string dirCode;
+		float animSpeed;
 	};
 }
 

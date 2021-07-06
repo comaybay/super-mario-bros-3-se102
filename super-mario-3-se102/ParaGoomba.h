@@ -11,7 +11,7 @@ namespace Entities {
 	{
 	public:
 		~ParaGoomba();
-		ParaGoomba(std::string colorType, Utils::Vector2<float> position);
+		ParaGoomba(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 		void Render() override;
 		void KnockOver(float horizontalDirection);
@@ -38,6 +38,7 @@ namespace Entities {
 		static const float PREPARE_JUMP_SPEED;
 		static const float JUMP_SPEED;
 		static const float TIME_TILL_PREPARE;
+		static const int NUM_OF_PREPARE_JUMPS;
 		static const float JUMP_FLAP_ANIM_SPEED;
 	};
 }
