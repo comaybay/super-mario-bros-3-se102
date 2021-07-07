@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Constants.h"
 #include "Game.h"
 #include "Entities.h"
 #include "EntityManager.h"
@@ -45,7 +46,7 @@ void Scene::_Ready()
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 2500, 390 });
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 0, 390 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
@@ -122,9 +123,9 @@ bool Scene::IsOutOfWorld(LPEntity entity)
 
 	return (
 		pos.x + dim.width < 0 ||
-		pos.x > worldTileDim.width * Game::TILE_SIZE ||
+		pos.x > worldTileDim.width * Constants::TILE_SIZE ||
 		pos.y < 0 ||
-		pos.y > worldTileDim.height * Game::TILE_SIZE
+		pos.y > worldTileDim.height * Constants::TILE_SIZE
 		);
 }
 
@@ -198,14 +199,14 @@ void Scene::GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, 
 void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 {
 	Utils::Vector2<float> cp = camera.GetPosition().Rounded();
-	Utils::Vector2<int> tileOffset = cp / Game::TILE_SIZE;
+	Utils::Vector2<int> tileOffset = cp / Constants::TILE_SIZE;
 
 	Utils::Dimension<int> gameDim = Game::GetGameSettings().gameDimension;
 
 	//tiles need for rendering, +1 for seemless display when camera move
 	Utils::Dimension<int> tileRange(
-		gameDim.width / Game::TILE_SIZE + 1,
-		gameDim.height / Game::TILE_SIZE + 1
+		gameDim.width / Constants::TILE_SIZE + 1,
+		gameDim.height / Constants::TILE_SIZE + 1
 	);
 
 	//only render inside camera 
@@ -220,7 +221,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 			if (index != 0xFFF) {
 				LPDIRECT3DTEXTURE9 texure = TextureManager::Get(encodedWorld->GetTextureId());
 				RECT rect = GetTileBoundingBox(index);
-				Vector2<float> renderPos((float)x * Game::TILE_SIZE, (float)y * Game::TILE_SIZE);
+				Vector2<float> renderPos((float)x * Constants::TILE_SIZE, (float)y * Constants::TILE_SIZE);
 				Game::Draw(texure, rect, renderPos);
 			}
 		}
@@ -251,7 +252,7 @@ void Scene::PlayerDeath()
 
 Dimension<int> Scene::GetWorldDimension()
 {
-	return Dimension<int>(worldTileDim.width * Game::TILE_SIZE, worldTileDim.height * Game::TILE_SIZE);
+	return Dimension<int>(worldTileDim.width * Constants::TILE_SIZE, worldTileDim.height * Constants::TILE_SIZE);
 }
 
 const Vector2<float>& Scene::GetCameraPosition()
@@ -272,14 +273,14 @@ const std::string& Scene::GetPrevScenePath()
 RECT Scene::GetTileBoundingBox(int id)
 {
 	Dimension<int> texDim = TextureManager::GetDimensionOf(encodedWorld->GetTextureId());
-	int numOfCols = texDim.width / (Game::TILE_SIZE + 1); //+1 for space between tiles
+	int numOfCols = texDim.width / (Constants::TILE_SIZE + 1); //+1 for space between tiles
 	int row = id / numOfCols;
 	int col = id % numOfCols;
 
-	int left = 1 + (Game::TILE_SIZE + 1) * col; //+1 for space between tiles
-	int top = 1 + (Game::TILE_SIZE + 1) * row; //+1 for space between tiles
-	int right = left + Game::TILE_SIZE;
-	int bottom = top + Game::TILE_SIZE;
+	int left = 1 + (Constants::TILE_SIZE + 1) * col; //+1 for space between tiles
+	int top = 1 + (Constants::TILE_SIZE + 1) * row; //+1 for space between tiles
+	int right = left + Constants::TILE_SIZE;
+	int bottom = top + Constants::TILE_SIZE;
 	return RECT{ left, top, right, bottom };
 }
 

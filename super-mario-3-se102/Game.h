@@ -31,7 +31,6 @@ public:
 	/// </summary>
 	static void QueueFreeAndSwitchScene(std::string scenePath);
 	static void EnableCollisionEngine(bool state);
-	static const int TILE_SIZE = 16;
 private:
 	typedef Utils::Vector2<float>(*ToPositionRelativeToCameraHandler)(const Utils::Vector2<float>&);
 	static ToPositionRelativeToCameraHandler toPositionRelativeToCamera;

@@ -9,5 +9,6 @@ public:
 	static const std::string PLAYER;
 	static const std::string ENEMIES;
 	static const std::string EFFECTS;
+	static const std::string ITEMS;
 	static const std::string ALL;
 };

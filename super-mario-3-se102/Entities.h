@@ -11,6 +11,7 @@
 #include "CollisionWallType1.h"
 #include "CollisionWallType2.h"
 #include "Coin.h"
+#include "Mushroom.h"
 #include "CoinUp.h"
 #include "GoalRoulette.h"
 

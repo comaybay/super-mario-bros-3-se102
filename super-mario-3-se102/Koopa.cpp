@@ -4,11 +4,13 @@
 #include "Goomba.h"
 #include "ParaGoomba.h"
 #include "Group.h"
-#include "Game.h"
+#include "Constants.h"
+#include "Scene.h"
 #include "Contains.h"
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
 #include "PointUpFactory.h"
+
 using namespace Entities;
 using namespace Utils;
 
@@ -95,7 +97,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			mario->Bounce();
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
-			position.y += Game::TILE_SIZE;
+			position.y += Constants::TILE_SIZE;
 			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
 		else {

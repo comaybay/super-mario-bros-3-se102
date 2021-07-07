@@ -1,9 +1,9 @@
 #include "HitboxManager.h"
 #include "Utils.h"
-#include "Game.h"
+#include "Constants.h"
 #include "Contains.h"
 std::unordered_map<std::string, LPHitbox> HitboxManager::hitboxById;
-LPHitbox HitboxManager::TILE_SIZE_HITBOX = new Hitbox(Utils::Vector2<float>(0, 0), Utils::Dimension<float>(Game::TILE_SIZE, Game::TILE_SIZE));
+LPHitbox HitboxManager::TILE_SIZE_HITBOX = new Hitbox(Utils::Vector2<float>(0, 0), Utils::Dimension<float>(Constants::TILE_SIZE, Constants::TILE_SIZE));
 LPHitbox HitboxManager::NO_HITBOX = new Hitbox(Utils::Vector2<float>(0, 0), Utils::Dimension<float>(0, 0));
 
 void HitboxManager::Add(const std::string& id, LPHitbox hitbox)

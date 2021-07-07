@@ -213,16 +213,25 @@
     <ClCompile Include="CoinUp.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="GoalRoulette.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MarioAnimationSet.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="GoalRoulette.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
     <ClCompile Include="CourseClear.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -414,6 +423,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoalRouletteCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

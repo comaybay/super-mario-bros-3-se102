@@ -177,10 +177,12 @@
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="BlockHitMovement.cpp" />
     <ClCompile Include="CoinUp.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="CourseClear.cpp" />
     <ClCompile Include="EmptyBlock.cpp" />
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="GoalRoulette.cpp" />
+    <ClCompile Include="ContentFactory.cpp" />
     <ClCompile Include="MarioAnimationSet.cpp" />
     <ClCompile Include="MarioBig.cpp" />
     <ClCompile Include="BoomFX.cpp" />
@@ -199,6 +201,7 @@
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
@@ -238,12 +241,15 @@
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="BlockHitMovement.h" />
     <ClInclude Include="CoinUp.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="CourseClear.h" />
     <ClInclude Include="EmptyBlock.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GoalRoulette.h" />
     <ClInclude Include="GoalRouletteCard.h" />
+    <ClInclude Include="ContentFactory.h" />
     <ClInclude Include="MarioAnimationSet.h" />
+    <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioBig.h" />
     <ClInclude Include="BoomFX.h" />

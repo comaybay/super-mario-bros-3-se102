@@ -76,3 +76,4 @@ namespace Entities {
 		MarioAnimationSet animationSet;
 	};
 }
+typedef Mario* LPMario;

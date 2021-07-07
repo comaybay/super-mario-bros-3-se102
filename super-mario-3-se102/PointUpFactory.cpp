@@ -1,4 +1,5 @@
 #include "PointUpFactory.h"
+#include "Constants.h"
 #include "Game.h"
 #include "Utils.h"
 #include "Event.h"
@@ -32,7 +33,7 @@ PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 	}
 
 	index = min(index + 1, (int)pointUpTypes.size() - 1);
-	Vector2<float> pos(callerPosition.x, callerPosition.y - Game::TILE_SIZE);
+	Vector2<float> pos(callerPosition.x, callerPosition.y - Constants::TILE_SIZE);
 	return new PointUp(pos, pointUpTypes[index]);
 }
 
