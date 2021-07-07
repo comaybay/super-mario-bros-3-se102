@@ -34,17 +34,9 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 	this->prevScenePath = prevScenePath;
 }
 
-#include "ParaGoomba.h"
 void Scene::_Ready()
 {
-	//TODO: REMOVE DEBUG CODE
-	//LPEntity player = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup(Group::PLAYER, player);
-	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup("Goombas", goomba);
-	LPEntity ground = new Entities::CollisionWallType1(Vector2<int>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<int>(16, 16));
-	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
-	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
+	//TODO: Remove test code
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
 		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 140, 390 });
 
@@ -54,28 +46,10 @@ void Scene::_Ready()
 		camera.FollowEntity(playerGroup.front());
 }
 
-//TODO: REMOVE TEST CODE
-//D3DCOLOR c = D3DCOLOR_XRGB(rand() / 300, rand() / 300, rand() / 300);
-int i = 0;
 void Scene::Update(float delta)
 {
-	/*i++;
-	if (i == 60) {
-		EntityManager::QueueFree(EntityManager::GetGroup(Group::PLAYER).front());
-	}*/
-
-	//if (EntityManager::GetGroup("Player").size() != 0) {
-	//	int i = EntityManager::GetGroup("Player").size();
-	//	CollisionData d = CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("Goombas").front(), delta);
-	//	CollisionData dh = CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), EntityManager::GetGroup("CollisionBlocks").front(), delta);
-	//	auto pBlock = EntityManager::GetGroup("CollisionBlocks").begin();
-	//	std::advance(pBlock, 1);
-	//	CollisionEngine::Detect(EntityManager::GetGroup("Player").front(), *pBlock, delta);
-	//}
-	NotifyOutOfWorldEntities();
+	DetectAndNotifyOutOfWorld();
 	CellRange range = GetCellRangeAroundCamera();
-
-
 
 	auto handler = [delta](LPEntity entity) {
 		entity->Update(delta);
@@ -101,7 +75,7 @@ void Scene::OnEntityDestroy(LPEntity entity)
 	subscriptions.erase(entity);
 }
 
-void Scene::NotifyOutOfWorldEntities()
+void Scene::DetectAndNotifyOutOfWorld()
 {
 	notifyList.clear();
 

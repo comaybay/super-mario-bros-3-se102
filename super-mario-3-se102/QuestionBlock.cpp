@@ -21,7 +21,6 @@ QuestionBlock::QuestionBlock(const Vector2<float>& position)
 	),
 	contentId(ContentId::NONE)
 {
-
 }
 
 QuestionBlock::QuestionBlock(const std::string& contentId, const Vector2<float>& position)

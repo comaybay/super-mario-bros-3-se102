@@ -19,14 +19,13 @@ const Vector2<float>& Camera::GetPosition() const
 
 void Camera::Update()
 {
-	//TODO: implement a more complex version
 	if (target == nullptr)
 		return;
 
 	Dimension<float> worldDim = parentScene->GetWorldDimension();
 	Dimension<float> gameDim = Game::GetGameSettings().gameDimension;
 	Dimension<int> targetDim = target->GetCurrentSpriteDimension();
-	Vector2<float> targetPos = target->GetPosition();
+	const Vector2<float>& targetPos = target->GetPosition();
 
 	//center around entity
 	Vector2<float> newPosition(

@@ -8,7 +8,6 @@ const float PointUp::EXIST_DURATION = 0.8f;
 const float PointUp::MOVE_UP_SPEED = 110.0f;
 const float PointUp::FRICTION = 5.0f;
 
-//TODO: Implement all point up animations for this
 const std::unordered_map<PointUp::Type, std::string> PointUp::animationIdByType{
 	{Type::ONE_HUNDRED_POINTS, "100P"},
 	{Type::TWO_HUNDRED_POINTS, "200P"},

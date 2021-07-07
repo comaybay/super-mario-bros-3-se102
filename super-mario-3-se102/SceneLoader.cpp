@@ -48,7 +48,6 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	char* foreground = nullptr;
 	LPEntityManager entityManager = nullptr;
 	LPEncodedWorld encodedWorld = nullptr;
-	//TODO: Parse Grid Dimension<float> 
 	LPGrid wallEntitySpatialGrid = nullptr;
 	LPGrid staticEntitySpatialGrid = nullptr;
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
@@ -176,7 +175,6 @@ std::string SceneLoader::ParseSpatialPartitionGrid
 
 std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid)
 {
-	//TODO:
 	std::string line;
 	while (std::getline(file, line))
 	{
@@ -355,7 +353,6 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 	const std::string& itemName = tokens[1];
 	Vector2<float> position(stof(tokens[2]), stof(tokens[3]));
 
-	//TODO: REMOVE TEST CODE
 	return new Entities::QuestionBlock(itemName, position);
 }
 

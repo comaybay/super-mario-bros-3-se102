@@ -9,6 +9,7 @@
 class ContentFactory
 {
 public:
+	//TODO: use an abstraction of a player instead of Mario.
 	ContentFactory(Entities::LPMario player);
 	LPEntity Create(const std::string& contentId, const Utils::Vector2<float>& position);
 
