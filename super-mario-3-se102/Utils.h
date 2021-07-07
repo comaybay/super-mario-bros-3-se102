@@ -102,7 +102,7 @@ inline Utils::Vector2<T>::Vector2(const Utils::Vector2<OTHER>& other)
 template <typename T>
 inline Utils::Vector2<T> Utils::Vector2<T>::Rounded() const
 {
-	return Vector2<T>(round(x), round(y));
+	return Vector2<T>(static_cast<T>(round(x)), static_cast<T>(round(y)));
 }
 
 template <typename T>
@@ -238,6 +238,6 @@ inline Utils::Dimension<T> Utils::Dimension<T>::operator+(const Utils::Dimension
 
 template <typename T>
 inline Utils::Dimension<T> Utils::Dimension<T>::Rounded() const {
-	return Dimension<T>(round(width), round(height));
+	return Dimension<T>(static_cast<T>(round(width)), static_cast<T>(round(height)));
 }
 

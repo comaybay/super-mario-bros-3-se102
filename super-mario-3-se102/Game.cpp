@@ -1,13 +1,5 @@
 #include "Game.h"
-#include "Utils.h"
-#include "TextureManager.h"
-#include "AnimationManager.h"
-#include "EntityManager.h"
-#include "Entities.h"
 #include "CollisionEngine.h"
-#include <sstream>
-#include <thread>
-#include <chrono>
 #include "ResourceLoader.h"
 #include "SceneLoader.h"
 using namespace Utils;
@@ -23,6 +15,7 @@ LPDIRECTINPUTDEVICE8 Game::didv;
 LPDIRECT3DSURFACE9 Game::backBuffer;
 LPD3DXSPRITE Game::d3dxSprite;
 BYTE Game::keyStates[256];
+const int Game::KEYBOARD_BUFER_SIZE = 1024;
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 

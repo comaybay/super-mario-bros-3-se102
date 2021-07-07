@@ -16,5 +16,6 @@ MarioBig::MarioBig(const Utils::Vector2<float>& position)
 void MarioBig::TakeDamage()
 {
 	parentScene->QueueFree(this);
-	parentScene->AddEntity(new MarioSmall(position + Utils::Vector2<float>(0, Constants::TILE_SIZE)));
+	Utils::Vector2<float> smallMarioPos = { position.x, position.y + Constants::TILE_SIZE };
+	parentScene->AddEntity(new MarioSmall(smallMarioPos));
 }

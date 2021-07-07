@@ -1,9 +1,8 @@
 #pragma once
 #include <string>
-#include <vector>
-#include <fstream>
 #include <windows.h>
 #include <d3dx9.h>
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include "GameSettings.h"
 #include "Scene.h"
@@ -65,25 +64,29 @@ private:
 	static Utils::Vector2<float> ToPixelPerfectPosition(const Utils::Vector2<float>& position);
 	static Utils::Vector2<float> ToPrecisePosition(const Utils::Vector2<float>& position);
 	static void ProcessKeyboard();
-
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 
 	static GameSettings gameSettings;
+	static bool collisionEngineEnabled;
+
 	static HWND windowHandle;
 	static LPDIRECT3D9 d3d;
 	static LPDIRECT3DDEVICE9 d3ddv;
-	static LPDIRECTINPUT8 di;
 	static LPDIRECTINPUTDEVICE8 didv;
-	static const int KEYBOARD_BUFER_SIZE = 1024;
-	static BYTE keyStates[256];
-	static DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFER_SIZE];
-	static DWORD dwInOut;
-	static LPDIRECT3DSURFACE9 backBuffer;
+	static LPDIRECTINPUT8 di;
 	static LPD3DXSPRITE d3dxSprite;
+
+	static const int KEYBOARD_BUFER_SIZE;
+	static BYTE keyStates[];
+	static DIDEVICEOBJECTDATA keyEvents[];
+	static DWORD dwInOut;
+
+	static LPDIRECT3DSURFACE9 backBuffer;
+
 	static LPScene activeScene;
 	static LPScene newActiveScene;
 	static LPScene waitForDeletionScene;
-	static bool collisionEngineEnabled;
+
 };
 
