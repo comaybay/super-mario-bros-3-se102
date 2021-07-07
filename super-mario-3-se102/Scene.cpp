@@ -38,8 +38,8 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 void Scene::_Ready()
 {
 	//TODO: REMOVE DEBUG CODE
-	//LPEntity mario = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
-	//EntityManager::AddToGroup(Group::PLAYER, mario);
+	//LPEntity player = new Entities::Mario(Utils::Vector2<float>(16 * 4, worldTileDim.height * 16 - 16 * 4));
+	//EntityManager::AddToGroup(Group::PLAYER, player);
 	//LPEntity goomba = new Entities::Goomba(Utils::Vector2<float>(16 * 5, worldTileDim.height * 16 - 16 * 4));
 	//EntityManager::AddToGroup("Goombas", goomba);
 	LPEntity ground = new Entities::CollisionWallType1(Vector2<int>(16 * 12, worldTileDim.height * 16 - 16 * 2), Dimension<int>(16, 16));

@@ -10,6 +10,7 @@
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
 #include "PointUpFactory.h"
+#include "EntityUtils.h"
 
 using namespace Entities;
 using namespace Utils;
@@ -31,17 +32,16 @@ void Koopa::OnReady()
 {
 	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 
-	if (playerGroup.empty()) {
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
+		SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
+	}
+	else {
 		SetAnimation(colorCode + "KoopaML");
 		velocity.x = -WALK_SPEED;
-		return;
 	}
-
-	LPEntity player = playerGroup.front();
-	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
-	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 }
 
 void Koopa::OnCollision(CollisionData data)
@@ -90,18 +90,18 @@ void Koopa::OnCollision(CollisionData data)
 
 void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
-	LPMario mario = static_cast<LPMario>(data.who);
+	LPMario player = static_cast<LPMario>(data.who);
 	if (state.GetHandler() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
-			mario->Bounce();
+			player->Bounce();
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
 			position.y += Constants::TILE_SIZE;
 			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
 		else {
-			mario->TakeDamage();
-			velocity.x = (mario->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
+			player->TakeDamage();
+			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 			SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 		}
 
@@ -113,9 +113,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
 
 		else {
-			bool isPlayerOnLeftSide = (mario->GetPosition().x < position.x + GetCurrentSpriteDimension().width / 2);
-			float direction = isPlayerOnLeftSide ? 1.0f : -1.0f;
-			velocity.x = SHELL_SLIDE_SPEED * direction;
+			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? SHELL_SLIDE_SPEED : -SHELL_SLIDE_SPEED;
 			parentScene->AddEntity(PointUpFactory::Create(position));
 		}
 
@@ -125,11 +123,11 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 
 	if (state.GetHandler() == &Koopa::ShellSlide) {
 		if (data.edge.x != 0.0f || data.edge.y == -1.0f) {
-			mario->TakeDamage();
+			player->TakeDamage();
 			return;
 		}
 
-		mario->Bounce();
+		player->Bounce();
 		SwitchState(&Koopa::ShellIdle);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		return;

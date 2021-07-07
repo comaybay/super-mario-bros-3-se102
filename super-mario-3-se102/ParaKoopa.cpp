@@ -8,6 +8,7 @@
 #include "CollisionHandling.h"
 #include "EntityConstants.h"
 #include "PointUpFactory.h"
+#include "EntityUtils.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -33,21 +34,20 @@ void ParaKoopa::OnReady()
 	Entity::OnReady();
 	wing = new Wing(this);
 	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 
-	if (playerGroup.empty()) {
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
+		SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
+
+		Wing::Direction wingDir = EntityUtils::IsOnLeftSideOf(this, player) ? Wing::Direction::RIGHT : Wing::Direction::LEFT;
+		SetWingDirection(wingDir);
+	}
+	else {
 		velocity.x = -Koopa::WALK_SPEED;
 		SetAnimation(colorCode + "KoopaML");
 		SetWingDirection(Wing::Direction::RIGHT);
-		return;
 	}
-
-	LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
-	velocity.x = (player->GetPosition().x < position.x) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
-	SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
-
-	Wing::Direction wingDir = (player->GetPosition().x < position.x) ? Wing::Direction::RIGHT : Wing::Direction::LEFT;
-	SetWingDirection(wingDir);
 }
 
 
@@ -119,16 +119,16 @@ void ParaKoopa::OnCollision(CollisionData data)
 
 void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
-	LPMario mario = static_cast<LPMario>(data.who);
+	LPMario player = static_cast<LPMario>(data.who);
 	if (data.edge.y == 1.0f) {
-		mario->Bounce();
+		player->Bounce();
 		SwitchState(&ParaKoopa::StompedOn);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);
 	}
 	else {
-		mario->TakeDamage();
-		velocity.x = (mario->GetPosition().x < position.x) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
+		player->TakeDamage();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 
 		SetWingDirection((velocity.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
 		std::string anim = (velocity.x < 0) ? "KoopaML" : "KoopaMR";

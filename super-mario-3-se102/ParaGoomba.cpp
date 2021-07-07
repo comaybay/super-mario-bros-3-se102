@@ -9,6 +9,7 @@
 #include "PointUpFactory.h"
 #include "Wing.h"
 #include "Contains.h"
+#include "EntityUtils.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -38,15 +39,13 @@ void ParaGoomba::OnReady()
 {
 	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 
-	if (playerGroup.empty()) {
-		velocity.x = -Goomba::WALK_SPEED;
-		return;
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
-
-	LPEntity player = playerGroup.front();
-	velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
+	else
+		velocity.x = -Goomba::WALK_SPEED;
 }
 
 ParaGoomba::~ParaGoomba()
@@ -89,7 +88,7 @@ void ParaGoomba::MoveAround(float delta) {
 			return;
 
 		LPEntity player = playerGroup.front();
-		velocity.x = (player->GetPosition().x < position.x) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 }
 
@@ -145,17 +144,17 @@ void ParaGoomba::OnCollision(CollisionData data)
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYER, groups)) {
-		LPMario mario = static_cast<LPMario>(data.who);
+		LPMario player = static_cast<LPMario>(data.who);
 
 		if (data.edge.y == 1.0f) {
-			mario->Bounce();
+			player->Bounce();
 			state.SetHandler(&ParaGoomba::StompedOn);
 			parentScene->AddEntity(PointUpFactory::Create(position));
 			parentScene->QueueFree(this);
 			return;
 		}
 
-		mario->TakeDamage();
+		player->TakeDamage();
 		velocity.x = (position.x < data.who->GetPosition().x) ? Goomba::WALK_SPEED : -Goomba::WALK_SPEED;
 		return;
 	}

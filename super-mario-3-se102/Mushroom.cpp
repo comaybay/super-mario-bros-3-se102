@@ -6,6 +6,7 @@
 #include "EntityConstants.h"
 #include "CollisionHandling.h"
 #include "PointUp.h"
+#include "EntityUtils.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -54,11 +55,9 @@ void Mushroom::RiseUp(float delta)
 	velocity.y = 0;
 	position.y = riseDestY;
 
-	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
-	if (!playerGroup.empty()) {
-		LPMario player = static_cast<LPMario>(playerGroup.front());
-		bool moveRight = player->GetPosition().x + player->GetCurrentSpriteDimension().width / 2.0f < position.x + GetCurrentSpriteDimension().width / 2.0f;
-		velocity.x = moveRight ? MOVE_SPEED : -MOVE_SPEED;
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+		LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? MOVE_SPEED : -MOVE_SPEED;
 	}
 	else
 		velocity.x = -MOVE_SPEED;

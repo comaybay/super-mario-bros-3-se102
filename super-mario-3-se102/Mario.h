@@ -19,7 +19,7 @@ namespace Entities {
 		PlayerPowerLevel GetPowerLevel();
 
 		/// <summary>
-		/// Event will notify when mario jump (meaning point up combo need to restart)
+		/// Event will notify when player jump (meaning point up combo need to restart)
 		/// </summary>
 		Event<>& GetRestartPointUpEvent();
 
@@ -46,7 +46,7 @@ namespace Entities {
 		void ApplyHorizontalMovement(float delta);
 		void ApplyFriction(float delta);
 		/// <summary>
-		/// Keep mario in world horizontally
+		/// Keep player in world horizontally
 		/// </summary>
 		void ClipHorizontalPosition();
 

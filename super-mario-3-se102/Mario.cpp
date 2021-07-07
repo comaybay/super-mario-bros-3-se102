@@ -341,11 +341,11 @@ void Mario::ApplyHorizontalMovement(float delta)
 }
 
 void Mario::ApplyFriction(float delta) {
-	//apply friction to slow mario down
+	//apply friction to slow player down
 	int frictionDirX = -Sign(velocity.x);
 	velocity.x += ACCELERATION.x * frictionDirX * delta;
 
-	//stop mario
+	//stop player
 	if (Sign(velocity.x) == frictionDirX)
 		velocity.x = 0;
 }

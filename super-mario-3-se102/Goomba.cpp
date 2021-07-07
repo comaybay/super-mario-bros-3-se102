@@ -8,6 +8,7 @@
 #include "BoomFX.h"
 #include "PointUpFactory.h"
 #include "Contains.h"
+#include "EntityUtils.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -27,15 +28,13 @@ void Goomba::OnReady()
 {
 	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
-	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 
-	if (playerGroup.empty()) {
-		velocity.x = -WALK_SPEED;
-		return;
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 	}
-
-	LPEntity player = playerGroup.front();
-	velocity.x = (player->GetPosition().x < position.x) ? -WALK_SPEED : WALK_SPEED;
+	else
+		velocity.x = -WALK_SPEED;
 }
 
 void Goomba::Update(float delta)
@@ -68,10 +67,10 @@ void Goomba::OnCollision(CollisionData data)
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYER, groups)) {
-		LPMario mario = static_cast<LPMario>(data.who);
+		LPMario player = static_cast<LPMario>(data.who);
 
 		if (data.edge.y == 1.0f) {
-			mario->Bounce();
+			player->Bounce();
 			state.SetHandler(&Goomba::StompedOn);
 			SetAnimation(colorCode + "GoombaDeath");
 			velocity.x = 0;
@@ -79,8 +78,8 @@ void Goomba::OnCollision(CollisionData data)
 			return;
 		}
 
-		mario->TakeDamage();
-		velocity.x = (position.x < data.who->GetPosition().x) ? WALK_SPEED : -WALK_SPEED;
+		player->TakeDamage();
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 		return;
 	}
 

@@ -48,8 +48,8 @@ void Brick::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
-		LPMario mario = static_cast<LPMario>(data.who);
-		if (mario->GetPowerLevel() == PlayerPowerLevel::BIG)
+		LPMario player = static_cast<LPMario>(data.who);
+		if (player->GetPowerLevel() == PlayerPowerLevel::BIG)
 			ExposeContent();
 		else
 			state.SetHandler(&Brick::Hit);

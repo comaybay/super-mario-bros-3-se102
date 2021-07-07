@@ -12,7 +12,7 @@ int PointUpFactory::index = -1;
 //TODO: use an abstraction of a player instead of Mario.
 LPMario PointUpFactory::player;
 
-std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
+const std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 	PointUp::Type::ONE_HUNDRED_POINTS,
 	PointUp::Type::TWO_HUNDRED_POINTS,
 	PointUp::Type::FOUR_HUNDRED_POINTS,
@@ -24,6 +24,7 @@ std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 	PointUp::Type::ONE_UP
 };
 
+//TODO: create a better implementation
 PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 {
 	if (player == nullptr) {
