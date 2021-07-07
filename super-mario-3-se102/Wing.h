@@ -3,18 +3,18 @@
 #include "Utils.h"
 
 namespace Entities {
+	enum class WingDirection {
+		LEFT, RIGHT
+	};
+
 	class Wing : public Entity
 	{
 	public:
-		enum class Direction {
-			LEFT, RIGHT
-		};
-
 		Wing(LPEntity whoToFollow);
-		Wing(LPEntity whoToFollow, Direction dir, const Utils::Vector2<float>& offset);
+		Wing(LPEntity whoToFollow, WingDirection dir, const Utils::Vector2<int>& offset);
 		void Update(float delta) override;
 		void AutoFlap();
-		void SetDirection(Direction dir);
+		void SetDirection(WingDirection dir);
 		void SetOffset(const Utils::Vector2<float>& offset);
 		void SetFlapSpeed(float speed);
 		void FlapUp();
@@ -23,7 +23,7 @@ namespace Entities {
 
 	private:
 		LPEntity target;
-		Utils::Vector2<float> offset;
+		Utils::Vector2<int> offset;
 		std::string dirCode;
 		float animSpeed;
 	};

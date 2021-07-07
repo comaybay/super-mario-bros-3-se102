@@ -8,10 +8,10 @@ Wing::Wing(LPEntity whoToFollow)
 	target(whoToFollow),
 	offset({ 0, 0 })
 {
-	SetDirection(Direction::LEFT);
+	SetDirection(WingDirection::LEFT);
 }
 
-Wing::Wing(LPEntity whoToFollow, Direction dir, const Vector2<float>& offset)
+Wing::Wing(LPEntity whoToFollow, WingDirection dir, const Vector2<int>& offset)
 	: Entity::Entity(whoToFollow->GetPosition() + offset, AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
 	target(whoToFollow),
 	offset(offset)
@@ -24,9 +24,9 @@ void Wing::AutoFlap()
 	SetAnimation("WingFlap" + dirCode);
 }
 
-void Wing::SetDirection(Direction dir)
+void Wing::SetDirection(WingDirection dir)
 {
-	dirCode = (dir == Direction::LEFT) ? "L" : "R";
+	dirCode = (dir == WingDirection::LEFT) ? "L" : "R";
 	SetAnimation("WingFlap" + dirCode, animSpeed);
 }
 

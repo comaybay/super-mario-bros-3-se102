@@ -20,7 +20,7 @@ namespace Entities {
 		void OnCollision(CollisionData data);
 		void HandleWallCollision(const CollisionData& data);
 		void HandlePlayerCollision(const CollisionData& data);
-		void SetWingDirection(Wing::Direction dir);
+		void SetWingDirection(WingDirection dir);
 
 		void SwitchState(EntityState<ParaKoopa>::Handler handler);
 		void JumpAround(float delta);

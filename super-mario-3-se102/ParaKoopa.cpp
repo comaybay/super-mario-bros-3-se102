@@ -40,22 +40,22 @@ void ParaKoopa::OnReady()
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 		SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 
-		Wing::Direction wingDir = EntityUtils::IsOnLeftSideOf(this, player) ? Wing::Direction::RIGHT : Wing::Direction::LEFT;
+		WingDirection wingDir = EntityUtils::IsOnLeftSideOf(this, player) ? WingDirection::RIGHT : WingDirection::LEFT;
 		SetWingDirection(wingDir);
 	}
 	else {
 		velocity.x = -Koopa::WALK_SPEED;
 		SetAnimation(colorCode + "KoopaML");
-		SetWingDirection(Wing::Direction::RIGHT);
+		SetWingDirection(WingDirection::RIGHT);
 	}
 }
 
 
-void ParaKoopa::SetWingDirection(Wing::Direction dir)
+void ParaKoopa::SetWingDirection(WingDirection dir)
 {
 	wing->SetDirection(dir);
 
-	if (dir == Wing::Direction::RIGHT)
+	if (dir == WingDirection::RIGHT)
 		wing->SetOffset({ 8, 2 });
 	else
 		wing->SetOffset({ 0, 3 });
@@ -110,7 +110,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 
 		velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
-		SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
+		SetWingDirection((data.edge.x < 0) ? WingDirection::RIGHT : WingDirection::LEFT);
 		std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 		SetAnimation(colorCode + anim);
 		return;
@@ -130,7 +130,7 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 		player->TakeDamage();
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 
-		SetWingDirection((velocity.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
+		SetWingDirection((velocity.x < 0) ? WingDirection::RIGHT : WingDirection::LEFT);
 		std::string anim = (velocity.x < 0) ? "KoopaML" : "KoopaMR";
 		SetAnimation(colorCode + anim);
 	}
@@ -153,7 +153,7 @@ void ParaKoopa::HandleWallCollision(const CollisionData& data)
 			velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
 			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
-			SetWingDirection((data.edge.x < 0) ? Wing::Direction::RIGHT : Wing::Direction::LEFT);
+			SetWingDirection((data.edge.x < 0) ? WingDirection::RIGHT : WingDirection::LEFT);
 			SetAnimation(colorCode + anim);
 		}
 	}

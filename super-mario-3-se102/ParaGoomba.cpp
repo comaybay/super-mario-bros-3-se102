@@ -27,8 +27,8 @@ ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& posit
 	onGround(false),
 	jumpCount(0),
 	time(0),
-	wingLeft(Wing(this, Wing::Direction::LEFT, Vector2<float>(-2, -10))),
-	wingRight(Wing(this, Wing::Direction::RIGHT, Vector2<float>(10, -10)))
+	wingLeft(Wing(this, WingDirection::LEFT, { -2, -10 })),
+	wingRight(Wing(this, WingDirection::RIGHT, { 10, -10 }))
 {
 	SetAnimation(colorCode + "GoombaM");
 	wingLeft.FlapDown();
