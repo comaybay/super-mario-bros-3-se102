@@ -1,3 +1,4 @@
+#include "Game.h"
 #include "ResourceLoader.h"
 #include "TextureManager.h"
 #include "AnimationManager.h"
@@ -8,13 +9,9 @@
 using namespace ProcessingUtils;
 using namespace Utils;
 
-ResourceLoader::ResourceLoader(const std::string& rootDirectory)
-	: root(rootDirectory) {}
-
-
-void ResourceLoader::Load() const
+void ResourceLoader::Load(const std::string& dataDirectory)
 {
-	std::string configPath = JoinPath(root, "/config.txt");
+	std::string configPath = JoinPath(dataDirectory, "/config.txt");
 	std::ifstream file(configPath);
 	//go to section
 	std::string section;
@@ -24,14 +21,14 @@ void ResourceLoader::Load() const
 
 		std::string path;
 		std::getline(file, path);
-		path = JoinPath(root, path);
+		path = JoinPath(dataDirectory, path);
 
 		if (section == "[TEXTURES]")
-			LoadTextures(path);
+			LoadTextures(path, dataDirectory);
 		else if (section == "[ANIMATIONS]")
 			LoadAnimations(path);
 		else if (section == "[TILES]")
-			LoadTilesTextures(path);
+			LoadTilesTextures(path, dataDirectory);
 		else if (section == "[HITBOXES]")
 			LoadHitboxes(path);
 	}
@@ -39,7 +36,7 @@ void ResourceLoader::Load() const
 	file.close();
 }
 
-void ResourceLoader::LoadTextures(const std::string& configPath) const
+void ResourceLoader::LoadTextures(const std::string& configPath, const std::string& dataDirectory)
 {
 	std::ifstream file(configPath);
 
@@ -59,7 +56,7 @@ void ResourceLoader::LoadTextures(const std::string& configPath) const
 			throw InvalidTokenSizeException(3);
 
 		std::string id = paramTokens[0];
-		std::string path = JoinPath(root, paramTokens[1]);
+		std::string path = JoinPath(dataDirectory, paramTokens[1]);
 		D3DCOLOR colorKey = D3DCOLOR_XRGB(stoi(colorKeyTokens[0]), stoi(colorKeyTokens[1]), stoi(colorKeyTokens[2]));
 
 		TextureManager::Load(id, path, colorKey);
@@ -68,7 +65,7 @@ void ResourceLoader::LoadTextures(const std::string& configPath) const
 	file.close();
 }
 
-void ResourceLoader::LoadAnimations(const std::string& configPath) const
+void ResourceLoader::LoadAnimations(const std::string& configPath)
 {
 	std::ifstream file(configPath);
 
@@ -177,7 +174,7 @@ void ResourceLoader::LoadAnimations(const std::string& configPath) const
 }
 
 std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
-	const Vector2<int>& startPosition, const Dimension<int>& dimension, int space, int frameCount, const Vector2<int>& offset) const
+	const Vector2<int>& startPosition, const Dimension<int>& dimension, int space, int frameCount, const Vector2<int>& offset)
 {
 	std::vector<SpriteBox> sequence;
 	for (int i = 0; i < frameCount; i++) {
@@ -200,16 +197,16 @@ std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
 	return sequence;
 }
 
-void ResourceLoader::LoadTilesTextures(const std::string& configPath) const
+void ResourceLoader::LoadTilesTextures(const std::string& configPath, const std::string& dataDirectory)
 {
 	std::ifstream file(configPath);
 
-	LoadTilesTexture(file, TextureId::WORLD_TILES);
-	LoadTilesTexture(file, TextureId::WORLD_MAP_TILES);
+	LoadTilesTexture(file, dataDirectory, TextureId::WORLD_TILES);
+	LoadTilesTexture(file, dataDirectory, TextureId::WORLD_MAP_TILES);
 
 	file.close();
 }
-void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& textureId) const
+void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& dataDirectory, const std::string& textureId)
 {
 	std::string line = GetNextNonCommentLine(file);
 	std::vector<std::string> paramTokens = SplitByComma(line);
@@ -221,13 +218,13 @@ void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& te
 	if (colorKeyTokens.size() != 3)
 		throw InvalidTokenSizeException(3);
 
-	std::string path = JoinPath(root, paramTokens[0]);
+	std::string path = JoinPath(dataDirectory, paramTokens[0]);
 	D3DCOLOR colorKey = D3DCOLOR_XRGB(stoi(colorKeyTokens[0]), stoi(colorKeyTokens[1]), stoi(colorKeyTokens[2]));
 
 	TextureManager::Load(textureId, path, colorKey);
 }
 
-void ResourceLoader::LoadHitboxes(const std::string& configPath) const
+void ResourceLoader::LoadHitboxes(const std::string& configPath)
 {
 	std::ifstream file(configPath);
 

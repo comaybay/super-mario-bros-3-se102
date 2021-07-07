@@ -12,36 +12,64 @@ class Game
 {
 public:
 	static void Init(HWND hWnd, const GameSettings& gameSettings);
-	static const GameSettings& GetGameSettings();
-	static LPDIRECT3D9 GetD3D9();
-	static LPDIRECT3DDEVICE9 GetDirect3DDevice();
-	static LPDIRECT3DSURFACE9 GetBackBuffer();
-	static LPD3DXSPRITE GetD3DXSprite();
-	static LPScene GetActiveScene();
-	static void Draw(LPDIRECT3DTEXTURE9 texure, const RECT& boundingBox, const Utils::Vector2<float>& position);
+
+
 	static void Run();
-	static void Release();
-	static void ProcessKeyboard();
+	static const GameSettings& GetGameSettings();
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
+	static void Release();
+	static void EnableCollisionEngine(bool state);
+	static LPDIRECT3DDEVICE9 GetDirect3DDevice();
 	static void SwitchScene(LPScene scene);
-	static void QueueFreeAndSwitchScene(LPScene scene);
+
 	/// <summary>
-	/// Queue free old scene and switch scene 
+	/// Queue free previous scene and switch to new scene
 	/// </summary>
 	static void QueueFreeAndSwitchScene(std::string scenePath);
-	static void EnableCollisionEngine(bool state);
+
+	/// <summary>
+	/// Get scene that is currently active (running in the game loop)
+	/// </summary>
+	static LPScene GetActiveScene();
+
+	/// <summary>
+	/// Begin rendering process, Must be called before performing any rendering (e.g: Game::Draw calls)
+	/// </summary>
+	static HRESULT BeginRender();
+
+	/// <summary>
+	/// End rendering process, Must be called before calling BeginRender
+	/// </summary>
+	static HRESULT EndRender();
+
+	/// <summary>
+	/// Draw out an area of a texture
+	/// </summary>
+	static void Draw(LPDIRECT3DTEXTURE9 texure, const RECT& boundingBox, const Utils::Vector2<float>& position);
+
+	/// <summary>
+	/// Fill backbuffer with color
+	/// </summary>
+	/// <param name="color"></param>
+	static HRESULT ColorFill(const D3DCOLOR& color);
+
+	/// <summary>
+	/// Display back buffer content to the screen
+	/// </summary>
+	static HRESULT Present();
+
+
 private:
-	typedef Utils::Vector2<float>(*ToPositionRelativeToCameraHandler)(const Utils::Vector2<float>&);
-	static ToPositionRelativeToCameraHandler toPositionRelativeToCamera;
+	static void InitAndSwitchScene();
 	static Utils::Vector2<float> ToPixelPerfectPosition(const Utils::Vector2<float>& position);
 	static Utils::Vector2<float> ToPrecisePosition(const Utils::Vector2<float>& position);
+	static void ProcessKeyboard();
 
 	static LPDIRECT3DDEVICE9 CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle);
 	static LPDIRECTINPUTDEVICE8 CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND windowHandle, DWORD keyboardBufferSize);
 
 	static GameSettings gameSettings;
-	static D3DXMATRIX scaleMatrix;
 	static HWND windowHandle;
 	static LPDIRECT3D9 d3d;
 	static LPDIRECT3DDEVICE9 d3ddv;
@@ -56,6 +84,6 @@ private:
 	static LPScene activeScene;
 	static LPScene newActiveScene;
 	static LPScene waitForDeletionScene;
-	static bool enableCollisionEngine;
+	static bool collisionEngineEnabled;
 };
 

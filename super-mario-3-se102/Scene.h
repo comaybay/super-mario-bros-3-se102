@@ -43,7 +43,7 @@ public:
 
 private:
 	void OnEntityDestroy(LPEntity entity);
-	void NotifyOutOfWorldEntities();
+	void DetectAndNotifyOutOfWorld();
 	bool IsOutOfWorld(LPEntity entity);
 	std::list<std::pair<LPEntity, Handler<Entity>>> notifyList;
 	std::unordered_map<LPEntity, Handler<Entity>> subscriptions;

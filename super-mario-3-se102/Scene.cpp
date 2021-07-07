@@ -119,19 +119,10 @@ void Scene::Render()
 	std::list<LPEntity> entitiesRenderedrAfterWorld;
 	GetRenderEntities(entitiesRenderedBeforeWorld, entitiesRenderedrAfterWorld);
 
-	LPDIRECT3DDEVICE9 d3ddv = Game::GetDirect3DDevice();
-	if (d3ddv->BeginScene() == S_OK)
+	if (Game::BeginRender() == S_OK)
 	{
-		// Clear the whole window with a color
-		d3ddv->ColorFill(Game::GetBackBuffer(), NULL, backgroundColor);
-
-		LPD3DXSPRITE d3dxSprite = Game::GetD3DXSprite();
-		d3dxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-
-		//nearest neightbor filter
-		d3ddv->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
-		d3ddv->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		d3ddv->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+		// Clear the whole window with background color
+		Game::ColorFill(backgroundColor);
 
 		for (LPEntity entity : entitiesRenderedBeforeWorld)
 			entity->Render();
@@ -142,12 +133,10 @@ void Scene::Render()
 		for (LPEntity entity : entitiesRenderedrAfterWorld)
 			entity->Render();
 
-		d3dxSprite->End();
-		d3ddv->EndScene();
+		Game::EndRender();
 	}
 
-	// Display back buffer content to the screen
-	d3ddv->Present(NULL, NULL, NULL, NULL);
+	Game::Present();
 }
 
 void Scene::GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, std::list<LPEntity>& entitiesRenderedrAfterWorld) {

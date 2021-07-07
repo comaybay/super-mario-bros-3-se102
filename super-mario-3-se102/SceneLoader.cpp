@@ -33,7 +33,7 @@ const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoad
 };
 
 LPScene SceneLoader::LoadScene(std::string scenePath) {
-	std::ifstream file(scenePath);
+	std::ifstream file(ProcessingUtils::JoinPath(Game::GetGameSettings().dataDirectory, scenePath));
 	if (!file.is_open()) {
 		std::string msg = "LoadWorld Failed: file not found: " + scenePath;
 		throw std::exception(msg.c_str());
@@ -78,8 +78,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 		}
 	}
 	file.close();
-	std::string absPrevScenePath = (prevScenePath == "None") ? "" : JoinPath(Game::GetGameSettings().dataDirectory, prevScenePath);
-	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, absPrevScenePath);
+	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, prevScenePath);
 	scene->_Ready();
 	return scene;
 }
@@ -281,7 +280,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			Vector2<int> cellIndex(stoi(nodeTokens[8]), stoi(nodeTokens[9]));
 
 			LPWMNode node = nodeById[nodeId];
-			node->_Init(pos, JoinPath(Game::GetGameSettings().dataDirectory, scenePath), topNode, leftNode, bottomNode, rightNode);
+			node->_Init(pos, scenePath, topNode, leftNode, bottomNode, rightNode);
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
 

@@ -69,10 +69,17 @@ GameSettings ParseGameSettings()
 		if (dirToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
-		std::string dataDirectory = dirToken[0];
+		const std::string& dataDirectory = dirToken[0];
+
+		line = GetNextNonCommentLine(file);
+		std::vector<std::string> initalSceneToken = SplitByComma(line);
+		if (initalSceneToken.size() != 1)
+			throw InvalidTokenSizeException(1);
+
+		const std::string& initialScenePath = initalSceneToken[0];
 
 		file.close();
-		return GameSettings(gameDimension, pixelScale, maxFPS, pixelPerfectRendering, dataDirectory);
+		return GameSettings(gameDimension, pixelScale, maxFPS, pixelPerfectRendering, dataDirectory, initialScenePath);
 	}
 
 	file.close();

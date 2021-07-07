@@ -18,9 +18,8 @@ void TextureManager::Load(const std::string& id, const std::string& path, const 
 
 
 	LPDIRECT3DTEXTURE9 texture;
-	LPDIRECT3DDEVICE9 d3ddv = Game::GetDirect3DDevice();
 	result = D3DXCreateTextureFromFileEx(
-		d3ddv,
+		Game::GetDirect3DDevice(),
 		path.c_str(),		//image path
 		image_info.Width,
 		image_info.Height,

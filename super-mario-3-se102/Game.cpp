@@ -13,9 +13,9 @@
 using namespace Utils;
 
 GameSettings Game::gameSettings;
-Game::ToPositionRelativeToCameraHandler Game::toPositionRelativeToCamera;
+bool Game::collisionEngineEnabled = true;
+
 HWND Game::windowHandle;
-D3DXMATRIX Game::scaleMatrix;
 LPDIRECT3D9 Game::d3d;
 LPDIRECT3DDEVICE9 Game::d3ddv;
 LPDIRECTINPUT8 Game::di;
@@ -25,18 +25,16 @@ LPD3DXSPRITE Game::d3dxSprite;
 BYTE Game::keyStates[256];
 DIDEVICEOBJECTDATA Game::keyEvents[Game::KEYBOARD_BUFER_SIZE];
 DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
+
 LPScene Game::activeScene = nullptr;
 LPScene Game::newActiveScene = nullptr;
 LPScene Game::waitForDeletionScene = nullptr;
-bool Game::enableCollisionEngine = true;
 
 void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 {
 	Game::gameSettings = gameSettings;
 	Game::gameSettings.maxFPS = Utils::Clip(gameSettings.maxFPS, 20, 120);
 	Game::windowHandle = hWnd;
-
-	toPositionRelativeToCamera = (gameSettings.pixelPerfectRendering) ? &Game::ToPixelPerfectPosition : &Game::ToPrecisePosition;
 
 	d3d = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -47,7 +45,7 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	DirectInput8Create
 	(
 		//WARNING: GWL_HINSTANCE is undefined if your solution platform is x64, switch to x86 instead
-		//from: https://stackoverflow.com/questions/51771072/gwl-wndproc-undeclared/51772471
+		//reference: https://stackoverflow.com/questions/51771072/gwl-wndproc-undeclared/51772471
 		(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8, (VOID**)&di, NULL
@@ -56,22 +54,20 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	didv = CreateDirectInputDevice(di, hWnd, KEYBOARD_BUFER_SIZE);
 	didv->Acquire();
 
-	//used for rendering
+	D3DXCreateSprite(d3ddv, &d3dxSprite);
+	//scale sprite when draw
 	float scale = (float)gameSettings.pixelScale;
-	Game::scaleMatrix = {
+	D3DXMATRIX scaleMatrix = {
 		scale,           0.0f,            0.0f,            0.0f,
 		0.0f,            scale,           0.0f,            0.0f,
 		0.0f,            0.0f,            scale,           0.0f,
 		0.0f,            0.0f,            0.0f,            1.0f
 	};
-	D3DXCreateSprite(d3ddv, &d3dxSprite);
 	d3dxSprite->SetTransform(&scaleMatrix);
 
-	ResourceLoader(gameSettings.dataDirectory).Load();
+	ResourceLoader::Load(gameSettings.dataDirectory);
 
-	//TODO: remove test code
-	//activeScene = SceneLoader::LoadScene("data/world_maps/wm_1.txt");
-	activeScene = SceneLoader::LoadScene("data/worlds/w_1_1_1.txt");
+	activeScene = SceneLoader::LoadScene(gameSettings.initialScenePath);
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 
@@ -149,16 +145,42 @@ LPDIRECTINPUTDEVICE8 Game::CreateDirectInputDevice(LPDIRECTINPUT8 di, HWND hWnd,
 	return didv;
 }
 
-LPDIRECT3D9 Game::GetD3D9() { return d3d; };
-LPDIRECT3DDEVICE9 Game::GetDirect3DDevice() { return d3ddv; };
-LPDIRECT3DSURFACE9 Game::GetBackBuffer() { return backBuffer; };
-LPD3DXSPRITE Game::GetD3DXSprite() { return d3dxSprite; };
+HRESULT Game::BeginRender() {
+	HRESULT result = d3ddv->BeginScene();
+	if (result == S_OK)
+	{
+		d3dxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		//nearest neightbor filter
+		d3ddv->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+		d3ddv->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+		d3ddv->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+	}
+
+	return result;
+}
+HRESULT Game::EndRender() {
+	d3dxSprite->End();
+	return d3ddv->EndScene();
+}
+
+HRESULT Game::ColorFill(const D3DCOLOR& color) {
+	return d3ddv->ColorFill(backBuffer, NULL, color);
+}
+
+HRESULT Game::Present() {
+	return d3ddv->Present(NULL, NULL, NULL, NULL);
+}
 
 void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float>& position) {
+
+	typedef Utils::Vector2<float>(*ToPositionRelativeToCameraHandler)(const Utils::Vector2<float>&);
+	static ToPositionRelativeToCameraHandler toPositionRelativeToCamera =
+		(gameSettings.pixelPerfectRendering) ? &Game::ToPixelPerfectPosition : &Game::ToPrecisePosition;
+
 	Vector2<float> adjustedPos = toPositionRelativeToCamera(position);
 	D3DXVECTOR3 p(adjustedPos.x, adjustedPos.y, 0);
 
-	Game::GetD3DXSprite()->Draw(texure, &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
+	d3dxSprite->Draw(texure, &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 }
 
 Vector2<float> Game::ToPixelPerfectPosition(const Vector2<float>& position) {
@@ -174,15 +196,10 @@ LPScene Game::GetActiveScene() {
 }
 
 void Game::EnableCollisionEngine(bool state) {
-	enableCollisionEngine = state;
+	collisionEngineEnabled = state;
 }
 
 void Game::SwitchScene(LPScene scene) {
-	newActiveScene = scene;
-}
-
-void Game::QueueFreeAndSwitchScene(LPScene scene) {
-	waitForDeletionScene = activeScene;
 	newActiveScene = scene;
 }
 
@@ -190,15 +207,21 @@ void Game::QueueFreeAndSwitchScene(std::string scenePath)
 {
 	try {
 		LPScene newScene = SceneLoader::LoadScene(scenePath);
-		QueueFreeAndSwitchScene(newScene);
+		waitForDeletionScene = activeScene;
+		newActiveScene = newScene;
 	}
-	catch (std::exception e) {}
+	catch (std::exception e) {
+		//Do nothing if scene do not exist
+	}
 }
 
 const GameSettings& Game::GetGameSettings() {
 	return gameSettings;
 }
 
+LPDIRECT3DDEVICE9 Game::GetDirect3DDevice() {
+	return d3ddv;
+}
 
 void Game::Run()
 {
@@ -239,7 +262,7 @@ void Game::Run()
 			accumulator -= frameTime;
 			ProcessKeyboard();
 
-			if (enableCollisionEngine)
+			if (collisionEngineEnabled)
 				CollisionEngine::Update(dt);
 
 			activeScene->Update(dt);
@@ -249,20 +272,23 @@ void Game::Run()
 
 		activeScene->Render();
 
-		if (newActiveScene != nullptr) {
-			activeScene = newActiveScene;
-			CollisionEngine::_SetActiveCED(activeScene);
-			newActiveScene = nullptr;
+		if (newActiveScene != nullptr)
+			InitAndSwitchScene();
+	}
+}
 
-			if (waitForDeletionScene != nullptr) {
-				LPScene scene = waitForDeletionScene;
-				delete waitForDeletionScene;
-				//all entities must all be destroyed before event destructions
-				CollisionEngine::_RemoveCED(scene);
-				waitForDeletionScene = nullptr;
-			}
-		}
+void Game::InitAndSwitchScene()
+{
+	activeScene = newActiveScene;
+	CollisionEngine::_SetActiveCED(activeScene);
+	newActiveScene = nullptr;
 
+	if (waitForDeletionScene != nullptr) {
+		LPScene scene = waitForDeletionScene;
+		delete waitForDeletionScene;
+		//all entities must all be destroyed before event destructions
+		CollisionEngine::_RemoveCED(scene);
+		waitForDeletionScene = nullptr;
 	}
 }
 
@@ -279,11 +305,6 @@ void Game::ProcessKeyboard()
 	// Collect all buffered events
 	dwInOut = KEYBOARD_BUFER_SIZE;
 	didv->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), keyEvents, &dwInOut, 0);
-
-	//if (dwInOut == KEYBOARD_BUFER_SIZE)
-	//	dwInOut == 0;
-
-	// Scan through all buffered events, check if the key is pressed or released
 }
 
 bool Game::IsKeyDown(int keyCode) {

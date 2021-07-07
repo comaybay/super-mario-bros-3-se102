@@ -1,9 +1,10 @@
 [GAME SETTINGS]
-256, 240	#GamePixelDimension (Width, Height) (Standard display resolution of NES console is 256x240)
-3	#PixelScale (Window Resolution = GamePixelDimension * PixelScale)
-60	#Max FPS (Lowest = 20, Highest = 120)
-True	#PixelPerfectRendering
-data/	#DataDirectory
+256, 240		#GamePixelDimension (Width, Height) (Standard display resolution of NES console is 256x240)
+3		#PixelScale (Window Resolution = GamePixelDimension * PixelScale)
+60		#Max FPS (Lowest = 20, Highest = 120)
+True		#PixelPerfectRendering
+data/		#DataDirectory
+worlds/w_1_1_1.txt 	#Initial Scene (Relative to DataDirectory)
 
 [TEXTURES]
 config/textures.txt

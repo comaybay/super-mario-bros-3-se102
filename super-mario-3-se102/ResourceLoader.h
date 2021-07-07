@@ -6,19 +6,16 @@
 class ResourceLoader
 {
 public:
-	ResourceLoader(const std::string& rootDirectory);
-	GameSettings GetGameSettings() const;
-	void Load() const;
+	static void Load(const std::string& dataDirectory);
 private:
-	void LoadTextures(const std::string& configPath) const;
-	void LoadAnimations(const std::string& configPath) const;
-	void LoadTilesTextures(const std::string& configPath) const;
-	void LoadTilesTexture(std::ifstream& file, const std::string& textureId) const;
-	void LoadHitboxes(const std::string& configPath) const;
-	std::vector<SpriteBox> CreateSpriteBoxSequence(
+	static void LoadTextures(const std::string& configPath, const std::string& dataDirectory);
+	static void LoadAnimations(const std::string& configPath);
+	static void LoadTilesTextures(const std::string& configPath, const std::string& dataDirectory);
+	static void LoadTilesTexture(std::ifstream& file, const std::string& dataDirectory, const std::string& textureId);
+	static void LoadHitboxes(const std::string& configPath);
+	static std::vector<SpriteBox> CreateSpriteBoxSequence(
 		const Utils::Vector2<int>& startPosition, const Utils::Dimension<int>& dimension, int space, int frameCount,
-		const Utils::Vector2<int>& offset) const;
+		const Utils::Vector2<int>& offset);
 
-	std::string root;
 };
 
