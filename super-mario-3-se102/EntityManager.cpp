@@ -110,7 +110,7 @@ void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity
 		AddToGroup(groupName, entity);
 }
 
-const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(std::string groupName)
+const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(const std::string& groupName)
 {
 	if (Contains(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];

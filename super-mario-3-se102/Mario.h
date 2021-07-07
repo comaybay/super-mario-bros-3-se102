@@ -75,5 +75,5 @@ namespace Entities {
 		EventHandler<Mario, CollisionData> onCollision;
 		MarioAnimationSet animationSet;
 	};
+	typedef Mario* LPMario;
 }
-typedef Mario* LPMario;

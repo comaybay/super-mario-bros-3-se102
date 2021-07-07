@@ -33,7 +33,7 @@ void Mushroom::RiseUp(float delta)
 
 	const std::list<LPEntity>& playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 	if (!playerGroup.empty()) {
-		Mario* player = static_cast<Mario*>(playerGroup.front());
+		LPMario player = static_cast<LPMario>(playerGroup.front());
 		velocity.x = (player->GetPosition().x < position.x) ? -MOVE_SPEED : MOVE_SPEED;
 	}
 	else

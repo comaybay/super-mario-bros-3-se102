@@ -119,7 +119,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 
 void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
-	Mario* mario = static_cast<Mario*>(data.who);
+	LPMario mario = static_cast<LPMario>(data.who);
 	if (data.edge.y == 1.0f) {
 		mario->Bounce();
 		SwitchState(&ParaKoopa::StompedOn);

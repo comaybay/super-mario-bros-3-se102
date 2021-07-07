@@ -14,6 +14,6 @@ private:
 
 	static std::array<Entities::PointUp::Type, 9> pointUpTypes;
 	static int index;
-	static Entities::Mario* player;
+	static Entities::LPMario player;
 };
 

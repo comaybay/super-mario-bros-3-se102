@@ -20,7 +20,7 @@ public:
 	void AddToGroup(std::string groupName, LPEntity entity);
 	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
 	void ForEach(std::function<void(LPEntity)> handler);
-	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
+	const std::list<LPEntity>& GetEntitiesByGroup(const std::string& groupName);
 	const LPGrid GetGrid(GridType gridType);
 	const std::unordered_set<LPEntity>& GetNonGridEntities();
 	void QueueFree(LPEntity entity);

@@ -60,7 +60,7 @@ void GoalRoulette::OnCollision(CollisionData data)
 		throw std::exception("GoalRoulette::OnCollision failed: expected index range from 0 to 2");
 	}
 
-	Mario* mario = static_cast<Mario*>(data.who);
+	LPMario mario = static_cast<LPMario>(data.who);
 	mario->StartReachedGoalRouletteAnimation();
 
 }

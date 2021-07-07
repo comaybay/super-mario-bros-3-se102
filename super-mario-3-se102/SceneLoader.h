@@ -22,7 +22,8 @@ private:
 	static std::string ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager);
 
 	typedef LPEntity(*ParseEntityMethod)(const std::vector<std::string>& tokens);
-	static std::unordered_map <std::string, ParseEntityMethod> parseMethodByEntityName;
+	static const std::unordered_map <std::string, ParseEntityMethod> parseMethodByEntityName;
+
 	static LPEntity ParseMario(const std::vector<std::string>& tokens);
 	static LPEntity ParseGoomba(const std::vector<std::string>& tokens);
 	static LPEntity ParseParaGoomba(const std::vector<std::string>& tokens);

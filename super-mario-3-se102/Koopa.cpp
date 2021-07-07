@@ -91,7 +91,7 @@ void Koopa::OnCollision(CollisionData data)
 
 void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
-	Mario* mario = static_cast<Mario*>(data.who);
+	LPMario mario = static_cast<LPMario>(data.who);
 	if (state.GetHandler() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
 			mario->Bounce();

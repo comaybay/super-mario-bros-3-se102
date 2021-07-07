@@ -4,17 +4,19 @@
 #include "Utils.h"
 #include "ProcessingUtils.h"
 #include "Contains.h"
+#include "Constants.h"
 #include "Game.h"
 #include "TextureManager.h"
 #include "Entities.h"
 #include "PlayerVariables.h"
+#include "ContentFactory.h"
 
 #include <fstream>
 
 using namespace Utils;
 using namespace ProcessingUtils;
 
-std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoader::parseMethodByEntityName =
+const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoader::parseMethodByEntityName =
 {
 	{"Mario", &SceneLoader::ParseMario},
 	{"Goomba", &SceneLoader::ParseGoomba},
@@ -227,13 +229,14 @@ std::string SceneLoader::ParseAndAddOtherEntities
 		std::vector<std::string> entityTokens = SplitByComma(line);
 
 		std::string name = entityTokens[0];
+
+		std::string isInAnyGrid = entityTokens[entityTokens.size() - 1];
+
 		//TODO: remove this line of code when everything is implemented
 		if (!Contains(name, parseMethodByEntityName))
 			continue;
 
-		std::string isInAnyGrid = entityTokens[entityTokens.size() - 1];
-
-		LPEntity entity = parseMethodByEntityName[name](entityTokens);
+		LPEntity entity = parseMethodByEntityName.at(name)(entityTokens);
 
 		if (isInAnyGrid == "False") {
 			entityManager->_AddWithoutPutToGrid(entity);
@@ -349,10 +352,11 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
+	const std::string& itemName = tokens[1];
 	Vector2<float> position(stof(tokens[2]), stof(tokens[3]));
-	Vector2<float> contentPosition(position.x, position.y - 16.0f);
+
 	//TODO: REMOVE TEST CODE
-	return new Entities::QuestionBlock(new Entities::CoinUp(contentPosition), position);
+	return new Entities::QuestionBlock(itemName, position);
 }
 
 LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)

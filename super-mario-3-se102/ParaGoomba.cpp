@@ -145,7 +145,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYER, groups)) {
-		Mario* mario = static_cast<Mario*>(data.who);
+		LPMario mario = static_cast<LPMario>(data.who);
 
 		if (data.edge.y == 1.0f) {
 			mario->Bounce();
