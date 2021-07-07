@@ -48,6 +48,7 @@ public:
 	LPScene GetParentScene();
 	void UnsubscribeToOutOfWorldEvent();
 	void SubscribeToOutOfWorldEvent();
+	void SetRenderedBeforeWorld(bool state);
 
 	/// <summary>
 	/// GridType will be used for spatial parititoning

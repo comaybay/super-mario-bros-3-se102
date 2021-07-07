@@ -3,13 +3,15 @@
 #include "Koopa.h"
 #include "Group.h"
 #include "EntityManager.h"
+#include "ContentFactory.h"
 #include "Contains.h"
+#include "Constants.h"
 #include "Scene.h"
 using namespace Entities;
 using namespace Utils;
 
 //TODO: Complete Implementation
-QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
+QuestionBlock::QuestionBlock(const Vector2<float>& position)
 	: Entity::Entity(
 		position,
 		"QuestionBlockNormal",
@@ -17,7 +19,20 @@ QuestionBlock::QuestionBlock(LPEntity content, const Vector2<float>& position)
 		{ "Blocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
-	content(content)
+	contentId(ContentId::NONE)
+{
+
+}
+
+QuestionBlock::QuestionBlock(const std::string& contentId, const Vector2<float>& position)
+	: Entity::Entity(
+		position,
+		"QuestionBlockNormal",
+		HitboxId::TILE_SIZE_HITBOX,
+		{ "Blocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
+		GridType::STATIC_ENTITIES
+	),
+	contentId(contentId)
 {
 }
 
@@ -31,25 +46,32 @@ void QuestionBlock::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
-		ExposeContent();
+
+		if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+			LPMario mario = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+			ExposeContent(mario);
+		}
 		return;
 	}
 
 	if (Contains(std::string("Koopas"), groups)) {
 		Koopa* koopa = static_cast<Koopa*>(data.who);
 
-		if (koopa->IsSliding())
-			ExposeContent();
+		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
+			LPMario mario = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+			ExposeContent(mario);
+		}
 
 		return;
 	}
 }
 
-void QuestionBlock::ExposeContent()
+void QuestionBlock::ExposeContent(LPMario player)
 {
-	if (content != nullptr) {
+	if (contentId != ContentId::NONE) {
+		Vector2<float> contentPos = { position.x, position.y - Constants::TILE_SIZE };
+		LPEntity content = ContentFactory(player).Create(contentId, contentPos);
 		parentScene->AddEntity(content);
-		content = nullptr;
 	}
 
 	parentScene->QueueFree(this);

@@ -46,7 +46,7 @@ void Scene::_Ready()
 	entityManager->AddToGroups({ Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 }, ground);
 	entityManager->Add(new Entities::ParaGoomba("Brown", Vector2<int>(16 * 16, worldTileDim.height * 16 - 16 * 2)));
 	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 0, 390 });
+		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 140, 390 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
@@ -75,25 +75,23 @@ void Scene::Update(float delta)
 	NotifyOutOfWorldEntities();
 	CellRange range = GetCellRangeAroundCamera();
 
-	auto forEachEntity = [this, range](std::function<void(LPEntity)> handler) {
-		entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, handler);
 
-		if (updateMovablesInSPGridEnabled) {
-			LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
-			movableEntitiesSPGrid->ForEachEntityIn(range, handler);
-			movableEntitiesSPGrid->UpdateCells(range);
-		}
 
-		for (LPEntity entity : entityManager->GetNonGridEntities())
-			handler(entity);
+	auto handler = [delta](LPEntity entity) {
+		entity->Update(delta);
+		entity->PostUpdate();
 	};
 
-	auto update = [delta](LPEntity entity) { entity->Update(delta); };
-	auto postUpdate = [](LPEntity entity) { entity->PostUpdate(); };
+	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, handler);
+	if (updateMovablesInSPGridEnabled) {
+		LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
+		movableEntitiesSPGrid->ForEachEntityIn(range, handler);
+		movableEntitiesSPGrid->UpdateCells(range);
+	}
+	for (LPEntity entity : entityManager->GetNonGridEntities())
+		handler(entity);
 
-	forEachEntity(update);
 	camera.Update();
-	forEachEntity(postUpdate);
 
 	entityManager->FreeEntitiesInQueue();
 }
@@ -239,7 +237,12 @@ void Scene::QueueFree(LPEntity entity)
 	entityManager->QueueFree(entity);
 }
 
-const std::list<LPEntity>& Scene::GetEntitiesByGroup(std::string groupName)
+bool Scene::IsEntityGroupEmpty(const std::string& groupName)
+{
+	return entityManager->GetEntitiesByGroup(groupName).size() == 0;
+}
+
+const std::list<LPEntity>& Scene::GetEntitiesByGroup(const std::string& groupName)
 {
 	return entityManager->GetEntitiesByGroup(groupName);
 }

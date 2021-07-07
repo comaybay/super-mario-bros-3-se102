@@ -16,7 +16,6 @@ using namespace Utils;
 
 const float Koopa::WALK_SPEED = 29;
 const float Koopa::SHELL_SLIDE_SPEED = 200;
-const float Koopa::SHELL_SLIDE_FALL_SPEED = 1850;
 const float Koopa::FRICTION = 2600;
 
 Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
@@ -179,7 +178,7 @@ void Koopa::Update(float delta)
 	state.Handle(delta);
 
 	if (state.GetHandler() == &Koopa::ShellSlide)
-		velocity.y += Koopa::SHELL_SLIDE_FALL_SPEED * delta;
+		velocity.y += EntityConstants::GRAVITY_STRONG * delta;
 	else
 		velocity.y += EntityConstants::GRAVITY * delta;
 

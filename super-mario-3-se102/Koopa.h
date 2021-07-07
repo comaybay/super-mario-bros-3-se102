@@ -31,7 +31,6 @@ namespace Entities {
 	public:
 		static const float WALK_SPEED;
 		static const float SHELL_SLIDE_SPEED;
-		static const float SHELL_SLIDE_FALL_SPEED;
 		static const float FRICTION;
 	};
 }

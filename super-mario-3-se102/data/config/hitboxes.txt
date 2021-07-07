@@ -9,5 +9,7 @@ HitboxKoopa, 0, 16, 16, 15
 
 HitboxKoopaShell, 2, 8, 14, 7
 
+HitboxMushroom, 2, 2, 12, 13
+
 
 

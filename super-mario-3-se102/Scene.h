@@ -28,7 +28,8 @@ public:
 	const std::string& GetPrevScenePath();
 	void AddEntity(LPEntity entity);
 	void QueueFree(LPEntity entity);
-	const std::list<LPEntity>& GetEntitiesByGroup(std::string groupName);
+	bool IsEntityGroupEmpty(const std::string& groupName);
+	const std::list<LPEntity>& GetEntitiesByGroup(const std::string& groupName);
 	void PlayerDeath();
 
 	template<class ENTITY>

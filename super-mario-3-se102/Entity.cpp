@@ -160,6 +160,11 @@ void Entity::SubscribeToOutOfWorldEvent()
 	parentScene->SubscribeToOutOfWorldEvent(this, &Entity::OnOutOfWorld);
 }
 
+void Entity::SetRenderedBeforeWorld(bool state)
+{
+	isRenderedBeforeWorld = state;
+}
+
 void Entity::UnsubscribeToOutOfWorldEvent()
 {
 	parentScene->UnsubscribeToOutOfWorldEvent(this);
