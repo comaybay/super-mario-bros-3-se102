@@ -102,7 +102,7 @@ void Goomba::OnCollision(CollisionData data)
 
 void Goomba::KnockOver(float horizontalDirection)
 {
-	SetEnabledForCollisionDetection(false);
+	EnableForCollisionDetection(false);
 	state.SetHandler(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
 	velocity = KNOCK_OVER_VELOCITY;
