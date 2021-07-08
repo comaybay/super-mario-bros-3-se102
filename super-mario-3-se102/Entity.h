@@ -43,12 +43,18 @@ public:
 	const Utils::Vector2<float>& GetVelocity();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
-	void SetEnabledForCollisionDetection(bool enabled);
+	void EnableForCollisionDetection(bool state);
 	const std::string& GetId();
 	LPScene GetParentScene();
 	void UnsubscribeToOutOfWorldEvent();
 	void SubscribeToOutOfWorldEvent();
 	void SetRenderedBeforeWorld(bool state);
+
+	/// <summary>
+	/// If false, entity won't be rendered nor updated, not affected by collision engine, but is not removed from the scene
+	/// </summary>
+	/// <param name="state"></param>
+	void Activate(bool state);
 
 	/// <summary>
 	/// GridType will be used for spatial parititoning
@@ -106,6 +112,7 @@ private:
 	std::string id;
 	bool isRenderedBeforeWorld;
 	bool enabledForCollisionDetection;
+	bool isActive;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;
 	LPEvent<LPEntity> destroyEvent; //use LPEvent instead of Event to avoid circular dependency

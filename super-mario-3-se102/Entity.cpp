@@ -71,6 +71,7 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityG
 
 void Entity::Init()
 {
+	isActive = true;
 	groups.push_back(Group::ALL);
 	destroyEvent = new Event<LPEntity>();
 	id = std::to_string(reinterpret_cast<intptr_t>(this));
@@ -79,7 +80,7 @@ void Entity::Init()
 
 bool Entity::_IsEnabledForCollisionDetection()
 {
-	return enabledForCollisionDetection;
+	return isActive && enabledForCollisionDetection;
 }
 
 Entity::~Entity() {
@@ -127,9 +128,14 @@ void Entity::SetVelocity(const Vector2<float>& velocity)
 	this->velocity = velocity;
 }
 
-void Entity::SetEnabledForCollisionDetection(bool enabled)
+void Entity::EnableForCollisionDetection(bool state)
 {
-	enabledForCollisionDetection = enabled;
+	enabledForCollisionDetection = state;
+}
+
+void Entity::Activate(bool state)
+{
+	isActive = state;
 }
 
 const std::string& Entity::GetId()
@@ -183,6 +189,9 @@ Utils::Dimension<int> Entity::GetCurrentSpriteDimension()
 
 void Entity::Update(float delta)
 {
+	if (!isActive)
+		return;
+
 	position += remainingVelocity * delta;
 	animation->Update(delta);
 }
@@ -190,11 +199,17 @@ void Entity::Update(float delta)
 //process stuff for collision detection/handling
 void Entity::PostUpdate()
 {
+	if (!isActive)
+		return;
+
 	remainingVelocity = velocity;
 }
 
 void Entity::Render()
 {
+	if (!isActive)
+		return;
+
 	animation->Render(position);
 }
 
