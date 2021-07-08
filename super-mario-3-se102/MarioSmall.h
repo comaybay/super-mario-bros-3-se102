@@ -5,10 +5,11 @@
 namespace Entities {
 	class MarioSmall : public Mario {
 	public:
-		MarioSmall(Utils::Vector2<float> position);
+		MarioSmall(Utils::Vector2<float> position, HDirection initialFacingDirection);
 		void TakeDamage() override;
 		void Update(float delta) override;
 		void OnCollision(CollisionData data) override;
+
 	private:
 		void OnOutOfWorld() override;
 		void Die(float delta);

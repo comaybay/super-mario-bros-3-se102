@@ -22,13 +22,22 @@ const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
 
-Mario::Mario(const Utils::Vector2<float>& position, const MarioAnimationSet& animationSet, PlayerPowerLevel powerLevel) :
-	Entity::Entity(position, "MarioSIR", "HitboxMarioS", Group::PLAYER, GridType::NONE),
+Mario::Mario(
+	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
+	const std::string& hitboxId, PlayerPowerLevel powerLevel
+)
+	: Entity::Entity(
+		position,
+		initialFacingDirection == HDirection::LEFT ? animationSet.idleLeft : animationSet.idleRight,
+		hitboxId,
+		Group::PLAYER,
+		GridType::NONE
+	),
 	animationSet(animationSet),
 	powerLevel(powerLevel),
 	marioState(EntityState<Mario>(this, &Mario::Idle)),
-	lastPressedKeyHorizontal(DIK_RIGHT),
-	dir(Vector2<float>(0, 1)),
+	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
+	dir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
 	time(0),
 	onGround(false),
 	runBeforeJump(false)
@@ -102,6 +111,14 @@ void Mario::Update(float delta) {
 	marioState.Handle(delta);
 
 	onGround = false;
+}
+
+HDirection Mario::GetFacingDirection()
+{
+	if (dir.x != 0)
+		return dir.x < 0 ? HDirection::LEFT : HDirection::RIGHT;
+	else
+		return lastPressedKeyHorizontal == DIK_LEFT ? HDirection::LEFT : HDirection::RIGHT;
 }
 
 void Mario::StartReachedGoalRouletteAnimation()

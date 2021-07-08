@@ -3,17 +3,21 @@
 #include "EntityState.h"
 #include "PlayerPowerLevel.h"
 #include "MarioAnimationSet.h"
+#include "Direction.h"
 
 namespace Entities {
 	class Mario : public Entity {
 	public:
-
-
 		virtual void TakeDamage() = 0;
 
-		Mario(const Utils::Vector2<float>& position, const MarioAnimationSet& animationSet, PlayerPowerLevel powerLevel);
+		Mario(
+			const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
+			const std::string& hitboxId, PlayerPowerLevel powerLevel
+		);
+
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		HDirection GetFacingDirection();
 		void StartReachedGoalRouletteAnimation();
 
 		PlayerPowerLevel GetPowerLevel();
@@ -51,7 +55,7 @@ namespace Entities {
 		void ClipHorizontalPosition();
 
 		EntityState<Mario> marioState;
-		Utils::Vector2<float> dir;
+		Utils::Vector2<int> dir;
 		float time;
 		bool onGround;
 		bool runBeforeJump;

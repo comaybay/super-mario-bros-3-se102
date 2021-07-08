@@ -7,8 +7,8 @@ const MarioAnimationSet MarioSmall::animationSet(
 	"MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSWL", "MarioSWR", "MarioSJL", "MarioSJR", "MarioSJL", "MarioSJR"
 );
 
-MarioSmall::MarioSmall(Utils::Vector2<float> position)
-	: Mario(position, animationSet, PlayerPowerLevel::SMALL),
+MarioSmall::MarioSmall(Utils::Vector2<float> position, HDirection initialFacingDirection)
+	: Mario(position, initialFacingDirection, animationSet, "HitboxMarioS", PlayerPowerLevel::SMALL),
 	smallMarioState(this),
 	died(false)
 {
@@ -44,7 +44,6 @@ void MarioSmall::OnCollision(CollisionData data)
 	if (!died)
 		Mario::OnCollision(data);
 }
-
 
 void MarioSmall::OnOutOfWorld()
 {

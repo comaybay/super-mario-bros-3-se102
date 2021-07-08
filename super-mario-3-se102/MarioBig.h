@@ -5,7 +5,7 @@
 namespace Entities {
 	class MarioBig : public Mario {
 	public:
-		MarioBig(const Utils::Vector2<float>& position);
+		MarioBig(const Utils::Vector2<float>& position, HDirection direction = HDirection::RIGHT);
 		virtual void TakeDamage();
 
 	private:
