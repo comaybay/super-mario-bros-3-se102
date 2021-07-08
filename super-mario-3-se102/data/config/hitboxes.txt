@@ -1,7 +1,9 @@
 #Id, RelativePosition (X, Y), Dimension (Width, Height)
 ##*RelativePosition: position relative to position of entity
 
-HitboxMarioS, 3, 2, 10, 14
+HitboxMarioS, 3, 2, 10, 13
+
+HitboxMarioB, 3, 2, 10, 29
 
 HitboxGoomba, 1, 3, 14, 12
 
