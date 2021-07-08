@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Group.h"
 #include "Mario.h"
+#include "MarioTransition.h"
 #include "Constants.h"
 #include "EntityConstants.h"
 #include "CollisionHandling.h"
@@ -110,5 +111,5 @@ void Mushroom::HandlePlayerCollision(const CollisionData& data) {
 	parentScene->QueueFree(this);
 	Vector2<float> pointPos = { position.x, position.y - Constants::TILE_SIZE };
 	parentScene->AddEntity(new PointUp(pointPos, PointUp::Type::ONE_THOUSAND_POINTS));
-	return;
+	parentScene->AddEntity(new MarioTransition(static_cast<LPMario>(data.who), PlayerPowerLevel::BIG));
 }
