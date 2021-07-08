@@ -30,7 +30,11 @@ public:
 	void QueueFree(LPEntity entity);
 	bool IsEntityGroupEmpty(const std::string& groupName);
 	const std::list<LPEntity>& GetEntitiesByGroup(const std::string& groupName);
-	void PlayerDeath();
+
+	/// <summary>
+	/// Pause used for transitions (player's death, player's power level changed)
+	/// </summary>
+	void TransitionPause(bool state);
 
 	template<class ENTITY>
 	using Handler = void(ENTITY::*)();

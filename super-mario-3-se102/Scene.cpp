@@ -210,10 +210,10 @@ const std::list<LPEntity>& Scene::GetEntitiesByGroup(const std::string& groupNam
 	return entityManager->GetEntitiesByGroup(groupName);
 }
 
-void Scene::PlayerDeath()
+void Scene::TransitionPause(bool state)
 {
-	updateMovablesInSPGridEnabled = false;
-	Game::EnableCollisionEngine(false);
+	updateMovablesInSPGridEnabled = !state;
+	Game::EnableCollisionEngine(!state);
 }
 
 Dimension<int> Scene::GetWorldDimension()

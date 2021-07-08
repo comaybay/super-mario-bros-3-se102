@@ -19,7 +19,7 @@ void MarioSmall::TakeDamage()
 	if (died)
 		return;
 
-	parentScene->PlayerDeath();
+	parentScene->TransitionPause(true);
 	SetAnimation("MarioDeath");
 	UnsubscribeToCollisionEngine();
 	time = 0;

@@ -119,7 +119,7 @@ void Mario::OnOutOfWorld()
 
 	velocity = { 0,0 };
 	UnsubscribeToOutOfWorldEvent();
-	parentScene->PlayerDeath();
+	parentScene->TransitionPause(true);
 	SwitchState(&Mario::OutOfWorldDeath);
 }
 
