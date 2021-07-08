@@ -28,13 +28,13 @@ PlayableCharacters
 127, 16, 142, 31
 
 #Jump#
-MarioSJR, Normal, -1, Manual
-PlayableCharacters
-37, 34, 52, 49
-
 MarioSJL, Normal, -1, Manual
 PlayableCharacters
 55, 34, 70, 49
+
+MarioSJR, Normal, -1, Manual
+PlayableCharacters
+37, 34, 52, 49
 
 #Idle#
 MarioSIL, Normal, -1, Manual
@@ -49,6 +49,63 @@ PlayableCharacters
 MarioDeath, Normal, -1, Manual
 PlayableCharacters
 289, 16, 304, 31
+
+##Big mario##====================================
+#Move (Walk, Run)#
+MarioBWL, Normal, 0.066, Auto
+PlayableCharacters
+1, 110, 16, 32, 2, 4
+
+MarioBWR, Normal, 0.066, Auto
+PlayableCharacters
+73, 110, 16, 32, 2, 4
+
+#Turn#
+MarioBTL, Normal, -1, Manual
+PlayableCharacters
+145, 110, 160, 141
+
+MarioBTR, Normal, -1, Manual
+PlayableCharacters
+163, 110, 178, 141
+
+#Jump#
+MarioBJL, Normal, -1, Manual
+PlayableCharacters
+181, 110, 196, 141
+
+MarioBJR, Normal, -1, Manual
+PlayableCharacters
+199, 110, 214, 141 
+
+#Fall#
+MarioBFL, Normal, -1, Manual
+PlayableCharacters
+37, 110, 52, 141 
+
+MarioBFR, Normal, -1, Manual
+PlayableCharacters
+109, 110, 124, 141 
+
+#Idle#
+MarioBIL, Normal, -1, Manual
+PlayableCharacters
+1, 110, 16, 141
+
+MarioBIR, Normal, -1, Manual
+PlayableCharacters
+1, 144, 16, 175
+
+##MarioTransitions##====================================
+MarioTransitionSToB1Left, Normal,  0.066, Manual
+PlayableCharacters
+227, 144, 242, 175
+1, 16, 16, 31, 0, 16
+
+MarioTransitionSToB2Left, Normal,  0.066, Manual
+PlayableCharacters
+1, 110, 16, 141
+227, 144, 242, 175
 
 ##Goomba##====================================
 BGoombaM, Normal, 0.15, Auto
