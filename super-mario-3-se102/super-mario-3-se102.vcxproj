@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -202,6 +202,7 @@
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
+    <ClCompile Include="MarioTransition.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="GoalRouletteCard.h" />
     <ClInclude Include="ContentFactory.h" />
     <ClInclude Include="MarioAnimationSet.h" />
+    <ClInclude Include="MarioTransition.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioBig.h" />

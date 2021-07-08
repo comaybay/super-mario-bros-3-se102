@@ -225,17 +225,20 @@
     <ClCompile Include="CourseClear.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="Constants.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mushroom.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
+    <ClCompile Include="Constants.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
     <ClCompile Include="ContentFactory.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioTransition.cpp">
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
     <ClCompile Include="EntityUtils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -438,6 +441,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioTransition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
