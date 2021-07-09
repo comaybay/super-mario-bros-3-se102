@@ -54,5 +54,5 @@ void Camera::StopFollowingEntity()
 void Camera::OnEntityDestroy(LPEntity entity)
 {
 	if (target == entity)
-		target == nullptr;
+		target = nullptr;
 }
