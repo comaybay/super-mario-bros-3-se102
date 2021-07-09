@@ -28,8 +28,8 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 		position.y -= Constants::TILE_SIZE;
 		isDowngradeTransiton = false;
 		resultPowerLevel = PlayerPowerLevel::BIG;
-		state.SetHandler(&MarioTransition::SmallToBigPart1);
-		SetAnimation("MarioTransitionSToB1" + animDirCode);
+		state.SetState(&MarioTransition::SmallToBigPart1);
+		SetAnimation("MarioTransitionPart1" + animDirCode);
 		return;
 	}
 
@@ -44,7 +44,7 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 	if (to != PPL::BIG) {
 		isDowngradeTransiton = false;
 		resultPowerLevel = to;
-		state.SetHandler(&MarioTransition::Smoke);
+		state.SetState(&MarioTransition::Smoke);
 		SetAnimation("MarioTransitionSmoke");
 		return;
 	}
@@ -53,7 +53,7 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 	else {
 		isDowngradeTransiton = true;
 		resultPowerLevel = to;
-		state.SetHandler(&MarioTransition::Smoke);
+		state.SetState(&MarioTransition::Smoke);
 		SetAnimation("MarioTransitionSmoke");
 		return;
 	}
@@ -69,7 +69,7 @@ void MarioTransition::OnReady()
 void MarioTransition::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 }
 
 void MarioTransition::SmallToBigPart1(float delta)
@@ -78,8 +78,8 @@ void MarioTransition::SmallToBigPart1(float delta)
 
 	if (time >= STB_PART1_DURATION) {
 		time = 0;
-		SetAnimation("MarioTransitionSToB2" + animDirCode);
-		state.SetHandler(&MarioTransition::SmallToBigPart2);
+		SetAnimation("MarioTransitionPart2" + animDirCode);
+		state.SetState(&MarioTransition::SmallToBigPart2);
 	};
 }
 
