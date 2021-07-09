@@ -30,7 +30,7 @@ Mario::Mario(
 		position,
 		initialFacingDirection == HDirection::LEFT ? animationSet.idleLeft : animationSet.idleRight,
 		hitboxId,
-		Group::PLAYER,
+		Group::PLAYERS,
 		GridType::NONE
 	),
 	animationSet(animationSet),

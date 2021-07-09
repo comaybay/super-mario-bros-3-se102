@@ -33,10 +33,10 @@ void ParaKoopa::OnReady()
 {
 	Entity::OnReady();
 	wing = new Wing(this);
-	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 		SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 
@@ -98,7 +98,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (Contains(Group::PLAYER, groups)) {
+	if (Contains(Group::PLAYERS, groups)) {
 		HandlePlayerCollision(data);
 		return;
 	}

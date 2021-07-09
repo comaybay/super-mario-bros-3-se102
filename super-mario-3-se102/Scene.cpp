@@ -10,7 +10,7 @@ using namespace Utils;
 Scene::Scene() :
 	entityManager(nullptr),
 	encodedWorld(nullptr),
-	camera(Camera(this)),
+	camera(Camera()),
 	updateMovablesInSPGridEnabled(true),
 	renderMovablesInSPGridEnabled(true),
 	backgroundColor(D3DCOLOR_XRGB(255, 255, 255))
@@ -37,12 +37,15 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 void Scene::_Ready()
 {
 	//TODO: Remove test code
-	if (!GetEntitiesByGroup(Group::PLAYER).empty())
-		GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 240, 320 });
+	if (!GetEntitiesByGroup(Group::PLAYERS).empty())
+		GetEntitiesByGroup(Group::PLAYERS).front()->SetPosition({ 240, 320 });
+
+	camera._SetParentScene(this);
+	camera.OnReady();
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
-	if (!IsEntityGroupEmpty(Group::PLAYER))
-		camera.FollowEntity(GetEntitiesByGroup(Group::PLAYER).front());
+	if (!IsEntityGroupEmpty(Group::PLAYERS))
+		camera.FollowEntity(GetEntitiesByGroup(Group::PLAYERS).front());
 }
 
 void Scene::Update(float delta)
@@ -66,7 +69,7 @@ void Scene::Update(float delta)
 	for (LPEntity entity : entityManager->GetNonGridEntities())
 		updateEntity(entity);
 
-	camera.Update();
+	camera.Update(delta);
 
 	entityManager->FreeEntitiesInQueue();
 }

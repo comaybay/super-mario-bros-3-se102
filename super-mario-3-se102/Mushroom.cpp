@@ -33,7 +33,7 @@ void Mushroom::Update(float delta) {
 
 void Mushroom::OnReady()
 {
-	CollisionEngine::Subscribe(this, &Mushroom::OnCollision, { Group::PLAYER, Group::COLLISION_WALLS });
+	CollisionEngine::Subscribe(this, &Mushroom::OnCollision, { Group::PLAYERS, Group::COLLISION_WALLS });
 }
 
 
@@ -56,8 +56,8 @@ void Mushroom::RiseUp(float delta)
 	velocity.y = 0;
 	position.y = riseDestY;
 
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-		LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? MOVE_SPEED : -MOVE_SPEED;
 	}
 	else
@@ -80,7 +80,7 @@ void Mushroom::OnCollision(CollisionData data) {
 	if (Contains(Group::COLLISION_WALLS, group))
 		HandleWallCollision(data);
 
-	if (Contains(Group::PLAYER, group))
+	if (Contains(Group::PLAYERS, group))
 		HandlePlayerCollision(data);
 }
 

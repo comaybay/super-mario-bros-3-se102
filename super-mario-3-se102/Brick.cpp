@@ -23,7 +23,7 @@ Brick::Brick(LPEntity content, const Utils::Vector2<float>& position)
 
 void Brick::OnReady() {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &Brick::OnCollision, { Group::PLAYER, "Koopas" });
+	CollisionEngine::Subscribe(this, &Brick::OnCollision, { Group::PLAYERS, "Koopas" });
 }
 
 void Brick::Update(float delta)
@@ -47,7 +47,7 @@ void Brick::Hit(float delta) {
 void Brick::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
-	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1.0f) {
 		LPMario player = static_cast<LPMario>(data.who);
 		if (player->GetPowerLevel() == PlayerPowerLevel::BIG)
 			ExposeContent();

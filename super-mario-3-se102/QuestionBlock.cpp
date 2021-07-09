@@ -38,16 +38,16 @@ QuestionBlock::QuestionBlock(const std::string& contentId, const Vector2<float>&
 void QuestionBlock::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYER, "Koopas" });
+	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYERS, "Koopas" });
 }
 
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
-	if (Contains(Group::PLAYER, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1.0f) {
 
-		if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
 			ExposeContent(player);
 		}
 		return;
@@ -56,8 +56,8 @@ void QuestionBlock::OnCollision(CollisionData data)
 	if (Contains(std::string("Koopas"), groups)) {
 		Koopa* koopa = static_cast<Koopa*>(data.who);
 
-		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYER).front());
+		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
 			ExposeContent(player);
 		}
 

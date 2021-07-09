@@ -27,10 +27,10 @@ Goomba::Goomba(std::string colorType, Vector2<float> position)
 void Goomba::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 	}
 	else
@@ -66,7 +66,7 @@ void Goomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (Contains(Group::PLAYER, groups)) {
+	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
 
 		if (data.edge.y == 1.0f) {

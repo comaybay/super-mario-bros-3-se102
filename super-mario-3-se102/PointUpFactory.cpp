@@ -28,7 +28,7 @@ const std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 {
 	if (player == nullptr) {
-		player = static_cast<LPMario>(Game::GetActiveScene()->GetEntitiesByGroup(Group::PLAYER).front());
+		player = static_cast<LPMario>(Game::GetActiveScene()->GetEntitiesByGroup(Group::PLAYERS).front());
 		player->GetRestartPointUpEvent().Subscribe(&OnRestartPointUp);
 		player->GetDestroyEvent().Subscribe(&OnEntityDestroy);
 	}

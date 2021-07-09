@@ -17,7 +17,7 @@ GoalRoulette::GoalRoulette(const Utils::Vector2<float>& position)
 
 void GoalRoulette::OnReady()
 {
-	CollisionEngine::Subscribe(this, &GoalRoulette::OnCollision, { Group::PLAYER });
+	CollisionEngine::Subscribe(this, &GoalRoulette::OnCollision, { Group::PLAYERS });
 }
 
 void GoalRoulette::Update(float delta)

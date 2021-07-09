@@ -38,10 +38,10 @@ ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& posit
 void ParaGoomba::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYER });
+	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYER)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYER).front();
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 	else
@@ -83,7 +83,7 @@ void ParaGoomba::MoveAround(float delta) {
 		wingRight.AutoFlap();
 		state.SetState(&ParaGoomba::PrepareToJump);
 
-		std::list<LPEntity> playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
+		std::list<LPEntity> playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYERS);
 		if (playerGroup.empty())
 			return;
 
@@ -143,7 +143,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
 
-	if (Contains(Group::PLAYER, groups)) {
+	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
 
 		if (data.edge.y == 1.0f) {

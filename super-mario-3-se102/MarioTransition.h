@@ -23,6 +23,9 @@ namespace Entities {
 	private:
 		void SmallToBigPart1(float delta);
 		void SmallToBigPart2(float delta);
+		void BigToSmallPart1(float delta);
+		void BigToSmallPart2(float delta);
+
 		void Smoke(float delta);
 
 		void CreateMario();

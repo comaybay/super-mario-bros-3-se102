@@ -1,5 +1,5 @@
 #include "MarioBig.h"
-#include "MarioSmall.h"
+#include "MarioTransition.h"
 #include "Constants.h"
 #include "Scene.h"
 using namespace Entities;
@@ -15,7 +15,5 @@ MarioBig::MarioBig(const Utils::Vector2<float>& position, HDirection initialFaci
 
 void MarioBig::TakeDamage()
 {
-	parentScene->QueueFree(this);
-	Utils::Vector2<float> smallMarioPos = { position.x, position.y + Constants::TILE_SIZE };
-	parentScene->AddEntity(new MarioSmall(smallMarioPos, GetFacingDirection()));
+	parentScene->AddEntity(new MarioTransition(this, PlayerPowerLevel::SMALL));
 }
