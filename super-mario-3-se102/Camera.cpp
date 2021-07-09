@@ -1,15 +1,15 @@
 #include "Camera.h"
 #include "Scene.h"
+#include "Group.h"
 #include "Game.h"
-#include "Entity.h"
 #include "Event.h"
 
 using namespace Utils;
-Camera::Camera(LPScene parentScene) :
-	parentScene(parentScene)
+Camera::Camera(const Vector2<float>& position)
+	: Entity::Entity(position, Group::CAMERAS, GridType::NONE),
+	viewportDim(Game::GetGameSettings().gameDimension),
+	target(nullptr)
 {
-	target = nullptr;
-	position = Vector2<float>(0, 0);
 }
 
 const Vector2<float>& Camera::GetPosition() const
@@ -17,33 +17,37 @@ const Vector2<float>& Camera::GetPosition() const
 	return position;
 }
 
-void Camera::Update()
+void Camera::Update(float delta)
 {
+	Entity::Update(delta);
+
 	if (target == nullptr)
 		return;
 
 	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<float> gameDim = Game::GetGameSettings().gameDimension;
 	Dimension<int> targetDim = target->GetCurrentSpriteDimension();
 	const Vector2<float>& targetPos = target->GetPosition();
 
-	//center around entity
+	//center around target
 	Vector2<float> newPosition(
-		targetPos.x + targetDim.width / 2 - gameDim.width / 2,
-		targetPos.y + targetDim.height / 2 - gameDim.height / 2
+		targetPos.x + targetDim.width / 2 - viewportDim.width / 2,
+		targetPos.y + targetDim.height / 2 - viewportDim.height / 2
 	);
 
-	newPosition.x = min(max(newPosition.x, 0), worldDim.width - gameDim.width);
-	newPosition.y = min(max(newPosition.y, 0), worldDim.height - gameDim.height);
+	newPosition += offset;
+
+	//keep camera inside of world
+	newPosition.x = Clip(newPosition.x, 0.0f, worldDim.width - viewportDim.width);
+	newPosition.y = Clip(newPosition.y, 0.0f, worldDim.height - viewportDim.height);
 
 	position = newPosition;
 }
 
-void Camera::FollowEntity(LPEntity entity)
+void Camera::FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset)
 {
+	this->offset = offset;
 	target = entity;
 	entity->GetDestroyEvent().Subscribe(this, &Camera::OnEntityDestroy);
-	Update();
 }
 
 void Camera::StopFollowingEntity()

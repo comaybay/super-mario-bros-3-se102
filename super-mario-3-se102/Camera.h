@@ -1,22 +1,24 @@
 #pragma once
-#include "EventHandler.h"
-#include "Utils.h"
+#include "Entity.h"
 
 class Scene;
 typedef Scene* LPScene;
 
-class Camera
+/// <summary>
+/// this Entity is used internally by Scene.
+/// </summary>
+class Camera : public Entity
 {
 public:
-	Camera(LPScene parentScene);
+	Camera(const Utils::Vector2<float>& position = { 0, 0 });
+	void Update(float _) override;
 	const Utils::Vector2<float>& GetPosition() const;
-	void Update();
-	void FollowEntity(LPEntity entity);
+	void FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset = { 0, 0 });
 	void StopFollowingEntity();
 private:
 	void OnEntityDestroy(LPEntity _);
-	LPScene parentScene;
 	LPEntity target;
-	Utils::Vector2<float> position;
+	Utils::Dimension<int> viewportDim;
+	Utils::Vector2<float> offset;
 };
 
