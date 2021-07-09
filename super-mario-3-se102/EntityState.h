@@ -23,14 +23,15 @@ private:
 
 
 template<class ENTITY>
-inline EntityState<ENTITY>::EntityState(LPENTITY entity, Handler intialHandler) {
-	handlerThis = entity;
-	stateHandler = intialHandler;
+inline EntityState<ENTITY>::EntityState(LPENTITY entity, Handler intialHandler) :
+	handlerThis(entity), stateHandler(intialHandler)
+{
 }
 
 template<class ENTITY>
-inline EntityState<ENTITY>::EntityState(LPENTITY entity) {
-	handlerThis = entity;
+inline EntityState<ENTITY>::EntityState(LPENTITY entity) :
+	handlerThis(entity), stateHandler(nullptr)
+{
 }
 
 template<class ENTITY>

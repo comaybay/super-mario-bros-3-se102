@@ -19,7 +19,7 @@ void Animation::Update(float delta)
 
 	currentDuration += delta * animSpeed;
 
-	int i = (int)(currentDuration / frameDuration);
+	int i = floor(currentDuration / frameDuration);
 	currentDuration -= frameDuration * i;
 	currentFrame = (currentFrame + i) % sequence.size();
 }
