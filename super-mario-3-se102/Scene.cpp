@@ -37,13 +37,12 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 void Scene::_Ready()
 {
 	//TODO: Remove test code
-	if (!entityManager->GetEntitiesByGroup(Group::PLAYER).empty())
-		entityManager->GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 140, 390 });
+	if (!GetEntitiesByGroup(Group::PLAYER).empty())
+		GetEntitiesByGroup(Group::PLAYER).front()->SetPosition({ 240, 320 });
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
-	std::list<LPEntity> playerGroup = entityManager->GetEntitiesByGroup(Group::PLAYER);
-	if (!playerGroup.empty())
-		camera.FollowEntity(playerGroup.front());
+	if (!IsEntityGroupEmpty(Group::PLAYER))
+		camera.FollowEntity(GetEntitiesByGroup(Group::PLAYER).front());
 }
 
 void Scene::Update(float delta)
@@ -51,19 +50,21 @@ void Scene::Update(float delta)
 	DetectAndNotifyOutOfWorld();
 	CellRange range = GetCellRangeAroundCamera();
 
-	auto handler = [delta](LPEntity entity) {
-		entity->Update(delta);
-		entity->PostUpdate();
+	auto updateEntity = [delta](LPEntity entity) {
+		if (entity->_IsActive()) {
+			entity->Update(delta);
+			entity->PostUpdate();
+		}
 	};
 
-	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, handler);
+	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, updateEntity);
 	if (updateMovablesInSPGridEnabled) {
 		LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
-		movableEntitiesSPGrid->ForEachEntityIn(range, handler);
+		movableEntitiesSPGrid->ForEachEntityIn(range, updateEntity);
 		movableEntitiesSPGrid->UpdateCells(range);
 	}
 	for (LPEntity entity : entityManager->GetNonGridEntities())
-		handler(entity);
+		updateEntity(entity);
 
 	camera.Update();
 
@@ -125,13 +126,15 @@ void Scene::Render()
 		Game::ColorFill(backgroundColor);
 
 		for (LPEntity entity : entitiesRenderedBeforeWorld)
-			entity->Render();
+			if (entity->_IsActive())
+				entity->Render();
 
 		RenderWorld(&EncodedWorld::GetBackgroundIndex);
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
 		for (LPEntity entity : entitiesRenderedrAfterWorld)
-			entity->Render();
+			if (entity->_IsActive())
+				entity->Render();
 
 		Game::EndRender();
 	}

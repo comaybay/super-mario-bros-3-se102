@@ -189,9 +189,6 @@ Utils::Dimension<int> Entity::GetCurrentSpriteDimension()
 
 void Entity::Update(float delta)
 {
-	if (!isActive)
-		return;
-
 	position += remainingVelocity * delta;
 	animation->Update(delta);
 }
@@ -199,17 +196,11 @@ void Entity::Update(float delta)
 //process stuff for collision detection/handling
 void Entity::PostUpdate()
 {
-	if (!isActive)
-		return;
-
 	remainingVelocity = velocity;
 }
 
 void Entity::Render()
 {
-	if (!isActive)
-		return;
-
 	animation->Render(position);
 }
 
@@ -239,4 +230,9 @@ Utils::Vector2<float> Entity::_GetRemainingVelocity()
 void Entity::_SetRemainingVelocity(Utils::Vector2<float> velocity)
 {
 	remainingVelocity = velocity;
+}
+
+bool Entity::_IsActive()
+{
+	return isActive;
 }

@@ -99,6 +99,13 @@ public:
 	/// </summary>
 	Utils::Vector2<float> _GetRemainingVelocity();
 	void _SetRemainingVelocity(Utils::Vector2<float> vel);
+
+
+	/// <summary>
+	/// Used internaly by Scene to see if entity is active.
+	/// </summary>
+	bool _IsActive();
+
 protected:
 	LPScene parentScene;
 	std::vector<std::string> groups;
