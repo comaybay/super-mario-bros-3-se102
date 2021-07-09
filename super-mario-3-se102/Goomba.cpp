@@ -41,7 +41,7 @@ void Goomba::Update(float delta)
 {
 	Entity::Update(delta);
 
-	state.Handle(delta);
+	state.Update(delta);
 
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
@@ -71,7 +71,7 @@ void Goomba::OnCollision(CollisionData data)
 
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
-			state.SetHandler(&Goomba::StompedOn);
+			state.SetState(&Goomba::StompedOn);
 			SetAnimation(colorCode + "GoombaDeath");
 			velocity.x = 0;
 			parentScene->AddEntity(PointUpFactory::Create(position));
@@ -103,7 +103,7 @@ void Goomba::OnCollision(CollisionData data)
 void Goomba::KnockOver(float horizontalDirection)
 {
 	EnableForCollisionDetection(false);
-	state.SetHandler(&Goomba::KnockedOver);
+	state.SetState(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
 	velocity = KNOCK_OVER_VELOCITY;
 	velocity.x *= horizontalDirection;

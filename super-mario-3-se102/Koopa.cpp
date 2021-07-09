@@ -59,10 +59,10 @@ void Koopa::OnCollision(CollisionData data)
 	}
 
 	if (Contains(Group::ENEMIES, groups)) {
-		if (state.GetHandler() == &Koopa::ShellIdle)
+		if (state.GetState() == &Koopa::ShellIdle)
 			return;
 
-		if (state.GetHandler() == &Koopa::MoveAround) {
+		if (state.GetState() == &Koopa::MoveAround) {
 			CollisionHandling::Slide(this, data);
 			if (data.edge.x == 0.0f)
 				return;
@@ -74,7 +74,7 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (state.GetHandler() == &Koopa::ShellSlide) {
+		if (state.GetState() == &Koopa::ShellSlide) {
 			if (Contains(std::string("Goombas"), data.who->GetEntityGroups())) {
 				static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
 				return;
@@ -91,7 +91,7 @@ void Koopa::OnCollision(CollisionData data)
 void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
-	if (state.GetHandler() == &Koopa::MoveAround) {
+	if (state.GetState() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
 			SwitchState(&Koopa::ShellIdle);
@@ -108,7 +108,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 		return;
 	}
 
-	if (state.GetHandler() == &Koopa::ShellIdle) {
+	if (state.GetState() == &Koopa::ShellIdle) {
 		if (data.edge.x != 0.0f)
 			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
 
@@ -121,7 +121,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 		return;
 	}
 
-	if (state.GetHandler() == &Koopa::ShellSlide) {
+	if (state.GetState() == &Koopa::ShellSlide) {
 		if (data.edge.x != 0.0f || data.edge.y == -1.0f) {
 			player->TakeDamage();
 			return;
@@ -152,10 +152,10 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		}
 
 		if (data.edge.x != 0.0f) {
-			float speed = (state.GetHandler() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
+			float speed = (state.GetState() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
 			velocity.x = speed * data.edge.x;
 
-			if (state.GetHandler() == &Koopa::MoveAround) {
+			if (state.GetState() == &Koopa::MoveAround) {
 				std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
 				SetAnimation(colorCode + anim);
 			}
@@ -173,9 +173,9 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 void Koopa::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 
-	if (state.GetHandler() == &Koopa::ShellSlide)
+	if (state.GetState() == &Koopa::ShellSlide)
 		velocity.y += EntityConstants::GRAVITY_STRONG * delta;
 	else
 		velocity.y += EntityConstants::GRAVITY * delta;
@@ -187,12 +187,12 @@ void Koopa::Update(float delta)
 
 bool Entities::Koopa::IsSliding()
 {
-	return state.GetHandler() == &Koopa::ShellSlide;
+	return state.GetState() == &Koopa::ShellSlide;
 }
 
 void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
 {
-	state.SetHandler(handler);
+	state.SetState(handler);
 
 	if (handler == &Koopa::ShellIdle) {
 		SetAnimation(colorCode + "KoopaSI");

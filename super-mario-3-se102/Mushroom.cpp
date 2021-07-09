@@ -28,7 +28,7 @@ Mushroom::Mushroom(const Vector2<float>& position)
 
 void Mushroom::Update(float delta) {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 }
 
 void Mushroom::OnReady()
@@ -44,7 +44,7 @@ void Mushroom::Wait(float delta)
 		velocity.y = -RISE_SPEED;
 		SetAnimation("Mushroom");
 		SetHitbox("HitboxMushroom");
-		state.SetHandler(&Mushroom::RiseUp);
+		state.SetState(&Mushroom::RiseUp);
 	}
 }
 
@@ -64,7 +64,7 @@ void Mushroom::RiseUp(float delta)
 		velocity.x = -MOVE_SPEED;
 
 	SetRenderedBeforeWorld(false);
-	state.SetHandler(&Mushroom::Move);
+	state.SetState(&Mushroom::Move);
 }
 
 void Mushroom::Move(float delta)

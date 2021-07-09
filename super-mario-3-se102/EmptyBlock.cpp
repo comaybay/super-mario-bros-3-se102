@@ -19,7 +19,7 @@ EmptyBlock::EmptyBlock(const Utils::Vector2<float>& position)
 void EmptyBlock::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 }
 
 void EmptyBlock::HitAnimation(float delta) {
@@ -27,7 +27,7 @@ void EmptyBlock::HitAnimation(float delta) {
 	if (done) {
 		delete blockHitMovement;
 		blockHitMovement = nullptr;
-		state.SetHandler(&EmptyBlock::Idle);
+		state.SetState(&EmptyBlock::Idle);
 	}
 }
 

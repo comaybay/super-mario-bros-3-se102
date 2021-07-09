@@ -26,14 +26,14 @@ void MarioSmall::TakeDamage()
 	velocity = { 0, 0 };
 
 	died = true;
-	smallMarioState.SetHandler(&MarioSmall::Die);
+	smallMarioState.SetState(&MarioSmall::Die);
 }
 
 void MarioSmall::Update(float delta)
 {
 	if (died) {
 		Entity::Update(delta);
-		smallMarioState.Handle(delta);
+		smallMarioState.Update(delta);
 	}
 	else
 		Mario::Update(delta);
@@ -47,7 +47,7 @@ void MarioSmall::OnCollision(CollisionData data)
 
 void MarioSmall::OnOutOfWorld()
 {
-	if (smallMarioState.GetHandler() != &MarioSmall::Die || smallMarioState.GetHandler() != &MarioSmall::DieFall)
+	if (smallMarioState.GetState() != &MarioSmall::Die || smallMarioState.GetState() != &MarioSmall::DieFall)
 		Mario::OnOutOfWorld();
 	else
 		UnsubscribeToOutOfWorldEvent();
@@ -59,7 +59,7 @@ void MarioSmall::Die(float delta) {
 	if (time >= 0.75f) {
 		time = 0;
 		velocity.y = -DEATH_JUMP_SPEED;
-		smallMarioState.SetHandler(&MarioSmall::DieFall);
+		smallMarioState.SetState(&MarioSmall::DieFall);
 	}
 }
 

@@ -50,7 +50,7 @@ void ParaGoomba::OnReady()
 
 ParaGoomba::~ParaGoomba()
 {
-	if (state.GetHandler() == &ParaGoomba::StompedOn)
+	if (state.GetState() == &ParaGoomba::StompedOn)
 		parentScene->AddEntity(new Entities::Goomba(colorType, position));
 }
 
@@ -58,7 +58,7 @@ void ParaGoomba::Update(float delta)
 {
 	Entity::Update(delta);
 
-	state.Handle(delta);
+	state.Update(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
@@ -81,7 +81,7 @@ void ParaGoomba::MoveAround(float delta) {
 		time = 0;
 		wingLeft.AutoFlap();
 		wingRight.AutoFlap();
-		state.SetHandler(&ParaGoomba::PrepareToJump);
+		state.SetState(&ParaGoomba::PrepareToJump);
 
 		std::list<LPEntity> playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYER);
 		if (playerGroup.empty())
@@ -110,7 +110,7 @@ void ParaGoomba::PrepareToJump(float delta) {
 		wingLeft.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 		wingRight.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 
-		state.SetHandler(&ParaGoomba::Jump);
+		state.SetState(&ParaGoomba::Jump);
 	}
 }
 
@@ -118,7 +118,7 @@ void ParaGoomba::Jump(float delta) {
 	if (velocity.y >= 0) {
 		wingLeft.SetFlapSpeed(1.0f);
 		wingRight.SetFlapSpeed(1.0f);
-		state.SetHandler(&ParaGoomba::Fall);
+		state.SetState(&ParaGoomba::Fall);
 	}
 }
 
@@ -127,7 +127,7 @@ void ParaGoomba::Fall(float delta) {
 		wingLeft.FlapDown();
 		wingRight.FlapDown();
 
-		state.SetHandler(&ParaGoomba::MoveAround);
+		state.SetState(&ParaGoomba::MoveAround);
 		return;
 	}
 }
@@ -148,7 +148,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
-			state.SetHandler(&ParaGoomba::StompedOn);
+			state.SetState(&ParaGoomba::StompedOn);
 			parentScene->AddEntity(PointUpFactory::Create(position));
 			parentScene->QueueFree(this);
 			return;

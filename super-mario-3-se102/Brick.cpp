@@ -29,7 +29,7 @@ void Brick::OnReady() {
 void Brick::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 }
 
 void Brick::Idle(float delta) {
@@ -38,7 +38,7 @@ void Brick::Idle(float delta) {
 void Brick::Hit(float delta) {
 	bool done = blockHitMovement.Update(delta);
 	if (done) {
-		state.SetHandler(&Brick::Idle);
+		state.SetState(&Brick::Idle);
 		blockHitMovement.Reset();
 	}
 }
@@ -52,7 +52,7 @@ void Brick::OnCollision(CollisionData data)
 		if (player->GetPowerLevel() == PlayerPowerLevel::BIG)
 			ExposeContent();
 		else
-			state.SetHandler(&Brick::Hit);
+			state.SetState(&Brick::Hit);
 
 		return;
 	}

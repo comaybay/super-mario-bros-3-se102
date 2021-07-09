@@ -23,7 +23,7 @@ void GoalRoulette::OnReady()
 void GoalRoulette::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 }
 
 void GoalRoulette::Idle(float _)
@@ -40,7 +40,7 @@ void GoalRoulette::FlyUp(float delta)
 void GoalRoulette::OnCollision(CollisionData data)
 {
 	CollisionEngine::Unsubscribe(this, &GoalRoulette::OnCollision);
-	state.SetHandler(&GoalRoulette::FlyUp);
+	state.SetState(&GoalRoulette::FlyUp);
 	velocity.y = -UP_SPEED;
 
 	switch (animation->GetCurrentFrame()) {

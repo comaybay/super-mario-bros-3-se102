@@ -25,7 +25,7 @@ ParaKoopa::~ParaKoopa()
 {
 	delete wing;
 
-	if (state.GetHandler() == &ParaKoopa::StompedOn)
+	if (state.GetState() == &ParaKoopa::StompedOn)
 		parentScene->AddEntity(new Koopa(colorType, position));
 }
 
@@ -65,7 +65,7 @@ void ParaKoopa::Update(float delta)
 {
 	Entity::Update(delta);
 
-	state.Handle(delta);
+	state.Update(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
@@ -86,7 +86,7 @@ void ParaKoopa::StompedOn(float delta) {
 
 void ParaKoopa::SwitchState(EntityState<ParaKoopa>::Handler handler)
 {
-	state.SetHandler(handler);
+	state.SetState(handler);
 }
 
 void ParaKoopa::OnCollision(CollisionData data)

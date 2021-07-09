@@ -28,7 +28,7 @@ void WMNode::_Init(const Utils::Vector2<float>& position, const std::string& sce
 void WMNode::Update(float delta)
 {
 	Entity::Update(delta);
-	state.Handle(delta);
+	state.Update(delta);
 
 	if (wmPlayer != nullptr)
 		wmPlayer->Update(delta);
@@ -44,7 +44,7 @@ void WMNode::Activate(LPEntity wmPlayer)
 {
 	this->wmPlayer = wmPlayer;
 	wmPlayer->SetPosition(position);
-	state.SetHandler(&WMNode::Active);
+	state.SetState(&WMNode::Active);
 }
 
 void WMNode::Inactive(float delta)
@@ -54,16 +54,16 @@ void WMNode::Inactive(float delta)
 void WMNode::Active(float delta)
 {
 	if (topNode && Game::IsKeyPressed(DIK_UP))
-		state.SetHandler(&WMNode::TransferAnimTop);
+		state.SetState(&WMNode::TransferAnimTop);
 
 	else if (leftNode && Game::IsKeyPressed(DIK_LEFT))
-		state.SetHandler(&WMNode::TransferAnimLeft);
+		state.SetState(&WMNode::TransferAnimLeft);
 
 	else if (bottomNode && Game::IsKeyPressed(DIK_DOWN))
-		state.SetHandler(&WMNode::TransferAnimDown);
+		state.SetState(&WMNode::TransferAnimDown);
 
 	else if (rightNode && Game::IsKeyPressed(DIK_RIGHT))
-		state.SetHandler(&WMNode::TransferAnimRight);
+		state.SetState(&WMNode::TransferAnimRight);
 
 	else if (rightNode && Game::IsKeyPressed(DIK_S))
 		Game::QueueFreeAndSwitchScene(scenePath);
@@ -134,7 +134,7 @@ void WMNode::TransferAnimRight(float delta)
 void WMNode::Transfer(LPWMNode targetNode)
 {
 	targetNode->Activate(wmPlayer);
-	state.SetHandler(&WMNode::Inactive);
+	state.SetState(&WMNode::Inactive);
 	wmPlayer = nullptr;
 }
 

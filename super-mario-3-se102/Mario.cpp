@@ -108,7 +108,7 @@ void Mario::Update(float delta) {
 	Entity::Update(delta);
 
 	UpdateHorizontalDirection();
-	marioState.Handle(delta);
+	marioState.Update(delta);
 
 	onGround = false;
 }
@@ -146,10 +146,10 @@ PlayerPowerLevel Mario::GetPowerLevel()
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
-	if (marioState.GetHandler() == &Mario::OutOfWorldDeath)
+	if (marioState.GetState() == &Mario::OutOfWorldDeath)
 		return;
 
-	marioState.SetHandler(stateHandler);
+	marioState.SetState(stateHandler);
 
 	if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
