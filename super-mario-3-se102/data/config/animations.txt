@@ -97,12 +97,12 @@ PlayableCharacters
 1, 144, 16, 175
 
 ##MarioTransitions##====================================
-MarioTransitionPart1Left, Normal,  0.066, Manual
+MarioTransition1Left, Normal,  0.066, Manual
 PlayableCharacters
 227, 144, 242, 175
 1, 16, 16, 31, 0, 16
 
-MarioTransitionPart2Left, Normal,  0.066, Manual
+MarioTransition2Left, Normal,  0.066, Manual
 PlayableCharacters
 1, 110, 16, 141
 227, 144, 242, 175
@@ -116,6 +116,10 @@ MarioTransitionPart2Right, Normal,  0.066, Manual
 PlayableCharacters
 73, 110, 88, 141
 245, 144, 260, 175
+
+MarioTransitionSmoke, Normal, 0.08, Auto
+PlayableCharacters
+415, 1, 16, 16, 2, 4
 
 ##Goomba##====================================
 BGoombaM, Normal, 0.15, Auto
