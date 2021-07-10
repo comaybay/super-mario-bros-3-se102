@@ -12,9 +12,9 @@ Camera::Camera(const Vector2<float>& position)
 {
 }
 
-const Vector2<float>& Camera::GetPosition() const
-{
-	return position;
+void Camera::OnReady() {
+	Entity::OnReady();
+	UnsubscribeToOutOfWorldEvent();
 }
 
 void Camera::Update(float delta)

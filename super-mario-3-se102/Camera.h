@@ -12,7 +12,7 @@ class Camera : public Entity
 public:
 	Camera(const Utils::Vector2<float>& position = { 0, 0 });
 	void Update(float _) override;
-	const Utils::Vector2<float>& GetPosition() const;
+	void OnReady() override;
 	void FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset = { 0, 0 });
 	void StopFollowingEntity();
 private:

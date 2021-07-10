@@ -62,6 +62,10 @@ private:
 	};
 	std::list<ToRemoveProps> unsubscribeWaitList;
 
+	/// <summary>
+	/// When event is destroyed, This will be used to auto unsubscribe from entity's destroy events
+	/// </summary>
+	std::unordered_set<LPEntity> subscribedEntities;
 
 	/// <summary>
 	/// Since ordinary functions do not have "this", an id represent a null pointer will be used for all subscribed ordinary functions
@@ -74,6 +78,9 @@ inline Event<Args...>::~Event()
 {
 	for (auto& pair : eventHandlersById)
 		delete pair.second;
+
+	for (LPEntity entity : subscribedEntities)
+		entity->GetDestroyEvent().Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
 }
 
 template<class ...Args>
@@ -101,7 +108,9 @@ inline void Event<Args...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 	//unregister when entity is destroy
 	//if is other type, let user unsubscribe manually
 	if (std::is_base_of<Entity, T>::value) {
-		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent().Subscribe(this, &Event<Args...>::OnEntityDestroy);
+		LPEntity entity = reinterpret_cast<LPEntity>(handlerThis);
+		entity->GetDestroyEvent().Subscribe(this, &Event<Args...>::OnEntityDestroy);
+		subscribedEntities.insert(entity);
 	}
 }
 
@@ -126,8 +135,11 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, MethodHandler<T> handler
 	intptr_t thisId = GetAddressOf(handlerThis);
 	unsubscribeWaitList.push_back(ToRemoveProps(thisId, handlerId));
 
-	if (std::is_base_of<Entity, T>::value)
-		reinterpret_cast<LPEntity>(handlerThis)->GetDestroyEvent().Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
+	if (std::is_base_of<Entity, T>::value) {
+		LPEntity entity = reinterpret_cast<LPEntity>(handlerThis);
+		entity->GetDestroyEvent().Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
+		subscribedEntities.erase(entity);
+	}
 }
 
 template<class ...Args>
@@ -153,9 +165,14 @@ inline void Event<Args...>::Notify(Args... other)
 template<class ...Args>
 inline void Event<Args...>::OnEntityDestroy(LPEntity entity)
 {
-	//remove all entity handlers container from map (unsubscribe all entity handlers)
-	auto it = eventHandlersById.find(reinterpret_cast<intptr_t>(&(*entity)));
-	eventHandlersById.erase(it);
+	auto handlersIt = eventHandlersById.find(GetAddressOf(entity));
+	eventHandlersById.erase(handlersIt);
+
+	auto waitListIt = std::find_if(unsubscribeWaitList.begin(), unsubscribeWaitList.end(),
+		[this, entity](ToRemoveProps& props) -> bool { return props.thisId == GetAddressOf(entity); }
+	);
+	if (waitListIt != unsubscribeWaitList.end())
+		unsubscribeWaitList.erase(waitListIt);
 }
 
 template<class ...Args>

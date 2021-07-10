@@ -18,7 +18,7 @@ public:
 
 	void Handle(Args... args) {
 		handler(args...);
-	}
+ 	}
 
 	EventHandler() {}
 	EventHandler(intptr_t id, std::function<void(Args...)> handler)
