@@ -72,9 +72,13 @@ namespace Entities {
 
 	private:
 		EntityState<Mario> updateState;
-		float invinsibleTime;
+		float invincibleTime;
 		Event<> restartPointUp;
 		MarioAnimationSet animationSet;
+
+
+	public:
+		static const int FLASH_DURATION;
 
 	protected:
 		static const float MAX_WALK_SPEED;
@@ -89,7 +93,7 @@ namespace Entities {
 		static const float DEATH_FALL_ACCEL;
 		static const float RUN_STATE_ANIM_SPEED;
 		static const float WALK_SPEED_REACHED_GOAL_ROULETTE;
-		static const float INVINSIBLE_DURATION;
+		static const float INVINCIBLE_DURATION;
 	};
 	typedef Mario* LPMario;
 }

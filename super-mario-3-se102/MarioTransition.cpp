@@ -53,6 +53,8 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 
 void MarioTransition::OnReady()
 {
+	Entity::OnReady();
+	UnsubscribeToOutOfWorldEvent();
 	parentScene->GetCamera().StopFollowingEntity();
 	parentScene->TransitionPause(true);
 }
@@ -61,6 +63,22 @@ void MarioTransition::Update(float delta)
 {
 	Entity::Update(delta);
 	state.Update(delta);
+
+	if (isDowngradeTransiton)
+		invincibleTime += delta;
+}
+
+void MarioTransition::Render()
+{
+	if (!isDowngradeTransiton) {
+		Entity::Render();
+		return;
+	}
+
+	static const int maxFPS = Game::GetGameSettings().maxFPS;
+
+	if (int(invincibleTime * maxFPS / Mario::FLASH_DURATION) % 2)
+		Entity::Render();
 }
 
 void MarioTransition::SmallToBigPart1(float delta)

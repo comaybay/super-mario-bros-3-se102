@@ -21,7 +21,8 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
-const float Mario::INVINSIBLE_DURATION = 1;
+const float Mario::INVINCIBLE_DURATION = 1;
+const int Mario::FLASH_DURATION = 2;
 
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
@@ -69,9 +70,9 @@ void Mario::InvincibilityUpdate(float delta)
 {
 	NormalUpdate(delta);
 
-	invinsibleTime += delta;
-	if (invinsibleTime >= INVINSIBLE_DURATION) {
-		invinsibleTime = 0;
+	invincibleTime += delta;
+	if (invincibleTime >= INVINCIBLE_DURATION) {
+		invincibleTime = 0;
 		updateState.SetState(&Mario::NormalUpdate);
 	}
 }
@@ -87,7 +88,7 @@ void Mario::Render()
 void Mario::InvincibilityRender() {
 	static const int maxFPS = Game::GetGameSettings().maxFPS;
 
-	if (int(invinsibleTime * maxFPS) % 2)
+	if (int(invincibleTime * maxFPS / FLASH_DURATION) % 2)
 		Entity::Render();
 }
 

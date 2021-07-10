@@ -19,6 +19,7 @@ namespace Entities {
 		MarioTransition(LPMario player, PlayerPowerLevel to);
 		void OnReady() override;
 		void Update(float delta) override;
+		void Render() override;
 
 	private:
 		void SmallToBigPart1(float delta);
@@ -31,6 +32,7 @@ namespace Entities {
 		void CreateMario();
 
 		float time;
+		float invincibleTime;
 		LPMario player;
 		bool isDowngradeTransiton;
 		std::string animDirCode;
