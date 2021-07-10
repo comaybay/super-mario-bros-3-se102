@@ -91,6 +91,9 @@ void Koopa::OnCollision(CollisionData data)
 void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
+	if (player->IsInvincible())
+		return;
+
 	if (state.GetState() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
 			player->Bounce();

@@ -120,6 +120,9 @@ void ParaKoopa::OnCollision(CollisionData data)
 void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
+	if (player->IsInvincible())
+		return;
+
 	if (data.edge.y == 1.0f) {
 		player->Bounce();
 		SwitchState(&ParaKoopa::StompedOn);

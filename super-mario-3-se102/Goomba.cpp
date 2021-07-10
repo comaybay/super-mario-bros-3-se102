@@ -68,6 +68,8 @@ void Goomba::OnCollision(CollisionData data)
 
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
+		if (player->IsInvincible())
+			return;
 
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
