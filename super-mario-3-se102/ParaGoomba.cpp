@@ -145,9 +145,6 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
-		if (player->IsInvincible())
-			return;
-
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
 			state.SetState(&ParaGoomba::StompedOn);
@@ -156,9 +153,11 @@ void ParaGoomba::OnCollision(CollisionData data)
 			return;
 		}
 
-		player->TakeDamage();
-		velocity.x = (position.x < data.who->GetPosition().x) ? Goomba::WALK_SPEED : -Goomba::WALK_SPEED;
-		return;
+		if (!player->IsInvincible()) {
+			player->TakeDamage();
+			velocity.x = (position.x < data.who->GetPosition().x) ? Goomba::WALK_SPEED : -Goomba::WALK_SPEED;
+			return;
+		}
 	}
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {

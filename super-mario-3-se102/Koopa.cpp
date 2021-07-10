@@ -91,8 +91,6 @@ void Koopa::OnCollision(CollisionData data)
 void Koopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
-	if (player->IsInvincible())
-		return;
 
 	if (state.GetState() == &Koopa::MoveAround) {
 		if (data.edge.y == 1.0f) {
@@ -101,14 +99,15 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 			velocity.x = 0;
 			position.y += Constants::TILE_SIZE;
 			parentScene->AddEntity(PointUpFactory::Create(position));
+			return;
 		}
-		else {
+
+		if (!player->IsInvincible()) {
 			player->TakeDamage();
 			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 			SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
+			return;
 		}
-
-		return;
 	}
 
 	if (state.GetState() == &Koopa::ShellIdle) {
@@ -125,15 +124,18 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	}
 
 	if (state.GetState() == &Koopa::ShellSlide) {
-		if (data.edge.x != 0.0f || data.edge.y == -1.0f) {
+		if (data.edge.y == 1.0f) {
+			player->Bounce();
+			SwitchState(&Koopa::ShellIdle);
+			parentScene->AddEntity(PointUpFactory::Create(position));
+			return;
+		}
+
+		if (!player->IsInvincible()) {
 			player->TakeDamage();
 			return;
 		}
 
-		player->Bounce();
-		SwitchState(&Koopa::ShellIdle);
-		parentScene->AddEntity(PointUpFactory::Create(position));
-		return;
 	}
 }
 

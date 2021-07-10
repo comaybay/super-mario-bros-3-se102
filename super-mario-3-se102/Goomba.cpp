@@ -68,8 +68,6 @@ void Goomba::OnCollision(CollisionData data)
 
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
-		if (player->IsInvincible())
-			return;
 
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
@@ -80,26 +78,31 @@ void Goomba::OnCollision(CollisionData data)
 			return;
 		}
 
-		player->TakeDamage();
-		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
+		if (!player->IsInvincible()) {
+			player->TakeDamage();
+			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
+			return;
+		}
+
 		return;
 	}
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {
-		if (data.edge.y == -1.0f)
+	if (Contains(Group::COLLISION_WALLS, groups)) {
+		if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 			CollisionHandling::Slide(this, data);
 
-		return;
+			if (data.edge.y != 0.0f)
+				velocity.y = 0;
+
+			else if (data.edge.x != 0.0f)
+				velocity.x = WALK_SPEED * data.edge.x;
+
+			return;
+		}
+
+		if (data.edge.y == -1.0f)
+			CollisionHandling::Slide(this, data);
 	}
-
-	CollisionHandling::Slide(this, data);
-
-	if (data.edge.y != 0.0f)
-		velocity.y = 0;
-
-	else if (data.edge.x != 0.0f)
-		velocity.x = WALK_SPEED * data.edge.x;
-
 }
 
 void Goomba::KnockOver(float horizontalDirection)

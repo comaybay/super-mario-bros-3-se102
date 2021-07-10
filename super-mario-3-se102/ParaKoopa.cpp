@@ -120,22 +120,22 @@ void ParaKoopa::OnCollision(CollisionData data)
 void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
-	if (player->IsInvincible())
-		return;
-
 	if (data.edge.y == 1.0f) {
 		player->Bounce();
 		SwitchState(&ParaKoopa::StompedOn);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);
+		return;
 	}
-	else {
+
+	if (!player->IsInvincible()) {
 		player->TakeDamage();
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Koopa::WALK_SPEED : Koopa::WALK_SPEED;
 
 		SetWingDirection((velocity.x < 0) ? WingDirection::RIGHT : WingDirection::LEFT);
 		std::string anim = (velocity.x < 0) ? "KoopaML" : "KoopaMR";
 		SetAnimation(colorCode + anim);
+		return;
 	}
 }
 
