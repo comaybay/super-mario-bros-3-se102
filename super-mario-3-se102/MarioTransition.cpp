@@ -136,7 +136,7 @@ void MarioTransition::CreateMario()
 	}
 
 	if (isDowngradeTransiton) {
-		//TODO: implement this
+		newPlayer->TurnInvinsible();
 	}
 
 	newPlayer->SetVelocity(player->GetVelocity());

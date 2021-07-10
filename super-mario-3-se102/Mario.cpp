@@ -21,6 +21,7 @@ const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
+const float Mario::INVINSIBLE_DURATION = 1;
 
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
@@ -36,6 +37,7 @@ Mario::Mario(
 	animationSet(animationSet),
 	powerLevel(powerLevel),
 	marioState(EntityState<Mario>(this, &Mario::Idle)),
+	updateState(EntityState<Mario>(this, &Mario::NormalUpdate)),
 	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
 	dir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
 	time(0),
@@ -50,99 +52,53 @@ void Mario::OnReady()
 	CollisionEngine::Subscribe(this, &Mario::OnCollision, { Group::COLLISION_WALLS });
 }
 
-Event<>& Mario::GetRestartPointUpEvent()
-{
-	return restartPointUp;
-}
-
-void Mario::Bounce()
-{
-	SwitchState(&Mario::BounceUp);
-}
-
-void Mario::OnCollision(CollisionData data)
-{
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
-
-	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
-		CollisionHandling::Slide(this, data);
-
-		if (data.edge.y != 0.0f)
-			velocity.y = 0;
-
-		if (data.edge.x != 0.0f)
-			velocity.x = 0;
-
-		if (data.edge.y == -1.0f)
-			onGround = true;
-	}
-
-	else if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
-		CollisionHandling::Slide(this, data);
-		onGround = true;
-		velocity.y = 0;
-	}
-}
-
-void Mario::UpdateHorizontalDirection()
-{
-	if (Game::IsKeyDown(DIK_RIGHT)) {
-		lastPressedKeyHorizontal = DIK_RIGHT;
-		dir.x = 1;
-	}
-	else if (Game::IsKeyDown(DIK_LEFT)) {
-		lastPressedKeyHorizontal = DIK_LEFT;
-		dir.x = -1;
-	}
-	else {
-		dir.x = 0;
-	}
-}
-
-void Mario::UnsubscribeToCollisionEngine()
-{
-	CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
-}
-
 void Mario::Update(float delta) {
 	Entity::Update(delta);
+	updateState.Update(delta);
+}
 
+void Mario::NormalUpdate(float delta)
+{
 	UpdateHorizontalDirection();
 	marioState.Update(delta);
 
 	onGround = false;
 }
 
-HDirection Mario::GetFacingDirection()
+void Mario::InvinsibleUpdate(float delta)
 {
-	if (dir.x != 0)
-		return dir.x < 0 ? HDirection::LEFT : HDirection::RIGHT;
+	NormalUpdate(delta);
+
+	invinsibleTime += delta;
+	if (invinsibleTime >= INVINSIBLE_DURATION) {
+		invinsibleTime = 0;
+		updateState.SetState(&Mario::NormalUpdate);
+	}
+}
+
+void Mario::Render()
+{
+	if (IsInvincible())
+		InvinsibleRender();
 	else
-		return lastPressedKeyHorizontal == DIK_LEFT ? HDirection::LEFT : HDirection::RIGHT;
+		Entity::Render();
 }
 
-void Mario::StartReachedGoalRouletteAnimation()
-{
-	SwitchState(&Mario::ReachedGoalRouletteFall);
+void Mario::InvinsibleRender() {
+	static const int maxFPS = Game::GetGameSettings().maxFPS;
+
+	if (int(invinsibleTime * maxFPS) % 2)
+		Entity::Render();
 }
 
-void Mario::OnOutOfWorld()
+void Mario::TurnInvinsible()
 {
-	if (position.y < 0)
-		return;
-
-	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<float> marioDim = GetCurrentSpriteDimension();
-
-	velocity = { 0,0 };
-	UnsubscribeToOutOfWorldEvent();
-	parentScene->TransitionPause(true);
-	SwitchState(&Mario::OutOfWorldDeath);
+	updateState.SetState(&Mario::InvinsibleUpdate);
 }
 
-PlayerPowerLevel Mario::GetPowerLevel()
+bool Mario::IsInvincible()
 {
-	return powerLevel;
+	return (updateState.GetState() == &Mario::InvinsibleUpdate);
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
@@ -372,4 +328,90 @@ void Mario::ClipHorizontalPosition()
 	Dimension<float> worldDim = parentScene->GetWorldDimension();
 	Dimension<float> marioDim = GetCurrentSpriteDimension();
 	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
+}
+
+Event<>& Mario::GetRestartPointUpEvent()
+{
+	return restartPointUp;
+}
+
+void Mario::Bounce()
+{
+	SwitchState(&Mario::BounceUp);
+}
+
+void Mario::UnsubscribeToCollisionEngine()
+{
+	CollisionEngine::Unsubscribe(this, &Mario::OnCollision);
+}
+
+void Mario::OnCollision(CollisionData data)
+{
+	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+
+	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
+		CollisionHandling::Slide(this, data);
+
+		if (data.edge.y != 0.0f)
+			velocity.y = 0;
+
+		if (data.edge.x != 0.0f)
+			velocity.x = 0;
+
+		if (data.edge.y == -1.0f)
+			onGround = true;
+	}
+
+	else if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+		CollisionHandling::Slide(this, data);
+		onGround = true;
+		velocity.y = 0;
+	}
+}
+
+void Mario::UpdateHorizontalDirection()
+{
+	if (Game::IsKeyDown(DIK_RIGHT)) {
+		lastPressedKeyHorizontal = DIK_RIGHT;
+		dir.x = 1;
+	}
+	else if (Game::IsKeyDown(DIK_LEFT)) {
+		lastPressedKeyHorizontal = DIK_LEFT;
+		dir.x = -1;
+	}
+	else {
+		dir.x = 0;
+	}
+}
+
+HDirection Mario::GetFacingDirection()
+{
+	if (dir.x != 0)
+		return dir.x < 0 ? HDirection::LEFT : HDirection::RIGHT;
+	else
+		return lastPressedKeyHorizontal == DIK_LEFT ? HDirection::LEFT : HDirection::RIGHT;
+}
+
+void Mario::StartReachedGoalRouletteAnimation()
+{
+	SwitchState(&Mario::ReachedGoalRouletteFall);
+}
+
+void Mario::OnOutOfWorld()
+{
+	if (position.y < 0)
+		return;
+
+	Dimension<float> worldDim = parentScene->GetWorldDimension();
+	Dimension<float> marioDim = GetCurrentSpriteDimension();
+
+	velocity = { 0,0 };
+	UnsubscribeToOutOfWorldEvent();
+	parentScene->TransitionPause(true);
+	SwitchState(&Mario::OutOfWorldDeath);
+}
+
+PlayerPowerLevel Mario::GetPowerLevel()
+{
+	return powerLevel;
 }

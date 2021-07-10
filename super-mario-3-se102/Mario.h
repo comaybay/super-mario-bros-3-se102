@@ -17,7 +17,10 @@ namespace Entities {
 
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		virtual void Render() override;
 		HDirection GetFacingDirection();
+		void TurnInvinsible();
+		bool IsInvincible();
 		void StartReachedGoalRouletteAnimation();
 
 		PlayerPowerLevel GetPowerLevel();
@@ -31,6 +34,11 @@ namespace Entities {
 
 	protected:
 		virtual void OnOutOfWorld() override;
+
+		void NormalUpdate(float delta);
+		void InvinsibleUpdate(float delta);
+		void NormalRender();
+		void InvinsibleRender();
 
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
@@ -61,6 +69,14 @@ namespace Entities {
 		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
 		PlayerPowerLevel powerLevel;
+
+	private:
+		EntityState<Mario> updateState;
+		float invinsibleTime;
+		Event<> restartPointUp;
+		MarioAnimationSet animationSet;
+
+	protected:
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
 		static const Utils::Vector2<float> ACCELERATION;
@@ -73,11 +89,7 @@ namespace Entities {
 		static const float DEATH_FALL_ACCEL;
 		static const float RUN_STATE_ANIM_SPEED;
 		static const float WALK_SPEED_REACHED_GOAL_ROULETTE;
-
-	private:
-		Event<> restartPointUp;
-		EventHandler<Mario, CollisionData> onCollision;
-		MarioAnimationSet animationSet;
+		static const float INVINSIBLE_DURATION;
 	};
 	typedef Mario* LPMario;
 }
