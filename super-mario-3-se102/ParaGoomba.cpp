@@ -155,7 +155,6 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 		if (!player->IsInvincible()) {
 			player->TakeDamage();
-			velocity.x = (position.x < data.who->GetPosition().x) ? Goomba::WALK_SPEED : -Goomba::WALK_SPEED;
 			return;
 		}
 	}
