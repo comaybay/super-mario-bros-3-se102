@@ -65,7 +65,7 @@ void Mario::NormalUpdate(float delta)
 	onGround = false;
 }
 
-void Mario::InvinsibleUpdate(float delta)
+void Mario::InvincibilityUpdate(float delta)
 {
 	NormalUpdate(delta);
 
@@ -79,12 +79,12 @@ void Mario::InvinsibleUpdate(float delta)
 void Mario::Render()
 {
 	if (IsInvincible())
-		InvinsibleRender();
+		InvincibilityRender();
 	else
 		Entity::Render();
 }
 
-void Mario::InvinsibleRender() {
+void Mario::InvincibilityRender() {
 	static const int maxFPS = Game::GetGameSettings().maxFPS;
 
 	if (int(invinsibleTime * maxFPS) % 2)
@@ -93,12 +93,12 @@ void Mario::InvinsibleRender() {
 
 void Mario::TurnInvinsible()
 {
-	updateState.SetState(&Mario::InvinsibleUpdate);
+	updateState.SetState(&Mario::InvincibilityUpdate);
 }
 
 bool Mario::IsInvincible()
 {
-	return (updateState.GetState() == &Mario::InvinsibleUpdate);
+	return (updateState.GetState() == &Mario::InvincibilityUpdate);
 }
 
 void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {

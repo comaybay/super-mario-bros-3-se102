@@ -36,9 +36,9 @@ namespace Entities {
 		virtual void OnOutOfWorld() override;
 
 		void NormalUpdate(float delta);
-		void InvinsibleUpdate(float delta);
+		void InvincibilityUpdate(float delta);
 		void NormalRender();
-		void InvinsibleRender();
+		void InvincibilityRender();
 
 		void SwitchState(EntityState<Mario>::Handler state);
 		void Idle(float delta);
