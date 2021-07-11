@@ -6,6 +6,8 @@ world_entity_anno_map = {
     (0, 1): EntityCode.BRICK,
     (1, 1): EntityCode.BRICK_P_SWITCH,
     (2, 1): EntityCode.BRICK_1UP,
+    (3, 1): EntityCode.BRICK_SUPER_LEAF,
+    (4, 1): EntityCode.COIN_BLOCK_BRICK,
     (0, 2): EntityCode.COIN,
     (1, 2): EntityCode.GOAL_ROULETTE,
     (2, 2): EntityCode.PORTAL_1,
@@ -25,6 +27,7 @@ world_entity_anno_map = {
     (0, 6): EntityCode.MARIO,
     (1, 6): EntityCode.NOTE_BLOCK,
     (2, 6): EntityCode.SUPER_NOTE_BLOCK,
+    (3, 6): EntityCode.ITEM_WOOD_BLOCK_SUPER_LEAF,
     (0, 7): EntityCode.BOOMERANG_BRO,
 }
 

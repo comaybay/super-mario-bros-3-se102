@@ -295,9 +295,12 @@ class EntityCode(Enum):
     BRICK = "Brick, None"
     BRICK_1UP = "Brick, 1Up"
     BRICK_P_SWITCH = "Brick, PSwitch"
+    BRICK_SUPER_LEAF = "Brick, SuperLeaf"
+    COIN_BLOCK_BRICK = "CoinBlock, Brick"
+    MARIO = "Mario"
     NOTE_BLOCK = "NoteBlock, None"
     SUPER_NOTE_BLOCK = "SuperNoteBlock"
-    MARIO = "Mario"
+    ITEM_WOOD_BLOCK_SUPER_LEAF = "ItemWoodBlock, SuperLeaf"
     # WORLD MAP
     WM_BUSH = "WMBush"
     WM_HELP_BUBBLE = "WMHelpBubble"
