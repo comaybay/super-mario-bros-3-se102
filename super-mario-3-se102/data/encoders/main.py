@@ -38,41 +38,44 @@ def main():
     # automatically encode all images from ./worlds
     if len(sys.argv) == 1:
         default_input_worlds_dir = path.join(this_dir, "worlds")
-        encoding_world_files_form_folder(
-            default_input_worlds_dir,
-            default_output_world_dir,
-            game_dim,
-            default_world_tile_anno_path,
-            default_world_entity_anno_path,
-            world_entity_anno_map,
-        )
+        encoding_world_files_form_folder(default_input_worlds_dir,
+                                         default_output_world_dir,
+                                         game_dim,
+                                         default_world_tile_anno_path,
+                                         default_world_entity_anno_path,
+                                         world_entity_anno_map)
 
         default_input_world_maps_dir = path.join(this_dir, "world_maps")
-        encoding_world_map_files_form_folder(
-            default_input_world_maps_dir,
-            default_output_world_map_dir,
-            game_dim,
-            default_world_map_tile_anno_path,
-            default_world_map_entity_anno_path,
-            world_map_entity_anno_map,
-            default_world_map_node_anno_path
-        )
+        encoding_world_map_files_form_folder(default_input_world_maps_dir,
+                                             default_output_world_map_dir,
+                                             game_dim,
+                                             default_world_map_tile_anno_path,
+                                             default_world_map_entity_anno_path,
+                                             world_map_entity_anno_map,
+                                             default_world_map_node_anno_path)
         print("Done.")
 
     # manually provide image_type and target folder
     elif len(sys.argv) == 3:
-        image_type = sys.argv[1]
-        input_folder_dir = sys.argv[2]
-        if (image_type == ImageType.WORLD):
-            encoding_world_files_form_folder(input_folder_dir, default_output_world_dir,
-                                             game_dim, default_world_tile_anno_path, default_world_entity_anno_path,
+        image_type = sys.argv[2]
+        input_folder_dir = sys.argv[1]
+        if (image_type == "-world"):
+            encoding_world_files_form_folder(input_folder_dir,
+                                             default_output_world_dir,
+                                             game_dim,
+                                             default_world_tile_anno_path,
+                                             default_world_entity_anno_path,
                                              world_entity_anno_map)
             print("Done.")
 
-        elif (image_type == ImageType.WORLD_MAP):
-            encoding_world_map_files_form_folder(input_folder_dir, default_output_world_dir,
-                                                 game_dim, default_world_map_tile_anno_path, default_world_map_entity_anno_path,
-                                                 world_map_entity_anno_map)
+        elif (image_type == "-worldmap"):
+            encoding_world_map_files_form_folder(input_folder_dir,
+                                                 default_output_world_map_dir,
+                                                 game_dim,
+                                                 default_world_map_tile_anno_path,
+                                                 default_world_map_entity_anno_path,
+                                                 world_map_entity_anno_map,
+                                                 default_world_map_node_anno_path)
             print("Done.")
 
         else:
@@ -110,11 +113,6 @@ def encoding_world_map_files_form_folder(input_folder_dir, output_folder_dir, ga
                         entity_anno_path, entity_anno_map, node_anno_path).encode()
 
         world_img.close()
-
-
-class ImageType():
-    WORLD = "-world"
-    WORLD_MAP = "-map"
 
 
 def get_game_dim(path):
