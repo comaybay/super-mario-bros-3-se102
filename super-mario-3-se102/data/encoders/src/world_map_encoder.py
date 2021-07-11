@@ -40,10 +40,6 @@ class WorldMapEncoder(Encoder):
             self._write_nodes_header(encode_file)
             self._encode_nodes(fourth_layer_line, encode_file)
 
-        if (self.mistake_file != None):
-            self.mistake_file.close()
-            self.mistake_file = None
-
     def _get_prev_scene_path(self):
         return f"None"
 
