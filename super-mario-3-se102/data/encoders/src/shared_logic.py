@@ -20,7 +20,11 @@ class Encoder(ABC):
     def __init__(self, scene_type, input_img, number_of_layers, game_dim, output_file_path, tile_anno_path, entity_anno_path, entity_anno_map):
         self.scene_type = scene_type
         self.output_file_path = output_file_path
-        self.mistake_file = None
+
+        file_name = os.path.splitext(ntpath.basename(self.output_file_path))[0]
+        self.mistake_file_path = os.path.join(os.path.dirname(sys.argv[0]), f"{file_name}_mistakes.txt")
+        self.mistake_file = self._create_mistake_file(self.mistake_file_path)
+        self.has_mistake = False
 
         input_img_file_name = os.path.split(input_img.filename)[1]
         self.world_map_number = re.search(r"^wm?_(\d+)", input_img_file_name).group(1)
@@ -46,8 +50,22 @@ class Encoder(ABC):
         self.sp_cell_dim = (game_dim[0] / 2, game_dim[1] / 2)
 
     def __del__(self):
+        self.mistake_file.close()
+        if self.has_mistake == False:
+            os.remove(self.mistake_file_path)
+
         self.tile_anno_img.close()
         self.entity_anno_img.close()
+
+    def _create_mistake_file(self, file_path):
+        mistake_file = open(file_path, "w")
+
+        date = datetime.now().strftime('%m/%d/%Y %H:%M:%S')
+        mistake_file.write(f"{date}\n")
+        mistake_file.write("Created by world_encoder.py, this file contains all tiles that are unidentifiable or not implemented yet.\n" +
+                           "Use this to find mistakes in your image or in world_encoder/data/*.png\n")
+        mistake_file.write("----------------------------------------------------\n")
+        return mistake_file
 
     def _write_world_props_header(self, encode_file):
         encode_file.write("#SceneType (World or WorldMap)\n")
@@ -157,30 +175,15 @@ class Encoder(ABC):
                         encode_file.write(f"{grid_x}, {grid_y}\n")
 
     def _write_to_mistake_file_formated(self, position_in_tile, type):
-        if (self.mistake_file == None):
-            self._create_mistake_file()
-
+        self.has_mistake = True
         x, y = position_in_tile
         self.mistake_file.write(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)\n")
         print(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)")
 
     def _write_to_mistake_file(self, msg):
-        if (self.mistake_file == None):
-            self._create_mistake_file()
-
+        self.has_mistake = True
         self.mistake_file.write(msg)
         print(msg, end='')
-
-    def _create_mistake_file(self):
-        file_name = os.path.splitext(ntpath.basename(self.output_file_path))[0]
-        file_path = os.path.join(os.path.dirname(sys.argv[0]), f"{file_name}_mistakes.txt")
-        self.mistake_file = open(file_path, "w")
-
-        date = datetime.now().strftime('%m/%d/%Y %H:%M:%S')
-        self.mistake_file.write(f"{date}\n")
-        self.mistake_file.write("Created by world_encoder.py, this file contains all tiles that are unidentifiable or not implemented yet.\n" +
-                                "Use this to find mistakes in your image or in world_encoder/data/*.png\n")
-        self.mistake_file.write("----------------------------------------------------\n")
 
 
 class IdentifierCode(Enum):
