@@ -6,6 +6,7 @@ import ntpath
 from PIL import Image
 import re
 import os
+from datetime import datetime
 
 
 class ColorKey:
@@ -78,7 +79,7 @@ class Encoder(ABC):
             for x in range(self.input_img_tiles_size[0]):
                 code = self.tile_identifier.get_tile_code((x, y))
                 if code == IdentifierCode.CODE_NOTFOUND:
-                    self._write_to_mistake_file((x, y), "tile")
+                    self._write_to_mistake_file_formated((x, y), "tile")
                     encode_file.write("FFF")
 
                 elif code == IdentifierCode.CODE_EMPTY or code == IdentifierCode.CODE_VOID:
@@ -130,10 +131,10 @@ class Encoder(ABC):
                     continue
 
                 elif code == IdentifierCode.NOT_IMPLEMENTED:
-                    self._write_msg_to_mistake_file(f"entity not implemented at position {x, y} ({x*16, y*16} px)")
+                    self._write_to_mistake_file(f"entity not implemented at position {x, y} ({x*16}, {y*16} px)\n")
 
                 elif code == IdentifierCode.CODE_NOTFOUND:
-                    self._write_to_mistake_file((x, y), "entity")
+                    self._write_to_mistake_file_formated((x, y), "entity")
 
                 else:
                     pos_x = x * 16
@@ -155,7 +156,7 @@ class Encoder(ABC):
                         grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
                         encode_file.write(f"{grid_x}, {grid_y}\n")
 
-    def _write_to_mistake_file(self, position_in_tile, type):
+    def _write_to_mistake_file_formated(self, position_in_tile, type):
         if (self.mistake_file == None):
             self._create_mistake_file()
 
@@ -163,19 +164,23 @@ class Encoder(ABC):
         self.mistake_file.write(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)\n")
         print(f"unidentifiable {type} found at position ({x},{y}) ({x*16}, {y*16} px)")
 
-    def _write_msg_to_mistake_file(self, msg):
+    def _write_to_mistake_file(self, msg):
         if (self.mistake_file == None):
             self._create_mistake_file()
 
-        self.mistake_file.write(msg + "\n")
-        print(msg + "\n")
+        self.mistake_file.write(msg)
+        print(msg, end='')
 
     def _create_mistake_file(self):
-        file_name = path.splitext(ntpath.basename(self.output_file_path))[0]
-        file_path = path.join(path.dirname(sys.argv[0]), f"{file_name}_mistakes.txt")
+        file_name = os.path.splitext(ntpath.basename(self.output_file_path))[0]
+        file_path = os.path.join(os.path.dirname(sys.argv[0]), f"{file_name}_mistakes.txt")
         self.mistake_file = open(file_path, "w")
+
+        date = datetime.now().strftime('%m/%d/%Y %H:%M:%S')
+        self.mistake_file.write(f"{date}\n")
         self.mistake_file.write("Created by world_encoder.py, this file contains all tiles that are unidentifiable or not implemented yet.\n" +
                                 "Use this to find mistakes in your image or in world_encoder/data/*.png\n")
+        self.mistake_file.write("----------------------------------------------------\n")
 
 
 class IdentifierCode(Enum):

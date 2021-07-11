@@ -60,7 +60,7 @@ class WorldMapEncoder(Encoder):
             for x in range(self.input_img_tiles_size[0]):
                 code = self.node_identifier.get_tile_code((x, y))
                 if code == IdentifierCode.CODE_NOTFOUND:
-                    self._write_to_mistake_file((x, y), "node")
+                    self._write_to_mistake_file_formated((x, y), "node")
 
                 elif code == IdentifierCode.CODE_EMPTY or code == IdentifierCode.CODE_VOID:
                     continue
