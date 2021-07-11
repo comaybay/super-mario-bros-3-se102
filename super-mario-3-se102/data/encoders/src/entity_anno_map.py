@@ -17,10 +17,15 @@ world_entity_anno_map = {
     (0, 4): EntityCode.KOOPA,
     (1, 4): EntityCode.PARA_KOOPA,
     (2, 4): EntityCode.KOOPA_RED,
+    (3, 4): EntityCode.KOOPA_RED_AND_COIN,
     (0, 5): EntityCode.PIRANHA_RED,
     (1, 5): EntityCode.PIRANHA_GREEN,
     (2, 5): EntityCode.VENUS_GREEN,
     (0, 6): EntityCode.MARIO,
+    (0, 6): EntityCode.MARIO,
+    (1, 6): EntityCode.NOTE_BLOCK,
+    (2, 6): EntityCode.SUPER_NOTE_BLOCK,
+    (0, 7): EntityCode.BOOMERANG_BRO,
 }
 
 world_map_entity_anno_map = {

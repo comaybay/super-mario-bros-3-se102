@@ -169,6 +169,11 @@ class Encoder(ABC):
                     elif (code == EntityCode.MARIO):
                         isInAnyGrid = False
 
+                    elif (code == EntityCode.KOOPA_RED_AND_COIN):
+                        encode_file.write(f"{EntityCode.KOOPA_RED.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
+                        encode_file.write(f"{EntityCode.COIN.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
+                        continue
+
                     encode_file.write(f"{code.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
                     if isInAnyGrid:
                         grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
@@ -275,10 +280,12 @@ class EntityCode(Enum):
     KOOPA_RED = "Koopa, Red"
     PARA_KOOPA = "ParaKoopa, Green"
     PARA_KOOPA_RED = "ParaKoopa, Red"
+    KOOPA_RED_AND_COIN = "ParaKoopaRedAndCoin"
     VENUS_RED = "Venus, Red"
     PIRANHA_GREEN = "Piranha, Green"
     PIRANHA_RED = "Piranha, Red"
     VENUS_GREEN = "Venus, Green"
+    BOOMERANG_BRO = "BoomerangBro"
     GOAL_ROULETTE = "GoalRoulette"
     COIN = "Coin"
     PORTAL_1 = "Portal, 1"
@@ -288,6 +295,8 @@ class EntityCode(Enum):
     BRICK = "Brick, None"
     BRICK_1UP = "Brick, 1Up"
     BRICK_P_SWITCH = "Brick, PSwitch"
+    NOTE_BLOCK = "NoteBlock, None"
+    SUPER_NOTE_BLOCK = "SuperNoteBlock"
     MARIO = "Mario"
     # WORLD MAP
     WM_BUSH = "WMBush"
