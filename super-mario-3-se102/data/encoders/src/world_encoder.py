@@ -108,17 +108,3 @@ class WorldEncoder(Encoder):
         w_in_tile = right - left + 1
         h_in_tile = bottom - top + 1
         return (wall_type, w_in_tile, h_in_tile)
-
-    def _find_cell_positions(self, grid_start_tile_y, position_in_tile, dim_in_tile=(0, 0)):
-        grid_start_y = grid_start_tile_y * 16
-        px, py = (position_in_tile[0] * 16, position_in_tile[1] * 16)
-        w, h = (dim_in_tile[0]*16, dim_in_tile[1]*16)
-
-        cell_w, cell_h = self.sp_cell_dim
-        cell_x = math.floor(px / cell_w)
-        cell_x_end = math.floor((px + w - 1) / cell_w)
-        cell_y = math.floor((py - grid_start_y) / cell_h)
-        cell_y_end = math.floor((py + h - 1 - grid_start_y) / cell_h)
-        c_span = cell_x_end - cell_x + 1
-        r_span = cell_y_end - cell_y_end + 1
-        return (cell_x, cell_y, c_span, r_span)

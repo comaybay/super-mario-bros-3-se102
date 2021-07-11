@@ -140,44 +140,62 @@ class Encoder(ABC):
         encode_file.write("[WORLD ENTITIES]\n")
 
     def _encode_entities(self, start_line, encode_file):
+        def check_and_write_error(code) -> bool:
+            if code == IdentifierCode.NOT_IMPLEMENTED:
+                self._write_to_mistake_file(f"entity not implemented at position {x, y} ({x*16}, {y*16} px)\n")
+                return True
+
+            if code == IdentifierCode.CODE_NOTFOUND:
+                self._write_to_mistake_file_formated((x, y), "entity")
+                return True
+
+            return False
+
         for y in range(start_line, start_line + self.layer_tiles_size[1]):
             for x in range(self.input_img_tiles_size[0]):
-                # skip void tiles
                 code = self.entity_identifier.get_tile_code((x, y))
 
                 if code == IdentifierCode.CODE_EMPTY or code == IdentifierCode.CODE_VOID:
                     continue
 
-                elif code == IdentifierCode.NOT_IMPLEMENTED:
-                    self._write_to_mistake_file(f"entity not implemented at position {x, y} ({x*16}, {y*16} px)\n")
+                has_error = check_and_write_error(code)
+                if has_error:
+                    continue
 
-                elif code == IdentifierCode.CODE_NOTFOUND:
-                    self._write_to_mistake_file_formated((x, y), "entity")
+                self._write_entity_to_file(code, (x, y), start_line, encode_file)
 
-                else:
-                    pos_x = x * 16
-                    pos_y = (y - start_line) * 16
-                    isInAnyGrid = True
+    def _write_entity_to_file(self, code, position_in_tile, start_line, encode_file):
+        def write_with_grid(code, pos_x, pos_y):
+            encode_file.write(f"{code.value}, {pos_x}, {pos_y}, True\n")
+            grid_x, grid_y, _, _ = self._find_cell_positions(0, (pos_x/16, pos_y/16))
+            encode_file.write(f"{grid_x}, {grid_y}\n")
 
-                    if (code == EntityCode.PIRANHA_GREEN or code == EntityCode.PIRANHA_RED):
-                        pos_x += 8
+        def write_without_grid(code, pos_x, pos_y):
+            encode_file.write(f"{code.value}, {pos_x}, {pos_y}, False\n")
 
-                    elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_RED):
-                        pos_x += 8
-                        pos_y += 8
+        pos_x = position_in_tile[0] * 16
+        pos_y = (position_in_tile[1] - start_line) * 16
+        isInAnyGrid = True
 
-                    elif (code == EntityCode.MARIO):
-                        isInAnyGrid = False
+        if (code == EntityCode.MARIO):
+            isInAnyGrid = False
 
-                    elif (code == EntityCode.KOOPA_RED_AND_COIN):
-                        encode_file.write(f"{EntityCode.KOOPA_RED.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
-                        encode_file.write(f"{EntityCode.COIN.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
-                        continue
+        elif (code == EntityCode.KOOPA_RED_AND_COIN):
+            write_with_grid(EntityCode.KOOPA_RED, pos_x, pos_y)
+            write_with_grid(EntityCode.COIN, pos_x, pos_y)
+            return
 
-                    encode_file.write(f"{code.value}, {pos_x}, {pos_y}, {isInAnyGrid}\n")
-                    if isInAnyGrid:
-                        grid_x, grid_y, _, _ = self._find_cell_positions(start_line, (x, y))
-                        encode_file.write(f"{grid_x}, {grid_y}\n")
+        if (code == EntityCode.PIRANHA_GREEN or code == EntityCode.PIRANHA_RED):
+            pos_x += 8
+
+        elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_RED):
+            pos_x += 8
+            pos_y += 8
+
+        if isInAnyGrid:
+            write_with_grid(code, pos_x, pos_y)
+        else:
+            write_without_grid(code, pos_x, pos_y)
 
     def _write_to_mistake_file_formated(self, position_in_tile, type):
         self.has_mistake = True
