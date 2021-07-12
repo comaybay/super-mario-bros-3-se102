@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "EventHandler.h"
+#include "EventHandlerProps.h"
 #include "Entity.h"
 #include "Utils.h"
 #include "Contains.h"
@@ -44,7 +45,7 @@ private:
 	intptr_t GetAddressOf(T* handlerThis);
 
 	void OnEntityDestroy(LPEntity entity);
-	std::unordered_map<intptr_t, std::list<LPEventHandler<Args...>>*> eventHandlersById;
+	std::unordered_map<intptr_t, std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>*> eventHandlersById;
 
 	/// <summary>
 	/// <para>To avoid iterator invalidation while notifying handlers, all operations regarding handler removal 
@@ -54,13 +55,7 @@ private:
 	/// by calling this method</para>
 	/// </summary>
 	void UnsubscribeFromEvent(intptr_t thisId, intptr_t handlerId);
-
-	struct ToRemoveProps {
-		intptr_t thisId;
-		intptr_t handlerId;
-		ToRemoveProps(intptr_t thisId, intptr_t handlerId) : thisId(thisId), handlerId(handlerId) {}
-	};
-	std::list<ToRemoveProps> unsubscribeWaitList;
+	std::unordered_set<EventHandlerProps, EventHandlerProps::Hasher> unsubscribeWaitList;
 
 	/// <summary>
 	/// When event is destroyed, This will be used to auto unsubscribe from entity's destroy events
@@ -97,13 +92,13 @@ inline void Event<Args...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 	using namespace std::placeholders;
 	std::function<void(Args...)> bindedHandler = Attach(handler, handlerThis);
 
-	LPEventHandler<Args...> eventHandler = new EventHandler<Args...>(GetAddressOf(handler), bindedHandler);
+	EventHandler<Args...> eventHandler = EventHandler<Args...>(GetAddressOf(handler), bindedHandler);
 
 	intptr_t tId = GetAddressOf(handlerThis);
 	if (!Utils::Contains(tId, eventHandlersById))
-		eventHandlersById[tId] = new std::list<LPEventHandler<Args...>>;
+		eventHandlersById[tId] = new std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>();
 
-	eventHandlersById[tId]->push_back(eventHandler);
+	eventHandlersById[tId]->insert(eventHandler);
 
 	//unregister when entity is destroy
 	//if is other type, let user unsubscribe manually
@@ -119,12 +114,12 @@ inline void Event<Args...>::Subscribe(FuncHandler handler)
 {
 	using namespace std::placeholders;
 
-	LPEventHandler<Args...> eventHandler = new EventHandler<Args...>(GetAddressOf(handler), handler);
+	EventHandler<Args...> eventHandler = EventHandler<Args...>(GetAddressOf(handler), handler);
 
 	if (!Utils::Contains(ORDINARY_FUNC_THIS_ID, eventHandlersById))
-		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new std::list<LPEventHandler<Args...>>;
+		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>();
 
-	eventHandlersById[ORDINARY_FUNC_THIS_ID]->push_back(eventHandler);
+	eventHandlersById[ORDINARY_FUNC_THIS_ID]->insert(eventHandler);
 }
 
 template<class ...Args>
@@ -133,7 +128,7 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, MethodHandler<T> handler
 {
 	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t thisId = GetAddressOf(handlerThis);
-	unsubscribeWaitList.push_back(ToRemoveProps(thisId, handlerId));
+	unsubscribeWaitList.insert(EventHandlerProps(thisId, handlerId));
 
 	if (std::is_base_of<Entity, T>::value) {
 		LPEntity entity = reinterpret_cast<LPEntity>(handlerThis);
@@ -146,20 +141,20 @@ template<class ...Args>
 inline void Event<Args...>::Unsubscribe(FuncHandler handler)
 {
 	intptr_t handlerId = GetAddressOf(handler);
-	unsubscribeWaitList.push_back(ToRemoveProps(ORDINARY_FUNC_THIS_ID, handlerId));
+	unsubscribeWaitList.insert(EventHandlerProps(ORDINARY_FUNC_THIS_ID, handlerId));
 }
 
 template<class ...Args>
 inline void Event<Args...>::Notify(Args... other)
 {
-	for (ToRemoveProps& props : unsubscribeWaitList)
+	for (const EventHandlerProps& props : unsubscribeWaitList)
 		UnsubscribeFromEvent(props.thisId, props.handlerId);
 
 	unsubscribeWaitList.clear();
 
 	for (auto& pair : eventHandlersById)
-		for (LPEventHandler<Args...>& eHandler : *pair.second)
-			eHandler->Handle(other...);
+		for (const EventHandler<Args...>& eHandler : *pair.second)
+			eHandler.Handle(other...);
 }
 
 template<class ...Args>
@@ -169,7 +164,7 @@ inline void Event<Args...>::OnEntityDestroy(LPEntity entity)
 	eventHandlersById.erase(handlersIt);
 
 	auto waitListIt = std::find_if(unsubscribeWaitList.begin(), unsubscribeWaitList.end(),
-		[this, entity](ToRemoveProps& props) -> bool { return props.thisId == GetAddressOf(entity); }
+		[this, entity](const EventHandlerProps& props) -> bool { return props.thisId == GetAddressOf(entity); }
 	);
 	if (waitListIt != unsubscribeWaitList.end())
 		unsubscribeWaitList.erase(waitListIt);
@@ -179,7 +174,7 @@ template<class ...Args>
 inline void Event<Args...>::UnsubscribeFromEvent(intptr_t thisId, intptr_t handlerId)
 {
 	for (auto it = eventHandlersById[thisId]->begin(); it != eventHandlersById[thisId]->end(); it++)
-		if ((*it)->GetId() == handlerId) {
+		if ((*it).GetId() == handlerId) {
 			eventHandlersById[thisId]->erase(it);
 
 			//completely remove container if container contains no handlers
