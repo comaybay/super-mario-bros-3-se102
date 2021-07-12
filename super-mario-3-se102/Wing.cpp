@@ -6,7 +6,8 @@ using namespace Utils;
 Wing::Wing(LPEntity whoToFollow)
 	: Entity::Entity(whoToFollow->GetPosition(), AnimationId::NONE, HitboxId::NONE, "Wings", GridType::MOVABLE_ENTITIES),
 	target(whoToFollow),
-	offset({ 0, 0 })
+	offset({ 0, 0 }),
+	animSpeed(1)
 {
 	SetDirection(WingDirection::LEFT);
 }
@@ -57,6 +58,6 @@ void Wing::Destroy() {
 
 void Wing::Update(float delta)
 {
-	animation->Update(delta);
+	Entity::Update(delta);
 	position = target->GetPosition() + offset;
 }

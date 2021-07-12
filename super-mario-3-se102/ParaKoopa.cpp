@@ -34,6 +34,7 @@ void ParaKoopa::OnReady()
 {
 	Entity::OnReady();
 	wing = new Wing(this);
+	wing->AutoFlap();
 	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
