@@ -36,13 +36,13 @@ void Brick::Idle(float delta) {
 }
 
 void Brick::Hit(float delta) {
-	bool done = blockHitMovement.Update(delta);
-	if (done) {
+	blockHitMovement.Update(delta);
+
+	if (blockHitMovement.Finished()) {
 		state.SetState(&Brick::Idle);
 		blockHitMovement.Reset();
 	}
 }
-
 
 void Brick::OnCollision(CollisionData data)
 {

@@ -6,13 +6,9 @@ class BlockHitMovement
 {
 public:
 	BlockHitMovement(LPEntity entity, const Utils::Vector2<float>& initalPosition);
-	/// <summary>
-	/// Returns true if finished movement
-	/// </summary>
-	bool Update(float delta);
-
+	void Update(float delta);
+	bool Finished();
 	void Reset();
-
 
 private:
 	void Init(float delta);

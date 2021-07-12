@@ -23,14 +23,13 @@ void EmptyBlock::Update(float delta)
 }
 
 void EmptyBlock::HitAnimation(float delta) {
-	bool done = blockHitMovement->Update(delta);
-	if (done) {
+	blockHitMovement->Update(delta);
+	if (blockHitMovement->Finished()) {
 		delete blockHitMovement;
 		blockHitMovement = nullptr;
 		state.SetState(&EmptyBlock::Idle);
 	}
 }
-
 
 void EmptyBlock::Idle(float _) {
 }

@@ -13,12 +13,13 @@ BlockHitMovement::BlockHitMovement(LPEntity entity, const Utils::Vector2<float>&
 {
 }
 
-bool BlockHitMovement::Update(float delta)
+void BlockHitMovement::Update(float delta)
 {
-	if (movementFinished)
-		return true;
+	if (!movementFinished)
+		(this->*handler)(delta);
+}
 
-	(this->*handler)(delta);
+bool BlockHitMovement::Finished() {
 	return movementFinished;
 }
 
