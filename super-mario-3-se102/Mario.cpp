@@ -12,14 +12,14 @@ using namespace Utils;
 const float Mario::MAX_WALK_SPEED = 100;
 const float Mario::MAX_RUN_SPEED = 150;
 const float Mario::RUN_STATE_ANIM_SPEED = 2;
-const Vector2<float> Mario::ACCELERATION = Vector2<float>(350, 740);
+const float Mario::ACCELERATION = 350;
 const float Mario::BOUNCE_SPEED = 200;
 const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
-const float Mario::JUMP_SPEED = 310;
+const float Mario::JUMP_SPEED = 325;
 const float Mario::JUMP_SPEED_RELASE_EARLY = JUMP_SPEED / 1.75f;
-const float Mario::JUMP_SPEED_AFTER_MAX_WALK_SPEED = JUMP_SPEED + 30;
+const float Mario::JUMP_SPEED_AFTER_WALK = JUMP_SPEED + 25;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
-const float Mario::DEATH_FALL_ACCEL = ACCELERATION.y / 1.5f;
+const float Mario::DEATH_FALL_ACCEL = EntityConstants::GRAVITY / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
 const float Mario::INVINCIBLE_DURATION = 1;
 const int Mario::FLASH_DURATION = 2;
@@ -109,7 +109,7 @@ void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
 	marioState.SetState(stateHandler);
 
 	if (stateHandler == &Mario::Jump) {
-		velocity.y = (abs(velocity.x) == MAX_WALK_SPEED) ? -JUMP_SPEED_AFTER_MAX_WALK_SPEED : -JUMP_SPEED;
+		velocity.y = (abs(velocity.x) >= MAX_WALK_SPEED / 2) ? -JUMP_SPEED_AFTER_WALK : -JUMP_SPEED;
 		dir.y = 1;
 		onGround = false;
 		restartPointUp.Notify();
@@ -227,7 +227,7 @@ void Mario::Jump(float delta)
 {
 	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
-	velocity.y += ACCELERATION.y * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x == 0 && velocity.x != 0)
@@ -245,7 +245,7 @@ void Mario::Jump(float delta)
 void Mario::Fall(float delta) {
 	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
-	velocity.y += ACCELERATION.y * delta;
+	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (dir.x == 0 && velocity.x != 0)
@@ -296,11 +296,11 @@ void Mario::OutOfWorldDeath(float delta)
 void Mario::ApplyHorizontalMovement(float delta)
 {
 	float isHoldingRunButton = Game::IsKeyDown(DIK_A);
-	float accelX = ACCELERATION.x;
+	float accelX = ACCELERATION;
 
 	//transition from run to walk
 	if (!isHoldingRunButton && abs(velocity.x) > MAX_WALK_SPEED && Sign(velocity.x) == dir.x)
-		accelX = -ACCELERATION.x;
+		accelX = -ACCELERATION;
 
 	else if (isHoldingRunButton && abs(velocity.x) == MAX_RUN_SPEED && Sign(velocity.x) == dir.x)
 		accelX = 0;
@@ -310,14 +310,14 @@ void Mario::ApplyHorizontalMovement(float delta)
 	if (isHoldingRunButton)
 		velocity.x = Clip(velocity.x, -MAX_RUN_SPEED, MAX_RUN_SPEED);
 
-	else if (!isHoldingRunButton && accelX == -ACCELERATION.x && abs(velocity.x) < MAX_WALK_SPEED)
+	else if (!isHoldingRunButton && accelX == -ACCELERATION && abs(velocity.x) < MAX_WALK_SPEED)
 		velocity.x = MAX_WALK_SPEED * dir.x;
 }
 
 void Mario::ApplyFriction(float delta) {
 	//apply friction to slow player down
 	int frictionDirX = -Sign(velocity.x);
-	velocity.x += ACCELERATION.x * frictionDirX * delta;
+	velocity.x += ACCELERATION * frictionDirX * delta;
 
 	//stop player
 	if (Sign(velocity.x) == frictionDirX)

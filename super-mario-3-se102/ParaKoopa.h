@@ -31,5 +31,6 @@ namespace Entities {
 		Entities::Wing* wing;
 		EntityState<ParaKoopa> state;
 		static const float JUMP_SPEED;
+		static const float FALL_SPEED;
 	};
 }

@@ -83,9 +83,9 @@ namespace Entities {
 	protected:
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
-		static const Utils::Vector2<float> ACCELERATION;
+		static const float ACCELERATION;
 		static const float JUMP_SPEED;
-		static const float JUMP_SPEED_AFTER_MAX_WALK_SPEED;
+		static const float JUMP_SPEED_AFTER_WALK;
 		static const float JUMP_SPEED_RELASE_EARLY;
 		static const float BOUNCE_SPEED;
 		static const float BOUNCE_SPEED_HOLD_JUMP;

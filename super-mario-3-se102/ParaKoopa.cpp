@@ -12,7 +12,8 @@
 using namespace Entities;
 using namespace Utils;
 
-const float ParaKoopa::JUMP_SPEED = 280;
+const float ParaKoopa::JUMP_SPEED = 210;
+const float ParaKoopa::FALL_SPEED = EntityConstants::GRAVITY / 1.5f;
 
 ParaKoopa::ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
@@ -66,7 +67,7 @@ void ParaKoopa::Update(float delta)
 	Entity::Update(delta);
 
 	state.Update(delta);
-	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y += FALL_SPEED * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	wing->Update(delta);

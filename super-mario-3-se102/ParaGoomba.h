@@ -40,5 +40,6 @@ namespace Entities {
 		static const float TIME_TILL_PREPARE;
 		static const int NUM_OF_PREPARE_JUMPS;
 		static const float JUMP_FLAP_ANIM_SPEED;
+		static const float FALL_SPEED;
 	};
 }

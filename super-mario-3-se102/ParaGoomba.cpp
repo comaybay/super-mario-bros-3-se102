@@ -16,7 +16,8 @@ using namespace Utils;
 const float ParaGoomba::TIME_TILL_PREPARE = 0.75f;
 const float ParaGoomba::PREPARE_JUMP_SPEED = 100;
 const int ParaGoomba::NUM_OF_PREPARE_JUMPS = 3;
-const float ParaGoomba::JUMP_SPEED = 250;
+const float ParaGoomba::JUMP_SPEED = 240;
+const float ParaGoomba::FALL_SPEED = EntityConstants::GRAVITY / 1.2f;
 const float ParaGoomba::JUMP_FLAP_ANIM_SPEED = 3;
 
 ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& position)
@@ -59,7 +60,7 @@ void ParaGoomba::Update(float delta)
 	Entity::Update(delta);
 
 	state.Update(delta);
-	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y += FALL_SPEED * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	wingLeft.Update(delta);
