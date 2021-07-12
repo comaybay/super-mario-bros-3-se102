@@ -5,7 +5,7 @@
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
-#include "BoomFX.h"
+#include "FXBoom.h"
 #include "PointUpFactory.h"
 #include "Wing.h"
 #include "Contains.h"

@@ -135,9 +135,6 @@
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="BoomFX.cpp">
-      <Filter>Source Files\Entities\World</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -238,6 +235,9 @@
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="MarioSuper.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="FXBoom.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,9 +344,6 @@
     <ClInclude Include="EntityConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BoomFX.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PointUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -444,6 +441,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MarioSuper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FXBoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

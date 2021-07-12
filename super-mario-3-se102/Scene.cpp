@@ -38,7 +38,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesByGroup(Group::PLAYERS).empty())
-		GetEntitiesByGroup(Group::PLAYERS).front()->SetPosition({ 240, 320 });
+		GetEntitiesByGroup(Group::PLAYERS).front()->SetPosition({ 2040, 320 });
 
 	camera._SetParentScene(this);
 	camera.OnReady();

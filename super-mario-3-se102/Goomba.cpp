@@ -5,7 +5,7 @@
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
-#include "BoomFX.h"
+#include "FXBoom.h"
 #include "PointUpFactory.h"
 #include "Contains.h"
 #include "EntityUtils.h"
@@ -113,6 +113,6 @@ void Goomba::KnockOver(float horizontalDirection)
 	velocity = KNOCK_OVER_VELOCITY;
 	velocity.x *= horizontalDirection;
 
-	parentScene->AddEntity(new BoomFX(position));
+	parentScene->AddEntity(new FXBoom(position));
 	parentScene->AddEntity(PointUpFactory::Create(position));
 }

@@ -186,7 +186,7 @@
     <ClCompile Include="ContentFactory.cpp" />
     <ClCompile Include="MarioAnimationSet.cpp" />
     <ClCompile Include="MarioSuper.cpp" />
-    <ClCompile Include="BoomFX.cpp" />
+    <ClCompile Include="FXBoom.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Coin.cpp" />
@@ -256,7 +256,7 @@
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />
-    <ClInclude Include="BoomFX.h" />
+    <ClInclude Include="FXBoom.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Coin.h" />

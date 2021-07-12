@@ -3,10 +3,10 @@
 #include "Entity.h"
 
 namespace Entities {
-	class BoomFX : public Entity
+	class FXBoom : public Entity
 	{
 	public:
-		BoomFX(const Utils::Vector2<float>& position);
+		FXBoom(const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 
 	private:
