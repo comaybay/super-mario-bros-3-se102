@@ -18,7 +18,7 @@ CollisionEngineData* CollisionEngine::activeCED;
 
 //keep tracks of what has been notified
 std::unordered_set<std::string> CollisionEngine::hasPreviouslyNotified;
-std::list<LPEntity> CollisionEngine::unsubscribeWaitList;
+std::unordered_set<LPEntity> CollisionEngine::unsubscribeWaitList;
 
 
 void CollisionEngine::_HandleUnsubscribeWaitList() {

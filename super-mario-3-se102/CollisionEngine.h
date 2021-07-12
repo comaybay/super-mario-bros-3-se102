@@ -70,7 +70,7 @@ private:
 	static void OnEntityUnsubscribe(LPEntity entity);
 	static std::unordered_map<LPScene, CollisionEngineData> CEDByLPScene;
 	static CollisionEngineData* activeCED;
-	static std::list<LPEntity> unsubscribeWaitList;
+	static std::unordered_set<LPEntity> unsubscribeWaitList;
 	static std::unordered_set<std::string> hasPreviouslyNotified;
 
 	struct CBox {
@@ -102,6 +102,6 @@ static void CollisionEngine::Unsubscribe(TEntity* handlerThis, void(TEntity::* h
 	GetCollisionEventOf(handlerThis).Unsubscribe(handlerThis, handler);
 	handlerThis->GetDestroyEvent().Unsubscribe(&OnEntityUnsubscribe);
 
-	unsubscribeWaitList.push_back(handlerThis);
+	unsubscribeWaitList.insert(handlerThis);
 }
 
