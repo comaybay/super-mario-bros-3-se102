@@ -34,11 +34,16 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 	this->prevScenePath = prevScenePath;
 }
 
+#include "ContentFactory.h"
 void Scene::_Ready()
 {
 	//TODO: Remove test code
-	if (!GetEntitiesByGroup(Group::PLAYERS).empty())
-		GetEntitiesByGroup(Group::PLAYERS).front()->SetPosition({ 2040, 320 });
+	if (!GetEntitiesByGroup(Group::PLAYERS).empty()) {
+		Vector2<float> pos = { 2000, 320 };
+		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntitiesByGroup(Group::PLAYERS).front());
+		mario->SetPosition(pos);
+		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
+	}
 
 	camera._SetParentScene(this);
 	camera.OnReady();

@@ -146,7 +146,7 @@ RGoombaKO, Normal, -1, Manual
 Enemies
 88, 16, 103, 31
 
-##Koopa##====================================
+##Green Koopa##====================================
 GKoopaML, Normal, 0.15, Auto
 Enemies
 0, 48, 16, 32, 0, 2
@@ -162,11 +162,33 @@ Enemies
 
 GKoopaSILegOut, Normal, -1, Manual
 Enemies
-32, 48, 47, 79
+32, 64, 47, 79
 
 GKoopaSM, Normal, 0.035, Auto
 Enemies
 32, 48, 16, 16, 0, 4
+
+##Red Koopa##====================================
+RKoopaML, Normal, 0.15, Auto
+Enemies
+96, 48, 16, 32, 0, 2
+
+RKoopaMR, Normal, 0.15, Auto
+Enemies
+96, 80, 16, 32, 0, 2
+
+#Shell#
+RKoopaSI, Normal, -1, Manual
+Enemies
+128, 48, 143, 63
+
+RKoopaSILegOut, Normal, -1, Manual
+Enemies
+128, 64, 143, 79
+
+RKoopaSM, Normal, 0.035, Auto
+Enemies
+128, 48, 16, 16, 0, 4
 
 ##QuestionBlock##====================================
 QuestionBlockNormal, Fixed, 0.14, Auto

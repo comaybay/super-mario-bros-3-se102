@@ -21,6 +21,7 @@ const float Koopa::FRICTION = 2600;
 
 Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround)),
 	onGround(false),
@@ -210,7 +211,7 @@ void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
 
 void Koopa::MoveAround(float delta)
 {
-	if (onGround || lock)
+	if (colorType == Color::GREEN || onGround || lock)
 		return;
 
 	lock = true;

@@ -24,6 +24,7 @@ namespace Entities {
 		void ShellSlide(float delta);
 
 		std::string colorCode;
+		std::string colorType;
 		EntityState<Koopa> state;
 		Utils::Vector2<float> prevOnGroundPosition;
 		bool onGround;

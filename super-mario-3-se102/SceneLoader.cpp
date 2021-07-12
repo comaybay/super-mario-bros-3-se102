@@ -326,7 +326,7 @@ LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::Koopa("Green", Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+	return new Entities::Koopa(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseParaKoopa(const std::vector<std::string>& tokens)
