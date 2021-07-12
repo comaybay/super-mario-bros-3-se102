@@ -236,9 +236,13 @@ WAnims
 86, 69, 101, 84
 
 ##Effects##====================================
-BoomFX, Normal, 0.025, Auto
+FXBoom, Normal, 0.025, Auto
 Enemies
 160, 0, 16, 16, 0, 4
+
+FXBrickBreakParticle, Normal, 0.066, Auto
+WAnims
+69, 52, 8, 9, 0, 2
 
 CoinUp, Normal, 0.07, Auto
 WAnims

@@ -237,8 +237,14 @@
     <ClCompile Include="MarioSuper.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
+    <ClCompile Include="FXBrickBreak.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
     <ClCompile Include="FXBoom.cpp">
       <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandlerProps.cpp">
+      <Filter>Source Files\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -444,6 +450,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FXBoom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FXBrickBreak.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandlerProps.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
