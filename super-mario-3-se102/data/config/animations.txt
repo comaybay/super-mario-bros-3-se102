@@ -122,7 +122,7 @@ PlayableCharacters
 415, 1, 16, 16, 2, 4
 
 ##Goomba##====================================
-BGoombaM, Normal, 0.15, Auto
+BGoombaM, Normal, 0.133, Auto
 Enemies
 0, 0, 16, 16, 0, 2
 
@@ -134,7 +134,7 @@ BGoombaKO, Normal, -1, Manual
 Enemies
 0, 16, 15, 31
 
-RGoombaM, Normal, 0.15, Auto
+RGoombaM, Normal, 0.133, Auto
 Enemies
 88, 0, 16, 16, 0, 2
 
@@ -147,11 +147,11 @@ Enemies
 88, 16, 103, 31
 
 ##Green Koopa##====================================
-GKoopaML, Normal, 0.15, Auto
+GKoopaML, Normal, 0.133, Auto
 Enemies
 0, 48, 16, 32, 0, 2
 
-GKoopaMR, Normal, 0.15, Auto
+GKoopaMR, Normal, 0.133, Auto
 Enemies
 0, 80, 16, 32, 0, 2
 
@@ -169,11 +169,11 @@ Enemies
 32, 48, 16, 16, 0, 4
 
 ##Red Koopa##====================================
-RKoopaML, Normal, 0.15, Auto
+RKoopaML, Normal, 0.133, Auto
 Enemies
 96, 48, 16, 32, 0, 2
 
-RKoopaMR, Normal, 0.15, Auto
+RKoopaMR, Normal, 0.133, Auto
 Enemies
 96, 80, 16, 32, 0, 2
 
@@ -215,6 +215,10 @@ WingFlapR, Normal, 0.125, Auto
 Enemies
 136, 0, 8, 16, 0, 2
 
+WingFlapL, Normal, 0.125, Auto
+Enemies
+136, 16, 8, 16, 0, 2
+
 WingUpR, Normal, -1, Manual
 Enemies
 136, 0, 143, 15
@@ -222,10 +226,6 @@ Enemies
 WingDownR, Normal, -1, Manual
 Enemies
 144, 0, 151, 15
-
-WingFlapL, Normal, 0.125, Auto
-Enemies
-136, 16, 8, 16, 0, 2
 
 WingUpL, Normal, -1, Manual
 Enemies
