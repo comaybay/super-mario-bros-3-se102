@@ -1,6 +1,6 @@
 #include "MarioTransition.h"
 #include "MarioSmall.h"
-#include "MarioBig.h"
+#include "MarioSuper.h"
 #include "Game.h"
 #include "Constants.h"
 using namespace Entities;
@@ -146,7 +146,7 @@ void MarioTransition::CreateMario()
 		break;
 
 	case PPL::BIG:
-		newPlayer = new MarioBig(position, player->GetFacingDirection());
+		newPlayer = new MarioSuper(position, player->GetFacingDirection());
 		break;
 
 	default:

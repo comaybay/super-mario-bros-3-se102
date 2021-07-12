@@ -189,9 +189,6 @@
     <ClCompile Include="WMHelpBubble.cpp">
       <Filter>Source Files\Entities\WorldMap</Filter>
     </ClCompile>
-    <ClCompile Include="MarioBig.cpp">
-      <Filter>Source Files\Entities\World</Filter>
-    </ClCompile>
     <ClCompile Include="MarioSmall.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -239,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="EntityUtils.cpp">
       <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioSuper.cpp">
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,9 +401,6 @@
     <ClInclude Include="MarioSmall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MarioBig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerPowerLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -444,6 +441,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MarioTransition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioSuper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

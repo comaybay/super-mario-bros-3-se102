@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MarioSmall.h"
-#include "MarioBig.h"
+#include "MarioSuper.h"
 #include "Goomba.h"
 #include "ParaGoomba.h"
 #include "Koopa.h"
