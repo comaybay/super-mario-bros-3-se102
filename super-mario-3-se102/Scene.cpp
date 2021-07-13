@@ -40,9 +40,9 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 void Scene::_Ready()
 {
 	//TODO: Remove test code
-	if (!GetEntitiesByGroup(Group::PLAYERS).empty()) {
+	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
 		Vector2<float> pos = { 2000, 320 };
-		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntitiesByGroup(Group::PLAYERS).front());
+		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
 	}
@@ -52,7 +52,7 @@ void Scene::_Ready()
 
 	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	if (!IsEntityGroupEmpty(Group::PLAYERS))
-		camera.FollowEntity(GetEntitiesByGroup(Group::PLAYERS).front());
+		camera.FollowEntity(GetEntityOfGroup(Group::PLAYERS));
 }
 
 void Scene::Update(float delta)
@@ -77,7 +77,7 @@ void Scene::Update(float delta)
 
 	//Only update player if in transition pause
 	if (isInTransitionPause && !IsEntityGroupEmpty(Group::PLAYERS)) {
-		for (LPEntity player : GetEntitiesByGroup(Group::PLAYERS))
+		for (LPEntity player : GetEntitiesOfGroup(Group::PLAYERS))
 			updateEntity(player);
 	}
 	else {
@@ -227,12 +227,16 @@ void Scene::QueueFree(LPEntity entity)
 
 bool Scene::IsEntityGroupEmpty(const std::string& groupName)
 {
-	return entityManager->GetEntitiesByGroup(groupName).size() == 0;
+	return entityManager->GetEntitiesOfGroup(groupName).size() == 0;
 }
 
-const std::list<LPEntity>& Scene::GetEntitiesByGroup(const std::string& groupName)
+const LPEntity Scene::GetEntityOfGroup(const std::string& groupName) {
+	return *(entityManager->GetEntitiesOfGroup(groupName).begin());
+}
+
+const std::unordered_set<LPEntity>& Scene::GetEntitiesOfGroup(const std::string& groupName)
 {
-	return entityManager->GetEntitiesByGroup(groupName);
+	return entityManager->GetEntitiesOfGroup(groupName);
 }
 
 void Scene::TransitionPause(bool state)

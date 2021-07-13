@@ -57,7 +57,7 @@ void Mushroom::RiseUp(float delta)
 	position.y = riseDestY;
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
+		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? MOVE_SPEED : -MOVE_SPEED;
 	}
 	else

@@ -34,7 +34,7 @@ void Koopa::OnReady()
 	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
+		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 		SetAnimation(colorCode + ((velocity.x < 0) ? "KoopaML" : "KoopaMR"));
 	}

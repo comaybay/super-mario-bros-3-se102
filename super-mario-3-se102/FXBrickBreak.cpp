@@ -24,7 +24,7 @@ const float FXBrickBreak::MARGIN = 8;
 const float FXBrickBreak::EXIST_DURATION = 5;
 
 FXBrickBreak::FXBrickBreak(const Vector2<float>& position)
-	: Entity::Entity(position, Group::EFFECTS, GridType::STATIC_ENTITIES),
+	: Entity::Entity(position, Group::EFFECTS, GridType::NONE),
 	time(0),
 	particles({ {
 		new BrickBreakParticle({ position.x , position.y }, { -X_SPEED, -UP_SPEED, }),

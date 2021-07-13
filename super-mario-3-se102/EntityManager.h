@@ -1,9 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include <string>
 #include <unordered_set>
-#include <list>
-#include <functional>
 
 #include "DynamicGrid.h"
 
@@ -20,7 +17,7 @@ public:
 	void AddToGroup(std::string groupName, LPEntity entity);
 	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
 	void ForEach(std::function<void(LPEntity)> handler);
-	const std::list<LPEntity>& GetEntitiesByGroup(const std::string& groupName);
+	const std::unordered_set<LPEntity>& GetEntitiesOfGroup(const std::string& groupName);
 	const LPGrid GetGrid(GridType gridType);
 	const std::unordered_set<LPEntity>& GetNonGridEntities();
 	void QueueFree(LPEntity entity);
@@ -41,10 +38,10 @@ public:
 private:
 	LPScene parentScene = nullptr;
 
-	std::unordered_map<std::string, std::list<LPEntity>*> entitiesByGroup;
+	std::unordered_map<std::string, std::unordered_set<LPEntity>*> entitiesByGroup;
 	std::unordered_set<LPEntity> freeQueue;
 	std::unordered_set<LPEntity> nonGridEntities;
-	const std::list<LPEntity> emptyGroup;
+	static const std::unordered_set<LPEntity> EMPTY_GROUP;
 
 	LPGrid wallEntitySPGrid = nullptr;
 	LPGrid staticEntitySPGrid = nullptr;

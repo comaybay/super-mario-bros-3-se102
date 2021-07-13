@@ -47,7 +47,7 @@ void QuestionBlock::OnCollision(CollisionData data)
 	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1.0f) {
 
 		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
+			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 			ExposeContent(player);
 		}
 		return;
@@ -57,7 +57,7 @@ void QuestionBlock::OnCollision(CollisionData data)
 		Koopa* koopa = static_cast<Koopa*>(data.who);
 
 		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntitiesByGroup(Group::PLAYERS).front());
+			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 			ExposeContent(player);
 		}
 

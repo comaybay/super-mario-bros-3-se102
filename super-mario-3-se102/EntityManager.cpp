@@ -6,6 +6,8 @@
 #include "Contains.h"
 using namespace Utils;
 
+const std::unordered_set<LPEntity> EntityManager::EMPTY_GROUP;
+
 EntityManager::~EntityManager()
 {
 	std::unordered_set<LPEntity> entities;
@@ -99,9 +101,9 @@ void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
 {
 	if (!Contains(groupName, entitiesByGroup))
-		entitiesByGroup[groupName] = new std::list<LPEntity>();
+		entitiesByGroup[groupName] = new std::unordered_set<LPEntity>();
 
-	entitiesByGroup[groupName]->push_back(entity);
+	entitiesByGroup[groupName]->insert(entity);
 }
 
 void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity)
@@ -110,12 +112,12 @@ void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity
 		AddToGroup(groupName, entity);
 }
 
-const std::list<LPEntity>& EntityManager::GetEntitiesByGroup(const std::string& groupName)
+const std::unordered_set<LPEntity>& EntityManager::GetEntitiesOfGroup(const std::string& groupName)
 {
 	if (Contains(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];
 	else
-		return emptyGroup;
+		return EMPTY_GROUP;
 }
 
 const LPGrid EntityManager::GetGrid(GridType gridType)
@@ -144,10 +146,8 @@ void EntityManager::QueueFree(LPEntity entity) {
 void EntityManager::FreeEntitiesInQueue() {
 	for (LPEntity entity : freeQueue) {
 		//remove entity from all of it's groups
-		for (const std::string& group : entity->GetEntityGroups()) {
-			auto removed = std::remove(entitiesByGroup[group]->begin(), entitiesByGroup[group]->end(), entity);
-			entitiesByGroup[group]->erase(removed);
-		}
+		for (const std::string& group : entity->GetEntityGroups())
+			entitiesByGroup[group]->erase(entity);
 
 		if (entity->GetGridType() == GridType::NONE)
 			nonGridEntities.erase(entity);

@@ -42,7 +42,7 @@ void ParaGoomba::OnReady()
 	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
+		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 	else
@@ -82,11 +82,10 @@ void ParaGoomba::MoveAround(float delta) {
 		wingRight.AutoFlap();
 		state.SetState(&ParaGoomba::PrepareToJump);
 
-		std::list<LPEntity> playerGroup = parentScene->GetEntitiesByGroup(Group::PLAYERS);
-		if (playerGroup.empty())
+		if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
 			return;
 
-		LPEntity player = playerGroup.front();
+		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 }

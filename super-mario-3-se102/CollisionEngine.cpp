@@ -53,7 +53,7 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 	//get target entities (use set data structure to avoid duplications)
 	std::unordered_set<LPEntity> targetSet;
 	for (const std::string& groupName : targetGroups)
-		for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesByGroup(groupName))
+		for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesOfGroup(groupName))
 			if (target != entity && target->_IsEnabledForCollisionDetection())
 				targetSet.insert(target);
 

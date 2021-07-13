@@ -30,7 +30,12 @@ public:
 	void AddEntity(LPEntity entity);
 	void QueueFree(LPEntity entity);
 	bool IsEntityGroupEmpty(const std::string& groupName);
-	const std::list<LPEntity>& GetEntitiesByGroup(const std::string& groupName);
+	const std::unordered_set<LPEntity>& GetEntitiesOfGroup(const std::string& groupName);
+
+	/// <summary>
+	/// Returns an entity of given group. This entity is not guarantee to be the first element in the group.
+	/// </summary>
+	const LPEntity GetEntityOfGroup(const std::string& groupName);
 
 	/// <summary>
 	/// Pause used for transitions (player's death, player's power level changed)
@@ -59,7 +64,7 @@ private:
 	std::string prevScenePath;
 	Camera camera;
 	LPEntityManager entityManager;
-	bool updateMovablesInSPGridEnabled;
+	bool isInTransitionPause;
 	bool renderMovablesInSPGridEnabled;
 	std::unordered_set<LPEntity> newEntitiesWaitList;
 	std::unordered_map<LPEntity, LPEvent<>> outOfWorldEventByLPEntity;

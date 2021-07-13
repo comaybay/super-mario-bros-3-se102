@@ -30,7 +30,7 @@ void Goomba::OnReady()
 	CollisionEngine::Subscribe(this, &Goomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPEntity player = parentScene->GetEntitiesByGroup(Group::PLAYERS).front();
+		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -WALK_SPEED : WALK_SPEED;
 	}
 	else
