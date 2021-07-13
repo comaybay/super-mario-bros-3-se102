@@ -11,7 +11,7 @@ Scene::Scene() :
 	entityManager(nullptr),
 	encodedWorld(nullptr),
 	camera(Camera()),
-	updateMovablesInSPGridEnabled(true),
+	isInTransitionPause(false),
 	renderMovablesInSPGridEnabled(true),
 	backgroundColor(D3DCOLOR_XRGB(255, 255, 255))
 {
@@ -41,7 +41,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesByGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 1000, 320 };
+		Vector2<float> pos = { 2000, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntitiesByGroup(Group::PLAYERS).front());
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
@@ -64,7 +64,6 @@ void Scene::Update(float delta)
 	newEntitiesWaitList.clear();
 
 	DetectAndNotifyOutOfWorld();
-	CellRange range = GetCellRangeAroundCamera();
 
 	auto updateEntity = [delta](LPEntity entity) {
 		if (entity->_IsActive()) {
@@ -73,16 +72,24 @@ void Scene::Update(float delta)
 		}
 	};
 
+	CellRange range = GetCellRangeAroundCamera();
 	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, updateEntity);
-	if (updateMovablesInSPGridEnabled) {
+
+	//Only update player if in transition pause
+	if (isInTransitionPause && !IsEntityGroupEmpty(Group::PLAYERS)) {
+		for (LPEntity player : GetEntitiesByGroup(Group::PLAYERS))
+			updateEntity(player);
+	}
+	else {
+
 		LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
 		movableEntitiesSPGrid->ForEachEntityIn(range, updateEntity);
 		movableEntitiesSPGrid->UpdateCells(range);
-	}
-	for (LPEntity entity : entityManager->GetNonGridEntities())
-		updateEntity(entity);
+		for (LPEntity entity : entityManager->GetNonGridEntities())
+			updateEntity(entity);
 
-	camera.Update(delta);
+		camera.Update(delta);
+	}
 
 	entityManager->FreeEntitiesInQueue();
 }
@@ -230,7 +237,7 @@ const std::list<LPEntity>& Scene::GetEntitiesByGroup(const std::string& groupNam
 
 void Scene::TransitionPause(bool state)
 {
-	updateMovablesInSPGridEnabled = !state;
+	isInTransitionPause = state;
 	Game::EnableCollisionEngine(!state);
 }
 
