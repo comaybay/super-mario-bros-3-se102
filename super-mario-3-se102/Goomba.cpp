@@ -13,12 +13,12 @@ using namespace Entities;
 using namespace Utils;
 
 const float Goomba::WALK_SPEED = 30.0f;
-const Vector2<float> Goomba::KNOCK_OVER_VELOCITY(60, -250);
 
 Goomba::Goomba(std::string colorType, Vector2<float> position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "Goombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
+	knockOverMovement(nullptr),
 	time(0)
 {
 	SetAnimation(colorCode + "GoombaM");
@@ -60,6 +60,9 @@ void Goomba::StompedOn(float delta) {
 
 void Goomba::KnockedOver(float delta)
 {
+	knockOverMovement->Update(delta);
+	if (knockOverMovement->Finished())
+		parentScene->QueueFree(this);
 }
 
 void Goomba::OnCollision(CollisionData data)
@@ -105,13 +108,12 @@ void Goomba::OnCollision(CollisionData data)
 	}
 }
 
-void Goomba::KnockOver(float horizontalDirection)
+void Goomba::KnockOver(HDirection direction)
 {
 	EnableForCollisionDetection(false);
 	state.SetState(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
-	velocity = KNOCK_OVER_VELOCITY;
-	velocity.x *= horizontalDirection;
+	knockOverMovement = new MovementKnockOver(this, direction);
 
 	parentScene->AddEntity(new FXBoom(position));
 	parentScene->AddEntity(PointUpFactory::Create(position));

@@ -4,6 +4,7 @@
 #include "CollisionEngine.h"
 #include "EntityState.h"
 #include "Wing.h"
+#include "Direction.h"
 #include "Color.h"
 
 namespace Entities {
@@ -14,7 +15,7 @@ namespace Entities {
 		ParaGoomba(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 		void Render() override;
-		void KnockOver(float horizontalDirection);
+		void KnockOver(HDirection direction);
 
 	private:
 		virtual void OnReady() override;

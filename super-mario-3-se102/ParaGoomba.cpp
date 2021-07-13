@@ -181,10 +181,10 @@ void ParaGoomba::OnCollision(CollisionData data)
 		velocity.x = Goomba::WALK_SPEED * data.edge.x;
 }
 
-void ParaGoomba::KnockOver(float horizontalDirection)
+void ParaGoomba::KnockOver(HDirection direction)
 {
 	Goomba* goomba = new Entities::Goomba(colorType, position);
 	parentScene->AddEntity(goomba);
-	goomba->KnockOver(horizontalDirection);
+	goomba->KnockOver(direction);
 	parentScene->QueueFree(this);
 }

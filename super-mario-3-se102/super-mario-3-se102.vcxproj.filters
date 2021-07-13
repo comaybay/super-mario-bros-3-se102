@@ -249,9 +249,6 @@
     <ClCompile Include="MovementKnockOver.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
-    <ClCompile Include="Movement.cpp">
-      <Filter>Source Files\Movements</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">

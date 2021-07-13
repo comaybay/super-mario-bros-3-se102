@@ -76,13 +76,15 @@ void Koopa::OnCollision(CollisionData data)
 		}
 
 		if (state.GetState() == &Koopa::ShellSlide) {
-			if (Contains(std::string("Goombas"), data.who->GetEntityGroups())) {
-				static_cast<Goomba*>(data.who)->KnockOver(-data.edge.x);
+			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+
+			if (Contains("Goombas", data.who->GetEntityGroups())) {
+				static_cast<Goomba*>(data.who)->KnockOver(dir);
 				return;
 			}
 
-			if (Contains(std::string("ParaGoombas"), data.who->GetEntityGroups())) {
-				static_cast<ParaGoomba*>(data.who)->KnockOver(-data.edge.x);
+			if (Contains("ParaGoombas", data.who->GetEntityGroups())) {
+				static_cast<ParaGoomba*>(data.who)->KnockOver(dir);
 				return;
 			}
 		}

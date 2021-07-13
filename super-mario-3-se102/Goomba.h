@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Utils.h"
 #include "CollisionEngine.h"
+#include "MovementKnockOver.h"
 #include "EntityState.h"
 
 namespace Entities {
@@ -10,7 +11,7 @@ namespace Entities {
 	public:
 		Goomba(std::string colorType, Utils::Vector2<float> position);
 		void Update(float delta) override;
-		void KnockOver(float horizontalDirection);
+		void KnockOver(HDirection direction);
 
 	private:
 		virtual void OnReady() override;
@@ -24,9 +25,9 @@ namespace Entities {
 		float time;
 		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
+		LPMovement<MovementKnockOver> knockOverMovement;
 
 	public:
 		static const float WALK_SPEED;
-		static const Utils::Vector2<float> KNOCK_OVER_VELOCITY;
 	};
 }
