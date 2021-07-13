@@ -51,8 +51,6 @@ void ParaGoomba::OnReady()
 
 ParaGoomba::~ParaGoomba()
 {
-	if (state.GetState() == &ParaGoomba::StompedOn)
-		parentScene->AddEntity(new Entities::Goomba(colorType, position));
 }
 
 void ParaGoomba::Update(float delta)
@@ -133,13 +131,6 @@ void ParaGoomba::Fall(float delta) {
 	}
 }
 
-void ParaGoomba::StompedOn(float delta) {
-	time += delta;
-
-	if (time >= 0.25f)
-		parentScene->QueueFree(this);
-}
-
 void ParaGoomba::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
@@ -148,7 +139,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 		LPMario player = static_cast<LPMario>(data.who);
 		if (data.edge.y == 1.0f) {
 			player->Bounce();
-			state.SetState(&ParaGoomba::StompedOn);
+			parentScene->AddEntity(new Entities::Goomba(colorType, position));
 			parentScene->AddEntity(PointUpFactory::Create(position));
 			parentScene->QueueFree(this);
 			return;
@@ -184,7 +175,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 void ParaGoomba::GetKnockedOver(HDirection direction)
 {
 	Goomba* goomba = new Entities::Goomba(colorType, position);
-	parentScene->AddEntity(goomba);
 	goomba->GetKnockedOver(direction);
+	parentScene->AddEntity(goomba);
 	parentScene->QueueFree(this);
 }

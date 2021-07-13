@@ -26,7 +26,7 @@ namespace Entities {
 		float time;
 		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
-		LPMovement<MovementKnockedOver> knockOverMovement;
+		LPMovement<MovementKnockedOver> knockedOverMovement;
 
 	public:
 		static const float WALK_SPEED;

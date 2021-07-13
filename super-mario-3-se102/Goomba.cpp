@@ -18,7 +18,7 @@ Goomba::Goomba(std::string colorType, Vector2<float> position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "Goombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Goomba>(this, &Goomba::MoveAround)),
-	knockOverMovement(nullptr),
+	knockedOverMovement(nullptr),
 	time(0)
 {
 	SetAnimation(colorCode + "GoombaM");
@@ -60,8 +60,8 @@ void Goomba::StompedOn(float delta) {
 
 void Goomba::KnockedOver(float delta)
 {
-	knockOverMovement->Update(delta);
-	if (knockOverMovement->Finished())
+	knockedOverMovement->Update(delta);
+	if (knockedOverMovement->Finished())
 		parentScene->QueueFree(this);
 }
 
@@ -113,7 +113,7 @@ void Goomba::GetKnockedOver(HDirection direction)
 	EnableForCollisionDetection(false);
 	state.SetState(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
-	knockOverMovement = new MovementKnockedOver(this, direction);
+	knockedOverMovement = new MovementKnockedOver(this, direction);
 
 	parentScene->AddEntity(new FXBoom(position));
 	parentScene->AddEntity(PointUpFactory::Create(position));

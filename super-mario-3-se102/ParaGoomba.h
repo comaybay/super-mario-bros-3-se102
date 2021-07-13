@@ -26,7 +26,6 @@ namespace Entities {
 		void PrepareToJump(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
-		void StompedOn(float delta);
 
 		bool onGround;
 		int jumpCount;
