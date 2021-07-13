@@ -13,6 +13,6 @@ namespace Entities {
 		void HitAnimation(float delta);
 
 		EntityState<EmptyBlock> state;
-		LPBlockHitMovement blockHitMovement;
+		LPMovement<MovementBlockHit> blockHitMovement;
 	};
 }

@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="MarioTransition.cpp" />
+    <ClCompile Include="MovementKnockOver.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
@@ -243,6 +245,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="MovementBlockHit.h" />
     <ClInclude Include="CoinUp.h" />
     <ClInclude Include="Constants.h" />
@@ -257,6 +260,7 @@
     <ClInclude Include="EventHandlerProps.h" />
     <ClInclude Include="MarioAnimationSet.h" />
     <ClInclude Include="MarioTransition.h" />
+    <ClInclude Include="MovementKnockOver.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />

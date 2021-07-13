@@ -6,33 +6,16 @@ const float MovementBlockHit::UP_SPEED = 250;
 const float MovementBlockHit::FALL_SPEED = EntityConstants::GRAVITY * 6;
 
 MovementBlockHit::MovementBlockHit(LPEntity entity, const Utils::Vector2<float>& initalPosition) :
+	Movement(this, &MovementBlockHit::Init),
 	entity(entity),
-	initialPos(initalPosition),
-	movementFinished(false),
-	handler(&MovementBlockHit::Init)
+	initialPos(initalPosition)
 {
-}
-
-void MovementBlockHit::Update(float delta)
-{
-	if (!movementFinished)
-		(this->*handler)(delta);
-}
-
-bool MovementBlockHit::Finished() {
-	return movementFinished;
-}
-
-void MovementBlockHit::Reset()
-{
-	handler = &MovementBlockHit::Init;
-	movementFinished = false;
 }
 
 void MovementBlockHit::Init(float delta)
 {
 	entity->SetVelocity({ 0, -UP_SPEED });
-	handler = &MovementBlockHit::Run;
+	SwitchState(&MovementBlockHit::Run);
 }
 
 void MovementBlockHit::Run(float delta)
@@ -47,5 +30,6 @@ void MovementBlockHit::Run(float delta)
 
 	entity->SetVelocity({ 0, 0 });
 	entity->SetPosition(initialPos);
-	movementFinished = true;
+
+	SetMovementFinished();
 }
