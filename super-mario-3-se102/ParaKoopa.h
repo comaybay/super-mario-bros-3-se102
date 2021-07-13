@@ -28,7 +28,7 @@ namespace Entities {
 
 		std::string colorType;
 		std::string colorCode;
-		Entities::Wing* wing;
+		Entities::Wing wing;
 		EntityState<ParaKoopa> state;
 		static const float JUMP_SPEED;
 		static const float FALL_SPEED;

@@ -29,6 +29,9 @@ public:
 	template<class T>
 	void Unsubscribe(T* handlerThis, MethodHandler<T> handler);
 
+	template<class T>
+	void Unsubscribe(T* handlerThis);
+
 	void Unsubscribe(FuncHandler handler);
 
 	void Notify(Args...);
@@ -129,6 +132,21 @@ inline void Event<Args...>::Unsubscribe(T* handlerThis, MethodHandler<T> handler
 	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t thisId = GetAddressOf(handlerThis);
 	unsubscribeWaitList.insert(EventHandlerProps(thisId, handlerId));
+
+	if (std::is_base_of<Entity, T>::value) {
+		LPEntity entity = reinterpret_cast<LPEntity>(handlerThis);
+		entity->GetDestroyEvent().Unsubscribe(this, &Event<Args...>::OnEntityDestroy);
+		subscribedEntities.erase(entity);
+	}
+}
+
+template<class ...Args>
+template<class T>
+inline void Event<Args...>::Unsubscribe(T* handlerThis)
+{
+	intptr_t thisId = GetAddressOf(handlerThis);
+	for (const EventHandler<Args...>& eventHandler : *eventHandlersById[thisId])
+		unsubscribeWaitList.insert(EventHandlerProps(thisId, eventHandler.GetId()));
 
 	if (std::is_base_of<Entity, T>::value) {
 		LPEntity entity = reinterpret_cast<LPEntity>(handlerThis);

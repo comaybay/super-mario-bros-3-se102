@@ -19,19 +19,18 @@ ParaKoopa::ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& 
 	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
+	wing(Wing(this)),
 	state(EntityState<ParaKoopa>(this, &ParaKoopa::JumpAround))
 {}
 
 ParaKoopa::~ParaKoopa()
 {
-	delete wing;
 }
 
 void ParaKoopa::OnReady()
 {
 	Entity::OnReady();
-	wing = new Wing(this);
-	wing->AutoFlap();
+	wing.AutoFlap();
 	CollisionEngine::Subscribe(this, &ParaKoopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
@@ -52,12 +51,12 @@ void ParaKoopa::OnReady()
 
 void ParaKoopa::SetWingDirection(WingDirection dir)
 {
-	wing->SetDirection(dir);
+	wing.SetDirection(dir);
 
 	if (dir == WingDirection::RIGHT)
-		wing->SetOffset({ 8, 2 });
+		wing.SetOffset({ 8, 2 });
 	else
-		wing->SetOffset({ 0, 3 });
+		wing.SetOffset({ 0, 3 });
 }
 
 void ParaKoopa::Update(float delta)
@@ -68,13 +67,13 @@ void ParaKoopa::Update(float delta)
 	velocity.y += FALL_SPEED * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	wing->Update(delta);
+	wing.Update(delta);
 }
 
 void ParaKoopa::Render()
 {
 	Entity::Render();
-	wing->Render();
+	wing.Render();
 }
 
 void ParaKoopa::GetKnockedOver(HDirection direction) {

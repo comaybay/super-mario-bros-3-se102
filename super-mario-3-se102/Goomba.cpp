@@ -90,6 +90,11 @@ void Goomba::OnCollision(CollisionData data)
 		return;
 	}
 
+	if (Contains(Group::ENEMIES, groups) && data.edge.x != 0.0f) {
+		velocity.x = WALK_SPEED * data.edge.x;
+		return;
+	}
+
 	if (Contains(Group::COLLISION_WALLS, groups)) {
 		if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 			CollisionHandling::Slide(this, data);
@@ -103,8 +108,12 @@ void Goomba::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (data.edge.y == -1.0f)
+		if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
 			CollisionHandling::Slide(this, data);
+			return;
+		}
+
+		return;
 	}
 }
 

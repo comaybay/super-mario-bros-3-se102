@@ -7,6 +7,7 @@
 #include "EncodedWorld.h"
 #include "Camera.h"
 #include "Grid.h"
+#include "Event.h"
 
 //avoid circular dependecies
 class Entity;
@@ -37,20 +38,16 @@ public:
 	void TransitionPause(bool state);
 
 	template<class ENTITY>
-	using Handler = void(ENTITY::*)();
-
-	template<class ENTITY>
-	void SubscribeToOutOfWorldEvent(ENTITY* entity, Handler<ENTITY> handler);
+	void SubscribeToOutOfWorldEvent(ENTITY* entity, Event<>::MethodHandler<ENTITY> handler);
 
 	template<class ENTITY>
 	void UnsubscribeToOutOfWorldEvent(ENTITY* entity);
 
 private:
-	void OnEntityDestroy(LPEntity entity);
+
 	void DetectAndNotifyOutOfWorld();
+	void OnEntityDestroy(LPEntity entity);
 	bool IsOutOfWorld(LPEntity entity);
-	std::list<std::pair<LPEntity, Handler<Entity>>> notifyList;
-	std::unordered_map<LPEntity, Handler<Entity>> subscriptions;
 
 	CellRange GetCellRangeAroundCamera();
 	RECT GetTileBoundingBox(int id);
@@ -64,7 +61,8 @@ private:
 	LPEntityManager entityManager;
 	bool updateMovablesInSPGridEnabled;
 	bool renderMovablesInSPGridEnabled;
-
+	std::unordered_set<LPEntity> newEntitiesWaitList;
+	std::unordered_map<LPEntity, LPEvent<>> outOfWorldEventByLPEntity;
 
 public:
 	/// <summary>
@@ -82,9 +80,12 @@ typedef Scene* LPScene;
 
 
 template<class ENTITY>
-inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Handler<ENTITY> handler)
+inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Event<>::MethodHandler<ENTITY> handler)
 {
-	subscriptions[entity] = handler;
+	if (!Utils::Contains(entity, outOfWorldEventByLPEntity))
+		outOfWorldEventByLPEntity[entity] = new Event<>();
+
+	outOfWorldEventByLPEntity[entity]->Subscribe(entity, handler);
 	entity->GetDestroyEvent().Subscribe(this, &Scene::OnEntityDestroy);
 }
 
@@ -92,6 +93,6 @@ inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Handler<ENTITY> ha
 template<class ENTITY>
 inline void Scene::UnsubscribeToOutOfWorldEvent(ENTITY* entity)
 {
-	subscriptions.erase(entity);
+	outOfWorldEventByLPEntity[entity]->Unsubscribe(entity);
 	entity->GetDestroyEvent().Unsubscribe(this, &Scene::OnEntityDestroy);
 }

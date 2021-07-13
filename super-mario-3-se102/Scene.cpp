@@ -22,6 +22,8 @@ Scene::~Scene()
 {
 	delete encodedWorld;
 	delete entityManager;
+	for (auto& pair : outOfWorldEventByLPEntity)
+		delete pair.second;
 }
 
 void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
@@ -39,7 +41,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesByGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 1600, 320 };
+		Vector2<float> pos = { 1000, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntitiesByGroup(Group::PLAYERS).front());
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
@@ -55,6 +57,12 @@ void Scene::_Ready()
 
 void Scene::Update(float delta)
 {
+	for (LPEntity newEntity : newEntitiesWaitList) {
+		entityManager->Add(newEntity);
+		newEntity->OnReady();
+	}
+	newEntitiesWaitList.clear();
+
 	DetectAndNotifyOutOfWorld();
 	CellRange range = GetCellRangeAroundCamera();
 
@@ -81,20 +89,20 @@ void Scene::Update(float delta)
 
 void Scene::OnEntityDestroy(LPEntity entity)
 {
-	subscriptions.erase(entity);
+	outOfWorldEventByLPEntity.erase(entity);
 }
 
 void Scene::DetectAndNotifyOutOfWorld()
 {
-	notifyList.clear();
+	std::list<LPEvent<>> notifyList;
 
-	for (auto& pair : subscriptions)
+	for (auto& pair : outOfWorldEventByLPEntity)
 		//avoid deletion during iteration
 		if (IsOutOfWorld(pair.first))
-			notifyList.push_back(pair);
+			notifyList.push_back(pair.second);
 
-	for (auto& pair : notifyList)
-		(pair.first->*pair.second)();
+	for (LPEvent<> event : notifyList)
+		event->Notify();
 }
 
 bool Scene::IsOutOfWorld(LPEntity entity)
@@ -202,8 +210,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 
 void Scene::AddEntity(LPEntity entity)
 {
-	entityManager->Add(entity);
-	entity->OnReady();
+	newEntitiesWaitList.insert(entity);
 }
 
 void Scene::QueueFree(LPEntity entity)
