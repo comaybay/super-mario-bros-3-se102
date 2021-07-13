@@ -39,7 +39,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesByGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 2000, 320 };
+		Vector2<float> pos = { 1600, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntitiesByGroup(Group::PLAYERS).front());
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));

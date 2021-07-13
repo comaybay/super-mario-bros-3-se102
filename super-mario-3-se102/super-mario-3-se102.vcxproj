@@ -175,7 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
-    <ClCompile Include="BlockHitMovement.cpp" />
+    <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="CourseClear.cpp" />
@@ -243,7 +243,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
-    <ClInclude Include="BlockHitMovement.h" />
+    <ClInclude Include="MovementBlockHit.h" />
     <ClInclude Include="CoinUp.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="CourseClear.h" />

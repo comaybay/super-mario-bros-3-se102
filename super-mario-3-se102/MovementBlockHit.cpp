@@ -1,41 +1,41 @@
-#include "BlockHitMovement.h"
+#include "MovementBlockHit.h"
 #include "EntityConstants.h"
 using namespace Utils;
 
-const float BlockHitMovement::UP_SPEED = 250;
-const float BlockHitMovement::FALL_SPEED = EntityConstants::GRAVITY * 6;
+const float MovementBlockHit::UP_SPEED = 250;
+const float MovementBlockHit::FALL_SPEED = EntityConstants::GRAVITY * 6;
 
-BlockHitMovement::BlockHitMovement(LPEntity entity, const Utils::Vector2<float>& initalPosition) :
+MovementBlockHit::MovementBlockHit(LPEntity entity, const Utils::Vector2<float>& initalPosition) :
 	entity(entity),
 	initialPos(initalPosition),
 	movementFinished(false),
-	handler(&BlockHitMovement::Init)
+	handler(&MovementBlockHit::Init)
 {
 }
 
-void BlockHitMovement::Update(float delta)
+void MovementBlockHit::Update(float delta)
 {
 	if (!movementFinished)
 		(this->*handler)(delta);
 }
 
-bool BlockHitMovement::Finished() {
+bool MovementBlockHit::Finished() {
 	return movementFinished;
 }
 
-void BlockHitMovement::Reset()
+void MovementBlockHit::Reset()
 {
-	handler = &BlockHitMovement::Init;
+	handler = &MovementBlockHit::Init;
 	movementFinished = false;
 }
 
-void BlockHitMovement::Init(float delta)
+void MovementBlockHit::Init(float delta)
 {
 	entity->SetVelocity({ 0, -UP_SPEED });
-	handler = &BlockHitMovement::Run;
+	handler = &MovementBlockHit::Run;
 }
 
-void BlockHitMovement::Run(float delta)
+void MovementBlockHit::Run(float delta)
 {
 	if (entity->GetPosition().y <= initialPos.y) {
 		Vector2<float> vel = entity->GetVelocity();

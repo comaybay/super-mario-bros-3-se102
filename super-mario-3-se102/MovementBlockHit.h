@@ -2,10 +2,10 @@
 #include "Entity.h"
 #include "Utils.h"
 
-class BlockHitMovement
+class MovementBlockHit
 {
 public:
-	BlockHitMovement(LPEntity entity, const Utils::Vector2<float>& initalPosition);
+	MovementBlockHit(LPEntity entity, const Utils::Vector2<float>& initalPosition);
 	void Update(float delta);
 	bool Finished();
 	void Reset();
@@ -14,7 +14,7 @@ private:
 	void Init(float delta);
 	void Run(float delta);
 
-	void(BlockHitMovement::* handler)(float);
+	void(MovementBlockHit::* handler)(float);
 	LPEntity entity;
 	Utils::Vector2<float> initialPos;
 	bool movementFinished;
@@ -22,4 +22,4 @@ private:
 	static const float FALL_SPEED;
 };
 
-typedef BlockHitMovement* LPBlockHitMovement;
+typedef MovementBlockHit* LPBlockHitMovement;

@@ -1,5 +1,5 @@
 #include "Entity.h"
-#include "BlockHitMovement.h"
+#include "MovementBlockHit.h"
 #include "EntityState.h"
 
 namespace Entities {

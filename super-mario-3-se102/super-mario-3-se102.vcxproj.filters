@@ -201,9 +201,6 @@
     <ClCompile Include="EmptyBlock.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="BlockHitMovement.cpp">
-      <Filter>Source Files\Movements</Filter>
-    </ClCompile>
     <ClCompile Include="CoinUp.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -245,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="EventHandlerProps.cpp">
       <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementBlockHit.cpp">
+      <Filter>Source Files\Movements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -413,9 +413,6 @@
     <ClInclude Include="EmptyBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlockHitMovement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CoinUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -456,6 +453,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EventHandlerProps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementBlockHit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,5 @@
 #pragma once
-#include "BlockHitMovement.h"
+#include "MovementBlockHit.h"
 #include "EntityState.h"
 #include "CollisionEngine.h"
 
@@ -17,7 +17,7 @@ namespace Entities {
 		void Hit(float delta);
 		EntityState<Brick> state;
 
-		BlockHitMovement blockHitMovement;
+		MovementBlockHit blockHitMovement;
 		LPEntity content;
 	};
 }

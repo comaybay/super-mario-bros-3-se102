@@ -179,7 +179,6 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 	else if (data.edge.x != 0.0f)
 		velocity.x = Goomba::WALK_SPEED * data.edge.x;
-
 }
 
 void ParaGoomba::KnockOver(float horizontalDirection)
