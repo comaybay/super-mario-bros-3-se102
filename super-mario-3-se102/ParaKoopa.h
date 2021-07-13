@@ -4,15 +4,17 @@
 #include "Utils.h"
 #include "EntityState.h"
 #include "CollisionEngine.h"
+#include "IKnockedOverable.h"
 
 namespace Entities {
-	class ParaKoopa : public Entity
+	class ParaKoopa : public Entity, public IKnockedOverable
 	{
 	public:
 		ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& position);
 		~ParaKoopa();
 		void Update(float delta) override;
 		void Render() override;
+		void GetKnockedOver(HDirection direction) override;
 		bool IsSliding();
 
 	private:
@@ -23,7 +25,6 @@ namespace Entities {
 		void SetWingDirection(WingDirection dir);
 
 		void JumpAround(float delta);
-		void StompedOn(float delta);
 
 		std::string colorType;
 		std::string colorCode;

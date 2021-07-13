@@ -168,6 +168,10 @@ GKoopaSM, Normal, 0.035, Auto
 Enemies
 32, 48, 16, 16, 0, 4
 
+GKoopaKO, Normal, -1, Manual
+Enemies
+48, 64, 63, 79
+
 ##Red Koopa##====================================
 RKoopaML, Normal, 0.133, Auto
 Enemies
@@ -189,6 +193,10 @@ Enemies
 RKoopaSM, Normal, 0.035, Auto
 Enemies
 128, 48, 16, 16, 0, 4
+
+RKoopaKO, Normal, -1, Manual
+Enemies
+144, 64, 159, 79
 
 ##QuestionBlock##====================================
 QuestionBlockNormal, Fixed, 0.14, Auto

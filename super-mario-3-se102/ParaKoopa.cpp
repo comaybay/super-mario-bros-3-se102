@@ -25,9 +25,6 @@ ParaKoopa::ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& 
 ParaKoopa::~ParaKoopa()
 {
 	delete wing;
-
-	if (state.GetState() == &ParaKoopa::StompedOn)
-		parentScene->AddEntity(new Koopa(colorType, position));
 }
 
 void ParaKoopa::OnReady()
@@ -80,10 +77,14 @@ void ParaKoopa::Render()
 	wing->Render();
 }
 
-void ParaKoopa::JumpAround(float delta) {
+void ParaKoopa::GetKnockedOver(HDirection direction) {
+	Koopa* koopa = new Koopa(colorType, position);
+	koopa->GetKnockedOver(direction);
+	parentScene->AddEntity(koopa);
+	parentScene->QueueFree(this);
 }
 
-void ParaKoopa::StompedOn(float delta) {
+void ParaKoopa::JumpAround(float delta) {
 }
 
 void ParaKoopa::OnCollision(CollisionData data)
@@ -119,7 +120,7 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 	LPMario player = static_cast<LPMario>(data.who);
 	if (data.edge.y == 1.0f) {
 		player->Bounce();
-		state.SetState(&ParaKoopa::StompedOn);
+		parentScene->AddEntity(new Koopa(colorType, position));
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);
 		return;

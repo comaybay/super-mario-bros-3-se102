@@ -1,8 +1,7 @@
 #include "Koopa.h"
-#include "Color.h"
 #include "Mario.h"
-#include "Goomba.h"
-#include "ParaGoomba.h"
+#include "FXBoom.h"
+#include "Color.h"
 #include "Group.h"
 #include "Constants.h"
 #include "Scene.h"
@@ -76,7 +75,7 @@ void Koopa::OnCollision(CollisionData data)
 		}
 
 		if (state.GetState() == &Koopa::ShellSlide &&
-			ContainsAnyOf({ "Goombas", "ParaGoombas" }, groups)) {
+			ContainsAnyOf({ "Goombas", "ParaGoombas", "Koopas", "ParaKoopas" }, groups)) {
 
 			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
 			dynamic_cast<IKnockedOverable*>(data.who)->GetKnockedOver(dir);
@@ -232,4 +231,23 @@ void Koopa::ShellIdle(float delta)
 
 void Koopa::ShellSlide(float delta)
 {
+}
+
+void Koopa::KnockedOver(float delta)
+{
+	knockedOverMovement->Update(delta);
+	if (knockedOverMovement->Finished())
+		parentScene->QueueFree(this);
+}
+
+void Koopa::GetKnockedOver(HDirection direction)
+{
+	EnableForCollisionDetection(false);
+	SetAnimation(colorCode + "KoopaKO");
+
+	knockedOverMovement = new MovementKnockedOver(this, direction);
+	state.SetState(&Koopa::KnockedOver);
+
+	parentScene->AddEntity(new FXBoom(position));
+	parentScene->AddEntity(PointUpFactory::Create(position));
 }
