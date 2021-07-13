@@ -246,7 +246,7 @@
     <ClCompile Include="MovementBlockHit.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
-    <ClCompile Include="MovementKnockOver.cpp">
+    <ClCompile Include="MovementKnockedOver.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
   </ItemGroup>
@@ -461,13 +461,13 @@
     <ClInclude Include="MovementBlockHit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MovementKnockOver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IKnockedOverable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementKnockedOver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

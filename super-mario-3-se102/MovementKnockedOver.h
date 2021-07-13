@@ -3,10 +3,10 @@
 #include "Direction.h"
 #include "Movement.h"
 
-class MovementKnockOver : public Movement<MovementKnockOver>
+class MovementKnockedOver : public Movement<MovementKnockedOver>
 {
 public:
-	MovementKnockOver(LPEntity entity, HDirection direction);
+	MovementKnockedOver(LPEntity entity, HDirection direction);
 
 private:
 	void Init(float delta);

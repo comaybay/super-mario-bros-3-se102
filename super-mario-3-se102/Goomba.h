@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Utils.h"
 #include "CollisionEngine.h"
-#include "MovementKnockOver.h"
+#include "MovementKnockedOver.h"
 #include "EntityState.h"
 #include "IKnockedOverable.h"
 
@@ -26,7 +26,7 @@ namespace Entities {
 		float time;
 		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
-		LPMovement<MovementKnockOver> knockOverMovement;
+		LPMovement<MovementKnockedOver> knockOverMovement;
 
 	public:
 		static const float WALK_SPEED;

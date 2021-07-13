@@ -205,7 +205,7 @@
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="MarioTransition.cpp" />
-    <ClCompile Include="MovementKnockOver.cpp" />
+    <ClCompile Include="MovementKnockedOver.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
@@ -260,7 +260,7 @@
     <ClInclude Include="EventHandlerProps.h" />
     <ClInclude Include="MarioAnimationSet.h" />
     <ClInclude Include="MarioTransition.h" />
-    <ClInclude Include="MovementKnockOver.h" />
+    <ClInclude Include="MovementKnockedOver.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />
