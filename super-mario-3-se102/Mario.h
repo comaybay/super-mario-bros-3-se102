@@ -40,7 +40,7 @@ namespace Entities {
 		void NormalRender();
 		void InvincibilityRender();
 
-		void SwitchState(EntityState<Mario>::Handler state);
+		void SwitchState(EntityState<Mario>::StateHandler state);
 		void Idle(float delta);
 		void Walk(float delta);
 		void Run(float delta);

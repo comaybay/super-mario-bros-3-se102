@@ -8,22 +8,22 @@ class EntityState
 {
 public:
 	typedef ENTITY* LPENTITY;
-	using Handler = void (ENTITY::*)(float);
+	typedef void(ENTITY::* StateHandler)(float);
 
 	EntityState(LPENTITY entity);
-	EntityState(LPENTITY entity, Handler intialHandler);
-	void SetState(Handler handler);
-	Handler GetState();
+	EntityState(LPENTITY entity, StateHandler intialHandler);
+	void SetState(StateHandler handler);
+	StateHandler GetState();
 	void Update(float delta);
 
 private:
-	Handler stateHandler;
+	StateHandler stateHandler;
 	LPENTITY handlerThis;
 };
 
 
 template<class ENTITY>
-inline EntityState<ENTITY>::EntityState(LPENTITY entity, Handler intialHandler) :
+inline EntityState<ENTITY>::EntityState(LPENTITY entity, StateHandler intialHandler) :
 	handlerThis(entity), stateHandler(intialHandler)
 {
 }
@@ -35,12 +35,12 @@ inline EntityState<ENTITY>::EntityState(LPENTITY entity) :
 }
 
 template<class ENTITY>
-inline void EntityState<ENTITY>::SetState(Handler handler) {
+inline void EntityState<ENTITY>::SetState(StateHandler handler) {
 	stateHandler = handler;
 }
 
 template<class ENTITY>
-inline typename EntityState<ENTITY>::Handler EntityState<ENTITY>::GetState() {
+inline typename EntityState<ENTITY>::StateHandler EntityState<ENTITY>::GetState() {
 	return stateHandler;
 }
 

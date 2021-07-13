@@ -196,7 +196,7 @@ bool Entities::Koopa::IsSliding()
 	return state.GetState() == &Koopa::ShellSlide;
 }
 
-void Koopa::SwitchState(EntityState<Koopa>::Handler handler)
+void Koopa::SwitchState(EntityState<Koopa>::StateHandler handler)
 {
 	state.SetState(handler);
 

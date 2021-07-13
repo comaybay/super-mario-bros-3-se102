@@ -18,7 +18,7 @@ namespace Entities {
 		void HandleWallCollision(const CollisionData& data);
 		void HandlePlayerCollision(const CollisionData& data);
 
-		void SwitchState(EntityState<Koopa>::Handler handler);
+		void SwitchState(EntityState<Koopa>::StateHandler handler);
 		void MoveAround(float delta);
 		void ShellIdle(float delta);
 		void ShellSlide(float delta);

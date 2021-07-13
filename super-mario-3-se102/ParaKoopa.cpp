@@ -86,11 +86,6 @@ void ParaKoopa::JumpAround(float delta) {
 void ParaKoopa::StompedOn(float delta) {
 }
 
-void ParaKoopa::SwitchState(EntityState<ParaKoopa>::Handler handler)
-{
-	state.SetState(handler);
-}
-
 void ParaKoopa::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
@@ -124,7 +119,7 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 	LPMario player = static_cast<LPMario>(data.who);
 	if (data.edge.y == 1.0f) {
 		player->Bounce();
-		SwitchState(&ParaKoopa::StompedOn);
+		state.SetState(&ParaKoopa::StompedOn);
 		parentScene->AddEntity(PointUpFactory::Create(position));
 		parentScene->QueueFree(this);
 		return;

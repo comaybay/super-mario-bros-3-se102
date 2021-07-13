@@ -102,7 +102,7 @@ bool Mario::IsInvincible()
 	return (updateState.GetState() == &Mario::InvincibilityUpdate);
 }
 
-void Mario::SwitchState(EntityState<Mario>::Handler stateHandler) {
+void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 	if (marioState.GetState() == &Mario::OutOfWorldDeath)
 		return;
 
