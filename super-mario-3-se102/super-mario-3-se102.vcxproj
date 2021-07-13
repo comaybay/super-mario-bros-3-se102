@@ -244,6 +244,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="IKnockedOverable.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="MovementBlockHit.h" />
     <ClInclude Include="CoinUp.h" />

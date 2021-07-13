@@ -75,18 +75,12 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (state.GetState() == &Koopa::ShellSlide) {
+		if (state.GetState() == &Koopa::ShellSlide &&
+			ContainsAnyOf({ "Goombas", "ParaGoombas" }, groups)) {
+
 			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-
-			if (Contains("Goombas", data.who->GetEntityGroups())) {
-				static_cast<Goomba*>(data.who)->KnockOver(dir);
-				return;
-			}
-
-			if (Contains("ParaGoombas", data.who->GetEntityGroups())) {
-				static_cast<ParaGoomba*>(data.who)->KnockOver(dir);
-				return;
-			}
+			dynamic_cast<IKnockedOverable*>(data.who)->GetKnockedOver(dir);
+			return;
 		}
 	}
 }

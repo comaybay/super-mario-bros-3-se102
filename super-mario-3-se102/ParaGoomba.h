@@ -6,16 +6,17 @@
 #include "Wing.h"
 #include "Direction.h"
 #include "Color.h"
+#include "IKnockedOverable.h"
 
 namespace Entities {
-	class ParaGoomba : public Entity
+	class ParaGoomba : public Entity, public IKnockedOverable
 	{
 	public:
 		~ParaGoomba();
 		ParaGoomba(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 		void Render() override;
-		void KnockOver(HDirection direction);
+		void GetKnockedOver(HDirection direction) override;
 
 	private:
 		virtual void OnReady() override;

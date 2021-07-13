@@ -108,7 +108,7 @@ void Goomba::OnCollision(CollisionData data)
 	}
 }
 
-void Goomba::KnockOver(HDirection direction)
+void Goomba::GetKnockedOver(HDirection direction)
 {
 	EnableForCollisionDetection(false);
 	state.SetState(&Goomba::KnockedOver);

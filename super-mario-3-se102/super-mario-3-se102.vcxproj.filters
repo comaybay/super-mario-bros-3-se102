@@ -467,6 +467,9 @@
     <ClInclude Include="Movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IKnockedOverable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
