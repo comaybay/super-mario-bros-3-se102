@@ -29,6 +29,7 @@ using LPMovement = Movement<DERIVED>*;
 template <class DERIVED>
 inline Movement<DERIVED>::Movement(LPDERIVED derivedThis, StateHandler initialState) :
 	derivedThis(derivedThis),
+	initialState(initialState),
 	state(initialState),
 	finished(false)
 {}
