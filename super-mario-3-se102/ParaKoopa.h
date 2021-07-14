@@ -11,7 +11,6 @@ namespace Entities {
 	{
 	public:
 		ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& position);
-		~ParaKoopa();
 		void Update(float delta) override;
 		void Render() override;
 		void GetKnockedOver(HDirection direction) override;

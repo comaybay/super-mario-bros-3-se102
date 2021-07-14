@@ -74,12 +74,22 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (state.GetState() == &Koopa::ShellSlide &&
-			ContainsAnyOf({ "Goombas", "ParaGoombas", "Koopas", "ParaKoopas" }, groups)) {
+		if (state.GetState() == &Koopa::ShellSlide) {
+			if (ContainsAnyOf({ "Goombas", "ParaGoombas", "ParaKoopas" }, groups)) {
+				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+				dynamic_cast<IKnockedOverable*>(data.who)->GetKnockedOver(dir);
+				return;
+			}
 
-			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-			dynamic_cast<IKnockedOverable*>(data.who)->GetKnockedOver(dir);
-			return;
+			if (Contains("Koopas", groups)) {
+				Koopa* otherKoopa = dynamic_cast<Koopa*>(data.who);
+
+				if (otherKoopa->IsSliding())
+					GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
+
+				otherKoopa->GetKnockedOver(data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT);
+				return;
+			}
 		}
 	}
 }
