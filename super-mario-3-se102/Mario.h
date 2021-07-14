@@ -32,6 +32,11 @@ namespace Entities {
 
 		void Bounce();
 
+		/// <summary>
+		/// Applied behaviours when on a note block
+		/// </summary>
+		void SetOnNoteBlock(bool state);
+
 	protected:
 		virtual void OnOutOfWorld() override;
 
@@ -50,6 +55,8 @@ namespace Entities {
 		void ReachedGoalRouletteFall(float delta);
 		void ReachedGoalRouletteWalkAway(float delta);
 		void OutOfWorldDeath(float delta);
+		void OnNoteBlock(float delta);
+		void OffNoteBlock(float delta);
 
 		virtual void OnCollision(CollisionData data);
 		void UpdateHorizontalDirection();

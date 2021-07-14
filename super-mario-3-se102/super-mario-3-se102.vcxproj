@@ -207,6 +207,7 @@
     <ClCompile Include="MarioTransition.cpp" />
     <ClCompile Include="MovementKnockedOver.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="NoteBlock.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="MarioTransition.h" />
     <ClInclude Include="MovementKnockedOver.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />
     <ClInclude Include="FXBoom.h" />

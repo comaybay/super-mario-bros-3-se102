@@ -41,7 +41,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 2000, 320 };
+		Vector2<float> pos = { 500, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
@@ -61,6 +61,7 @@ void Scene::Update(float delta)
 		entityManager->Add(newEntity);
 		newEntity->OnReady();
 	}
+
 	newEntitiesWaitList.clear();
 
 	DetectAndNotifyOutOfWorld();
@@ -218,6 +219,7 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 void Scene::AddEntity(LPEntity entity)
 {
 	newEntitiesWaitList.insert(entity);
+	entity->_SetParentScene(this);
 }
 
 void Scene::QueueFree(LPEntity entity)

@@ -213,6 +213,15 @@ BrickNormal, Fixed, 0.14, Auto
 WAnims
 1, 52, 16, 16, 1, 4 
 
+##NoteBlock##====================================
+NoteBlock, Fixed, 0.14, Auto
+WAnims
+69, 1, 16, 16, 1, 3 
+
+SuperNoteBlock, Fixed, 0.14, Auto
+WAnims
+69, 18, 16, 16, 1, 3 
+
 ##Coin##====================================
 Coin, Fixed, 0.125, Auto
 WAnims

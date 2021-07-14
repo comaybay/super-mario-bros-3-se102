@@ -269,8 +269,28 @@ void Mario::Fall(float delta) {
 
 void Mario::BounceUp(float delta)
 {
-	//same as fall
 	Fall(delta);
+}
+
+void Mario::OnNoteBlock(float delta)
+{
+	ClipHorizontalPosition();
+	ApplyHorizontalMovement(delta);
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+}
+
+void Mario::OffNoteBlock(float delta)
+{
+	ClipHorizontalPosition();
+	ApplyHorizontalMovement(delta);
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+
+	if (onGround)
+		SwitchState(velocity.x <= MAX_WALK_SPEED ? &Mario::Walk : &Mario::Run);
 }
 
 void Mario::ReachedGoalRouletteFall(float delta)
@@ -315,11 +335,9 @@ void Mario::ApplyHorizontalMovement(float delta)
 }
 
 void Mario::ApplyFriction(float delta) {
-	//apply friction to slow player down
 	int frictionDirX = -Sign(velocity.x);
 	velocity.x += ACCELERATION * frictionDirX * delta;
 
-	//stop player
 	if (Sign(velocity.x) == frictionDirX)
 		velocity.x = 0;
 }
@@ -396,6 +414,11 @@ HDirection Mario::GetFacingDirection()
 void Mario::StartReachedGoalRouletteAnimation()
 {
 	SwitchState(&Mario::ReachedGoalRouletteFall);
+}
+
+void Mario::SetOnNoteBlock(bool state)
+{
+	SwitchState(state ? &Mario::OnNoteBlock : &Mario::OffNoteBlock);
 }
 
 void Mario::OnOutOfWorld()

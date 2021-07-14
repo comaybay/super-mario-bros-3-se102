@@ -249,6 +249,9 @@
     <ClCompile Include="MovementKnockedOver.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
+    <ClCompile Include="NoteBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -468,6 +471,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MovementKnockedOver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NoteBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

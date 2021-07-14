@@ -7,9 +7,9 @@
 #include "Constants.h"
 #include "Game.h"
 #include "TextureManager.h"
-#include "Entities.h"
 #include "PlayerVariables.h"
 #include "ContentFactory.h"
+#include "Entities.h"
 
 #include <fstream>
 
@@ -26,6 +26,7 @@ const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoad
 	{"Coin", &SceneLoader::ParseCoin},
 	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
 	{"Brick", &SceneLoader::ParseBrick},
+	{"NoteBlock", &SceneLoader::ParseNoteBlock},
 	{"GoalRoulette", &SceneLoader::ParseGoalRoulette},
 
 	{"WMBush", &SceneLoader::ParseWMBush},
@@ -349,10 +350,7 @@ LPEntity SceneLoader::ParseQuestionBlock(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	const std::string& itemName = tokens[1];
-	Vector2<float> position(stof(tokens[2]), stof(tokens[3]));
-
-	return new Entities::QuestionBlock(itemName, position);
+	return new Entities::QuestionBlock(tokens[1], { stof(tokens[2]), stof(tokens[3]) });
 }
 
 LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
@@ -361,6 +359,14 @@ LPEntity SceneLoader::ParseBrick(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(5);
 
 	return new Entities::Brick(nullptr, Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+}
+
+LPEntity SceneLoader::ParseNoteBlock(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 5)
+		throw InvalidTokenSizeException(5);
+
+	return new Entities::NoteBlock(tokens[1], { stof(tokens[2]), stof(tokens[3]) });
 }
 
 LPEntity SceneLoader::ParseGoalRoulette(const std::vector<std::string>& tokens)

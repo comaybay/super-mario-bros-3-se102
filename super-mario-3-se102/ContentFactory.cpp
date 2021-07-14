@@ -5,7 +5,7 @@
 using namespace Utils;
 using namespace Entities;
 
-std::string ContentId::NONE = "__CONTENT_NONE__";
+std::string ContentId::NONE = "None";
 
 const std::unordered_map<std::string, ContentFactory::CreateItemMethod> ContentFactory::createMethodByContentId =
 {
