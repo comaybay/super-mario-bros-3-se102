@@ -36,7 +36,7 @@ inline bool Utils::Contains(const T& elem, const std::vector<T>& vector) {
 template<class T>
 inline bool Utils::ContainsAnyOf(const std::vector<T>& elems, const std::vector<T>& vector) {
 	for (auto& elem : elems)
-		if (std::find(vector.begin(), vector.end(), elem) != vector.end())
+		if (Utils::Contains(elem, vector))
 			return true;
 
 	return false;

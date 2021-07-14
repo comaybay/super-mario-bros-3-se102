@@ -71,7 +71,8 @@ public:
 	Event<LPEntity>& GetDestroyEvent();
 
 	/// <summary>
-	/// Called when it's parent scene ready, override this when entity need to do operations that require parent scene or EntityManager
+	/// Called when entity's parent scene is ready and are now allowed to subscribe to CollisionEngine.
+	/// Override this method when your entity needs to do operations that require parent scene.
 	/// </summary>
 	virtual void OnReady();
 
