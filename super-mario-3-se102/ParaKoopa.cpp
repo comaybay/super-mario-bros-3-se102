@@ -16,16 +16,12 @@ const float ParaKoopa::JUMP_SPEED = 210;
 const float ParaKoopa::FALL_SPEED = EntityConstants::GRAVITY / 1.5f;
 
 ParaKoopa::ParaKoopa(const std::string& colorType, const Utils::Vector2<float>& position)
-	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
+	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "ParaKoopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
 	wing(Wing(this)),
 	state(EntityState<ParaKoopa>(this, &ParaKoopa::JumpAround))
 {}
-
-ParaKoopa::~ParaKoopa()
-{
-}
 
 void ParaKoopa::OnReady()
 {
@@ -51,12 +47,14 @@ void ParaKoopa::OnReady()
 
 void ParaKoopa::SetWingDirection(WingDirection dir)
 {
+	static const Vector2<float> WING_OFFSET_RIGHT = { 8, 2 };
+	static const Vector2<float> WING_OFFSET_LEFT = { 0, 3 };
 	wing.SetDirection(dir);
 
 	if (dir == WingDirection::RIGHT)
-		wing.SetOffset({ 8, 2 });
+		wing.SetOffset(WING_OFFSET_RIGHT);
 	else
-		wing.SetOffset({ 0, 3 });
+		wing.SetOffset(WING_OFFSET_LEFT);
 }
 
 void ParaKoopa::Update(float delta)
@@ -78,8 +76,9 @@ void ParaKoopa::Render()
 
 void ParaKoopa::GetKnockedOver(HDirection direction) {
 	Koopa* koopa = new Koopa(colorType, position);
-	koopa->GetKnockedOver(direction);
 	parentScene->AddEntity(koopa);
+	koopa->GetKnockedOver(direction);
+
 	parentScene->QueueFree(this);
 }
 
