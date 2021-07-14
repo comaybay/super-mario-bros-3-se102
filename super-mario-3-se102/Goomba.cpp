@@ -120,9 +120,11 @@ void Goomba::OnCollision(CollisionData data)
 void Goomba::GetKnockedOver(HDirection direction)
 {
 	SetDetectable(false);
-	state.SetState(&Goomba::KnockedOver);
+	CollisionEngine::Unsubscribe(this, &Goomba::OnCollision);
 	SetAnimation(colorCode + "GoombaKO");
+
 	knockedOverMovement = new MovementKnockedOver(this, direction);
+	state.SetState(&Goomba::KnockedOver);
 
 	parentScene->AddEntity(new FXBoom(position));
 	parentScene->AddEntity(PointUpFactory::Create(position));
