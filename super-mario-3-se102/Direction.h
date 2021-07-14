@@ -1,6 +1,6 @@
 #pragma once
 enum class Direction {
-	TOP, LEFT, DOWN, RIGHT
+	UP, LEFT, DOWN, RIGHT
 };
 
 enum class HDirection {
@@ -8,5 +8,5 @@ enum class HDirection {
 };
 
 enum class VDirection {
-	TOP, DOWN
+	UP, DOWN
 };
