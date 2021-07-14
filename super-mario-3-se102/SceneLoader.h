@@ -33,6 +33,7 @@ private:
 	static LPEntity ParseQuestionBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseBrick(const std::vector<std::string>& tokens);
 	static LPEntity ParseNoteBlock(const std::vector<std::string>& tokens);
+	static LPEntity ParseSuperNoteBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseGoalRoulette(const std::vector<std::string>& tokens);
 
 	static LPEntity ParseWMBush(const std::vector<std::string>& tokens);

@@ -9,6 +9,7 @@
 #include "QuestionBlock.h"
 #include "Brick.h"
 #include "NoteBlock.h"
+#include "SuperNoteBlock.h"
 #include "CollisionWallType1.h"
 #include "CollisionWallType2.h"
 #include "Coin.h"

@@ -27,6 +27,7 @@ const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoad
 	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
 	{"Brick", &SceneLoader::ParseBrick},
 	{"NoteBlock", &SceneLoader::ParseNoteBlock},
+	{"SuperNoteBlock", &SceneLoader::ParseSuperNoteBlock},
 	{"GoalRoulette", &SceneLoader::ParseGoalRoulette},
 
 	{"WMBush", &SceneLoader::ParseWMBush},
@@ -367,6 +368,14 @@ LPEntity SceneLoader::ParseNoteBlock(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(5);
 
 	return new Entities::NoteBlock(tokens[1], { stof(tokens[2]), stof(tokens[3]) });
+}
+
+LPEntity SceneLoader::ParseSuperNoteBlock(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 4)
+		throw InvalidTokenSizeException(4);
+
+	return new Entities::SuperNoteBlock({ stof(tokens[1]), stof(tokens[2]) });
 }
 
 LPEntity SceneLoader::ParseGoalRoulette(const std::vector<std::string>& tokens)
