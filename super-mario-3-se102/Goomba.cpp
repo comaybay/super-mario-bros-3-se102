@@ -119,7 +119,7 @@ void Goomba::OnCollision(CollisionData data)
 
 void Goomba::GetKnockedOver(HDirection direction)
 {
-	EnableForCollisionDetection(false);
+	SetDetectable(false);
 	state.SetState(&Goomba::KnockedOver);
 	SetAnimation(colorCode + "GoombaKO");
 	knockedOverMovement = new MovementKnockedOver(this, direction);

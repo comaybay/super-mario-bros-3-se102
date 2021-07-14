@@ -75,12 +75,17 @@ void Entity::Init()
 	groups.push_back(Group::ALL);
 	destroyEvent = new Event<LPEntity>();
 	id = std::to_string(reinterpret_cast<intptr_t>(this));
-	enabledForCollisionDetection = true;
+	isDetectable = true;
 }
 
-bool Entity::_IsEnabledForCollisionDetection()
+bool Entity::IsDetectable()
 {
-	return isActive && enabledForCollisionDetection;
+	return isActive && isDetectable;
+}
+
+bool Entity::_IsActive()
+{
+	return isActive;
 }
 
 Entity::~Entity() {
@@ -128,9 +133,9 @@ void Entity::SetVelocity(const Vector2<float>& velocity)
 	this->velocity = velocity;
 }
 
-void Entity::EnableForCollisionDetection(bool state)
+void Entity::SetDetectable(bool state)
 {
-	enabledForCollisionDetection = state;
+	isDetectable = state;
 }
 
 void Entity::Activate(bool state)
@@ -222,7 +227,3 @@ void Entity::_SetRemainingVelocity(Utils::Vector2<float> velocity)
 	remainingVelocity = velocity;
 }
 
-bool Entity::_IsActive()
-{
-	return isActive;
-}

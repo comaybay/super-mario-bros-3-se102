@@ -252,7 +252,7 @@ void Koopa::KnockedOver(float delta)
 
 void Koopa::GetKnockedOver(HDirection direction)
 {
-	EnableForCollisionDetection(false);
+	SetDetectable(false);
 	SetAnimation(colorCode + "KoopaKO");
 
 	knockedOverMovement = new MovementKnockedOver(this, direction);

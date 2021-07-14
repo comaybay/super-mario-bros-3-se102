@@ -43,22 +43,9 @@ public:
 	const Utils::Vector2<float>& GetVelocity();
 	void SetPosition(const Utils::Vector2<float>& position);
 	void SetVelocity(const Utils::Vector2<float>& velocity);
-	void EnableForCollisionDetection(bool state);
 	const std::string& GetId();
 	LPScene GetParentScene();
 	void SetRenderedBeforeWorld(bool state);
-
-	/// <summary>
-	/// If false, entity won't be rendered nor updated, not affected by collision engine, but is not removed from the scene
-	/// </summary>
-	/// <param name="state"></param>
-	void Activate(bool state);
-
-	/// <summary>
-	/// GridType will be used for spatial parititoning
-	/// </summary>
-	GridType GetGridType();
-
 	virtual Utils::Dimension<int> GetCurrentSpriteDimension();
 	virtual LPConstHitbox GetHitbox();
 	SpriteBox GetSpriteBox();
@@ -67,6 +54,28 @@ public:
 	virtual void Render();
 	const std::vector<std::string>& GetEntityGroups();
 	Event<LPEntity>& GetDestroyEvent();
+
+	/// <summary>
+	/// If false, entity won't be rendered nor updated and will not include for detection or be detected by CollisionEngine,
+	/// but is not removed from the scene
+	/// </summary>
+	void Activate(bool state);
+
+	/// <summary>
+	/// Set if is detectable by CollisionEngine
+	/// </summary>
+	void SetDetectable(bool state);
+
+	/// <summary>
+	/// returns true if entity is able to be detected by CollisionEngine.
+	/// </summary>
+	/// <returns></returns>
+	bool IsDetectable();
+
+	/// <summary>
+	/// GridType will be used for spatial parititoning
+	/// </summary>
+	GridType GetGridType();
 
 	/// <summary>
 	/// Called when entity's parent scene is ready and are now allowed to subscribe to CollisionEngine.
@@ -86,10 +95,10 @@ public:
 	bool _IsRenderedBeforeWorld();
 
 	/// <summary>
-	/// Used internaly by CollisionEngine to see if entity want to detect collision.
+	/// Used internaly by CollisionEngine and Scene to see if entity is active.
 	/// </summary>
 	/// <returns></returns>
-	bool _IsEnabledForCollisionDetection();
+	bool _IsActive();
 
 	/// <summary>
 	/// remainging velocity is used internaly by CollisionEngine and CollisionHandling
@@ -98,12 +107,6 @@ public:
 	/// </summary>
 	Utils::Vector2<float> _GetRemainingVelocity();
 	void _SetRemainingVelocity(Utils::Vector2<float> vel);
-
-
-	/// <summary>
-	/// Used internaly by Scene to see if entity is active.
-	/// </summary>
-	bool _IsActive();
 
 protected:
 	LPScene parentScene;
@@ -117,7 +120,7 @@ private:
 	void Init();
 	std::string id;
 	bool isRenderedBeforeWorld;
-	bool enabledForCollisionDetection;
+	bool isDetectable;
 	bool isActive;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;

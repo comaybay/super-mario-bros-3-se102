@@ -80,10 +80,8 @@ void NoteBlock::OnCollision(CollisionData data)
 			targetPlayer->SetOnNoteBlock(true);
 			state.SetState(&NoteBlock::StompedOn);
 		}
-		else {
-			targetPlayer = player;
+		else
 			state.SetState(&NoteBlock::Hit);
-		}
 
 		return;
 	}

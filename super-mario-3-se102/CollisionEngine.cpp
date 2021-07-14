@@ -47,14 +47,14 @@ void CollisionEngine::Update(float delta) {
 
 void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta)
 {
-	if (!entity->_IsEnabledForCollisionDetection())
+	if (!entity->_IsActive())
 		return;
 
 	//get target entities (use set data structure to avoid duplications)
 	std::unordered_set<LPEntity> targetSet;
 	for (const std::string& groupName : targetGroups)
 		for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesOfGroup(groupName))
-			if (target != entity && target->_IsEnabledForCollisionDetection())
+			if (target != entity && target->IsDetectable())
 				targetSet.insert(target);
 
 	std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
@@ -95,12 +95,16 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 
 		activeCED->collisionEventByLPEntity[entity]->Notify(dataForEntity);
 
-		//if after notification, target still enabled, also subscribed and it's target groups include entity
+		if (!entity->IsDetectable())
+			return;
+
+		//if after notification, entity is detectable, target is still detectable 
+		//and is also subscribed to CollisionEngine and it's target groups include entity, then notify targets
 		bool targetHasThisEntityAsTarget =
 			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByMovableLPEntity[target]) ||
 			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByNonMovingLPEntity[target]);
 
-		if (target->_IsEnabledForCollisionDetection() &&
+		if (target->IsDetectable() &&
 			Contains(target, activeCED->collisionEventByLPEntity) &&
 			targetHasThisEntityAsTarget)
 		{

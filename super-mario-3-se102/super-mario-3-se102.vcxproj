@@ -234,6 +234,7 @@
     <ClCompile Include="PointUp.cpp" />
     <ClCompile Include="MarioSmall.cpp" />
     <ClCompile Include="SpriteBox.cpp" />
+    <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Wing.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="PointUp.h" />
     <ClInclude Include="MarioSmall.h" />
     <ClInclude Include="SpriteBox.h" />
+    <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Wing.h" />
