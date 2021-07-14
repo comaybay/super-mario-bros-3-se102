@@ -46,8 +46,6 @@ public:
 	void EnableForCollisionDetection(bool state);
 	const std::string& GetId();
 	LPScene GetParentScene();
-	void UnsubscribeToOutOfWorldEvent();
-	void SubscribeToOutOfWorldEvent();
 	void SetRenderedBeforeWorld(bool state);
 
 	/// <summary>

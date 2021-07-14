@@ -158,22 +158,12 @@ SpriteBox Entity::GetSpriteBox() {
 
 void Entity::OnReady() {
 	if (gridType != GridType::STATIC_ENTITIES && gridType != GridType::WALL_ENTITIES)
-		SubscribeToOutOfWorldEvent();
-}
-
-void Entity::SubscribeToOutOfWorldEvent()
-{
-	parentScene->SubscribeToOutOfWorldEvent(this, &Entity::OnOutOfWorld);
+		parentScene->SubscribeToOutOfWorldEvent(this, &Entity::OnOutOfWorld);
 }
 
 void Entity::SetRenderedBeforeWorld(bool state)
 {
 	isRenderedBeforeWorld = state;
-}
-
-void Entity::UnsubscribeToOutOfWorldEvent()
-{
-	parentScene->UnsubscribeToOutOfWorldEvent(this);
 }
 
 void Entity::OnOutOfWorld()

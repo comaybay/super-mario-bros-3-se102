@@ -14,7 +14,7 @@ Camera::Camera(const Vector2<float>& position)
 
 void Camera::OnReady() {
 	Entity::OnReady();
-	UnsubscribeToOutOfWorldEvent();
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
 }
 
 void Camera::Update(float delta)

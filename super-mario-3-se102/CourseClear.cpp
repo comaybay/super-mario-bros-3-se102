@@ -13,7 +13,7 @@ CourseClear::CourseClear(GoalRouletteCard card)
 void CourseClear::OnReady()
 {
 	Entity::OnReady();
-	UnsubscribeToOutOfWorldEvent();
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
 
 	parentScene->GetCamera().StopFollowingEntity();
 }

@@ -3,6 +3,7 @@
 #include "MarioSuper.h"
 #include "Game.h"
 #include "Constants.h"
+#include "Group.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -11,7 +12,7 @@ const float MarioTransition::STB_PART2_DURATION = 0.3f;
 const float MarioTransition::SMOKE_DURATION = 0.48f;
 
 MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
-	: Entity(player->GetPosition(), "PlayerTransitions", GridType::NONE),
+	: Entity(player->GetPosition(), { "PlayerTransitions", Group::NOT_AFFECTED_BY_TRANSITION_PAUSE }, GridType::NONE),
 	player(player),
 	state(EntityState<MarioTransition>(this)),
 	time(0)
@@ -54,7 +55,7 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 void MarioTransition::OnReady()
 {
 	Entity::OnReady();
-	UnsubscribeToOutOfWorldEvent();
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
 	parentScene->GetCamera().StopFollowingEntity();
 	parentScene->TransitionPause(true);
 }

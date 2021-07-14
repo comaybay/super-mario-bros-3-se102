@@ -50,7 +50,7 @@ void MarioSmall::OnOutOfWorld()
 	if (smallMarioState.GetState() != &MarioSmall::Die || smallMarioState.GetState() != &MarioSmall::DieFall)
 		Mario::OnOutOfWorld();
 	else
-		UnsubscribeToOutOfWorldEvent();
+		parentScene->UnsubscribeToOutOfWorldEvent(this);
 }
 
 void MarioSmall::Die(float delta) {
