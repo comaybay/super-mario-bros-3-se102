@@ -18,7 +18,7 @@ Brick::Brick(LPEntity content, const Utils::Vector2<float>& position)
 	),
 	content(content),
 	state(EntityState<Brick>(this, &Brick::Idle)),
-	blockHitMovement(this, position)
+	blockHitMovement(this, Direction::UP, position)
 {
 }
 

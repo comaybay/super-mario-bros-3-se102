@@ -12,7 +12,7 @@ EmptyBlock::EmptyBlock(const Utils::Vector2<float>& position)
 		GridType::STATIC_ENTITIES
 	),
 	state(EntityState<EmptyBlock>(this, &EmptyBlock::HitAnimation)),
-	blockHitMovement(new MovementBlockHit(this, position))
+	blockHitMovement(new MovementBlockHit(this, Direction::UP, position))
 {
 }
 
