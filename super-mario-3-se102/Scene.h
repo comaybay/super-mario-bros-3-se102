@@ -68,6 +68,7 @@ private:
 	bool renderMovablesInSPGridEnabled;
 	std::unordered_set<LPEntity> newEntitiesWaitList;
 	std::unordered_map<LPEntity, LPEvent<>> outOfWorldEventByLPEntity;
+	std::unordered_set<LPEntity> outOutWorldUnsubscribeWaitList;
 
 public:
 	/// <summary>
@@ -98,6 +99,6 @@ inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Event<>::MethodHan
 template<class ENTITY>
 inline void Scene::UnsubscribeToOutOfWorldEvent(ENTITY* entity)
 {
-	outOfWorldEventByLPEntity[entity]->Unsubscribe(entity);
+	outOutWorldUnsubscribeWaitList.insert(entity);
 	entity->GetDestroyEvent().Unsubscribe(this, &Scene::OnEntityDestroy);
 }

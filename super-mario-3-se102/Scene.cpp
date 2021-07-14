@@ -41,7 +41,7 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 500, 320 };
+		Vector2<float> pos = { 200, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
 		mario->SetPosition(pos);
 		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
@@ -77,9 +77,9 @@ void Scene::Update(float delta)
 	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, updateEntity);
 
 	//Only update player if in transition pause
-	if (isInTransitionPause && !IsEntityGroupEmpty(Group::PLAYERS)) {
-		for (LPEntity player : GetEntitiesOfGroup(Group::PLAYERS))
-			updateEntity(player);
+	if (isInTransitionPause && !IsEntityGroupEmpty(Group::NOT_AFFECTED_BY_TRANSITION_PAUSE)) {
+		for (LPEntity entity : GetEntitiesOfGroup(Group::NOT_AFFECTED_BY_TRANSITION_PAUSE))
+			updateEntity(entity);
 	}
 	else {
 
@@ -102,6 +102,11 @@ void Scene::OnEntityDestroy(LPEntity entity)
 
 void Scene::DetectAndNotifyOutOfWorld()
 {
+	for (LPEntity entity : outOutWorldUnsubscribeWaitList) {
+		delete outOfWorldEventByLPEntity[entity];
+		outOfWorldEventByLPEntity.erase(entity);
+	}
+
 	std::list<LPEvent<>> notifyList;
 
 	for (auto& pair : outOfWorldEventByLPEntity)
