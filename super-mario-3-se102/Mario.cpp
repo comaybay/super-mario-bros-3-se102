@@ -32,7 +32,7 @@ Mario::Mario(
 		position,
 		initialFacingDirection == HDirection::LEFT ? animationSet.idleLeft : animationSet.idleRight,
 		hitboxId,
-		Group::PLAYERS,
+		{ Group::PLAYERS, Group::NOT_AFFECTED_BY_TRANSITION_PAUSE },
 		GridType::NONE
 	),
 	animationSet(animationSet),
@@ -430,7 +430,7 @@ void Mario::OnOutOfWorld()
 	Dimension<float> marioDim = GetCurrentSpriteDimension();
 
 	velocity = { 0,0 };
-	UnsubscribeToOutOfWorldEvent();
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
 	parentScene->TransitionPause(true);
 	SwitchState(&Mario::OutOfWorldDeath);
 }
