@@ -183,9 +183,9 @@ QuestionBlock, Coin, 416, 320, True
 3, 2
 Coin, 1072, 320, True
 8, 2
-Piranha, Red, 360, 336, True
+Venus, Red, 360, 336, True
 2, 2
-Piranha, Green, 1864, 336, True
+Venus, Green, 1864, 344, True
 14, 2
 GoalRoulette, 2688, 336, True
 21, 2
@@ -197,7 +197,7 @@ Koopa, Red, 576, 352, True
 4, 2
 QuestionBlock, Coin, 704, 352, True
 5, 2
-Venus, Green, 1800, 360, True
+Piranha, Green, 1792, 352, True
 14, 2
 Koopa, Red, 2096, 352, True
 16, 2

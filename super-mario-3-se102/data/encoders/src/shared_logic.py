@@ -185,10 +185,10 @@ class Encoder(ABC):
             write_with_grid(EntityCode.COIN, pos_x, pos_y)
             return
 
-        if (code == EntityCode.PIRANHA_GREEN or code == EntityCode.PIRANHA_RED):
+        if (code == EntityCode.VENUS_RED or code == EntityCode.PIRANHA_RED):
             pos_x += 8
 
-        elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_RED):
+        elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_GREEN):
             pos_x += 8
             pos_y += 8
 
