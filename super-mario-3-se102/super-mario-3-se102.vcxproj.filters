@@ -258,6 +258,9 @@
     <ClCompile Include="NoteBlock.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
+    <ClCompile Include="VenusFireBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -486,6 +489,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VenusFireTrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VenusFireBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

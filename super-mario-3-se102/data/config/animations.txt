@@ -215,6 +215,23 @@ RVenusDR, Normal, 0.266, Auto
 Enemies
 128, 176, 16, 32, 0, 2
 
+##Green Venus Fire Trap##====================================
+GVenusUL, Normal, 0.266, Auto
+Enemies
+64, 144, 16, 32, 0, 2
+
+GVenusUR, Normal, 0.266, Auto
+Enemies
+64, 176, 16, 32, 0, 2
+
+GVenusDL, Normal, 0.266, Auto
+Enemies
+32, 144, 16, 32, 0, 2
+
+GVenusDR, Normal, 0.266, Auto
+Enemies
+32, 176, 16, 32, 0, 2
+
 ##FireBall##====================================
 FireBall, Normal, 0.133, Auto
 WAnims

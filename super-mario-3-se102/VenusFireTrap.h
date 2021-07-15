@@ -15,6 +15,7 @@ namespace Entities {
 		void OnPlayerDestroy(LPEntity entity);
 		void OnCollision(CollisionData data);
 		void UpdateHeadAnimation();
+		LPEntity TryFindPlayer();
 
 		void CheckDistance(float delta);
 		void PrepareCheckDistance(float delta);
@@ -24,12 +25,16 @@ namespace Entities {
 		void MoveDown(float delta);
 
 		std::string colorCode;
-		LPEntity player;
+		LPEntity targetPlayer;
 		EntityState<VenusFireTrap> state;
 		const float stopYMoveUp;
 		const float stopYMoveDown;
 		float time;
 
+		static const float OFFSET_ANGLE_LOW;
+		static const float OFFSET_ANGLE_HIGH;
+		static const float MAX_LOW_ANGLE_RIGHT;
+		static const float MAX_LOW_ANGLE_LEFT;
 		static const float WAIT_DURATION;
 		static const float MOVE_SPEED;
 		static const float SAFE_DISTANCE;

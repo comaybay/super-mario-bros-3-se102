@@ -15,5 +15,5 @@ HitboxMushroom, 2, 2, 12, 13
 
 HitboxVenusFireTrap, 2, 2, 12, 30
 
-HitboxFireBall, 0, 4, 8, 8
+HitboxFireBall, 1, 5, 7, 7
 

@@ -345,7 +345,7 @@ LPEntity SceneLoader::ParseVenusFireTrap(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::VenusFireTrap("Red", Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+	return new Entities::VenusFireTrap(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseCoin(const std::vector<std::string>& tokens) {

@@ -4,8 +4,18 @@
 #include "Constants.h"
 #include "EntityUtils.h"
 #include "Scene.h"
+#include "Mario.h"
+#include "Koopa.h"
+#include "FXBoom.h"
+#include "PointUpFactory.h"
+#include "VenusFireBall.h"
 using namespace Entities;
+using namespace Utils;
 
+const float VenusFireTrap::OFFSET_ANGLE_LOW = 10;
+const float VenusFireTrap::OFFSET_ANGLE_HIGH = 20;
+const float VenusFireTrap::MAX_LOW_ANGLE_RIGHT = -45;
+const float VenusFireTrap::MAX_LOW_ANGLE_LEFT = -135;
 const float VenusFireTrap::WAIT_DURATION = 1;
 const float VenusFireTrap::MOVE_SPEED = 60;
 const float VenusFireTrap::SAFE_DISTANCE = Constants::TILE_SIZE * 2;
@@ -17,7 +27,7 @@ VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<
 	colorCode(Color::ToColorCode(colorType)),
 	stopYMoveUp(position.y),
 	stopYMoveDown(position.y + Constants::TILE_SIZE * 2),
-	player(nullptr),
+	targetPlayer(nullptr),
 	state(EntityState<VenusFireTrap>(this, &VenusFireTrap::PrepareCheckDistance))
 {
 }
@@ -27,24 +37,59 @@ void VenusFireTrap::OnReady()
 	CollisionEngine::Subscribe(this, &VenusFireTrap::OnCollision, { Group::PLAYERS, "Koopas" });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
+		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
+		targetPlayer->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
 	}
 }
 
 void VenusFireTrap::OnPlayerDestroy(LPEntity entity) {
-	player = nullptr;
+	targetPlayer = nullptr;
 }
 
 void VenusFireTrap::OnCollision(CollisionData data)
 {
+	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+
+	if (Contains(Group::PLAYERS, groups)) {
+		LPMario player = static_cast<LPMario>(data.who);
+		if (!player->IsInvincible())
+			player->TakeDamage();
+
+		return;
+	}
+
+	if (Contains("Koopas", groups)) {
+		Koopa* koopa = static_cast<Koopa*>(data.who);
+		if (koopa->IsSliding()) {
+			parentScene->AddEntity(new FXBoom(position));
+			parentScene->AddEntity(PointUpFactory::Create(position));
+			parentScene->QueueFree(this);
+		}
+
+		return;
+	}
 }
 
 void VenusFireTrap::Update(float delta)
 {
 	Entity::Update(delta);
+
+	if (targetPlayer == nullptr)
+		targetPlayer = TryFindPlayer();
+
 	state.Update(delta);
 }
+
+LPEntity VenusFireTrap::TryFindPlayer() {
+	if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+		return nullptr;
+	else {
+		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
+		player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
+		return player;
+	}
+}
+
 
 void VenusFireTrap::PrepareCheckDistance(float delta)
 {
@@ -58,25 +103,20 @@ void VenusFireTrap::PrepareCheckDistance(float delta)
 
 void VenusFireTrap::CheckDistance(float delta)
 {
-	if (player != nullptr) {
-		float distanceX = abs(player->GetPosition().x - position.x);
-		if (distanceX <= SAFE_DISTANCE)
-			return;
+	if (targetPlayer == nullptr)
+		return;
 
-		velocity.y = -MOVE_SPEED;
-		state.SetState(&VenusFireTrap::MoveUp);
-	}
+	float distanceX = abs(targetPlayer->GetPosition().x - position.x);
+	if (distanceX <= SAFE_DISTANCE)
+		return;
 
-	if (player == nullptr && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
-	}
+	velocity.y = -MOVE_SPEED;
+	state.SetState(&VenusFireTrap::MoveUp);
 }
 
 void VenusFireTrap::MoveUp(float delta)
 {
-	if (player != nullptr)
-		UpdateHeadAnimation();
+	UpdateHeadAnimation();
 
 	if (position.y <= stopYMoveUp) {
 		position.y = stopYMoveUp;
@@ -87,21 +127,44 @@ void VenusFireTrap::MoveUp(float delta)
 
 void VenusFireTrap::WaitAndShoot(float delta)
 {
-	if (player != nullptr)
-		UpdateHeadAnimation();
+	UpdateHeadAnimation();
 
 	time += delta;
 
 	if (time >= WAIT_DURATION) {
 		time = 0;
+
+		if (targetPlayer != nullptr) {
+			const Vector2<float>& playerPos = targetPlayer->GetPosition();
+			float angle = AngleToXAxis(playerPos, position);
+
+			if (EntityUtils::IsOnAboveOf(this, targetPlayer)) {
+				if (EntityUtils::IsOnLeftSideOf(this, targetPlayer))
+					angle -= OFFSET_ANGLE_HIGH;
+				else
+					angle += OFFSET_ANGLE_HIGH;
+			}
+			else {
+				if (EntityUtils::IsOnLeftSideOf(this, targetPlayer))
+					angle += OFFSET_ANGLE_LOW;
+				else
+					angle -= OFFSET_ANGLE_LOW;
+			}
+
+			if (angle < 0 && angle < MAX_LOW_ANGLE_RIGHT && angle > MAX_LOW_ANGLE_LEFT)
+				angle = angle > -90 ? MAX_LOW_ANGLE_RIGHT : MAX_LOW_ANGLE_LEFT;
+
+
+			parentScene->AddEntity(new VenusFireBall(position, angle));
+		}
+
 		state.SetState(&VenusFireTrap::PrepareMoveDown);
 	}
 }
 
 void VenusFireTrap::PrepareMoveDown(float delta)
 {
-	if (player != nullptr)
-		UpdateHeadAnimation();
+	UpdateHeadAnimation();
 
 	time += delta;
 
@@ -115,8 +178,7 @@ void VenusFireTrap::PrepareMoveDown(float delta)
 
 void VenusFireTrap::MoveDown(float delta)
 {
-	if (player != nullptr)
-		UpdateHeadAnimation();
+	UpdateHeadAnimation();
 
 	if (position.y >= stopYMoveDown) {
 		position.y = stopYMoveDown;
@@ -126,19 +188,22 @@ void VenusFireTrap::MoveDown(float delta)
 }
 
 void VenusFireTrap::UpdateHeadAnimation() {
-	bool left = EntityUtils::IsOnLeftSideOf(this, player);
-	bool above = EntityUtils::IsOnAboveOf(this, player);
-	if (left && above)
-		SetAnimation("RVenusUL");
+	if (targetPlayer != nullptr) {
+		bool left = EntityUtils::IsOnLeftSideOf(this, targetPlayer);
+		bool above = EntityUtils::IsOnAboveOf(this, targetPlayer);
 
-	else if (!left && above)
-		SetAnimation("RVenusUR");
+		if (left && above)
+			SetAnimation(colorCode + "VenusUL");
 
-	else if (left && !above)
-		SetAnimation("RVenusDL");
+		else if (!left && above)
+			SetAnimation(colorCode + "VenusUR");
 
-	else if (!left && !above)
-		SetAnimation("RVenusDR");
+		else if (left && !above)
+			SetAnimation(colorCode + "VenusDL");
+
+		else if (!left && !above)
+			SetAnimation(colorCode + "VenusDR");
+	};
 
 	bool waiting = state.GetState() == &VenusFireTrap::WaitAndShoot || state.GetState() == &VenusFireTrap::PrepareMoveDown;
 	if (waiting == true)
