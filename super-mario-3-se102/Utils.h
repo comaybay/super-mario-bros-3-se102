@@ -1,11 +1,22 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Constants.h"
 
 namespace Utils
 {
 	void DebugOut(std::string text);
 	void DebugOut(const char* text);
+	float Deg2Rad(float deg);
+	float Rad2Deg(float rad);
+
+	/// <summary>
+	/// <para> Returns the angle a vector makes to an origin's X axis </para>
+	/// <para> range from -180 (non-inclusive) to 180 (inclusive)</para>
+	/// </summary>
+	template <class T>
+	struct Vector2;
+	float AngleToXAxis(const Utils::Vector2<float>& vector, const Utils::Vector2<float>& orgin);
 
 	template <class T>
 	struct Dimension {
@@ -52,6 +63,11 @@ namespace Utils
 		bool operator!=(const Vector2<T>& other) const;
 		Vector2<T> Rounded() const;
 		float DistanceTo(const Vector2<T>& v) const;
+
+		/// <summary>
+		///	Rotates vector to the given angle (counterclockwise rotation, 0 deg = rotates to x axis)
+		/// </summary>
+		Vector2<T> RotateTo(float angle) const;
 	};
 
 	template <typename T>
@@ -204,6 +220,19 @@ inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const
 {
 	return !(*this == other);
 }
+
+template <typename T>
+Utils::Vector2<T> Utils::Vector2<T>::RotateTo(float angle) const
+{
+	float cosTheta = cos(Deg2Rad(angle));
+	float sinTheta = sin(Deg2Rad(angle));
+
+	return {
+		x * cosTheta - y * sinTheta,
+		-(x * sinTheta + y * cosTheta)
+	};
+}
+
 
 template <typename T>
 inline Utils::Dimension<T>::Dimension() {};
