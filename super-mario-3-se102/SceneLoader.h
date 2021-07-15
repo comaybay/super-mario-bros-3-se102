@@ -29,6 +29,7 @@ private:
 	static LPEntity ParseParaGoomba(const std::vector<std::string>& tokens);
 	static LPEntity ParseKoopa(const std::vector<std::string>& tokens);
 	static LPEntity ParseParaKoopa(const std::vector<std::string>& tokens);
+	static LPEntity ParseVenusFireTrap(const std::vector<std::string>& tokens);
 	static LPEntity ParseCoin(const std::vector<std::string>& tokens);
 	static LPEntity ParseQuestionBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseBrick(const std::vector<std::string>& tokens);

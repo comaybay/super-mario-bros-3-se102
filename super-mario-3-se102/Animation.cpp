@@ -34,6 +34,11 @@ const int Animation::GetCurrentFrame()
 	return currentFrame;
 }
 
+void Animation::SetFrame(int frame)
+{
+	currentFrame = frame;
+}
+
 const std::string& Animation::GetId()
 {
 	return id;

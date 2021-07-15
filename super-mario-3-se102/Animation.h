@@ -16,6 +16,7 @@ public:
 	void SetAnimationSpeed(float speed);
 	const SpriteBox& GetCurrentSpriteBox();
 	const int GetCurrentFrame();
+	void SetFrame(int frame);
 	const std::string& GetId();
 
 protected:

@@ -237,6 +237,7 @@
     <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="VenusFireTrap.cpp" />
     <ClCompile Include="Wing.cpp" />
     <ClCompile Include="WMBush.cpp" />
     <ClCompile Include="WMHelpBubble.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="VenusFireTrap.h" />
     <ClInclude Include="Wing.h" />
     <ClInclude Include="WMBush.h" />
     <ClInclude Include="WMHelpBubble.h" />

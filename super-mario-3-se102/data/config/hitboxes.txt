@@ -13,5 +13,7 @@ HitboxKoopaShell, 2, 8, 14, 7
 
 HitboxMushroom, 2, 2, 12, 13
 
+HitboxVenusFireTrap, 2, 2, 12, 30
 
+HitboxFireBall, 0, 4, 8, 8
 

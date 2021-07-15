@@ -6,6 +6,7 @@
 #include "ParaGoomba.h"
 #include "Koopa.h"
 #include "ParaKoopa.h"
+#include "VenusFireTrap.h"
 #include "QuestionBlock.h"
 #include "Brick.h"
 #include "NoteBlock.h"

@@ -249,11 +249,14 @@
     <ClCompile Include="MovementKnockedOver.cpp">
       <Filter>Source Files\Movements</Filter>
     </ClCompile>
-    <ClCompile Include="NoteBlock.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="VenusFireTrap.cpp">
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
     <ClCompile Include="SuperNoteBlock.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="NoteBlock.cpp">
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +483,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SuperNoteBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VenusFireTrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
