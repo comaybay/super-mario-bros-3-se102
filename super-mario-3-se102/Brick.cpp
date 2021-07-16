@@ -59,7 +59,7 @@ void Brick::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (Contains(std::string("Koopas"), groups) && parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+	if (Contains(std::string("Koopas"), groups) && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		Koopa* koopa = static_cast<Koopa*>(data.who);
 		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 
