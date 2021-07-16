@@ -21,7 +21,7 @@ void FXBrickBreak::BrickBreakParticle::Update(float delta) {
 const float FXBrickBreak::UP_SPEED = 380;
 const float FXBrickBreak::X_SPEED = 70;
 const float FXBrickBreak::MARGIN = 8;
-const float FXBrickBreak::EXIST_DURATION = 5;
+const float FXBrickBreak::EXIST_DURATION = 2;
 
 FXBrickBreak::FXBrickBreak(const Vector2<float>& position)
 	: Entity::Entity(position, Group::EFFECTS, GridType::NONE),
@@ -37,6 +37,8 @@ FXBrickBreak::FXBrickBreak(const Vector2<float>& position)
 
 FXBrickBreak::~FXBrickBreak()
 {
+	for (LPEntity particle : particles)
+		delete particle;
 }
 
 void FXBrickBreak::Update(float delta)

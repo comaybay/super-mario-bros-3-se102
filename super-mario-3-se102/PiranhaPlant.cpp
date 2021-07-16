@@ -86,7 +86,6 @@ LPEntity PiranhaPlant::TryFindPlayer() {
 	}
 }
 
-
 void PiranhaPlant::PrepareCheckDistance(float delta)
 {
 	time += delta;

@@ -12,7 +12,6 @@ public:
 	static void Init(HWND hWnd, const GameSettings& gameSettings);
 
 	static void Run();
-	static void Release();
 	static const GameSettings& GetGameSettings();
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
@@ -58,6 +57,7 @@ public:
 
 
 private:
+	static void Release();
 	static void InitAndSwitchScene();
 	static Utils::Vector2<float> ToPixelPerfectPosition(const Utils::Vector2<float>& position);
 	static Utils::Vector2<float> ToPrecisePosition(const Utils::Vector2<float>& position);

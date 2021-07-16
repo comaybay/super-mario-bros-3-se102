@@ -37,6 +37,7 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 
 void Scene::_Ready()
 {
+
 	entityManager->ForEach([this](LPEntity entity) {
 		entity->_SetParentScene(this);
 		entity->OnReady();
@@ -47,6 +48,10 @@ void Scene::_Ready()
 	camera.OnReady();
 	if (!IsEntityGroupEmpty(Group::PLAYERS))
 		camera.FollowEntity(GetEntityOfGroup(Group::PLAYERS));
+
+	if (!IsEntityGroupEmpty(Group::PLAYERS))
+		GetEntityOfGroup(Group::PLAYERS)->SetPosition({ 2500, 200 });
+
 }
 
 void Scene::Update(float delta)
@@ -91,9 +96,12 @@ void Scene::Update(float delta)
 
 		camera.Update(delta);
 	}
+}
 
+void Scene::_FreeEntitiesInQueue() {
 	entityManager->FreeEntitiesInQueue();
 }
+
 
 void Scene::OnEntityDestroy(LPEntity entity)
 {
@@ -250,6 +258,19 @@ const EntityCollection& Scene::GetEntitiesOfGroup(const std::string& groupName)
 {
 	return entityManager->GetEntitiesOfGroup(groupName);
 }
+
+void Scene::ForEachNonWallEntityOnCamera(const std::function<void(LPEntity)>& handler)
+{
+	CellRange range = GetCellRangeAroundCamera();
+	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, handler);
+
+	if (renderMovablesInSPGridEnabled)
+		entityManager->GetGrid(GridType::MOVABLE_ENTITIES)->ForEachEntityIn(range, handler);
+
+	for (LPEntity entity : entityManager->GetNonGridEntities())
+		handler(entity);
+}
+
 
 void Scene::TransitionPause(bool state)
 {

@@ -26,7 +26,9 @@ public:
 	Camera& GetCamera();
 	const std::string& GetPrevScenePath();
 	bool IsEntityGroupEmpty(const std::string& groupName);
+
 	const EntityCollection& GetEntitiesOfGroup(const std::string& groupName);
+	void ForEachNonWallEntityOnCamera(const std::function<void(LPEntity)>& handler);
 
 	/// <summary>
 	/// Add given entity after current frame.
@@ -95,6 +97,12 @@ public:
 	/// called when everything in the scene is loaded, used internally by SceneLoader.
 	/// </summary>
 	void _Ready();
+
+	/// <summary>
+	/// Free entities, used internally by Game
+	/// </summary>
+	void _FreeEntitiesInQueue();
+
 };
 typedef Scene* LPScene;
 

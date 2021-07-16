@@ -90,7 +90,6 @@ LPEntity VenusFireTrap::TryFindPlayer() {
 	}
 }
 
-
 void VenusFireTrap::PrepareCheckDistance(float delta)
 {
 	time += delta;
@@ -175,7 +174,6 @@ void VenusFireTrap::PrepareMoveDown(float delta)
 		state.SetState(&VenusFireTrap::MoveDown);
 	}
 }
-
 
 void VenusFireTrap::MoveDown(float delta)
 {

@@ -262,6 +262,8 @@ void Game::Run()
 			activeScene->Update(dt);
 
 			CollisionEngine::_HandleUnsubscribeWaitList();
+		
+			activeScene->_FreeEntitiesInQueue();
 		}
 
 		activeScene->Render();

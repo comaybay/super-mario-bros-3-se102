@@ -22,7 +22,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_  HINSTANCE hInstPrev, _In_ PST
 
 	Game::Init(gameWindowHandler, gameSettings);
 	Game::Run();
-	Game::Release();
 
 	return 0;
 }
