@@ -44,6 +44,6 @@ LPEntity ContentFactory::CreateSuperLeaf(const Utils::Vector2<float>& position)
 		return new Mushroom(position);
 	else
 		//TODO: replace with implementation of super leaf
-		return new CoinUp(position);
+		return new Mushroom(position);
 
 }
