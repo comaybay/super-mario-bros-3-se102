@@ -27,10 +27,25 @@ public:
 	const Utils::Vector2<float>& GetCameraPosition();
 	Camera& GetCamera();
 	const std::string& GetPrevScenePath();
-	void AddEntity(LPEntity entity);
-	void QueueFree(LPEntity entity);
 	bool IsEntityGroupEmpty(const std::string& groupName);
 	const std::unordered_set<LPEntity>& GetEntitiesOfGroup(const std::string& groupName);
+
+	/// <summary>
+	/// Add given entity after current frame.
+	/// </summary>
+	void AddEntity(LPEntity entity);
+
+	/// <summary>
+	/// <para> Add given entity after current frame. 
+	/// Given callback will be called when entity's OnReady method is called. </para>
+	/// <para> Use this when you want manipulate entity when it is ready. </para>
+	/// </summary>
+	void AddEntity(LPEntity entity, const std::function<void(LPEntity)>& callback);
+
+	/// <summary>
+	/// Free given entity after current frame.
+	/// </summary>
+	void QueueFree(LPEntity entity);
 
 	/// <summary>
 	/// Returns an entity of given group. This entity is not guarantee to be the first element in the group.
@@ -67,6 +82,7 @@ private:
 	bool isInTransitionPause;
 	bool renderMovablesInSPGridEnabled;
 	std::unordered_set<LPEntity> newEntitiesWaitList;
+	std::unordered_map<LPEntity, std::function<void(LPEntity)>> afterOnReadyCallbackByLPEntity;
 	std::unordered_map<LPEntity, LPEvent<>> outOfWorldEventByLPEntity;
 	std::unordered_set<LPEntity> outOutWorldUnsubscribeWaitList;
 
