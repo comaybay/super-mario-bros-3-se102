@@ -12,9 +12,9 @@ CollisionWallType1::CollisionWallType1(const Vector2<float>& position, const Dim
 	hitbox(Hitbox(Vector2<float>(0, 0), dimension))
 {}
 
-LPConstHitbox CollisionWallType1::GetHitbox()
+const Hitbox& CollisionWallType1::GetHitbox()
 {
-	return &hitbox;
+	return hitbox;
 }
 
 Dimension<int> CollisionWallType1::GetCurrentSpriteDimension()

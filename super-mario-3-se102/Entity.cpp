@@ -91,6 +91,7 @@ bool Entity::_IsActive()
 Entity::~Entity() {
 	destroyEvent->Notify(this);
 	delete destroyEvent;
+	delete animation;
 }
 
 LPScene Entity::GetParentScene()
@@ -152,7 +153,7 @@ GridType Entity::GetGridType() {
 	return gridType;
 }
 
-LPConstHitbox Entity::GetHitbox()
+const Hitbox& Entity::GetHitbox()
 {
 	return hitbox;
 }

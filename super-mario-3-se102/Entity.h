@@ -44,7 +44,7 @@ public:
 	LPScene GetParentScene();
 	void SetRenderedBeforeWorld(bool state);
 	virtual Utils::Dimension<int> GetCurrentSpriteDimension();
-	virtual LPConstHitbox GetHitbox();
+	virtual const Hitbox& GetHitbox();
 	SpriteBox GetSpriteBox();
 	virtual void Update(float delta);
 	virtual void PostUpdate();
@@ -112,13 +112,13 @@ public:
 	void _SetRemainingVelocity(Utils::Vector2<float> vel);
 
 protected:
+	virtual void OnOutOfWorld();
 	LPScene parentScene;
 	EntityGroups groups;
 	Utils::Vector2<float> position;
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
-	LPConstHitbox hitbox;
-	virtual void OnOutOfWorld();
+	Hitbox hitbox;
 private:
 	void Init();
 	std::string id;

@@ -3,24 +3,24 @@
 #include "Constants.h"
 #include "Contains.h"
 
-std::unordered_map<std::string, LPHitbox> HitboxManager::hitboxById;
+std::unordered_map<std::string, Hitbox> HitboxManager::hitboxById;
 
-LPHitbox HitboxManager::TILE_SIZE_HITBOX = new Hitbox(
+Hitbox HitboxManager::TILE_SIZE_HITBOX = Hitbox(
 	Utils::Vector2<float>(0, 0),
 	Utils::Dimension<int>(Constants::TILE_SIZE, Constants::TILE_SIZE)
 );
 
-LPHitbox HitboxManager::NO_HITBOX = new Hitbox(
+Hitbox HitboxManager::NO_HITBOX = Hitbox(
 	Utils::Vector2<float>(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()),
 	Utils::Dimension<int>(0, 0)
 );
 
-void HitboxManager::Add(const std::string& id, LPHitbox hitbox)
+void HitboxManager::Add(const std::string& id, const Hitbox& hitbox)
 {
 	hitboxById[id] = hitbox;
 }
 
-LPConstHitbox HitboxManager::Get(const std::string& id)
+const Hitbox& HitboxManager::Get(const std::string& id)
 {
 	if (id == HitboxId::TILE_SIZE_HITBOX)
 		return TILE_SIZE_HITBOX;

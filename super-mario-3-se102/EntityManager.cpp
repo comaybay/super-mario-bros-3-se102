@@ -38,7 +38,7 @@ void EntityManager::Add(LPEntity entity)
 	}
 
 	if (entity->GetGridType() == GridType::WALL_ENTITIES) {
-		CellRange range = wallEntitySPGrid->GetCellRangeFromRectangle(entity->GetPosition(), entity->GetHitbox()->GetDimension());
+		CellRange range = wallEntitySPGrid->GetCellRangeFromRectangle(entity->GetPosition(), entity->GetHitbox().GetDimension());
 		_AddToWallSPGrid(entity, range);
 		return;
 	}

@@ -254,7 +254,7 @@ void ResourceLoader::LoadHitboxes(const std::string& configPath)
 		if (tokens.size() != 5)
 			throw InvalidTokenSizeException(5);
 
-		LPHitbox hitbox = new Hitbox(
+		Hitbox hitbox = Hitbox(
 			Vector2<float>(stof(tokens[1]), stof(tokens[2])),
 			Dimension<int>(stoi(tokens[3]), stoi(tokens[4]))
 		);

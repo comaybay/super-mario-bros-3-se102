@@ -6,7 +6,7 @@ namespace Entities {
 	class CollisionWallType1 : public Entity {
 	public:
 		CollisionWallType1(const Utils::Vector2<float>& position, const Utils::Dimension<int>& dimension);
-		LPConstHitbox GetHitbox() override;
+		const Hitbox& GetHitbox() override;
 		Utils::Dimension<int> GetCurrentSpriteDimension() override;
 
 	private:

@@ -13,9 +13,9 @@ CollisionWallType2::CollisionWallType2(Vector2<float> position, Dimension<int> d
 {
 }
 
-LPConstHitbox CollisionWallType2::GetHitbox()
+const Hitbox& CollisionWallType2::GetHitbox()
 {
-	return &hitbox;
+	return hitbox;
 }
 
 Dimension<int> CollisionWallType2::GetCurrentSpriteDimension()

@@ -15,8 +15,6 @@ private:
 	Utils::Vector2<float> relativePosition;
 	Utils::Dimension<int> dimension;
 };
-typedef Hitbox* LPHitbox;
-typedef const Hitbox* LPConstHitbox;
 
 class HitboxId {
 public:
