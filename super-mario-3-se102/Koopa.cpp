@@ -64,7 +64,7 @@ void Koopa::OnCollision(CollisionData data)
 
 		if (state.GetState() == &Koopa::MoveAround) {
 			CollisionHandling::Slide(this, data);
-			if (data.edge.x == 0.0f)
+			if (data.edge.x == 0)
 				return;
 
 			velocity.x = WALK_SPEED * data.edge.x;
@@ -99,7 +99,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	LPMario player = static_cast<LPMario>(data.who);
 
 	if (state.GetState() == &Koopa::MoveAround) {
-		if (data.edge.y == 1.0f) {
+		if (data.edge.y == 1) {
 			player->Bounce();
 			SwitchState(&Koopa::ShellIdle);
 			velocity.x = 0;
@@ -117,7 +117,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	}
 
 	if (state.GetState() == &Koopa::ShellIdle) {
-		if (data.edge.x != 0.0f)
+		if (data.edge.x != 0)
 			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
 
 		else {
@@ -130,7 +130,7 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	}
 
 	if (state.GetState() == &Koopa::ShellSlide) {
-		if (data.edge.y == 1.0f) {
+		if (data.edge.y == 1) {
 			player->Bounce();
 			SwitchState(&Koopa::ShellIdle);
 			parentScene->AddEntity(PointUpFactory::Create(position));
@@ -155,14 +155,14 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
-		if (data.edge.y != 0.0f) {
+		if (data.edge.y != 0) {
 			velocity.y = 0;
 			onGround = true;
 			lock = false;
 			return;
 		}
 
-		if (data.edge.x != 0.0f) {
+		if (data.edge.x != 0) {
 			float speed = (state.GetState() == &Koopa::MoveAround) ? WALK_SPEED : SHELL_SLIDE_SPEED;
 			velocity.x = speed * data.edge.x;
 
@@ -173,7 +173,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 		}
 	}
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = 0;
 		onGround = true;

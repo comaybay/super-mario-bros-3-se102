@@ -6,7 +6,7 @@
 
 struct CollisionData {
 	LPEntity who = nullptr;
-	Utils::Vector2<float> edge = Utils::Vector2<float>(0, 0);
+	Utils::Vector2<int> edge = { 0, 0 };
 	float value = 1.0f;
 	float delta = 0;
 

@@ -90,16 +90,16 @@ void Mushroom::HandleWallCollision(const CollisionData& data) {
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, group)) {
 		CollisionHandling::Slide(this, data);
 
-		if (data.edge.y == -1.0f)
+		if (data.edge.y == -1)
 			velocity.y = 0;
 
-		else if (data.edge.x != 0.0f)
+		else if (data.edge.x != 0)
 			velocity.x = MOVE_SPEED * data.edge.x;
 
 		return;
 	}
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, group) && data.edge.y == -1.0f) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, group) && data.edge.y == -1) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = 0;
 		return;

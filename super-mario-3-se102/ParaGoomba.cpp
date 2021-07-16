@@ -136,7 +136,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
-		if (data.edge.y == 1.0f) {
+		if (data.edge.y == 1) {
 			player->Bounce();
 			parentScene->AddEntity(new Entities::Goomba(colorType, position));
 			parentScene->AddEntity(PointUpFactory::Create(position));
@@ -151,7 +151,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 	}
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {
-		if (data.edge.y == -1.0f) {
+		if (data.edge.y == -1) {
 			CollisionHandling::Slide(this, data);
 			onGround = true;
 		}
@@ -161,13 +161,13 @@ void ParaGoomba::OnCollision(CollisionData data)
 
 	CollisionHandling::Slide(this, data);
 
-	if (data.edge.y != 0.0f)
+	if (data.edge.y != 0)
 		velocity.y = 0;
 
-	if (data.edge.y == -1.0f)
+	if (data.edge.y == -1)
 		onGround = true;
 
-	else if (data.edge.x != 0.0f)
+	else if (data.edge.x != 0)
 		velocity.x = Goomba::WALK_SPEED * data.edge.x;
 }
 

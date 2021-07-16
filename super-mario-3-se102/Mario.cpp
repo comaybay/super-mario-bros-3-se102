@@ -383,17 +383,17 @@ void Mario::OnCollision(CollisionData data)
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
-		if (data.edge.y != 0.0f)
+		if (data.edge.y != 0)
 			velocity.y = 0;
 
-		if (data.edge.x != 0.0f)
+		if (data.edge.x != 0)
 			velocity.x = 0;
 
-		if (data.edge.y == -1.0f)
+		if (data.edge.y == -1)
 			onGround = true;
 	}
 
-	else if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	else if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1) {
 		CollisionHandling::Slide(this, data);
 		onGround = true;
 		velocity.y = 0;

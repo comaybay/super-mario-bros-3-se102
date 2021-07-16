@@ -75,7 +75,7 @@ void NoteBlock::OnCollision(CollisionData data)
 		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 		ExposeContent(player);
 
-		if (data.edge.y == 1.0f) {
+		if (data.edge.y == 1) {
 			targetPlayer = player;
 			targetPlayer->SetOnNoteBlock(true);
 			state.SetState(&NoteBlock::StompedOn);

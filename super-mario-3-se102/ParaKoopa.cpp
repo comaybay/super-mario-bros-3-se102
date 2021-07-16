@@ -105,7 +105,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 
 	if (Contains(Group::ENEMIES, groups)) {
 		CollisionHandling::Slide(this, data);
-		if (data.edge.x == 0.0f)
+		if (data.edge.x == 0)
 			return;
 
 		velocity.x = Koopa::WALK_SPEED * data.edge.x;
@@ -120,7 +120,7 @@ void ParaKoopa::OnCollision(CollisionData data)
 void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 {
 	LPMario player = static_cast<LPMario>(data.who);
-	if (data.edge.y == 1.0f) {
+	if (data.edge.y == 1) {
 		player->Bounce();
 		parentScene->AddEntity(new Koopa(colorType, position));
 		parentScene->AddEntity(PointUpFactory::Create(position));
@@ -146,13 +146,13 @@ void ParaKoopa::HandleWallCollision(const CollisionData& data)
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
-		if (data.edge.y == -1.0f)
+		if (data.edge.y == -1)
 			velocity.y = -JUMP_SPEED;
 
-		else if (data.edge.y == 1.0f)
+		else if (data.edge.y == 1)
 			velocity.y = 0;
 
-		else if (data.edge.x != 0.0f) {
+		else if (data.edge.x != 0) {
 			velocity.x = Koopa::WALK_SPEED * data.edge.x;
 
 			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
@@ -161,7 +161,7 @@ void ParaKoopa::HandleWallCollision(const CollisionData& data)
 		}
 	}
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = -JUMP_SPEED;
 	}

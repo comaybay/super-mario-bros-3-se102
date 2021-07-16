@@ -75,13 +75,13 @@ void SuperNoteBlock::OnCollision(CollisionData data)
 	if (Contains(Group::PLAYERS, groups) && data.edge.y != 0) {
 		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 
-		if (data.edge.y == 1.0f && IsDetectable()) {
+		if (data.edge.y == 1 && IsDetectable()) {
 			targetPlayer = player;
 			state.SetState(&SuperNoteBlock::StompedOn);
 			return;
 		}
 
-		if (data.edge.y == -1.0f) {
+		if (data.edge.y == -1) {
 			SetDetectable(true);
 			SetAnimation("SuperNoteBlock");
 			state.SetState(&SuperNoteBlock::Hit);

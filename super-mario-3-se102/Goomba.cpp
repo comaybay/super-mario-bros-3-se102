@@ -72,7 +72,7 @@ void Goomba::OnCollision(CollisionData data)
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);
 
-		if (data.edge.y == 1.0f) {
+		if (data.edge.y == 1) {
 			player->Bounce();
 			state.SetState(&Goomba::StompedOn);
 			SetAnimation(colorCode + "GoombaDeath");
@@ -90,7 +90,7 @@ void Goomba::OnCollision(CollisionData data)
 		return;
 	}
 
-	if (Contains(Group::ENEMIES, groups) && data.edge.x != 0.0f) {
+	if (Contains(Group::ENEMIES, groups) && data.edge.x != 0) {
 		velocity.x = WALK_SPEED * data.edge.x;
 		return;
 	}
@@ -99,16 +99,16 @@ void Goomba::OnCollision(CollisionData data)
 		if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 			CollisionHandling::Slide(this, data);
 
-			if (data.edge.y != 0.0f)
+			if (data.edge.y != 0)
 				velocity.y = 0;
 
-			else if (data.edge.x != 0.0f)
+			else if (data.edge.x != 0)
 				velocity.x = WALK_SPEED * data.edge.x;
 
 			return;
 		}
 
-		if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1.0f) {
+		if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1) {
 			CollisionHandling::Slide(this, data);
 			return;
 		}

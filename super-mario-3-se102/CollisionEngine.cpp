@@ -306,16 +306,16 @@ CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 	if (entryTimeAxis.x > entryTimeAxis.y)
 	{
 		if (mBox.velocity.x < 0.0f)
-			data.edge.x = 1.0f;
+			data.edge.x = 1;
 		else
-			data.edge.x = -1.0f;
+			data.edge.x = -1;
 	}
 	else
 	{
 		if (mBox.velocity.y < 0.0f)
-			data.edge.y = 1.0f;
+			data.edge.y = 1;
 		else
-			data.edge.y = -1.0f;
+			data.edge.y = -1;
 	}
 
 	data.value = entryTime;

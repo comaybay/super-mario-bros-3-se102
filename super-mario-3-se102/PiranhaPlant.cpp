@@ -14,7 +14,7 @@ using namespace Utils;
 
 const float PiranhaPlant::WAIT_DURATION = 1;
 const float PiranhaPlant::MOVE_SPEED = 60;
-const float PiranhaPlant::SAFE_DISTANCE = Constants::TILE_SIZE * 2;
+const float PiranhaPlant::SAFE_DISTANCE = Constants::TILE_SIZE * 2.0f;
 
 PiranhaPlant::PiranhaPlant(const std::string& colorType, const Utils::Vector2<float>& position)
 	: Entity(

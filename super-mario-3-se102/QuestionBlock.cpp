@@ -43,7 +43,7 @@ void QuestionBlock::OnReady()
 void QuestionBlock::OnCollision(CollisionData data)
 {
 	const std::vector<std::string>& groups = data.who->GetEntityGroups();
-	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1.0f) {
+	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1) {
 
 		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
