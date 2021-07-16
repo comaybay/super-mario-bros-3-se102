@@ -168,7 +168,7 @@ HRESULT Game::Present() {
 void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float>& position) {
 
 	typedef Utils::Vector2<float>(*ToPositionRelativeToCameraHandler)(const Utils::Vector2<float>&);
-	static ToPositionRelativeToCameraHandler toPositionRelativeToCamera =
+	static const ToPositionRelativeToCameraHandler toPositionRelativeToCamera =
 		(gameSettings.pixelPerfectRendering) ? &Game::ToPixelPerfectPosition : &Game::ToPrecisePosition;
 
 	Vector2<float> adjustedPos = toPositionRelativeToCamera(position);

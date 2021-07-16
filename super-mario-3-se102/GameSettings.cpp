@@ -7,6 +7,8 @@ GameSettings::GameSettings(const Utils::Dimension<int>& gameDimension, int pixel
 {
 }
 
-GameSettings::GameSettings()
+GameSettings::GameSettings() :
+	dataDirectory(""), gameDimension({ 0, 0 }), pixelScale(0), maxFPS(0),
+	pixelPerfectRendering(false), initialScenePath("")
 {
 }

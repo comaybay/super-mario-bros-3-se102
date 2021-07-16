@@ -203,7 +203,6 @@
     <ClCompile Include="EntityConstants.cpp" />
     <ClCompile Include="FixedAnimation.cpp" />
     <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="GridType.cpp" />
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="HitboxManager.cpp" />
     <ClCompile Include="Koopa.cpp" />

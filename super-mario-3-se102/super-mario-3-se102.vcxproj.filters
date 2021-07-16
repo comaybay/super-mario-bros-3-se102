@@ -96,9 +96,6 @@
     <ClCompile Include="Hitbox.cpp">
       <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
-    <ClCompile Include="GridType.cpp">
-      <Filter>Source Files\SpatialPartitionGrid</Filter>
-    </ClCompile>
     <ClCompile Include="Group.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

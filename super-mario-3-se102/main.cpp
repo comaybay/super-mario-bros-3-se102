@@ -37,43 +37,37 @@ GameSettings ParseGameSettings()
 		if (line[0] != '[' || line != "[GAME SETTINGS]")
 			continue;
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> dimTokens = SplitByComma(line);
+		std::vector<std::string> dimTokens = SplitByComma(GetNextNonCommentLine(file));
 		if (dimTokens.size() != 2)
 			throw InvalidTokenSizeException(2);
 
 		Utils::Dimension<int> gameDimension(stoi(dimTokens[0]), stoi(dimTokens[1]));
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> scaleToken = SplitByComma(line);
+		std::vector<std::string> scaleToken = SplitByComma(GetNextNonCommentLine(file));
 		if (scaleToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
 		int pixelScale = stoi(scaleToken[0]);
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> fpsToken = SplitByComma(line);
+		std::vector<std::string> fpsToken = SplitByComma(GetNextNonCommentLine(file));
 		if (fpsToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
 		int maxFPS = stoi(fpsToken[0]);
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> pprToken = SplitByComma(line);
+		std::vector<std::string> pprToken = SplitByComma(GetNextNonCommentLine(file));
 		if (pprToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
 		bool pixelPerfectRendering = (pprToken[0] == "True") ? true : false;
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> dirToken = SplitByComma(line);
+		std::vector<std::string> dirToken = SplitByComma(GetNextNonCommentLine(file));
 		if (dirToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
 		const std::string& dataDirectory = dirToken[0];
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> initalSceneToken = SplitByComma(line);
+		std::vector<std::string> initalSceneToken = SplitByComma(GetNextNonCommentLine(file));
 		if (initalSceneToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
