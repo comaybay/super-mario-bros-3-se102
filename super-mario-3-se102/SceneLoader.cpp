@@ -284,7 +284,7 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 	case PlayerPowerLevel::SMALL:
 		return new Entities::MarioSmall(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
 	case PlayerPowerLevel::BIG:
-		return new Entities::MarioSuper(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
+		return new Entities::MarioSuper(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
 	default:
 		throw std::exception("ParseMario failed: not implemented player power level");
 	}

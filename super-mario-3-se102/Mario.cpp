@@ -139,7 +139,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 	if (stateHandler == &Mario::ReachedGoalRouletteWalkAway) {
 		time = 0;
 		SetAnimation(animationSet.walkRight, 1.75f);
-		velocity.x = WALK_SPEED_REACHED_GOAL_ROULETTE;
+		velocity = { WALK_SPEED_REACHED_GOAL_ROULETTE, 0 };
 		return;
 	}
 }
