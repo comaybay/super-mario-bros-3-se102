@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "Constants.h"
 #include "Game.h"
-#include "Entities.h"
 #include "EntityManager.h"
 #include "TextureManager.h"
 #include "Group.h"
@@ -36,18 +35,8 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 	this->prevScenePath = prevScenePath;
 }
 
-#include "ContentFactory.h"
-#include "QuestionBlock.h"
 void Scene::_Ready()
 {
-	//TODO: Remove test code
-	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 2100, 320 };
-		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
-		mario->SetPosition(pos);
-		AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
-	}
-
 	entityManager->ForEach([this](LPEntity entity) {
 		entity->_SetParentScene(this);
 		entity->OnReady();

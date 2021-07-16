@@ -3,7 +3,6 @@
 #include <vector>
 #include <unordered_set>
 
-#include "Utils.h"
 #include "EncodedWorld.h"
 #include "Camera.h"
 #include "Grid.h"

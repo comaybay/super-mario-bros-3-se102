@@ -8,6 +8,7 @@ GameSettings Game::gameSettings;
 bool Game::collisionEngineEnabled = true;
 
 HWND Game::windowHandle;
+D3DPRESENT_PARAMETERS Game::d3dpp;
 LPDIRECT3D9 Game::d3d;
 LPDIRECT3DDEVICE9 Game::d3ddv;
 LPDIRECTINPUT8 Game::di;
@@ -65,8 +66,6 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 }
 
 LPDIRECT3DDEVICE9 Game::CreateDirect3DDevice(LPDIRECT3D9 d3d, HWND windowHandle) {
-	D3DPRESENT_PARAMETERS d3dpp;
-
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
 
 	d3dpp.Windowed = TRUE;
@@ -161,6 +160,7 @@ HRESULT Game::ColorFill(const D3DCOLOR& color) {
 }
 
 HRESULT Game::Present() {
+	//device lost might occur when open task manager, i don't know how to fix it
 	return d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 

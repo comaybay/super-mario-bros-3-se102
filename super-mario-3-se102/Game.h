@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <windows.h>
 #include <d3dx9.h>
 #define DIRECTINPUT_VERSION 0x0800
@@ -71,6 +70,7 @@ private:
 	static bool collisionEngineEnabled;
 
 	static HWND windowHandle;
+	static D3DPRESENT_PARAMETERS d3dpp;
 	static LPDIRECT3D9 d3d;
 	static LPDIRECT3DDEVICE9 d3ddv;
 	static LPDIRECTINPUTDEVICE8 didv;
