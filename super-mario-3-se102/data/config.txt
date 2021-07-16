@@ -4,7 +4,7 @@
 60		#Max FPS (Lowest = 20, Highest = 120)
 True		#PixelPerfectRendering
 data/		#DataDirectory
-worlds/w_1_1_1.txt 	#Initial Scene (Relative to DataDirectory)
+world_maps/wm_1.txt #Initial Scene (Relative to DataDirectory)
 
 [TEXTURES]
 config/textures.txt
