@@ -18,7 +18,6 @@ public:
 	template <class T>
 	using MethodHandler = void(T::*)(Args...);
 
-
 	~Event();
 	template<class T>
 	void Subscribe(T* handlerThis, MethodHandler<T> handler);
@@ -47,7 +46,9 @@ private:
 	intptr_t GetAddressOf(T* handlerThis);
 
 	void OnEntityDestroy(LPEntity entity);
-	std::unordered_map<intptr_t, std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>*> eventHandlersById;
+
+	typedef std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>> EventHandlerSet;
+	std::unordered_map<intptr_t, EventHandlerSet*> eventHandlersById;
 
 	/// <summary>
 	/// <para>To avoid iterator invalidation while notifying handlers, all operations regarding handler removal 
@@ -98,7 +99,7 @@ inline void Event<Args...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 
 	intptr_t tId = GetAddressOf(handlerThis);
 	if (!Utils::Contains(tId, eventHandlersById))
-		eventHandlersById[tId] = new std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>();
+		eventHandlersById[tId] = new EventHandlerSet();
 
 	eventHandlersById[tId]->insert(eventHandler);
 
@@ -119,7 +120,7 @@ inline void Event<Args...>::Subscribe(FuncHandler handler)
 	EventHandler<Args...> eventHandler = EventHandler<Args...>(GetAddressOf(handler), handler);
 
 	if (!Utils::Contains(ORDINARY_FUNC_THIS_ID, eventHandlersById))
-		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new std::unordered_set<EventHandler<Args...>, EventHandlerHasher<Args...>>();
+		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new EventHandlerSet();
 
 	eventHandlersById[ORDINARY_FUNC_THIS_ID]->insert(eventHandler);
 }

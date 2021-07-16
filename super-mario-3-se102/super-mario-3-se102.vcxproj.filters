@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{52953911-e233-4dba-b940-1be1581a14aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SpatialGrid">
-      <UniqueIdentifier>{726e7870-acf4-4985-8bbb-67e25b8f8569}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Hitboxes">
       <UniqueIdentifier>{4294f70b-2e68-41a0-978f-f0b1b27fb403}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="Source Files\Movements">
       <UniqueIdentifier>{1f86aa10-4acb-4ced-baa1-5e17db5836c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpatialPartitionGrid">
+      <UniqueIdentifier>{726e7870-acf4-4985-8bbb-67e25b8f8569}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +72,6 @@
     <ClCompile Include="Animation.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationManager.cpp">
-      <Filter>Source Files\Animations</Filter>
-    </ClCompile>
     <ClCompile Include="EmptyAnimation.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
@@ -87,32 +84,20 @@
     <ClCompile Include="EncodedWorld.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="EventHandler.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="RectSequence.cpp">
-      <Filter>Source Files\Animations</Filter>
-    </ClCompile>
     <ClCompile Include="Grid.cpp">
-      <Filter>Source Files\SpatialGrid</Filter>
+      <Filter>Source Files\SpatialPartitionGrid</Filter>
     </ClCompile>
     <ClCompile Include="DynamicGrid.cpp">
-      <Filter>Source Files\SpatialGrid</Filter>
+      <Filter>Source Files\SpatialPartitionGrid</Filter>
     </ClCompile>
     <ClCompile Include="FixedAnimation.cpp">
       <Filter>Source Files\Animations</Filter>
-    </ClCompile>
-    <ClCompile Include="HitboxManager.cpp">
-      <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
     <ClCompile Include="Hitbox.cpp">
       <Filter>Source Files\Hitboxes</Filter>
     </ClCompile>
     <ClCompile Include="GridType.cpp">
-      <Filter>Source Files\SpatialGrid</Filter>
+      <Filter>Source Files\SpatialPartitionGrid</Filter>
     </ClCompile>
     <ClCompile Include="Group.cpp">
       <Filter>Source Files</Filter>
@@ -131,9 +116,6 @@
     </ClCompile>
     <ClCompile Include="EntityConstants.cpp">
       <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneLoader.cpp">
-      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Entities\World</Filter>
@@ -204,9 +186,6 @@
     <ClCompile Include="MarioAnimationSet.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="GoalRoulette.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -267,11 +246,23 @@
     <ClCompile Include="Color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ItemWoodBlock.cpp">
+    <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ItemWoodBlock.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
     <ClCompile Include="GhostBlock.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationManager.cpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="HitboxManager.cpp">
+      <Filter>Source Files\Hitboxes</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,19 +278,10 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RectSequence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnimationManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EventHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EmptyAnimation.h">
@@ -522,6 +504,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PointType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

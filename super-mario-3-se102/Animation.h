@@ -2,7 +2,6 @@
 #include <string>
 #include <d3dx9.h>
 #include <vector>
-#include "RectSequence.h"
 #include "Hitbox.h"
 #include "Utils.h"
 #include "SpriteBox.h"

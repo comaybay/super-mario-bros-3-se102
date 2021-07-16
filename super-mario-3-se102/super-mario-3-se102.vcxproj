@@ -224,14 +224,11 @@
     <ClCompile Include="EmptyAnimation.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
-    <ClCompile Include="Event.cpp" />
-    <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
-    <ClCompile Include="RectSequence.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -316,7 +313,6 @@
     <ClInclude Include="PointType.h" />
     <ClInclude Include="ProcessingUtils.h" />
     <ClInclude Include="QuestionBlock.h" />
-    <ClInclude Include="RectSequence.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Scene.h" />

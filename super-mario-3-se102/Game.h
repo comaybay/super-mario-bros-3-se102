@@ -11,7 +11,6 @@ class Game
 public:
 	static void Init(HWND hWnd, const GameSettings& gameSettings);
 
-
 	static void Run();
 	static const GameSettings& GetGameSettings();
 	static bool IsKeyDown(int KeyCode);

@@ -26,6 +26,11 @@ struct EventHandlerHasher {
 };
 
 template<class ...Args>
+inline std::size_t EventHandlerHasher<Args...>::operator()(const EventHandler<Args...>& eventHandler) const {
+	return eventHandler.GetId();
+}
+
+template<class ...Args>
 inline intptr_t EventHandler<Args...>::GetId() const {
 	return id;
 }
@@ -47,7 +52,3 @@ inline bool EventHandler<Args...>::operator==(const EventHandler<Args...>& other
 	return id == other.id;
 }
 
-template<class ...Args>
-inline std::size_t EventHandlerHasher<Args...>::operator()(const EventHandler<Args...>& eventHandler) const {
-	return eventHandler.GetId();
-}
