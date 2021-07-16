@@ -10,6 +10,9 @@
 class SceneLoader
 {
 public:
+	/// <summary>
+	/// Load scene by given scene path. Scene path is a relative path (relative to DataDirectory in config.txt)
+	/// </summary>
 	static LPScene LoadScene(std::string scenePath);
 private:
 	static std::string ParseWorldProperties(std::ifstream& file, std::string& sceneType, Utils::Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath);

@@ -2,7 +2,7 @@
 #include "Utils.h"
 
 EncodedWorld::EncodedWorld(int size, int width, char* background, char* foreground, const std::string& textureId)
-	: size(size - 1), //-1 null terminate char
+	: size(size),
 	width(width), background(background), foreground(foreground), textureId(textureId)
 {}
 

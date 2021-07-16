@@ -43,7 +43,6 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 		throw std::exception(msg.c_str());
 	}
 
-	std::string section;
 	std::string sceneType;
 	Dimension<int> worldDim;
 	D3DCOLOR bgColor{};
@@ -57,30 +56,34 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
 	LPScene scene = new Scene();
 	CollisionEngine::_AddCED(scene);
-	while (std::getline(file, section)) {
-		if (section[0] != '[')
-			continue;
 
-		//TODO: Replace geline with GetNextNonCommentLine
-		while (section[0] == '[') {
-			if (section == "[WORLD PROPERTIES]")
-				section = ParseWorldProperties(file, sceneType, worldDim, bgColor, prevScenePath);
-			else if (section == "[ENCODED WORLD]")
-				section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
-			else if (section == "[SPATIAL PARTITION GRID]") {
-				section = ParseSpatialPartitionGrid(file, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
-				entityManager = new EntityManager(scene, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
-			}
-			else if (section == "[WALL ENTITIES]")
-				section = ParseAndAddWallsEntities(file, entityManager, wallEntitySpatialGrid);
-			else if (section == "[WORLD ENTITIES]")
-				section = ParseAndAddOtherEntities(file, entityManager, staticEntitySpatialGrid, movableEntitySpatialGrid);
-			else if (section == "[WORLD MAP NODES]")
-				section = ParseWorldMapNodes(file, entityManager);
-			else
-				break;
+	std::string section = "";
+	while (section != "EOF")
+	{
+		if (section[0] != '[')
+			section = GetNextNonCommentLine(file);
+
+		if (section == "[WORLD PROPERTIES]")
+			section = ParseWorldProperties(file, sceneType, worldDim, bgColor, prevScenePath);
+
+		else if (section == "[ENCODED WORLD]")
+			section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
+
+		else if (section == "[SPATIAL PARTITION GRID]") {
+			section = ParseSpatialPartitionGrid(file, wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
+			entityManager = new EntityManager(wallEntitySpatialGrid, staticEntitySpatialGrid, movableEntitySpatialGrid);
 		}
+
+		else if (section == "[WALL ENTITIES]")
+			section = ParseAndAddWallsEntities(file, entityManager, wallEntitySpatialGrid);
+
+		else if (section == "[WORLD ENTITIES]")
+			section = ParseAndAddOtherEntities(file, entityManager, staticEntitySpatialGrid, movableEntitySpatialGrid);
+
+		else if (section == "[WORLD MAP NODES]")
+			section = ParseWorldMapNodes(file, entityManager);
 	}
+
 	file.close();
 	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, prevScenePath);
 	scene->_Ready();
@@ -89,73 +92,59 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 
 std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
-	std::string line;
-	while (std::getline(file, line))
-	{
-		if (line[0] == '#' || line == "")
-			continue;
+	std::string line = GetNextNonCommentLine(file);
+	std::vector<std::string> sceneTypeToken = SplitByComma(line);
+	if (sceneTypeToken.size() != 1)
+		throw InvalidTokenSizeException(1);
 
-		std::vector<std::string> sceneTypeToken = SplitByComma(line);
-		if (sceneTypeToken.size() != 1)
-			throw InvalidTokenSizeException(1);
+	line = GetNextNonCommentLine(file);
+	std::vector<std::string> dimTokens = SplitByComma(line);
+	if (dimTokens.size() != 2)
+		throw InvalidTokenSizeException(2);
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> dimTokens = SplitByComma(line);
-		if (dimTokens.size() != 2)
-			throw InvalidTokenSizeException(2);
+	line = GetNextNonCommentLine(file);
+	std::vector<std::string> colorTokens = SplitByComma(line);
+	if (colorTokens.size() != 3)
+		throw InvalidTokenSizeException(3);
 
-		std::getline(file, line);
-		std::vector<std::string> colorTokens = SplitByComma(line);
-		if (colorTokens.size() != 3)
-			throw InvalidTokenSizeException(3);
+	line = GetNextNonCommentLine(file);
+	std::vector<std::string> pathToken = SplitByComma(line);
+	if (sceneTypeToken.size() != 1)
+		throw InvalidTokenSizeException(1);
 
-		line = GetNextNonCommentLine(file);
-		std::vector<std::string> pathToken = SplitByComma(line);
-		if (sceneTypeToken.size() != 1)
-			throw InvalidTokenSizeException(1);
+	sceneType = sceneTypeToken[0];
+	dim = Dimension<int>(stoi(dimTokens[0]), stoi(dimTokens[1]));
+	bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
+	prevScenePath = pathToken[0];
 
-		sceneType = sceneTypeToken[0];
-		dim = Dimension<int>(stoi(dimTokens[0]), stoi(dimTokens[1]));
-		bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
-		prevScenePath = pathToken[0];
-
-		return line;
-	}
-	return line;
+	return GetNextNonCommentLine(file);
 }
 
 std::string SceneLoader::ParseEncodedWorld(std::ifstream& file, int world_width, const std::string& sceneType, LPEncodedWorld& encodedWorld)
 {
-	std::string line;
-	while (std::getline(file, line))
-	{
-		if (line[0] == '#' || line == "")
-			continue;
+	std::string line = GetNextNonCommentLine(file);
 
-		int size = line.size() + 1; //+1 because strcpy_s require room for null terminate char
-		char* background = new char[size];
-		char* foreground = new char[size];
+	int size = line.size();
+	//+1 because strcpy_s require room for null terminate char
+	char* background = new char[size + 1];
+	char* foreground = new char[size + 1];
 
-		strcpy_s(background, sizeof(char) * size, line.c_str());
-		std::getline(file, line);
-		strcpy_s(foreground, sizeof(char) * size, line.c_str());
+	strcpy_s(background, sizeof(char) * size + 1, line.c_str());
 
-		std::string textureId = (sceneType == "WorldMap") ? TextureId::WORLD_MAP_TILES : TextureId::WORLD_TILES;
+	line = GetNextNonCommentLine(file);
+	strcpy_s(foreground, sizeof(char) * size + 1, line.c_str());
 
-		encodedWorld = new EncodedWorld(size, world_width * 3, background, foreground, textureId);
-		std::getline(file, line);
+	std::string textureId = (sceneType == "WorldMap") ? TextureId::WORLD_MAP_TILES : TextureId::WORLD_TILES;
 
-		return line;
-	}
-	throw std::exception("Error parsing encoded world");
+	encodedWorld = new EncodedWorld(size, world_width * 3, background, foreground, textureId);
+
+	return GetNextNonCommentLine(file);
 }
 
 std::string SceneLoader::ParseSpatialPartitionGrid
 (std::ifstream& file, LPGrid& wallEntitySpatialGrid, LPGrid& staticEntitySpatialGrid, LPDynamicGrid& movableEntitySpatialGrid)
 {
-	std::string line;
-
-	line = GetNextNonCommentLine(file);
+	std::string line = GetNextNonCommentLine(file);
 	std::vector<std::string> cellDimTokens = SplitByComma(line);
 	if (cellDimTokens.size() != 2)
 		throw InvalidTokenSizeException(2);
@@ -178,21 +167,17 @@ std::string SceneLoader::ParseSpatialPartitionGrid
 
 std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityManager entityManager, LPGrid wallEntitySpatialGrid)
 {
-	std::string line;
-	while (std::getline(file, line))
+	while (true)
 	{
-		if (line[0] == '[' || line == "")
+		std::string line = GetNextNonCommentLine(file);
+		if (line[0] == '[' || line == "EOF")
 			return line;
-
-		if (line[0] == '#' || line == "")
-			continue;
 
 		std::vector<std::string> entityTokens = SplitByComma(line);
 		if (entityTokens.size() != 5)
 			throw InvalidTokenSizeException(5);
 
-		std::getline(file, line);
-		std::vector<std::string> cellTokens = SplitByComma(line);
+		std::vector<std::string> cellTokens = SplitByComma(GetNextNonCommentLine(file));
 		if (cellTokens.size() != 4)
 			throw InvalidTokenSizeException(4);
 
@@ -213,19 +198,15 @@ std::string SceneLoader::ParseAndAddWallsEntities(std::ifstream& file, LPEntityM
 
 		entityManager->_AddToWallSPGrid(entity, CellRange(cellIndex, cellSpan));
 	}
-	return line;
 }
 
 std::string SceneLoader::ParseAndAddOtherEntities
 (std::ifstream& file, LPEntityManager entityManager, LPGrid staticEntitySpatialGrid, LPDynamicGrid movableEntitySpatialGrid)
 {
-	std::string line;
-	while (std::getline(file, line)) {
-		if (line[0] == '[' || line == "")
+	while (true) {
+		std::string line = GetNextNonCommentLine(file);
+		if (line[0] == '[' || line == "EOF")
 			return line;
-
-		if (line[0] == '#' || line == "")
-			continue;
 
 		std::vector<std::string> entityTokens = SplitByComma(line);
 
@@ -244,14 +225,11 @@ std::string SceneLoader::ParseAndAddOtherEntities
 			continue;
 		}
 
-		std::getline(file, line);
-		std::vector<std::string> cellTokens = SplitByComma(line);
+		std::vector<std::string> cellTokens = SplitByComma(GetNextNonCommentLine(file));
 		Vector2<int> cellIndex(stoi(cellTokens[0]), stoi(cellTokens[1]));
 
 		entityManager->_AddToNonWallSPGrid(entity, cellIndex);
 	}
-
-	return line;
 }
 
 std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager entityManager)
