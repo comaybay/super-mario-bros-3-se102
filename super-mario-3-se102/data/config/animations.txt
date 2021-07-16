@@ -271,6 +271,15 @@ SuperNoteBlock, Fixed, 0.14, Auto
 WAnims
 69, 18, 16, 16, 1, 3 
 
+##Item Wood Block##====================================
+ItemWoodBlock, Normal, -1, Manual
+WAnims
+86, 35, 101, 50
+
+EmptyWoodBlock, Normal, -1, Manual
+WAnims
+103, 35, 118, 50
+
 ##Coin##====================================
 Coin, Fixed, 0.125, Auto
 WAnims

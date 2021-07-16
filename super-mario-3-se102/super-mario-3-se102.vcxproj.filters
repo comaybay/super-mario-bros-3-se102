@@ -267,6 +267,12 @@
     <ClCompile Include="Color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ItemWoodBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -504,6 +510,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FXSmoke.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemWoodBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

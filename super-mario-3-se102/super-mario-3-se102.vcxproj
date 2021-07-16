@@ -176,6 +176,8 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="FXSmoke.cpp" />
+    <ClCompile Include="GhostBlock.cpp" />
+    <ClCompile Include="ItemWoodBlock.cpp" />
     <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -251,7 +253,9 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="FXSmoke.h" />
+    <ClInclude Include="GhostBlock.h" />
     <ClInclude Include="IKnockedOverable.h" />
+    <ClInclude Include="ItemWoodBlock.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="MovementBlockHit.h" />
     <ClInclude Include="CoinUp.h" />

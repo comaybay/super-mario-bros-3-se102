@@ -37,6 +37,7 @@ private:
 	static LPEntity ParseCoin(const std::vector<std::string>& tokens);
 	static LPEntity ParseQuestionBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseBrick(const std::vector<std::string>& tokens);
+	static LPEntity ParseItemWoodBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseNoteBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseSuperNoteBlock(const std::vector<std::string>& tokens);
 	static LPEntity ParseGoalRoulette(const std::vector<std::string>& tokens);

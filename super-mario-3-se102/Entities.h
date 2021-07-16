@@ -11,6 +11,7 @@
 #include "PiranhaPlant.h"
 #include "QuestionBlock.h"
 #include "Brick.h"
+#include "ItemWoodBlock.h"
 #include "NoteBlock.h"
 #include "SuperNoteBlock.h"
 #include "CollisionWallType1.h"
