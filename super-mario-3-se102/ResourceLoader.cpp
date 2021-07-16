@@ -9,26 +9,34 @@
 using namespace ProcessingUtils;
 using namespace Utils;
 
-void ResourceLoader::Load(const std::string& dataDirectory)
+ResourceLoader::ResourceLoader(const std::string& dataDirectory) :
+	dataDirectory(dataDirectory)
+{
+}
+
+void ResourceLoader::Load()
 {
 	std::string configPath = JoinPath(dataDirectory, "/config.txt");
 	std::ifstream file(configPath);
-	//go to section
-	std::string section;
-	while (std::getline(file, section)) {
+
+	std::string section = "";
+	while (section != "EOF") {
+		section = GetNextNonCommentLine(file);
+
+		//skip game settings section and unrelated texts
 		if (section[0] != '[' || section == "[GAME SETTINGS]")
 			continue;
 
-		std::string path;
-		std::getline(file, path);
-		path = JoinPath(dataDirectory, path);
-
+		std::string path = JoinPath(dataDirectory, GetNextNonCommentLine(file));
 		if (section == "[TEXTURES]")
-			LoadTextures(path, dataDirectory);
+			LoadTextures(path);
+
 		else if (section == "[ANIMATIONS]")
 			LoadAnimations(path);
+
 		else if (section == "[TILES]")
-			LoadTilesTextures(path, dataDirectory);
+			LoadTilesTextures(path);
+
 		else if (section == "[HITBOXES]")
 			LoadHitboxes(path);
 	}
@@ -36,26 +44,25 @@ void ResourceLoader::Load(const std::string& dataDirectory)
 	file.close();
 }
 
-void ResourceLoader::LoadTextures(const std::string& configPath, const std::string& dataDirectory)
+void ResourceLoader::LoadTextures(const std::string& configPath)
 {
 	std::ifstream file(configPath);
 
-	std::string line;
-	while (std::getline(file, line))
+	while (true)
 	{
-		if (line[0] == '#' || line == "")
-			continue;
+		std::string line = GetNextNonCommentLine(file);
+		if (line == "EOF")
+			break;
 
 		std::vector<std::string> paramTokens = SplitByComma(line);
 		if (paramTokens.size() != 2)
 			throw InvalidTokenSizeException(2);
 
-		std::getline(file, line);
-		std::vector<std::string> colorKeyTokens = SplitByComma(line);
+		std::vector<std::string> colorKeyTokens = SplitByComma(GetNextNonCommentLine(file));
 		if (colorKeyTokens.size() != 3)
 			throw InvalidTokenSizeException(3);
 
-		std::string id = paramTokens[0];
+		std::string& id = paramTokens[0];
 		std::string path = JoinPath(dataDirectory, paramTokens[1]);
 		D3DCOLOR colorKey = D3DCOLOR_XRGB(stoi(colorKeyTokens[0]), stoi(colorKeyTokens[1]), stoi(colorKeyTokens[2]));
 
@@ -69,89 +76,34 @@ void ResourceLoader::LoadAnimations(const std::string& configPath)
 {
 	std::ifstream file(configPath);
 
-	std::string line;
-	while (std::getline(file, line))
+	while (true)
 	{
-		if (line[0] == '#' || line == "")
-			continue;
+		std::string line = GetNextNonCommentLine(file);
+		if (line == "EOF")
+			break;
 
 		std::vector<std::string> paramTokens = SplitByComma(line);
 		if (paramTokens.size() != 4)
 			throw InvalidTokenSizeException(4);
 
-		std::string animationId = paramTokens[0];
-		std::string animationType = paramTokens[1];
+		std::string& animationId = paramTokens[0];
+		std::string& animationType = paramTokens[1];
 		float frameDuration = std::stof(paramTokens[2]);
-		std::string spriteSequenceHandlingMode = paramTokens[3];
+		std::string& spriteSequenceHandlingMode = paramTokens[3];
 
-		std::getline(file, line);
-		std::vector<std::string> idToken = SplitByComma(line);
+		std::vector<std::string> idToken = SplitByComma(GetNextNonCommentLine(file));
 		if (idToken.size() != 1)
 			throw InvalidTokenSizeException(1);
 
-		std::string textureId = idToken[0];
+		std::string& textureId = idToken[0];
 
 		std::vector<SpriteBox> spriteBoxSequence;
-		if (spriteSequenceHandlingMode == "Auto") {
-			std::getline(file, line);
-			std::vector<std::string> rectSequenceTokens = SplitByComma(line);
+		if (spriteSequenceHandlingMode == "Auto")
+			spriteBoxSequence = CreateSpriteBoxSequenceAuto(file);
 
-			if (rectSequenceTokens.size() < 6)
-				throw InvalidTokenSizeException(6);
+		else if (spriteSequenceHandlingMode == "Manual")
+			spriteBoxSequence = CreateSpriteBoxSequenceManual(file);
 
-			if (rectSequenceTokens.size() > 8)
-				throw InvalidTokenSizeException(8);
-
-			Vector2<int> startPosition(
-				std::stoi(rectSequenceTokens[0]),
-				std::stoi(rectSequenceTokens[1])
-			);
-
-			Dimension<int> dim(
-				std::stoi(rectSequenceTokens[2]),
-				std::stoi(rectSequenceTokens[3])
-			);
-
-			int space = std::stoi(rectSequenceTokens[4]);
-			int frameCount = std::stoi(rectSequenceTokens[5]);
-
-			Vector2<int> offset(0, 0);
-			if (rectSequenceTokens.size() == 8) {
-				offset.x = std::stoi(rectSequenceTokens[6]);
-				offset.y = std::stoi(rectSequenceTokens[7]);
-			}
-
-			spriteBoxSequence = CreateSpriteBoxSequence(startPosition, dim, space, frameCount, offset);
-		}
-		else if (spriteSequenceHandlingMode == "Manual") {
-			while (getline(file, line)) {
-				if (line == "")
-					break;
-
-				std::vector<std::string> rectSequenceTokens = SplitByComma(line);
-				if (rectSequenceTokens.size() < 4)
-					throw InvalidTokenSizeException(4);
-
-				if (rectSequenceTokens.size() > 6)
-					throw InvalidTokenSizeException(6);
-
-				RECT rect{
-					std::stoi(rectSequenceTokens[0]),
-					std::stoi(rectSequenceTokens[1]),
-					std::stoi(rectSequenceTokens[2]) + 1,
-					std::stoi(rectSequenceTokens[3]) + 1,
-				};
-
-				Vector2<int> offset(0, 0);
-				if (rectSequenceTokens.size() == 6) {
-					offset.x = std::stoi(rectSequenceTokens[4]);
-					offset.y = std::stoi(rectSequenceTokens[5]);
-				}
-
-				spriteBoxSequence.emplace_back(rect, offset);
-			}
-
-		}
 		else throw std::exception("Invalid sprite box handling mode: expected Auto or Manual");
 
 		LPDIRECT3DTEXTURE9 texture = TextureManager::Get(textureId);
@@ -159,18 +111,84 @@ void ResourceLoader::LoadAnimations(const std::string& configPath)
 		AnimationType animType;
 		if (animationType == "Normal")
 			animType = AnimationType::NORMAL;
+
 		else if (animationType == "Fixed")
 			animType = AnimationType::FIXED;
+
 		else
 			throw std::exception("Invalid AnimationType: expected Normal or Fixed");
 
-		AnimationProps animProps;
-
-		animProps = AnimationProps(animType, animationId, frameDuration, texture, spriteBoxSequence);
-		AnimationManager::Add(animationId, animProps);
+		AnimationManager::Add(animationId, { animType, animationId, frameDuration, texture, spriteBoxSequence });
 	}
 
 	file.close();
+}
+
+std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequenceManual(std::ifstream& file)
+{
+	std::string line;
+	std::vector<SpriteBox> sequence;
+
+	//use getline instead of GetNextNonCommentLine to detect newline
+	while (getline(file, line)) {
+		if (line == "")
+			break;
+
+		std::vector<std::string> rectSequenceTokens = SplitByComma(line);
+		if (rectSequenceTokens.size() < 4)
+			throw InvalidTokenSizeException(4);
+
+		if (rectSequenceTokens.size() > 6)
+			throw InvalidTokenSizeException(6);
+
+		RECT rect{
+			std::stoi(rectSequenceTokens[0]),
+			std::stoi(rectSequenceTokens[1]),
+			std::stoi(rectSequenceTokens[2]) + 1,
+			std::stoi(rectSequenceTokens[3]) + 1,
+		};
+
+		Vector2<int> offset(0, 0);
+		if (rectSequenceTokens.size() == 6) {
+			offset.x = std::stoi(rectSequenceTokens[4]);
+			offset.y = std::stoi(rectSequenceTokens[5]);
+		}
+
+		sequence.emplace_back(rect, offset);
+	}
+	return sequence;
+}
+
+std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequenceAuto(std::ifstream& file)
+{
+	std::vector<std::string> rectSequenceTokens = SplitByComma(GetNextNonCommentLine(file));
+
+	if (rectSequenceTokens.size() < 6)
+		throw InvalidTokenSizeException(6);
+
+	if (rectSequenceTokens.size() > 8)
+		throw InvalidTokenSizeException(8);
+
+	Vector2<int> startPosition(
+		std::stoi(rectSequenceTokens[0]),
+		std::stoi(rectSequenceTokens[1])
+	);
+
+	Dimension<int> dim(
+		std::stoi(rectSequenceTokens[2]),
+		std::stoi(rectSequenceTokens[3])
+	);
+
+	int space = std::stoi(rectSequenceTokens[4]);
+	int frameCount = std::stoi(rectSequenceTokens[5]);
+
+	Vector2<int> offset(0, 0);
+	if (rectSequenceTokens.size() == 8) {
+		offset.x = std::stoi(rectSequenceTokens[6]);
+		offset.y = std::stoi(rectSequenceTokens[7]);
+	}
+
+	return CreateSpriteBoxSequence(startPosition, dim, space, frameCount, offset);
 }
 
 std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
@@ -183,13 +201,12 @@ std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
 			startPosition.y
 		);
 
-		sequence.emplace_back
-		(
+		sequence.emplace_back(
 			RECT{
-				(int)position.x,
-				(int)position.y,
-				(int)(position.x + dimension.width),
-				(int)(position.y + dimension.height),
+				position.x,
+				position.y,
+				position.x + dimension.width,
+				position.y + dimension.height,
 			},
 			offset
 			);
@@ -197,24 +214,23 @@ std::vector<SpriteBox> ResourceLoader::CreateSpriteBoxSequence(
 	return sequence;
 }
 
-void ResourceLoader::LoadTilesTextures(const std::string& configPath, const std::string& dataDirectory)
+void ResourceLoader::LoadTilesTextures(const std::string& configPath)
 {
 	std::ifstream file(configPath);
 
-	LoadTilesTexture(file, dataDirectory, TextureId::WORLD_TILES);
-	LoadTilesTexture(file, dataDirectory, TextureId::WORLD_MAP_TILES);
+	LoadTilesTexture(file, TextureId::WORLD_TILES);
+	LoadTilesTexture(file, TextureId::WORLD_MAP_TILES);
 
 	file.close();
 }
-void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& dataDirectory, const std::string& textureId)
+
+void ResourceLoader::LoadTilesTexture(std::ifstream& file, const std::string& textureId)
 {
-	std::string line = GetNextNonCommentLine(file);
-	std::vector<std::string> paramTokens = SplitByComma(line);
+	std::vector<std::string> paramTokens = SplitByComma(GetNextNonCommentLine(file));
 	if (paramTokens.size() != 1)
 		throw InvalidTokenSizeException(1);
 
-	line = GetNextNonCommentLine(file);
-	std::vector<std::string> colorKeyTokens = SplitByComma(line);
+	std::vector<std::string> colorKeyTokens = SplitByComma(GetNextNonCommentLine(file));
 	if (colorKeyTokens.size() != 3)
 		throw InvalidTokenSizeException(3);
 
@@ -232,7 +248,7 @@ void ResourceLoader::LoadHitboxes(const std::string& configPath)
 	while (true) {
 		line = GetNextNonCommentLine(file);
 		if (line == "EOF")
-			return;
+			break;
 
 		std::vector<std::string> tokens = SplitByComma(line);
 		if (tokens.size() != 5)
@@ -245,6 +261,8 @@ void ResourceLoader::LoadHitboxes(const std::string& configPath)
 
 		HitboxManager::Add(tokens[0], hitbox);
 	}
+
+	file.close();
 }
 
 

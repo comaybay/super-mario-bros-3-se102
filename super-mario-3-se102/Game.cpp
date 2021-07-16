@@ -58,7 +58,7 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	};
 	d3dxSprite->SetTransform(&scaleMatrix);
 
-	ResourceLoader::Load(gameSettings.dataDirectory);
+	ResourceLoader(gameSettings.dataDirectory).Load();
 
 	activeScene = SceneLoader::LoadScene(gameSettings.initialScenePath);
 	CollisionEngine::_SetActiveCED(activeScene);
