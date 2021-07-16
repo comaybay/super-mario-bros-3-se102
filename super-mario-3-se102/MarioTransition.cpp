@@ -142,7 +142,8 @@ void MarioTransition::CreateMario()
 
 	using PPL = ::PlayerPowerLevel;
 	LPMario newPlayer = nullptr;
-	//TODO: complete implementation
+
+	//TODO: complete the implementation
 	switch (resultPowerLevel) {
 	case PPL::SMALL:
 		newPlayer = new MarioSmall({ position.x, position.y + Constants::TILE_SIZE }, player->GetFacingDirection());

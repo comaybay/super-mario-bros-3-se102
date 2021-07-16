@@ -10,7 +10,6 @@
 using namespace Entities;
 using namespace Utils;
 
-//TODO: Complete Implementation
 QuestionBlock::QuestionBlock(const Vector2<float>& position)
 	: Entity::Entity(
 		position,

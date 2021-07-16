@@ -107,7 +107,6 @@ void Mushroom::HandleWallCollision(const CollisionData& data) {
 }
 
 void Mushroom::HandlePlayerCollision(const CollisionData& data) {
-	//TODO: complete implementation
 	parentScene->QueueFree(this);
 	Vector2<float> pointPos = { position.x, position.y - Constants::TILE_SIZE };
 	parentScene->AddEntity(new PointUp(pointPos, PointUp::Type::ONE_THOUSAND_POINTS));

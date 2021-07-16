@@ -196,7 +196,7 @@ void Koopa::Update(float delta)
 	onGround = false;
 }
 
-bool Entities::Koopa::IsSliding()
+bool Koopa::IsSliding()
 {
 	return state.GetState() == &Koopa::ShellSlide;
 }
@@ -205,13 +205,21 @@ void Koopa::SwitchState(EntityState<Koopa>::StateHandler handler)
 {
 	state.SetState(handler);
 
+	if (handler == &Koopa::KnockedOver) {
+		SetAnimation(colorCode + "KoopaKO");
+		return;
+	}
+
 	if (handler == &Koopa::ShellIdle) {
 		SetAnimation(colorCode + "KoopaSI");
 		SetHitbox("HitboxKoopaShell");
+		return;
 	}
 
-	else if (handler == &Koopa::ShellSlide)
+	if (handler == &Koopa::ShellSlide) {
 		SetAnimation(colorCode + "KoopaSM");
+		return;
+	}
 }
 
 void Koopa::MoveAround(float delta)
@@ -254,10 +262,9 @@ void Koopa::GetKnockedOver(HDirection direction)
 {
 	SetDetectable(false);
 	CollisionEngine::Unsubscribe(this, &Koopa::OnCollision);
-	SetAnimation(colorCode + "KoopaKO");
 
 	knockedOverMovement = new MovementKnockedOver(this, direction);
-	state.SetState(&Koopa::KnockedOver);
+	SwitchState(&Koopa::KnockedOver);
 
 	parentScene->AddEntity(new FXBoom(position));
 	parentScene->AddEntity(PointUpFactory::Create(position));

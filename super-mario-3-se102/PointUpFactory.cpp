@@ -27,14 +27,20 @@ const std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
 //TODO: create a better implementation
 PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 {
+	Vector2<float> pos = { callerPosition.x, callerPosition.y - Constants::TILE_SIZE };
+
 	if (player == nullptr) {
-		player = static_cast<LPMario>(Game::GetActiveScene()->GetEntityOfGroup(Group::PLAYERS));
+		LPScene scene = Game::GetActiveScene();
+
+		if (scene->IsEntityGroupEmpty(Group::PLAYERS))
+			return new PointUp(pos, PointUp::Type::ONE_HUNDRED_POINTS);
+
+		player = static_cast<LPMario>(scene->GetEntityOfGroup(Group::PLAYERS));
 		player->GetRestartPointUpEvent().Subscribe(&OnRestartPointUp);
 		player->GetDestroyEvent().Subscribe(&OnEntityDestroy);
 	}
 
 	index = min(index + 1, (int)pointUpTypes.size() - 1);
-	Vector2<float> pos(callerPosition.x, callerPosition.y - Constants::TILE_SIZE);
 	return new PointUp(pos, pointUpTypes[index]);
 }
 
