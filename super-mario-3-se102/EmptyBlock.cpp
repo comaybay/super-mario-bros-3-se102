@@ -3,6 +3,11 @@
 #include "Group.h"
 using namespace Entities;
 
+EmptyBlock::~EmptyBlock()
+{
+	delete blockHitMovement;
+}
+
 EmptyBlock::EmptyBlock(const Utils::Vector2<float>& position)
 	: Entity::Entity(
 		position,

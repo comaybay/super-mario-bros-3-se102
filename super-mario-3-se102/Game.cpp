@@ -2,6 +2,7 @@
 #include "CollisionEngine.h"
 #include "ResourceLoader.h"
 #include "SceneLoader.h"
+#include "TextureManager.h"
 using namespace Utils;
 
 GameSettings Game::gameSettings;
@@ -318,9 +319,13 @@ bool Game::IsKeyPressed(int keyCode) {
 
 void Game::Release()
 {
-	d3dxSprite->Release();
-	backBuffer->Release();
-	d3ddv->Release();
-	d3d->Release();
+	TextureManager::Release();
+	if (d3dxSprite) d3dxSprite->Release();
+	if (backBuffer) backBuffer->Release();
+	if (d3ddv) d3ddv->Release();
+	if (d3d) d3d->Release();
+	if (didv) didv->Release();
+	if (di) di->Release();
+
 }
 

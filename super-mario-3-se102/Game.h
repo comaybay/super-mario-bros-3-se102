@@ -12,10 +12,10 @@ public:
 	static void Init(HWND hWnd, const GameSettings& gameSettings);
 
 	static void Run();
+	static void Release();
 	static const GameSettings& GetGameSettings();
 	static bool IsKeyDown(int KeyCode);
 	static bool IsKeyPressed(int keyCode);
-	static void Release();
 	static void EnableCollisionEngine(bool state);
 	static LPDIRECT3DDEVICE9 GetDirect3DDevice();
 	static void SwitchScene(LPScene scene);

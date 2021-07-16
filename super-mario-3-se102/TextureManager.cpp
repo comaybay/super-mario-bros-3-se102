@@ -9,6 +9,15 @@ std::string TextureId::WORLD_MAP_TILES = "__TEX_WM_TILES__";
 std::unordered_map<std::string, LPDIRECT3DTEXTURE9> TextureManager::textureById;
 std::unordered_map<std::string, Utils::Dimension<int>> TextureManager::textureImgDimById;
 
+void TextureManager::Release()
+{
+	for (auto& pair : textureById)
+		if (pair.second) pair.second->Release();
+
+	textureById.clear();
+	textureImgDimById.clear();
+}
+
 void TextureManager::Load(const std::string& id, const std::string& path, const D3DCOLOR& color_key)
 {
 	D3DXIMAGE_INFO image_info;

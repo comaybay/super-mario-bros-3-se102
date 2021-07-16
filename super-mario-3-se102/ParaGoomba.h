@@ -34,7 +34,6 @@ namespace Entities {
 		float time;
 		Entities::Wing wingLeft;
 		Entities::Wing wingRight;
-		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<ParaGoomba> state;
 		static const float PREPARE_JUMP_SPEED;
 		static const float JUMP_SPEED;

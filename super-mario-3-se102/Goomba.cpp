@@ -14,6 +14,12 @@ using namespace Utils;
 
 const float Goomba::WALK_SPEED = 30.0f;
 
+Goomba::~Goomba()
+{
+	delete knockedOverMovement;
+	knockedOverMovement = nullptr;
+}
+
 Goomba::Goomba(std::string colorType, Vector2<float> position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "Goombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorCode(Color::ToColorCode(colorType)),

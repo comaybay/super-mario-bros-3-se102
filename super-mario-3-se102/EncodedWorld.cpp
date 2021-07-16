@@ -10,6 +10,9 @@ EncodedWorld::~EncodedWorld()
 {
 	delete foreground;
 	delete background;
+
+	foreground = nullptr;
+	background = nullptr;
 }
 
 const std::string& EncodedWorld::GetTextureId()

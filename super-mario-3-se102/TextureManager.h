@@ -7,6 +7,7 @@
 class TextureManager
 {
 public:
+	static void Release();
 	static void Load(const std::string&, const std::string& path, const D3DCOLOR& colorKey);
 	static LPDIRECT3DTEXTURE9 Get(const std::string& id);
 	static const Utils::Dimension<int>& GetDimensionOf(const std::string& id);

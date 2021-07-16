@@ -18,6 +18,11 @@ const float Koopa::WALK_SPEED = 29;
 const float Koopa::SHELL_SLIDE_SPEED = 200;
 const float Koopa::FRICTION = 2600;
 
+Koopa::~Koopa()
+{
+	delete knockedOverMovement;
+}
+
 Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxKoopa", { "Koopas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
@@ -264,6 +269,7 @@ void Koopa::GetKnockedOver(HDirection direction)
 	SetDetectable(false);
 	CollisionEngine::Unsubscribe(this, &Koopa::OnCollision);
 
+	delete knockedOverMovement;
 	knockedOverMovement = new MovementKnockedOver(this, direction);
 	SwitchState(&Koopa::KnockedOver);
 

@@ -20,10 +20,7 @@ inline void EventHandler<ARGS...>::Handle(ARGS... args) const {
 }
 
 template<class ...ARGS>
-inline EventHandler<ARGS...>::EventHandler() {}
-
-template<class ...ARGS>
-inline EventHandler<ARGS...>::EventHandler(intptr_t id, std::function<void(ARGS...)> handler)
+inline EventHandler<ARGS...>::EventHandler(intptr_t id, const std::function<void(ARGS...)>& handler)
 	: handler(handler), id(id)
 {}
 

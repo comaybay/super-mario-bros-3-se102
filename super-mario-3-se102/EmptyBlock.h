@@ -5,6 +5,7 @@
 namespace Entities {
 	class EmptyBlock : public Entity {
 	public:
+		~EmptyBlock();
 		EmptyBlock(const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 

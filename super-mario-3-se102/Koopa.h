@@ -10,6 +10,7 @@ namespace Entities {
 	class Koopa : public Entity, public IKnockedOverable
 	{
 	public:
+		~Koopa();
 		Koopa(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 		void GetKnockedOver(HDirection direction) override;

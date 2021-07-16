@@ -10,6 +10,7 @@ namespace Entities {
 	class Goomba : public Entity, public IKnockedOverable
 	{
 	public:
+		~Goomba();
 		Goomba(std::string colorType, Utils::Vector2<float> position);
 		void Update(float delta) override;
 		void GetKnockedOver(HDirection direction) override;
@@ -24,7 +25,6 @@ namespace Entities {
 
 		std::string colorCode;
 		float time;
-		EventHandler<CollisionData> onCollisionHandler;
 		EntityState<Goomba> state;
 		LPMovement<MovementKnockedOver> knockedOverMovement;
 

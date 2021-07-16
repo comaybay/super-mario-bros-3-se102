@@ -518,6 +518,9 @@
     <ClInclude Include="EventHandler.hpp">
       <Filter>Source Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Movement.hpp">
+      <Filter>Source Files\Movements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
