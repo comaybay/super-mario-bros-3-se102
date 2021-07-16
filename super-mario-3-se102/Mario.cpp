@@ -260,7 +260,10 @@ void Mario::Fall(float delta) {
 	if (dir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
+	if (velocity.y < 0)
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	else
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
 
 	if (!onGround)
 		return;
