@@ -21,16 +21,19 @@ template<class ...ARGS>
 template<class T>
 inline void Event<ARGS...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 {
-	using namespace std::placeholders;
 	std::function<void(ARGS...)> bindedHandler = Attach(handler, handlerThis);
 
-	EventHandler<ARGS...> eventHandler = EventHandler<ARGS...>(GetAddressOf(handler), bindedHandler);
-
+	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t tId = GetAddressOf(handlerThis);
 	if (!Utils::Contains(tId, eventHandlersById))
 		eventHandlersById[tId] = new EventHandlerSet();
 
+	EventHandler<ARGS...> eventHandler = EventHandler<ARGS...>(handlerId, bindedHandler);
 	eventHandlersById[tId]->insert(eventHandler);
+
+	EventHandlerProps props(tId, handlerId);
+	if (unsubscribeWaitList.find(props) != unsubscribeWaitList.end())
+		unsubscribeWaitList.erase(props);
 
 	//unregister when entity is destroy
 	//if is other type, let user unsubscribe manually
@@ -44,14 +47,17 @@ inline void Event<ARGS...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
 template<class ...ARGS>
 inline void Event<ARGS...>::Subscribe(FuncHandler handler)
 {
-	using namespace std::placeholders;
-
 	EventHandler<ARGS...> eventHandler = EventHandler<ARGS...>(GetAddressOf(handler), handler);
 
 	if (!Utils::Contains(ORDINARY_FUNC_THIS_ID, eventHandlersById))
 		eventHandlersById[ORDINARY_FUNC_THIS_ID] = new EventHandlerSet();
 
 	eventHandlersById[ORDINARY_FUNC_THIS_ID]->insert(eventHandler);
+
+	EventHandlerProps props(ORDINARY_FUNC_THIS_ID, GetAddressOf(handler));
+	if (unsubscribeWaitList.find(props) != unsubscribeWaitList.end())
+		unsubscribeWaitList.erase(props);
+
 }
 
 template<class ...ARGS>
@@ -87,8 +93,7 @@ inline void Event<ARGS...>::Unsubscribe(T* handlerThis)
 template<class ...ARGS>
 inline void Event<ARGS...>::Unsubscribe(FuncHandler handler)
 {
-	intptr_t handlerId = GetAddressOf(handler);
-	unsubscribeWaitList.insert(EventHandlerProps(ORDINARY_FUNC_THIS_ID, handlerId));
+	unsubscribeWaitList.insert(EventHandlerProps(ORDINARY_FUNC_THIS_ID, GetAddressOf(handler)));
 }
 
 template<class ...ARGS>
