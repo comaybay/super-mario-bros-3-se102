@@ -25,7 +25,7 @@ PiranhaPlant::PiranhaPlant(const std::string& colorType, const Utils::Vector2<fl
 	stopYMoveUp(position.y),
 	stopYMoveDown(position.y + Constants::TILE_SIZE * 2),
 	time(0),
-	state(EntityState<PiranhaPlant>(this, &PiranhaPlant::PrepareCheckDistance))
+	state(EntityState<PiranhaPlant>(this, &PiranhaPlant::CheckDistance))
 {
 }
 

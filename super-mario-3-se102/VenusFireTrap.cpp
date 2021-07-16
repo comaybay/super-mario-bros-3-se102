@@ -28,7 +28,7 @@ VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<
 	stopYMoveUp(position.y),
 	stopYMoveDown(position.y + Constants::TILE_SIZE * 2),
 	targetPlayer(nullptr),
-	state(EntityState<VenusFireTrap>(this, &VenusFireTrap::PrepareCheckDistance))
+	state(EntityState<VenusFireTrap>(this, &VenusFireTrap::CheckDistance))
 {
 }
 
