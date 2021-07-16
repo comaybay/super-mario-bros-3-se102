@@ -8,6 +8,7 @@ namespace Entities {
 	class ItemWoodBlock : public Entity {
 	public:
 		ItemWoodBlock(const std::string& contentId, const Utils::Vector2<float>& position);
+		~ItemWoodBlock();
 		void Update(float delta) override;
 		void OnReady() override;
 	private:
@@ -20,5 +21,7 @@ namespace Entities {
 		LPMovement<MovementBlockHit> blockHitMovement;
 		LPEntity ghostBlock;
 		std::string contentId;
+
+		const static float BOUNCE_BACK_SPEED;
 	};
 }

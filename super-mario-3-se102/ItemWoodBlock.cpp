@@ -8,6 +8,8 @@
 using namespace Entities;
 using namespace Utils;
 
+const float ItemWoodBlock::BOUNCE_BACK_SPEED = 90;
+
 ItemWoodBlock::ItemWoodBlock(const std::string& contentId, const Vector2<float>& position)
 	: Entity(
 		position,
@@ -23,6 +25,12 @@ ItemWoodBlock::ItemWoodBlock(const std::string& contentId, const Vector2<float>&
 {
 }
 
+ItemWoodBlock::~ItemWoodBlock()
+{
+	delete blockHitMovement;
+	parentScene->QueueFree(ghostBlock);
+}
+
 void ItemWoodBlock::Update(float delta)
 {
 	Entity::Update(delta);
@@ -32,6 +40,8 @@ void ItemWoodBlock::Update(float delta)
 void ItemWoodBlock::OnReady()
 {
 	CollisionEngine::Subscribe(this, &ItemWoodBlock::OnCollision, { Group::PLAYERS, "Koopas" });
+	parentScene->AddEntity(ghostBlock);
+	ghostBlock->Activate(false);
 }
 
 void ItemWoodBlock::OnCollision(CollisionData data)
@@ -42,11 +52,17 @@ void ItemWoodBlock::OnCollision(CollisionData data)
 	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYERS, groups) && data.edge.x != 0) {
-		delete blockHitMovement;
 
+		Vector2<float> playerVel = data.who->GetVelocity();
+		playerVel.x = data.edge.x == -1 ? BOUNCE_BACK_SPEED : -BOUNCE_BACK_SPEED;
+		data.who->SetVelocity(playerVel);
+
+		delete blockHitMovement;
 		Direction dir = data.edge.x == -1 ? Direction::LEFT : Direction::RIGHT;
 		blockHitMovement = new MovementBlockHit(this, dir, position);
 		SetAnimation("EmptyWoodBlock");
+
+		ghostBlock->Activate(true);
 		state.SetState(&ItemWoodBlock::Touch);
 
 		if (contentId != ContentId::NONE)
@@ -65,6 +81,7 @@ void ItemWoodBlock::OnCollision(CollisionData data)
 
 		blockHitMovement = new MovementBlockHit(this, Direction::UP, position);
 		SetAnimation("EmptyWoodBlock");
+		ghostBlock->Activate(true);
 		state.SetState(&ItemWoodBlock::Touch);
 
 		if (contentId != ContentId::NONE && !parentScene->IsEntityGroupEmpty(Group::PLAYERS))
@@ -93,6 +110,7 @@ void ItemWoodBlock::Touch(float delta)
 	blockHitMovement->Update(delta);
 
 	if (blockHitMovement->Finished()) {
+		ghostBlock->Activate(false);
 		SetAnimation("ItemWoodBlock");
 		state.SetState(&ItemWoodBlock::Idle);
 	}
