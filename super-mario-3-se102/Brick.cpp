@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Mario.h"
 #include "ContentFactory.h"
+#include "FXSmoke.h"
 using namespace Entities;
 using namespace Utils;
 
@@ -81,9 +82,10 @@ void Brick::ExposeContent(LPMario player)
 
 	Vector2<float> contentPos = { position.x, position.y - Constants::TILE_SIZE };
 	LPEntity content = ContentFactory(player).Create(contentId, contentPos);
-	parentScene->AddEntity(content);
 	contentId = ContentId::NONE;
 
+	parentScene->AddEntity(content);
 	parentScene->AddEntity(new EmptyBlock(position));
+	parentScene->AddEntity(new FXSmoke(contentPos));
 	parentScene->QueueFree(this);
 }

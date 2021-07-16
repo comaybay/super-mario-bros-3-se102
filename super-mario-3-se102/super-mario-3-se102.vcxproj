@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
+    <ClCompile Include="FXSmoke.cpp" />
     <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -249,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="FXSmoke.h" />
     <ClInclude Include="IKnockedOverable.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="MovementBlockHit.h" />
