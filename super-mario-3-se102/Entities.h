@@ -1,4 +1,5 @@
 #pragma once
+//Notes: this header do not includes all entities but only the ones that are needed when loading a scene
 
 #include "MarioSmall.h"
 #include "MarioSuper.h"
@@ -7,6 +8,7 @@
 #include "Koopa.h"
 #include "ParaKoopa.h"
 #include "VenusFireTrap.h"
+#include "PiranhaPlant.h"
 #include "QuestionBlock.h"
 #include "Brick.h"
 #include "NoteBlock.h"

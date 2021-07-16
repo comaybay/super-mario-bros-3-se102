@@ -24,6 +24,7 @@ const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoad
 	{"Koopa",&SceneLoader::ParseKoopa},
 	{"ParaKoopa", &SceneLoader::ParseParaKoopa},
 	{"Venus", &SceneLoader::ParseVenusFireTrap},
+	{"Piranha", &SceneLoader::ParsePiranhaPlant},
 	{"Coin", &SceneLoader::ParseCoin},
 	{"QuestionBlock", &SceneLoader::ParseQuestionBlock},
 	{"Brick", &SceneLoader::ParseBrick},
@@ -346,6 +347,14 @@ LPEntity SceneLoader::ParseVenusFireTrap(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(5);
 
 	return new Entities::VenusFireTrap(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+}
+
+LPEntity SceneLoader::ParsePiranhaPlant(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 5)
+		throw InvalidTokenSizeException(5);
+
+	return new Entities::PiranhaPlant(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseCoin(const std::vector<std::string>& tokens) {

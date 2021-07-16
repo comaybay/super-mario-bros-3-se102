@@ -1,5 +1,5 @@
 #Id, AnimationType (Normal or Fixed), FrameDuration (in seconds), SpriteboxHandlingMode (Auto or Manual)
-##If FrameDuratio = -1 => Animation will always stay at first frame
+##If FrameDuratio = -1 => Animation will always stay at the first frame
 ##*Normal: each entity controls it's own animation
 ##*Fixed: entities shared the same frame number, independent of creation time
 ##*Auto: automatically calculate sprite boxes
@@ -8,7 +8,7 @@
 #If SpriteboxHandlingMode = Auto => StartPosition (X, Y), Dimension (Width, Height), Space, FrameCount, [Offset (X, Y) (Default=0)]
 #If SpriteboxHandlingMode = Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
 
-##Small mario##====================================
+##Small Mario##====================================
 #Move (Walk, Run)#
 MarioSWL, Normal, 0.066, Auto
 PlayableCharacters
@@ -50,7 +50,7 @@ MarioDeath, Normal, -1, Manual
 PlayableCharacters
 289, 16, 304, 31
 
-##Big mario##====================================
+##Super Mario##====================================
 #Move (Walk, Run)#
 MarioBWL, Normal, 0.066, Auto
 PlayableCharacters
@@ -232,17 +232,27 @@ GVenusDR, Normal, 0.266, Auto
 Enemies
 32, 176, 16, 32, 0, 2
 
-##FireBall##====================================
+##Fire Ball##====================================
 FireBall, Normal, 0.133, Auto
 WAnims
 86, 52, 8, 16, 1, 4
 
-##QuestionBlock##====================================
+##Green Piranha Plant##====================================
+GPiranhaPlant, Normal, 0.133, Auto
+Enemies
+0, 144, 16, 32, 0, 2
+
+##Red Piranha Plant##====================================
+RPiranhaPlant, Normal, 0.133, Auto
+Enemies
+96, 144, 16, 32, 0, 2
+
+##Question Block##====================================
 QuestionBlockNormal, Fixed, 0.14, Auto
 WAnims
 1, 35, 16, 16, 1, 4 
 
-##EmptyBlock##
+##Empty Block##
 EmptyBlock, Normal, -1, Manual
 WAnims
 69, 35, 84, 50
@@ -252,7 +262,7 @@ BrickNormal, Fixed, 0.14, Auto
 WAnims
 1, 52, 16, 16, 1, 4 
 
-##NoteBlock##====================================
+##Note Block##====================================
 NoteBlock, Fixed, 0.14, Auto
 WAnims
 69, 1, 16, 16, 1, 3 
@@ -291,7 +301,7 @@ WingDownL, Normal, -1, Manual
 Enemies
 144, 16, 151, 31
 
-##GoalRoulette##====================================
+##Goal Roulette##====================================
 GoalRoulette, Normal, 0.125, Auto
 WAnims
 69, 69, 16, 16, 1, 3
@@ -362,17 +372,17 @@ Fonts
 Fonts
 135, 62, 150, 69
 
-##WMBush##====================================
+##WM Bush##====================================
 WMBush, Fixed, 0.30, Auto
 WMAnims
 1, 1, 16, 16, 1, 4
 
-##WMMario##====================================
+##WM Mario##====================================
 WMMario, Normal, 0.15, Auto
 WMAnims
 1, 18, 16, 16, 1, 2
 
-##WMHelpBubble##====================================
+##WM Help Bubble##====================================
 WMHelpBubble, Normal, -1, Manual
 WMAnims
 69, 1, 84, 16
