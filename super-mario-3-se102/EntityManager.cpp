@@ -26,9 +26,8 @@ EntityManager::~EntityManager()
 	delete movableEntitySPGrid;
 }
 
-EntityManager::EntityManager
-(LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid)
-	: parentScene(parentScene), wallEntitySPGrid(wallEntitySPGrid), staticEntitySPGrid(staticEntitySPGrid),
+EntityManager::EntityManager(LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid)
+	: wallEntitySPGrid(wallEntitySPGrid), staticEntitySPGrid(staticEntitySPGrid),
 	movableEntitySPGrid(movableEntitySPGrid)
 {}
 
@@ -53,7 +52,6 @@ void EntityManager::Add(LPEntity entity)
 void EntityManager::_AddToNonWallSPGrid(LPEntity entity, const Vector2<int>& cellIndex)
 {
 	AddToGroups(entity->GetEntityGroups(), entity);
-	entity->_SetParentScene(parentScene);
 
 	switch (entity->GetGridType()) {
 	case GridType::MOVABLE_ENTITIES:
@@ -70,7 +68,6 @@ void EntityManager::_AddToNonWallSPGrid(LPEntity entity, const Vector2<int>& cel
 void EntityManager::_AddToWallSPGrid(LPEntity entity, const CellRange& cellRange)
 {
 	AddToGroups(entity->GetEntityGroups(), entity);
-	entity->_SetParentScene(parentScene);
 
 	switch (entity->GetGridType()) {
 	case GridType::WALL_ENTITIES:
@@ -86,7 +83,6 @@ void EntityManager::_AddToWallSPGrid(LPEntity entity, const CellRange& cellRange
 void EntityManager::_AddWithoutPutToGrid(LPEntity entity)
 {
 	AddToGroups(entity->GetEntityGroups(), entity);
-	entity->_SetParentScene(parentScene);
 	nonGridEntities.insert(entity);
 }
 

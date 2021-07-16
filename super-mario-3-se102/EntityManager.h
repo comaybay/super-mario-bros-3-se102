@@ -12,7 +12,7 @@ class EntityManager
 {
 public:
 	~EntityManager();
-	EntityManager(LPScene parentScene, LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid);
+	EntityManager(LPGrid wallEntitySPGrid, LPGrid staticEntitySPGrid, LPDynamicGrid movableEntitySPGrid);
 	void Add(LPEntity entity);
 	void AddToGroup(std::string groupName, LPEntity entity);
 	void AddToGroups(std::vector<std::string> groups, LPEntity entity);
@@ -36,8 +36,6 @@ public:
 	/// </summary>
 	void _AddWithoutPutToGrid(LPEntity entity);
 private:
-	LPScene parentScene = nullptr;
-
 	std::unordered_map<std::string, std::unordered_set<LPEntity>*> entitiesByGroup;
 	std::unordered_set<LPEntity> freeQueue;
 	std::unordered_set<LPEntity> nonGridEntities;

@@ -42,16 +42,20 @@ void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 1200, 320 };
+		Vector2<float> pos = { 2100, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
 		mario->SetPosition(pos);
 		AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
 	}
 
+	entityManager->ForEach([this](LPEntity entity) {
+		entity->_SetParentScene(this);
+		entity->OnReady();
+		}
+	);
+
 	camera._SetParentScene(this);
 	camera.OnReady();
-
-	entityManager->ForEach([](LPEntity entity) { entity->OnReady(); });
 	if (!IsEntityGroupEmpty(Group::PLAYERS))
 		camera.FollowEntity(GetEntityOfGroup(Group::PLAYERS));
 }
@@ -68,7 +72,6 @@ void Scene::Update(float delta)
 			afterOnReadyCallbackByLPEntity.erase(newEntity);
 		}
 	}
-
 
 	newEntitiesWaitList.clear();
 

@@ -33,11 +33,6 @@ public:
 	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType);
 	Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType);
 	virtual ~Entity();
-	/// <summary>
-	/// <para> Set entity animation and animation speed. </para>
-	/// <para> Given animation speed only affected, When new animation is set, animation speed will be reset. </para>
-	/// </summary>
-	void SetAnimation(const std::string& id, float animSpeed = 1);
 	void SetHitbox(const std::string& id);
 	const Utils::Vector2<float>& GetPosition();
 	const Utils::Vector2<float>& GetVelocity();
@@ -54,6 +49,12 @@ public:
 	virtual void Render();
 	const std::vector<std::string>& GetEntityGroups();
 	Event<LPEntity>& GetDestroyEvent();
+
+	/// <summary>
+	/// <para> Set entity animation and animation speed. </para>
+	/// <para> Given animation speed only affected, When new animation is set, animation speed will be reset. </para>
+	/// </summary>
+	void SetAnimation(const std::string& id, float animSpeed = 1);
 
 	/// <summary>
 	/// If false, entity won't be rendered nor updated and will not include for detection or be detected by CollisionEngine,
@@ -84,7 +85,7 @@ public:
 	virtual void OnReady();
 
 	/// <summary>
-	/// Used internaly by SceneLoader to inject entity's parent scene
+	/// Used internaly by Scene to inject entity's parent scene
 	/// </summary>
 	void _SetParentScene(LPScene scene);
 
