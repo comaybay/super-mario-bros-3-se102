@@ -39,7 +39,7 @@ Mario::Mario(
 	),
 	animationSet(animationSet),
 	powerLevel(powerLevel),
-	marioState(EntityState<Mario>(this, &Mario::Idle)),
+	marioState(EntityState<Mario>(this, &Mario::Fall)),
 	updateState(EntityState<Mario>(this, &Mario::NormalUpdate)),
 	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
 	dir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
