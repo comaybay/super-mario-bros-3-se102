@@ -4,10 +4,10 @@
 #include "GridType.h"
 
 //avoid circular dependencies
-template<typename ...Args>
+template<typename ...ARGS>
 class Event;
-template<typename ...Args>
-using LPEvent = Event<Args...>*;
+template<typename ...ARGS>
+using LPEvent = Event<ARGS...>*;
 
 class Scene;
 typedef Scene* LPScene;

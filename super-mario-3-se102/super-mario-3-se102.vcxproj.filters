@@ -512,8 +512,17 @@
     <ClInclude Include="Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EntityState.hpp">
+      <Filter>Source Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.hpp">
+      <Filter>Source Files\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Event.hpp">
+      <Filter>Source Files\Events</Filter>
+    </None>
   </ItemGroup>
 </Project>

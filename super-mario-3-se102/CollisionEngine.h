@@ -29,11 +29,11 @@ private:
 	struct CBox;
 
 public:
-	template<class TEntity, class ...Args>
-	static void Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), EntityGroups targetEntityGroups);
+	template<class ENTITY, class ...ARGS>
+	static void Subscribe(ENTITY* handlerThis, void(ENTITY::* handler)(ARGS...), EntityGroups targetEntityGroups);
 
-	template<class TEntity, class ...Args>
-	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
+	template<class ENTITY, class ...ARGS>
+	static void Unsubscribe(ENTITY* handlerThis, void(ENTITY::* handler)(ARGS...));
 
 	static void Update(float delta);
 	static bool Detect(LPEntity e1, LPEntity e2, float delta, CollisionData& dataForE1, CollisionData& dataForE2);
@@ -85,8 +85,8 @@ private:
 	};
 };
 
-template<class TEntity, class ...Args>
-static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), EntityGroups targetEntityGroups) {
+template<class ENTITY, class ...ARGS>
+static void CollisionEngine::Subscribe(ENTITY* handlerThis, void(ENTITY::* handler)(ARGS...), EntityGroups targetEntityGroups) {
 	//entites that have group in one of collisionTargetGroups will be check for collision with entity
 	if (handlerThis->GetGridType() == GridType::MOVABLE_ENTITIES || handlerThis->GetGridType() == GridType::NONE)
 		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByMovableLPEntity[handlerThis] = targetEntityGroups;
@@ -97,8 +97,8 @@ static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* han
 	handlerThis->GetDestroyEvent().Subscribe(&OnEntityUnsubscribe);
 }
 
-template<class TEntity, class ...Args>
-static void CollisionEngine::Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...)) {
+template<class ENTITY, class ...ARGS>
+static void CollisionEngine::Unsubscribe(ENTITY* handlerThis, void(ENTITY::* handler)(ARGS...)) {
 	GetCollisionEventOf(handlerThis).Unsubscribe(handlerThis, handler);
 	handlerThis->GetDestroyEvent().Unsubscribe(&OnEntityUnsubscribe);
 

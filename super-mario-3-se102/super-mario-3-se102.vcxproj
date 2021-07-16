@@ -250,6 +250,8 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="EntityCollection.h" />
+    <ClInclude Include="EntityState.hpp" />
+    <ClInclude Include="EventHandler.hpp" />
     <ClInclude Include="FXSmoke.h" />
     <ClInclude Include="GhostBlock.h" />
     <ClInclude Include="IKnockedOverable.h" />
@@ -332,6 +334,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Event.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
