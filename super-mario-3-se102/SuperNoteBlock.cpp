@@ -26,6 +26,7 @@ SuperNoteBlock::SuperNoteBlock(const Vector2<float>& position)
 
 void SuperNoteBlock::OnReady()
 {
+	Entity::OnReady();
 	SetDetectable(false);
 	CollisionEngine::Subscribe(this, &SuperNoteBlock::OnCollision, { Group::PLAYERS, "Koopas" });
 }

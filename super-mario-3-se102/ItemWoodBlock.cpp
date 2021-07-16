@@ -39,6 +39,7 @@ void ItemWoodBlock::Update(float delta)
 
 void ItemWoodBlock::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &ItemWoodBlock::OnCollision, { Group::PLAYERS, "Koopas" });
 	parentScene->AddEntity(ghostBlock);
 	ghostBlock->Activate(false);

@@ -17,6 +17,8 @@ GoalRoulette::GoalRoulette(const Utils::Vector2<float>& position)
 
 void GoalRoulette::OnReady()
 {
+	Entity::OnReady();
+	parentScene->UnsubscribeToOutOfWorldEvent(this);
 	CollisionEngine::Subscribe(this, &GoalRoulette::OnCollision, { Group::PLAYERS });
 }
 

@@ -33,6 +33,7 @@ void Mushroom::Update(float delta) {
 
 void Mushroom::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &Mushroom::OnCollision, { Group::PLAYERS, Group::COLLISION_WALLS });
 }
 

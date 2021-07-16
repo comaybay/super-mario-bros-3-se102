@@ -31,6 +31,7 @@ PiranhaPlant::PiranhaPlant(const std::string& colorType, const Utils::Vector2<fl
 
 void PiranhaPlant::OnReady()
 {
+	Entity::OnReady();
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		targetPlayer->GetDestroyEvent().Subscribe(this, &PiranhaPlant::OnPlayerDestroy);

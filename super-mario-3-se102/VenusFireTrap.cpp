@@ -35,6 +35,7 @@ VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<
 
 void VenusFireTrap::OnReady()
 {
+	Entity::OnReady();
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
 		targetPlayer->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);

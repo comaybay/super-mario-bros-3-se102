@@ -27,6 +27,7 @@ NoteBlock::NoteBlock(std::string contentId, const Vector2<float>& position)
 
 void NoteBlock::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &NoteBlock::OnCollision, { Group::PLAYERS, "Koopas" });
 }
 

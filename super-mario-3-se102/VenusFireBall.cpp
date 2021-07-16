@@ -15,6 +15,7 @@ VenusFireBall::VenusFireBall(const Utils::Vector2<float>& position, float angle)
 
 void VenusFireBall::OnReady()
 {
+	Entity::OnReady();
 	CollisionEngine::Subscribe(this, &VenusFireBall::OnCollision, { Group::PLAYERS });
 }
 
