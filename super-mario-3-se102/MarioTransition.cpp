@@ -48,7 +48,7 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 	isDowngradeTransiton = (to == PPL::BIG) ? true : false;
 	resultPowerLevel = to;
 	state.SetState(&MarioTransition::Smoke);
-	SetAnimation("MarioTransitionSmoke");
+	SetAnimation("FXSmoke");
 
 }
 

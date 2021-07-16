@@ -117,7 +117,7 @@ PlayableCharacters
 73, 110, 88, 141
 245, 144, 260, 175
 
-MarioTransitionSmoke, Normal, 0.08, Auto
+FXSmoke, Normal, 0.08, Auto
 PlayableCharacters
 415, 1, 16, 16, 2, 4
 

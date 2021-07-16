@@ -5,7 +5,7 @@
 using namespace Entities;
 
 const float CoinUp::UP_SPEED = 300;
-const float CoinUp::FALL_SPEED = EntityConstants::GRAVITY * 1.25f;
+const float CoinUp::FALL_SPEED = EntityConstants::GRAVITY * 1.1f;
 const float CoinUp::EXIST_DURATION = 0.7f;
 
 CoinUp::CoinUp(const Utils::Vector2<float>& position)
