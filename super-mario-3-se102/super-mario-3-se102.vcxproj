@@ -313,6 +313,7 @@
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Group.h" />
     <ClInclude Include="PointUpFactory.h" />
+    <ClInclude Include="PointType.h" />
     <ClInclude Include="ProcessingUtils.h" />
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="RectSequence.h" />

@@ -8,20 +8,20 @@ const float PointUp::EXIST_DURATION = 0.8f;
 const float PointUp::MOVE_UP_SPEED = 110.0f;
 const float PointUp::FRICTION = 5.0f;
 
-const std::unordered_map<PointUp::Type, std::string> PointUp::animationIdByType{
-	{Type::ONE_HUNDRED_POINTS, "100P"},
-	{Type::TWO_HUNDRED_POINTS, "200P"},
-	{Type::FOUR_HUNDRED_POINTS, "400P"},
-	{Type::EIGHT_HUNDRED_POINTS, "800P"},
-	{Type::ONE_THOUSAND_POINTS, "1000P"},
-	{Type::TWO_THOUSAND_POINTS, "2000P"},
-	{Type::FOUR_THOUSAND_POINTS, "4000P"},
-	{Type::EIGHT_THOUSAND_POINTS, "8000P"},
-	{Type::ONE_UP, "1UP"}
+const std::unordered_map<PointType, std::string> PointUp::animationIdByType{
+	{PointType::ONE_HUNDRED_POINTS, "100P"},
+	{PointType::TWO_HUNDRED_POINTS, "200P"},
+	{PointType::FOUR_HUNDRED_POINTS, "400P"},
+	{PointType::EIGHT_HUNDRED_POINTS, "800P"},
+	{PointType::ONE_THOUSAND_POINTS, "1000P"},
+	{PointType::TWO_THOUSAND_POINTS, "2000P"},
+	{PointType::FOUR_THOUSAND_POINTS, "4000P"},
+	{PointType::EIGHT_THOUSAND_POINTS, "8000P"},
+	{PointType::ONE_UP, "1UP"}
 };
 
 
-PointUp::PointUp(const Vector2<float>& position, Type pointType)
+PointUp::PointUp(const Vector2<float>& position, PointType pointType)
 	: Entity::Entity(position, Group::EFFECTS, GridType::NONE),
 	time(0)
 {

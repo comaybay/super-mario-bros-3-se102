@@ -521,6 +521,9 @@
     <ClInclude Include="EntityCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PointType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

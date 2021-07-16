@@ -10,13 +10,13 @@ const float CoinUp::EXIST_DURATION = 0.7f;
 
 CoinUp::CoinUp(const Utils::Vector2<float>& position)
 	: Entity::Entity(position, "CoinUp", HitboxId::NONE, Group::EFFECTS, GridType::NONE),
-	pointUpType(PointUp::Type::ONE_HUNDRED_POINTS),
+	pointUpType(PointType::ONE_HUNDRED_POINTS),
 	time(0)
 {
 	velocity.y = -UP_SPEED;
 }
 
-CoinUp::CoinUp(const Utils::Vector2<float>& position, PointUp::Type pointUpType)
+CoinUp::CoinUp(const Utils::Vector2<float>& position, PointType pointUpType)
 	: Entity::Entity(position, "CoinUp", HitboxId::NONE, Group::EFFECTS, GridType::NONE),
 	pointUpType(pointUpType),
 	time(0)

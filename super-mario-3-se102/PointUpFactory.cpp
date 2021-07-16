@@ -12,16 +12,16 @@ int PointUpFactory::index = -1;
 //TODO: use an abstraction of a player instead of Mario.
 LPMario PointUpFactory::player;
 
-const std::array<PointUp::Type, 9> PointUpFactory::pointUpTypes{
-	PointUp::Type::ONE_HUNDRED_POINTS,
-	PointUp::Type::TWO_HUNDRED_POINTS,
-	PointUp::Type::FOUR_HUNDRED_POINTS,
-	PointUp::Type::EIGHT_HUNDRED_POINTS,
-	PointUp::Type::ONE_THOUSAND_POINTS,
-	PointUp::Type::TWO_THOUSAND_POINTS,
-	PointUp::Type::FOUR_THOUSAND_POINTS,
-	PointUp::Type::EIGHT_THOUSAND_POINTS,
-	PointUp::Type::ONE_UP
+const std::array<PointType, 9> PointUpFactory::pointUpTypes{
+	PointType::ONE_HUNDRED_POINTS,
+	PointType::TWO_HUNDRED_POINTS,
+	PointType::FOUR_HUNDRED_POINTS,
+	PointType::EIGHT_HUNDRED_POINTS,
+	PointType::ONE_THOUSAND_POINTS,
+	PointType::TWO_THOUSAND_POINTS,
+	PointType::FOUR_THOUSAND_POINTS,
+	PointType::EIGHT_THOUSAND_POINTS,
+	PointType::ONE_UP
 };
 
 //TODO: create a better implementation
@@ -33,7 +33,7 @@ PointUp* PointUpFactory::Create(const Vector2<float>& callerPosition)
 		LPScene scene = Game::GetActiveScene();
 
 		if (scene->IsEntityGroupEmpty(Group::PLAYERS))
-			return new PointUp(pos, PointUp::Type::ONE_HUNDRED_POINTS);
+			return new PointUp(pos, PointType::ONE_HUNDRED_POINTS);
 
 		player = static_cast<LPMario>(scene->GetEntityOfGroup(Group::PLAYERS));
 		player->GetRestartPointUpEvent().Subscribe(&OnRestartPointUp);

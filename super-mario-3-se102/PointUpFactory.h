@@ -12,7 +12,7 @@ private:
 	static void OnRestartPointUp();
 	static void OnEntityDestroy(LPEntity player);
 
-	static const std::array<Entities::PointUp::Type, 9> pointUpTypes;
+	static const std::array<PointType, 9> pointUpTypes;
 	static int index;
 	static Entities::LPMario player;
 };
