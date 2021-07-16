@@ -14,6 +14,6 @@ namespace Entities {
 		float time;
 		GoalRouletteCard card;
 
-		static const float TIME_TILL_EXIT;
+		static const float PREPARE_EXIT_DURATION;
 	};
 }
