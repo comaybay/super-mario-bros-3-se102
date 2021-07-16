@@ -72,6 +72,7 @@ namespace Entities {
 		EntityState<Mario> marioState;
 		Utils::Vector2<int> dir;
 		float time;
+		float moveAnimSpeed;
 		bool onGround;
 		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
@@ -101,6 +102,8 @@ namespace Entities {
 		static const float RUN_STATE_ANIM_SPEED;
 		static const float WALK_SPEED_REACHED_GOAL_ROULETTE;
 		static const float INVINCIBLE_DURATION;
+		static const float MAX_MOVE_ANIM_SPEED;
+		static const float MOVE_ANIM_SPEED_INCREASE_UNIT;
 	};
 	typedef Mario* LPMario;
 }

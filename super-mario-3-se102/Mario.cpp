@@ -23,6 +23,8 @@ const float Mario::DEATH_FALL_ACCEL = EntityConstants::GRAVITY / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
 const float Mario::INVINCIBLE_DURATION = 1;
 const int Mario::FLASH_DURATION = 2;
+const float Mario::MAX_MOVE_ANIM_SPEED = 1.5f;
+const float Mario::MOVE_ANIM_SPEED_INCREASE_UNIT = 1 / 60.0f;
 
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
@@ -42,6 +44,7 @@ Mario::Mario(
 	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
 	dir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
 	time(0),
+	moveAnimSpeed(1),
 	onGround(false),
 	runBeforeJump(false)
 {
@@ -176,11 +179,14 @@ void Mario::Walk(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
+	moveAnimSpeed = max(moveAnimSpeed - MOVE_ANIM_SPEED_INCREASE_UNIT, 1.0f);
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
+		else {
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
+			moveAnimSpeed = 1;
+		}
 	}
 
 	if (Game::IsKeyDown(DIK_A))
@@ -203,11 +209,14 @@ void Mario::Run(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
+	moveAnimSpeed = min(moveAnimSpeed + MOVE_ANIM_SPEED_INCREASE_UNIT, MAX_MOVE_ANIM_SPEED);
 	if (dir.x != 0) {
 		if (dir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
+		else {
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
+			moveAnimSpeed = 1;
+		}
 	}
 
 	if (!Game::IsKeyDown(DIK_A))

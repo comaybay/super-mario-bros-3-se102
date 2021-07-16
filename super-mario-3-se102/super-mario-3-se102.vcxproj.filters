@@ -259,10 +259,10 @@
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
     <ClCompile Include="VenusFireBall.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
     <ClCompile Include="PiranhaPlant.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
