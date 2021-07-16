@@ -9,6 +9,7 @@ namespace Utils
 	void DebugOut(const char* text);
 	float Deg2Rad(float deg);
 	float Rad2Deg(float rad);
+	bool AlmostEqual(float a, float b);
 
 	/// <summary>
 	/// <para> Returns the angle a vector makes to an origin's X axis </para>

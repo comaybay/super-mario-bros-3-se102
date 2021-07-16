@@ -64,7 +64,8 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 		float aVal = CollisionEngine::DetectCollisionValue(entity, a, delta);
 		float bVal = CollisionEngine::DetectCollisionValue(entity, b, delta);
 
-		if (aVal == bVal && aVal != 1.0f) {
+		if (AlmostEqual(aVal, bVal) && aVal != 1.0f) {
+			//sort by distance
 			Vector2<float> ePos = entity->GetPosition();
 			float da = a->GetPosition().DistanceTo(ePos);
 			float db = b->GetPosition().DistanceTo(ePos);

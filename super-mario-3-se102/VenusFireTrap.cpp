@@ -34,7 +34,7 @@ VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<
 
 void VenusFireTrap::OnReady()
 {
-	CollisionEngine::Subscribe(this, &VenusFireTrap::OnCollision, { Group::PLAYERS, "Koopas" });
+	SetDetectable(false);
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
@@ -110,6 +110,7 @@ void VenusFireTrap::CheckDistance(float delta)
 	if (distanceX <= SAFE_DISTANCE)
 		return;
 
+	CollisionEngine::Subscribe(this, &VenusFireTrap::OnCollision, { Group::PLAYERS, "Koopas" });
 	velocity.y = -MOVE_SPEED;
 	state.SetState(&VenusFireTrap::MoveUp);
 }
@@ -183,6 +184,7 @@ void VenusFireTrap::MoveDown(float delta)
 	if (position.y >= stopYMoveDown) {
 		position.y = stopYMoveDown;
 		velocity.y = 0;
+		CollisionEngine::Unsubscribe(this, &VenusFireTrap::OnCollision);
 		state.SetState(&VenusFireTrap::PrepareCheckDistance);
 	}
 }

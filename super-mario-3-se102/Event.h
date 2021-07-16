@@ -181,6 +181,8 @@ inline void Event<Args...>::OnEntityDestroy(LPEntity entity)
 	auto handlersIt = eventHandlersById.find(GetAddressOf(entity));
 	eventHandlersById.erase(handlersIt);
 
+	subscribedEntities.erase(entity);
+
 	auto waitListIt = std::find_if(unsubscribeWaitList.begin(), unsubscribeWaitList.end(),
 		[this, entity](const EventHandlerProps& props) -> bool { return props.thisId == GetAddressOf(entity); }
 	);
