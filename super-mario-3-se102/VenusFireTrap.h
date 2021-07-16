@@ -1,5 +1,4 @@
 #pragma once
-#include "Entity.h"
 #include "EntityState.h"
 #include "CollisionEngine.h"
 
@@ -17,8 +16,8 @@ namespace Entities {
 		void UpdateHeadAnimation();
 		LPEntity TryFindPlayer();
 
-		void CheckDistance(float delta);
 		void PrepareCheckDistance(float delta);
+		void CheckDistance(float delta);
 		void MoveUp(float delta);
 		void WaitAndShoot(float delta);
 		void PrepareMoveDown(float delta);
