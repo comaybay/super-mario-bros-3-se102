@@ -50,13 +50,14 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 	if (!entity->_IsActive())
 		return;
 
-	//get target entities (use set data structure to avoid duplications)
+	//get target entities that can be detected (use set data structure to avoid duplications)
 	std::unordered_set<LPEntity> targetSet;
 	for (const std::string& groupName : targetGroups)
 		for (const LPEntity& target : Game::GetActiveScene()->GetEntitiesOfGroup(groupName))
 			if (target != entity && target->IsDetectable())
 				targetSet.insert(target);
 
+	//convert to vector for sorting
 	std::vector<LPEntity> targetEntities(targetSet.begin(), targetSet.end());
 
 	//sort target entities by time of collision/closeness
@@ -75,39 +76,41 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::st
 		else
 			return aVal < bVal;
 	};
-
 	std::sort(targetEntities.begin(), targetEntities.end(), ascending);
 
-	auto toKey = [](LPEntity a, LPEntity b) -> std::string {
-		return 	a->GetId() + "," + b->GetId();
-	};
+	//function use to calculate key for hasPreviouslyNotified
+	static const auto toKey = [](LPEntity a, LPEntity b) -> std::string { return a->GetId() + "," + b->GetId(); };
 
-	//notify both if collided, need to notify right away so next detections can give accurate results
 	for (const LPEntity& target : targetEntities) {
-		if (Contains(toKey(entity, target), hasPreviouslyNotified))
+		if (!target->IsDetectable() || Contains(toKey(entity, target), hasPreviouslyNotified))
 			continue;
 
 		CollisionData dataForEntity;
 		CollisionData dataForTarget;
-		CollisionEngine::Detect(entity, target, delta, dataForEntity, dataForTarget);
+		Detect(entity, target, delta, dataForEntity, dataForTarget);
 
-		if (dataForEntity.value == 1.0f)
+		if (AlmostEqual(dataForEntity.value, 1.0f))
 			continue;
 
+		//notify collided, need to notify right away so next detections can give accurate results
 		activeCED->collisionEventByLPEntity[entity]->Notify(dataForEntity);
 
-		if (!entity->IsDetectable())
+		//notifications to entities will cause alot of changes to the game state, therefore alot of checks need to be made. 
+		//if after notification, entity is still active and detectable, target is still detectable 
+		//and is also subscribed to CollisionEngine and it's target groups include entity, then notify the target
+		if (!entity->_IsActive())
 			return;
 
-		//if after notification, entity is detectable, target is still detectable 
-		//and is also subscribed to CollisionEngine and it's target groups include entity, then notify targets
+		if (!entity->IsDetectable() || !target->IsDetectable())
+			break;
+
+		bool targetSubscribedToCollisionEvent = Contains(target, activeCED->collisionEventByLPEntity);
+
 		bool targetHasThisEntityAsTarget =
 			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByMovableLPEntity[target]) ||
 			ContainsAnyOf(entity->GetEntityGroups(), activeCED->targetGroupsByNonMovingLPEntity[target]);
 
-		if (target->IsDetectable() &&
-			Contains(target, activeCED->collisionEventByLPEntity) &&
-			targetHasThisEntityAsTarget)
+		if (targetSubscribedToCollisionEvent && targetHasThisEntityAsTarget)
 		{
 			activeCED->collisionEventByLPEntity[target]->Notify(dataForTarget);
 			hasPreviouslyNotified.insert(toKey(target, entity));
@@ -145,7 +148,7 @@ bool CollisionEngine::Detect(LPEntity e1, LPEntity e2, float delta, CollisionDat
 		return false;
 
 	dataForE1 = SweptAABB(mBox, sBox);
-	if (dataForE1.value == 1.0f)
+	if (AlmostEqual(dataForE1.value, 1.0f))
 		return false;
 
 	dataForE1.who = e2;
@@ -249,7 +252,7 @@ bool CollisionEngine::AABBCheck(const CBox& box1, const CBox& box2)
 		);
 }
 
-//taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
+//taken from https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/ with modifications
 CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 	CollisionData data;
 	Vector2<float> invEntry;
@@ -270,7 +273,7 @@ CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 	Vector2<float> entryTimeAxis;
 	Vector2<float> exitTimeAxis;
 
-	if (mBox.velocity.x == 0) {
+	if (AlmostEqual(mBox.velocity.x, 0)) {
 		entryTimeAxis.x = -std::numeric_limits<float>::infinity();
 		exitTimeAxis.x = std::numeric_limits<float>::infinity();
 	}
@@ -279,7 +282,7 @@ CollisionData CollisionEngine::SweptAABB(const CBox& mBox, const CBox& sBox) {
 		exitTimeAxis.x = invExit.x / mBox.velocity.x;
 	}
 
-	if (mBox.velocity.y == 0) {
+	if (AlmostEqual(mBox.velocity.y, 0)) {
 		entryTimeAxis.y = -std::numeric_limits<float>::infinity();
 		exitTimeAxis.y = std::numeric_limits<float>::infinity();
 	}
