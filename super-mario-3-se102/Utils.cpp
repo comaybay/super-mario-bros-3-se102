@@ -26,5 +26,5 @@ bool Utils::AlmostEqual(float a, float b)
 }
 
 float Utils::AngleToXAxis(const Vector2<float>& vector, const Vector2<float>& origin) {
-	return Rad2Deg(atan2(origin.y - vector.y, vector.x - origin.x));
+	return Rad2Deg(atan2f(origin.y - vector.y, vector.x - origin.x));
 }

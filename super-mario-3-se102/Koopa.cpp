@@ -23,6 +23,7 @@ Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
 	state(EntityState<Koopa>(this, &Koopa::MoveAround)),
+	knockedOverMovement(nullptr),
 	onGround(false),
 	lock(true)
 {

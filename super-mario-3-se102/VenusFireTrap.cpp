@@ -18,7 +18,7 @@ const float VenusFireTrap::MAX_LOW_ANGLE_RIGHT = -45;
 const float VenusFireTrap::MAX_LOW_ANGLE_LEFT = -135;
 const float VenusFireTrap::WAIT_DURATION = 1;
 const float VenusFireTrap::MOVE_SPEED = 60;
-const float VenusFireTrap::SAFE_DISTANCE = Constants::TILE_SIZE * 2;
+const float VenusFireTrap::SAFE_DISTANCE = Constants::TILE_SIZE * 2.0f;
 
 VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<float>& position)
 	: Entity(
@@ -28,6 +28,7 @@ VenusFireTrap::VenusFireTrap(const std::string& colorType, const Utils::Vector2<
 	stopYMoveUp(position.y),
 	stopYMoveDown(position.y + Constants::TILE_SIZE * 2),
 	targetPlayer(nullptr),
+	time(0),
 	state(EntityState<VenusFireTrap>(this, &VenusFireTrap::CheckDistance))
 {
 }

@@ -5,11 +5,15 @@
 
 std::unordered_map<std::string, AnimationProps> AnimationManager::animationPropsById;
 
-AnimationProps::AnimationProps() {}
+AnimationProps::AnimationProps() :
+	type(AnimationType::NORMAL), id(""), frameDuration(0), texture(nullptr), sequence({})
+{
+}
 
 AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence)
 	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence)
-{}
+{
+}
 
 void AnimationManager::Add(const std::string& id, const AnimationProps& animProps)
 {

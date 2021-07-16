@@ -225,8 +225,8 @@ inline bool Utils::Vector2<T>::operator!=(const Utils::Vector2<T>& other) const
 template <typename T>
 Utils::Vector2<T> Utils::Vector2<T>::RotateTo(float angle) const
 {
-	float cosTheta = cos(Deg2Rad(angle));
-	float sinTheta = sin(Deg2Rad(angle));
+	float cosTheta = cosf(Deg2Rad(angle));
+	float sinTheta = sinf(Deg2Rad(angle));
 
 	return {
 		x * cosTheta - y * sinTheta,
