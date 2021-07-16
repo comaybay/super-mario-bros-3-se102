@@ -252,6 +252,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="EntityCollection.h" />
     <ClInclude Include="FXSmoke.h" />
     <ClInclude Include="GhostBlock.h" />
     <ClInclude Include="IKnockedOverable.h" />

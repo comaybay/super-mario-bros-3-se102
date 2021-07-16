@@ -8,34 +8,34 @@ CellRange::CellRange(const Utils::Vector2<int>& cellIndex, const Utils::Vector2<
 
 Grid::Grid(int numberOfColumns, int numberOfRows, const Dimension<int>& cellSize)
 	: numOfCols(numberOfColumns), numOfRows(numberOfRows), cellSize(cellSize),
-	cells(std::vector<LPEntitiesInCell>(numberOfRows* numberOfColumns))
+	cells(std::vector<LPEntityCollection>(numberOfRows* numberOfColumns))
 {
 	for (auto& cell : cells)
-		cell = new std::list<LPEntity>();
+		cell = new EntityCollection();
 }
 
 Grid::~Grid()
 {
-	for (LPEntitiesInCell cell : cells)
+	for (LPEntityCollection cell : cells)
 		delete cell;
 }
 
 void Grid::AddToCell(LPEntity entity, const Vector2<int>& cellIndex)
 {
-	cells[int(cellIndex.y * numOfCols + cellIndex.x)]->push_back(entity);
+	cells[int(cellIndex.y * numOfCols + cellIndex.x)]->insert(entity);
 	entity->GetDestroyEvent().Subscribe(this, &Grid::OnEntityDestroy);
 }
 
-Grid::LPConstEntitiesInCell Grid::EntitiesAt(const Vector2<int>& cellIndex)
+const EntityCollection& Grid::EntitiesAt(const Vector2<int>& cellIndex)
 {
-	return cells[int(cellIndex.y * numOfCols + cellIndex.x)];
+	return *cells[int(cellIndex.y * numOfCols + cellIndex.x)];
 }
 
 void Grid::ForEachEntityIn(const CellRange& range, std::function<void(LPEntity)> handler)
 {
 	for (int y = 0; y < range.span.y; y++)
 		for (int x = 0; x < range.span.x; x++)
-			for (LPEntity entity : *EntitiesAt(range.index + Vector2<int>(x, y)))
+			for (LPEntity entity : EntitiesAt(range.index + Vector2<int>(x, y)))
 				handler(entity);
 }
 
@@ -43,7 +43,7 @@ void Grid::ForEachEntity(std::function<void(LPEntity)> handler)
 {
 	for (int y = 0; y < numOfRows; y++)
 		for (int x = 0; x < numOfCols; x++)
-			for (LPEntity entity : *EntitiesAt(Vector2<int>(x, y)))
+			for (LPEntity entity : EntitiesAt(Vector2<int>(x, y)))
 				handler(entity);
 }
 
@@ -71,6 +71,6 @@ CellRange Grid::GetCellRangeFromRectangle(const Vector2<float>& position, const 
 void Grid::OnEntityDestroy(LPEntity entity)
 {
 	Vector2<int> index = GetCellIndexAtPoint(entity->GetPosition());
-	cells[index.y * numOfCols + index.x]->remove(entity);
+	cells[index.y * numOfCols + index.x]->erase(entity);
 }
 

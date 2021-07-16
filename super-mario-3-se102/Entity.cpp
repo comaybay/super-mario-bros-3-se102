@@ -10,7 +10,7 @@ using namespace Utils;
 
 Entity::Entity(
 	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-	const std::vector<std::string>& entityGroups, GridType gridType, bool isRenderedBeforeWorld) :
+	const EntityGroups& entityGroups, GridType gridType, bool isRenderedBeforeWorld) :
 	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
@@ -23,7 +23,7 @@ Entity::Entity(
 
 Entity::Entity(
 	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-	const std::vector<std::string>& entityGroups, GridType gridType) :
+	const EntityGroups& entityGroups, GridType gridType) :
 	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
@@ -40,14 +40,14 @@ Entity::Entity(
 	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
-	groups(std::vector<std::string> {entityGroup}),
+	groups(EntityGroups{ entityGroup }),
 	gridType(gridType),
 	isRenderedBeforeWorld(false)
 {
 	Init();
 }
 
-Entity::Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType) :
+Entity::Entity(const Utils::Vector2<float>& position, const EntityGroups& entityGroups, GridType gridType) :
 	position(position),
 	animation(AnimationManager::GetNew(AnimationId::NONE)),
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
@@ -62,7 +62,7 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityG
 	position(position),
 	animation(AnimationManager::GetNew(AnimationId::NONE)),
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
-	groups(std::vector<std::string> {entityGroup}),
+	groups(EntityGroups{ entityGroup }),
 	gridType(gridType),
 	isRenderedBeforeWorld(false)
 {
@@ -209,7 +209,7 @@ bool Entity::_IsRenderedBeforeWorld()
 	return isRenderedBeforeWorld;
 }
 
-const std::vector<std::string>& Entity::GetEntityGroups()
+const EntityGroups& Entity::GetEntityGroups()
 {
 	return groups;
 }

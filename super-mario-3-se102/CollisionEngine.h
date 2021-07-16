@@ -19,8 +19,8 @@ struct CollisionData {
 /// </summary>
 struct CollisionEngineData {
 	std::unordered_map<LPEntity, LPEvent<CollisionData>> collisionEventByLPEntity;
-	std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByMovableLPEntity;
-	std::unordered_map<LPEntity, std::vector<std::string>> targetGroupsByNonMovingLPEntity;
+	std::unordered_map<LPEntity, EntityGroups> targetGroupsByMovableLPEntity;
+	std::unordered_map<LPEntity, EntityGroups> targetGroupsByNonMovingLPEntity;
 };
 
 class CollisionEngine
@@ -30,7 +30,7 @@ private:
 
 public:
 	template<class TEntity, class ...Args>
-	static void Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups);
+	static void Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), EntityGroups targetEntityGroups);
 
 	template<class TEntity, class ...Args>
 	static void Unsubscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...));
@@ -62,7 +62,7 @@ public:
 	static void _HandleUnsubscribeWaitList();
 
 private:
-	static void DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta);
+	static void DetectAndNotify(LPEntity entity, const EntityGroups& targetGroups, float delta);
 	static Event<CollisionData>& GetCollisionEventOf(LPEntity entity);
 	static CollisionData SweptAABB(const CBox& mBox, const CBox& sBox);
 	static bool AABBCheck(const CBox& box1, const CBox& box2);
@@ -86,12 +86,12 @@ private:
 };
 
 template<class TEntity, class ...Args>
-static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), std::vector<std::string> collisionTargetGroups) {
+static void CollisionEngine::Subscribe(TEntity* handlerThis, void(TEntity::* handler)(Args...), EntityGroups targetEntityGroups) {
 	//entites that have group in one of collisionTargetGroups will be check for collision with entity
 	if (handlerThis->GetGridType() == GridType::MOVABLE_ENTITIES || handlerThis->GetGridType() == GridType::NONE)
-		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByMovableLPEntity[handlerThis] = collisionTargetGroups;
+		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByMovableLPEntity[handlerThis] = targetEntityGroups;
 	else
-		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByNonMovingLPEntity[handlerThis] = collisionTargetGroups;
+		CEDByLPScene[handlerThis->GetParentScene()].targetGroupsByNonMovingLPEntity[handlerThis] = targetEntityGroups;
 
 	GetCollisionEventOf(handlerThis).Subscribe(handlerThis, handler);
 	handlerThis->GetDestroyEvent().Subscribe(&OnEntityUnsubscribe);

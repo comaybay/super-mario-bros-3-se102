@@ -27,6 +27,7 @@ void CollisionEngine::_HandleUnsubscribeWaitList() {
 
 	unsubscribeWaitList.clear();
 }
+
 /// <summary>
 /// <para>This algorithm do collision detection on entities that subsribe to the CollisionEngine, and only do detection between entity and it's given target groups.</para>
 /// <para>The downside of this algorithm is that it do not take into account the sptial partition grid.</para>
@@ -45,7 +46,7 @@ void CollisionEngine::Update(float delta) {
 		DetectAndNotify(pair.first, pair.second, delta);
 }
 
-void CollisionEngine::DetectAndNotify(LPEntity entity, const std::vector<std::string>& targetGroups, float delta)
+void CollisionEngine::DetectAndNotify(LPEntity entity, const EntityGroups& targetGroups, float delta)
 {
 	if (!entity->_IsActive())
 		return;

@@ -39,7 +39,7 @@ void ItemWoodBlock::OnCollision(CollisionData data)
 	if (state.GetState() == &ItemWoodBlock::Touch)
 		return;
 
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYERS, groups) && data.edge.x != 0) {
 		delete blockHitMovement;

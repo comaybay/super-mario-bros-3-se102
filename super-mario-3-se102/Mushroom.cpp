@@ -75,19 +75,19 @@ void Mushroom::Move(float delta)
 
 
 void Mushroom::OnCollision(CollisionData data) {
-	const std::vector<std::string>& group = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
-	if (Contains(Group::COLLISION_WALLS, group))
+	if (Contains(Group::COLLISION_WALLS, groups))
 		HandleWallCollision(data);
 
-	if (Contains(Group::PLAYERS, group))
+	if (Contains(Group::PLAYERS, groups))
 		HandlePlayerCollision(data);
 }
 
 void Mushroom::HandleWallCollision(const CollisionData& data) {
-	const std::vector<std::string>& group = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_1, group)) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);
 
 		if (data.edge.y == -1)
@@ -99,7 +99,7 @@ void Mushroom::HandleWallCollision(const CollisionData& data) {
 		return;
 	}
 
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, group) && data.edge.y == -1) {
+	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups) && data.edge.y == -1) {
 		CollisionHandling::Slide(this, data);
 		velocity.y = 0;
 		return;

@@ -91,7 +91,7 @@ void ParaKoopa::JumpAround(float delta) {
 
 void ParaKoopa::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
@@ -141,7 +141,7 @@ void ParaKoopa::HandlePlayerCollision(const CollisionData& data)
 
 void ParaKoopa::HandleWallCollision(const CollisionData& data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);

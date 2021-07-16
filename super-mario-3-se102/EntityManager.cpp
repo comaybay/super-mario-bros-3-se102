@@ -1,12 +1,11 @@
 #include "EntityManager.h"
 #include "Group.h"
 #include "Game.h"
-#include "Entity.h"
 #include "Scene.h"
 #include "Contains.h"
 using namespace Utils;
 
-const std::unordered_set<LPEntity> EntityManager::EMPTY_GROUP;
+const EntityCollection EntityManager::EMPTY_GROUP;
 
 EntityManager::~EntityManager()
 {
@@ -97,18 +96,18 @@ void EntityManager::ForEach(std::function<void(LPEntity)> handler) {
 void EntityManager::AddToGroup(std::string groupName, LPEntity entity)
 {
 	if (!Contains(groupName, entitiesByGroup))
-		entitiesByGroup[groupName] = new std::unordered_set<LPEntity>();
+		entitiesByGroup[groupName] = new EntityCollection();
 
 	entitiesByGroup[groupName]->insert(entity);
 }
 
-void EntityManager::AddToGroups(std::vector<std::string> groups, LPEntity entity)
+void EntityManager::AddToGroups(EntityGroups groups, LPEntity entity)
 {
 	for (std::string& groupName : groups)
 		AddToGroup(groupName, entity);
 }
 
-const std::unordered_set<LPEntity>& EntityManager::GetEntitiesOfGroup(const std::string& groupName)
+const EntityCollection& EntityManager::GetEntitiesOfGroup(const std::string& groupName)
 {
 	if (Contains(groupName, entitiesByGroup))
 		return *entitiesByGroup[groupName];
@@ -130,7 +129,7 @@ const LPGrid EntityManager::GetGrid(GridType gridType)
 	}
 }
 
-const std::unordered_set<LPEntity>& EntityManager::GetNonGridEntities()
+const EntityCollection& EntityManager::GetNonGridEntities()
 {
 	return nonGridEntities;
 }

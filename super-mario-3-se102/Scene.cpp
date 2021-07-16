@@ -107,7 +107,7 @@ void Scene::DetectAndNotifyOutOfWorld()
 		outOfWorldEventByLPEntity.erase(entity);
 	}
 
-	std::list<LPEvent<>> notifyList;
+	std::vector<LPEvent<>> notifyList;
 
 	for (auto& pair : outOfWorldEventByLPEntity)
 		//avoid deletion during iteration
@@ -145,8 +145,8 @@ CellRange Scene::GetCellRangeAroundCamera() {
 
 void Scene::Render()
 {
-	std::list<LPEntity> entitiesRenderedBeforeWorld;
-	std::list<LPEntity> entitiesRenderedrAfterWorld;
+	std::vector<LPEntity> entitiesRenderedBeforeWorld;
+	std::vector<LPEntity> entitiesRenderedrAfterWorld;
 	GetRenderEntities(entitiesRenderedBeforeWorld, entitiesRenderedrAfterWorld);
 
 	if (Game::BeginRender() == S_OK)
@@ -171,7 +171,7 @@ void Scene::Render()
 	Game::Present();
 }
 
-void Scene::GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, std::list<LPEntity>& entitiesRenderedrAfterWorld) {
+void Scene::GetRenderEntities(std::vector<LPEntity>& entitiesRenderedBeforeWorld, std::vector<LPEntity>& entitiesRenderedrAfterWorld) {
 	auto addByRenderOrder = [&entitiesRenderedBeforeWorld, &entitiesRenderedrAfterWorld](LPEntity entity) {
 		if (entity->_IsRenderedBeforeWorld())
 			entitiesRenderedBeforeWorld.push_back(entity);
@@ -246,7 +246,7 @@ const LPEntity Scene::GetEntityOfGroup(const std::string& groupName) {
 	return *(entityManager->GetEntitiesOfGroup(groupName).begin());
 }
 
-const std::unordered_set<LPEntity>& Scene::GetEntitiesOfGroup(const std::string& groupName)
+const EntityCollection& Scene::GetEntitiesOfGroup(const std::string& groupName)
 {
 	return entityManager->GetEntitiesOfGroup(groupName);
 }

@@ -1,12 +1,11 @@
 #pragma once
 #include <string>
-#include <vector>
-#include <unordered_set>
 
 #include "EncodedWorld.h"
 #include "Camera.h"
 #include "Grid.h"
 #include "Event.h"
+#include "EntityCollection.h"
 
 //avoid circular dependecies
 class Entity;
@@ -27,7 +26,7 @@ public:
 	Camera& GetCamera();
 	const std::string& GetPrevScenePath();
 	bool IsEntityGroupEmpty(const std::string& groupName);
-	const std::unordered_set<LPEntity>& GetEntitiesOfGroup(const std::string& groupName);
+	const EntityCollection& GetEntitiesOfGroup(const std::string& groupName);
 
 	/// <summary>
 	/// Add given entity after current frame.
@@ -71,7 +70,7 @@ private:
 	CellRange GetCellRangeAroundCamera();
 	RECT GetTileBoundingBox(int id);
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
-	void GetRenderEntities(std::list<LPEntity>& entitiesRenderedBeforeWorld, std::list<LPEntity>& entitiesRenderedrAfterWorld);
+	void GetRenderEntities(std::vector<LPEntity>& entitiesRenderedBeforeWorld, std::vector<LPEntity>& entitiesRenderedrAfterWorld);
 	Utils::Dimension<int> worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;

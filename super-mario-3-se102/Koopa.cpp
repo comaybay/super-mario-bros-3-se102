@@ -47,7 +47,7 @@ void Koopa::OnReady()
 
 void Koopa::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
@@ -151,7 +151,7 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 	//get position before affected by collision handling
 	prevOnGroundPosition = position;
 
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);

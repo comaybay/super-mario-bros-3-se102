@@ -1,5 +1,4 @@
 #pragma once
-#include "Entity.h"
 #include "Utils.h"
 #include "Mario.h"
 #include "CollisionEngine.h"
@@ -13,6 +12,7 @@ namespace Entities {
 	private:
 		void ExposeContent(LPMario player);
 		void OnCollision(CollisionData data);
+
 		std::string contentId;
 	};
 }

@@ -378,7 +378,7 @@ void Mario::UnsubscribeToCollisionEngine()
 
 void Mario::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::COLLISION_WALLS_TYPE_1, groups)) {
 		CollisionHandling::Slide(this, data);

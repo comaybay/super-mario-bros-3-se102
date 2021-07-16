@@ -70,7 +70,7 @@ void NoteBlock::Hit(float delta) {
 
 void NoteBlock::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 	if (Contains(Group::PLAYERS, groups) && data.edge.y != 0) {
 		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
 		ExposeContent(player);

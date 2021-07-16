@@ -11,13 +11,13 @@ void DynamicGrid::UpdateCells(const CellRange& range)
 {
 	for (int y = 0; y < range.span.y; y++)
 		for (int x = 0; x < range.span.x; x++) {
-			LPConstEntitiesInCell entities = EntitiesAt(range.index + Vector2<int>(x, y));
+			const EntityCollection& entities = EntitiesAt(range.index + Vector2<int>(x, y));
 			//this process require removing entity in the cell while iterating, therefore an iterator must be used 
-			for (auto it = entities->begin(); it != entities->end();) {
-				int prevSize = entities->size();
+			for (auto it = entities.begin(); it != entities.end();) {
+				int prevSize = entities.size();
 				auto newIt = UpdateEntityCellIndex(it);
 
-				if (prevSize == entities->size())
+				if (prevSize == entities.size())
 					it++;
 				else
 					it = newIt;
@@ -32,7 +32,7 @@ void DynamicGrid::AddToCell(LPEntity entity, const Utils::Vector2<int>& cellInde
 	indexbyLPEntity[entity] = cellIndex;
 }
 
-Grid::EntitiesInCell::const_iterator DynamicGrid::UpdateEntityCellIndex(Grid::EntitiesInCell::const_iterator it)
+EntityCollection::const_iterator DynamicGrid::UpdateEntityCellIndex(EntityCollection::const_iterator it)
 {
 	LPEntity entity = *it;
 	Utils::Vector2<int> oldIndex = indexbyLPEntity[entity];
@@ -41,9 +41,8 @@ Grid::EntitiesInCell::const_iterator DynamicGrid::UpdateEntityCellIndex(Grid::En
 	if (newIndex == oldIndex)
 		return it;
 
-	//since LPEntity is unique, no need to use list::erase
 	auto newIt = cells[int(oldIndex.y * numOfCols + oldIndex.x)]->erase(it);
-	cells[int(newIndex.y * numOfCols + newIndex.x)]->push_back(entity);
+	cells[int(newIndex.y * numOfCols + newIndex.x)]->insert(entity);
 	indexbyLPEntity[entity] = newIndex;
 
 	return newIt;

@@ -49,7 +49,7 @@ void Brick::Hit(float delta) {
 
 void Brick::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1) {
 		LPMario player = static_cast<LPMario>(data.who);
 		if (player->GetPowerLevel() != PlayerPowerLevel::SMALL)

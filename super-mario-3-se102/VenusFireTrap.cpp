@@ -47,7 +47,7 @@ void VenusFireTrap::OnPlayerDestroy(LPEntity entity) {
 
 void VenusFireTrap::OnCollision(CollisionData data)
 {
-	const std::vector<std::string>& groups = data.who->GetEntityGroups();
+	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (Contains(Group::PLAYERS, groups)) {
 		LPMario player = static_cast<LPMario>(data.who);

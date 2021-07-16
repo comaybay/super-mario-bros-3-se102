@@ -15,22 +15,24 @@ typedef Scene* LPScene;
 class Entity;
 typedef Entity* LPEntity;
 
+typedef std::vector<std::string> EntityGroups;
+
 class Entity
 {
 public:
 	Entity(
 		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-		const std::vector<std::string>& entityGroups, GridType gridType, bool isRenderedBeforeWorld
+		const EntityGroups& entityGroups, GridType gridType, bool isRenderedBeforeWorld
 	);
 	Entity(
 		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-		const std::vector<std::string>& entityGroups, GridType gridType
+		const EntityGroups& entityGroups, GridType gridType
 	);
 	Entity(
 		const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
 		const std::string& entityGroup, GridType gridType
 	);
-	Entity(const Utils::Vector2<float>& position, const std::vector<std::string>& entityGroups, GridType gridType);
+	Entity(const Utils::Vector2<float>& position, const EntityGroups& entityGroups, GridType gridType);
 	Entity(const Utils::Vector2<float>& position, const std::string& entityGroup, GridType gridType);
 	virtual ~Entity();
 	void SetHitbox(const std::string& id);
@@ -47,7 +49,7 @@ public:
 	virtual void Update(float delta);
 	virtual void PostUpdate();
 	virtual void Render();
-	const std::vector<std::string>& GetEntityGroups();
+	const EntityGroups& GetEntityGroups();
 	Event<LPEntity>& GetDestroyEvent();
 
 	/// <summary>
@@ -111,7 +113,7 @@ public:
 
 protected:
 	LPScene parentScene;
-	std::vector<std::string> groups;
+	EntityGroups groups;
 	Utils::Vector2<float> position;
 	Utils::Vector2<float> velocity;
 	LPAnimation animation;
@@ -127,3 +129,4 @@ private:
 	Utils::Vector2<float> remainingVelocity;
 	LPEvent<LPEntity> destroyEvent; //use LPEvent instead of Event to avoid circular dependency
 };
+
