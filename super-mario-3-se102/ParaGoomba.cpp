@@ -174,8 +174,12 @@ void ParaGoomba::OnCollision(CollisionData data)
 void ParaGoomba::GetKnockedOver(HDirection direction)
 {
 	Goomba* goomba = new Entities::Goomba(colorType, position);
-	parentScene->AddEntity(goomba);
-	goomba->GetKnockedOver(direction);
+
+	parentScene->AddEntity(goomba,
+		[direction](LPEntity goomba) {
+			static_cast<Goomba*>(goomba)->GetKnockedOver(direction);
+		}
+	);
 
 	parentScene->QueueFree(this);
 }

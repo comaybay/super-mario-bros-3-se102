@@ -76,8 +76,12 @@ void ParaKoopa::Render()
 
 void ParaKoopa::GetKnockedOver(HDirection direction) {
 	Koopa* koopa = new Koopa(colorType, position);
-	parentScene->AddEntity(koopa);
-	koopa->GetKnockedOver(direction);
+
+	parentScene->AddEntity(koopa,
+		[direction](LPEntity koopa) {
+			static_cast<Koopa*>(koopa)->GetKnockedOver(direction);
+		}
+	);
 
 	parentScene->QueueFree(this);
 }

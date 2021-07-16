@@ -37,14 +37,15 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 }
 
 #include "ContentFactory.h"
+#include "QuestionBlock.h"
 void Scene::_Ready()
 {
 	//TODO: Remove test code
 	if (!GetEntitiesOfGroup(Group::PLAYERS).empty()) {
-		Vector2<float> pos = { 2000, 320 };
+		Vector2<float> pos = { 1200, 320 };
 		Entities::LPMario mario = static_cast<Entities::LPMario>(GetEntityOfGroup(Group::PLAYERS));
 		mario->SetPosition(pos);
-		//AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
+		AddEntity(ContentFactory(mario).Create("Mushroom", { pos.x, pos.y }));
 	}
 
 	camera._SetParentScene(this);
@@ -59,8 +60,15 @@ void Scene::Update(float delta)
 {
 	for (LPEntity newEntity : newEntitiesWaitList) {
 		entityManager->Add(newEntity);
+		newEntity->_SetParentScene(this);
 		newEntity->OnReady();
+
+		if (Contains(newEntity, afterOnReadyCallbackByLPEntity)) {
+			afterOnReadyCallbackByLPEntity[newEntity](newEntity);
+			afterOnReadyCallbackByLPEntity.erase(newEntity);
+		}
 	}
+
 
 	newEntitiesWaitList.clear();
 
@@ -224,7 +232,12 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 void Scene::AddEntity(LPEntity entity)
 {
 	newEntitiesWaitList.insert(entity);
-	entity->_SetParentScene(this);
+}
+
+void Scene::AddEntity(LPEntity entity, const std::function<void(LPEntity)>& afterOnReadyCallback)
+{
+	newEntitiesWaitList.insert(entity);
+	afterOnReadyCallbackByLPEntity[entity] = afterOnReadyCallback;
 }
 
 void Scene::QueueFree(LPEntity entity)

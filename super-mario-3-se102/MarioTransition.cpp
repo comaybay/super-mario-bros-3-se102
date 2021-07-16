@@ -138,6 +138,8 @@ void MarioTransition::Smoke(float delta)
 
 void MarioTransition::CreateMario()
 {
+	parentScene->QueueFree(player);
+
 	using PPL = ::PlayerPowerLevel;
 	LPMario newPlayer = nullptr;
 	//TODO: complete implementation
@@ -158,16 +160,18 @@ void MarioTransition::CreateMario()
 		newPlayer->TurnInvinsible();
 	}
 
-	newPlayer->SetVelocity(player->GetVelocity());
-
-	parentScene->QueueFree(player);
-	parentScene->AddEntity(newPlayer);
-	parentScene->TransitionPause(false);
+	const Vector2<float>& newPlayerVel = player->GetVelocity();
+	parentScene->AddEntity(newPlayer,
+		[newPlayerVel](LPEntity player) {
+			player->SetVelocity(newPlayerVel);
+		}
+	);
 
 	if (resultPowerLevel == PPL::SMALL)
 		parentScene->GetCamera().FollowEntity(newPlayer);
 	else
 		parentScene->GetCamera().FollowEntity(newPlayer, { 0, (float)Constants::TILE_SIZE });
 
+	parentScene->TransitionPause(false);
 }
 
