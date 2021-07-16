@@ -3,6 +3,9 @@
 #include "Scene.h"
 #include "Mario.h"
 #include "CourseClear.h"
+#include "Scene.h"
+#include "CoinUp.h"
+#include "FXSmoke.h"
 using namespace Entities;
 
 const float GoalRoulette::UP_SPEED = 120;
@@ -42,7 +45,6 @@ void GoalRoulette::FlyUp(float delta)
 void GoalRoulette::OnCollision(CollisionData data)
 {
 	CollisionEngine::Unsubscribe(this, &GoalRoulette::OnCollision);
-	state.SetState(&GoalRoulette::FlyUp);
 	velocity.y = -UP_SPEED;
 
 	switch (animation->GetCurrentFrame()) {
@@ -65,5 +67,17 @@ void GoalRoulette::OnCollision(CollisionData data)
 	LPMario player = static_cast<LPMario>(data.who);
 	player->StartReachedGoalRouletteAnimation();
 
+	//turn all entities on camera to coins
+	parentScene->ForEachNonWallEntityOnCamera(
+		[this](LPEntity entity) -> void {
+			if (Utils::Contains(Group::ENEMIES, entity->GetEntityGroups())) {
+				parentScene->QueueFree(entity);
+				parentScene->AddEntity(new CoinUp(entity->GetPosition(), PointType::ONE_THOUSAND_POINTS));
+				parentScene->AddEntity(new FXSmoke(entity->GetPosition()));
+			}
+		}
+	);
+
+	state.SetState(&GoalRoulette::FlyUp);
 }
 
