@@ -14,12 +14,12 @@ Animation::Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 tex
 
 void Animation::Update(float delta)
 {
-	if (frameDuration == -1.0f)
+	if (AlmostEqual(frameDuration, -1.0f))
 		return;
 
 	currentDuration += delta * animSpeed;
 
-	int i = floor(currentDuration / frameDuration);
+	int i = int(currentDuration / frameDuration);
 	currentDuration -= frameDuration * i;
 	currentFrame = (currentFrame + i) % sequence.size();
 }
