@@ -9,7 +9,7 @@ namespace Entities {
 	class WMNode : public Entity
 	{
 	public:
-		WMNode();
+		WMNode(const std::string& nodeId);
 
 		/// <summary>
 		/// initialize WMNode, this method exist because some operations require scene to exist before 
@@ -38,6 +38,7 @@ namespace Entities {
 		void Transfer(LPWMNode targetNode);
 
 		EntityState<WMNode> state;
+		std::string id;
 		std::string scenePath;
 		LPWMNode topNode;
 		LPWMNode leftNode;

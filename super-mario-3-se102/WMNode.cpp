@@ -1,13 +1,15 @@
 #include "WMNode.h"
 #include "Game.h"
 #include "ProcessingUtils.h"
+#include "PlayerVariables.h"
 using namespace Entities;
 using namespace Utils;
 
 const float WMNode::TRANSFER_SPEED = 128;
 
-WMNode::WMNode()
+WMNode::WMNode(const std::string& nodeId)
 	: Entity::Entity({ -1, -1 }, "Nodes", GridType::STATIC_ENTITIES),
+	id(nodeId),
 	state(EntityState<WMNode>(this, &WMNode::Inactive))
 {
 }
@@ -65,8 +67,10 @@ void WMNode::Active(float delta)
 	else if (rightNode && Game::IsKeyPressed(DIK_RIGHT))
 		state.SetState(&WMNode::TransferAnimRight);
 
-	else if (rightNode && Game::IsKeyPressed(DIK_S))
+	else if (rightNode && Game::IsKeyPressed(DIK_S)) {
+		PlayerVariables::SetStandingWMNodeId(id);
 		Game::QueueFreeAndSwitchScene(scenePath);
+	}
 }
 
 void WMNode::TransferAnimTop(float delta)

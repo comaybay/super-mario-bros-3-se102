@@ -266,7 +266,7 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 		std::vector<std::string> nodeIds = SplitByComma(line);
 		std::unordered_map<std::string, LPWMNode> nodeById;
 		for (auto& id : nodeIds)
-			nodeById[id] = new WMNode();
+			nodeById[id] = new WMNode(id);
 
 		for (size_t i = 0; i < nodeIds.size(); i++) {
 			line = GetNextNonCommentLine(file);
@@ -288,7 +288,8 @@ std::string SceneLoader::ParseWorldMapNodes(std::ifstream& file, LPEntityManager
 			entityManager->_AddToNonWallSPGrid(node, cellIndex);
 		}
 
-		LPWMNode startNode = nodeById["NStart"];
+
+		LPWMNode startNode = nodeById[PlayerVariables::GetStandingWMNodeId()];
 		startNode->Activate(new WMMario(startNode->GetPosition()));
 
 		return line;

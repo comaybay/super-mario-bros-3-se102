@@ -265,7 +265,7 @@
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
     <ClCompile Include="FXSmoke.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
