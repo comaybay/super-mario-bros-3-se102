@@ -188,7 +188,7 @@ class Encoder(ABC):
         if (code == EntityCode.VENUS_RED or code == EntityCode.PIRANHA_RED):
             pos_x += 8
 
-        elif (code == EntityCode.VENUS_GREEN or code == EntityCode.VENUS_GREEN):
+        elif (code == EntityCode.VENUS_GREEN or code == EntityCode.PIRANHA_GREEN):
             pos_x += 8
             pos_y += 8
 
