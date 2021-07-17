@@ -48,10 +48,6 @@ void Scene::_Ready()
 	camera.OnReady();
 	if (!IsEntityGroupEmpty(Group::PLAYERS))
 		camera.FollowEntity(GetEntityOfGroup(Group::PLAYERS));
-
-	if (!IsEntityGroupEmpty(Group::PLAYERS))
-		GetEntityOfGroup(Group::PLAYERS)->SetPosition({ 2500, 200 });
-
 }
 
 void Scene::Update(float delta)
