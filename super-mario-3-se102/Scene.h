@@ -58,7 +58,7 @@ public:
 	void TransitionPause(bool state);
 
 	template<class ENTITY>
-	void SubscribeToOutOfWorldEvent(ENTITY* entity, Event<>::MethodHandler<ENTITY> handler);
+	void SubscribeToOutOfWorldEvent(ENTITY* entity, void(ENTITY::* handler)());
 
 	template<class ENTITY>
 	void UnsubscribeToOutOfWorldEvent(ENTITY* entity);
@@ -108,7 +108,7 @@ typedef Scene* LPScene;
 
 
 template<class ENTITY>
-inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, Event<>::MethodHandler<ENTITY> handler)
+inline void Scene::SubscribeToOutOfWorldEvent(ENTITY* entity, void(ENTITY::* handler)())
 {
 	if (!Utils::Contains(entity, outOfWorldEventByLPEntity))
 		outOfWorldEventByLPEntity[entity] = new Event<>();

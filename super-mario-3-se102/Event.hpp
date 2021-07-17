@@ -19,7 +19,7 @@ inline std::function<R(ARGS...)> Event<ARGS...>::Attach(R(T::* f)(ARGS...), U p)
 
 template<class ...ARGS>
 template<class T>
-inline void Event<ARGS...>::Subscribe(T* handlerThis, MethodHandler<T> handler)
+inline void Event<ARGS...>::Subscribe(T* handlerThis, void(T::* handler)(ARGS...))
 {
 	std::function<void(ARGS...)> bindedHandler = Attach(handler, handlerThis);
 
@@ -62,7 +62,7 @@ inline void Event<ARGS...>::Subscribe(FuncHandler handler)
 
 template<class ...ARGS>
 template<class T>
-inline void Event<ARGS...>::Unsubscribe(T* handlerThis, MethodHandler<T> handler)
+inline void Event<ARGS...>::Unsubscribe(T* handlerThis, void(T::* handler)(ARGS...))
 {
 	intptr_t handlerId = GetAddressOf(handler);
 	intptr_t thisId = GetAddressOf(handlerThis);
@@ -144,7 +144,7 @@ inline void Event<ARGS...>::UnsubscribeFromEvent(intptr_t thisId, intptr_t handl
 
 template<class ...ARGS>
 template<class T>
-inline intptr_t Event<ARGS...>::GetAddressOf(MethodHandler<T>  handler)
+inline intptr_t Event<ARGS...>::GetAddressOf(void(T::* handler)(ARGS...))
 {
 	//explaination for the weird void*& cast: https://stackoverflow.com/questions/8121320/get-memory-address-of-member-function/8122891
 	return reinterpret_cast<intptr_t>((void*&)handler);

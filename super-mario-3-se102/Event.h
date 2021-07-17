@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <algorithm>
 #include <unordered_map>
 #include <string>
 #include <type_traits>
@@ -15,17 +16,15 @@ class Event
 {
 public:
 	typedef void(*FuncHandler)(ARGS...);
-	template <class T>
-	using MethodHandler = void(T::*)(ARGS...);
 
 	~Event();
 	template<class T>
-	void Subscribe(T* handlerThis, MethodHandler<T> handler);
+	void Subscribe(T* handlerThis, void(T::* handler)(ARGS...));
 
 	void Subscribe(FuncHandler handler);
 
 	template<class T>
-	void Unsubscribe(T* handlerThis, MethodHandler<T> handler);
+	void Unsubscribe(T* handlerThis, void(T::* handler)(ARGS...));
 
 	template<class T>
 	void Unsubscribe(T* handlerThis);
@@ -40,7 +39,7 @@ private:
 	std::function<R(ARGS...)> Attach(R(T::* f)(ARGS...), U p);
 
 	template<class T>
-	intptr_t GetAddressOf(MethodHandler<T>  handler);
+	intptr_t GetAddressOf(void(T::* handler)(ARGS...));
 
 	template<class T>
 	intptr_t GetAddressOf(T* handlerThis);
