@@ -81,14 +81,8 @@ void Koopa::OnCollision(CollisionData data)
 		}
 
 		if (state.GetState() == &Koopa::ShellSlide) {
-			if (ContainsAnyOf({ "Goombas", "ParaGoombas", "ParaKoopas" }, groups)) {
-				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-				dynamic_cast<IKnockedOverable*>(data.who)->GetKnockedOver(dir);
-				return;
-			}
-
 			if (Contains("Koopas", groups)) {
-				Koopa* otherKoopa = dynamic_cast<Koopa*>(data.who);
+				Koopa* otherKoopa = static_cast<Koopa*>(data.who);
 
 				if (otherKoopa->IsSliding())
 					GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
@@ -96,6 +90,14 @@ void Koopa::OnCollision(CollisionData data)
 				otherKoopa->GetKnockedOver(data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT);
 				return;
 			}
+
+			//if entity implements IKnockedOverable
+			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+				entity->GetKnockedOver(dir);
+			};
+
+			return;
 		}
 	}
 }
