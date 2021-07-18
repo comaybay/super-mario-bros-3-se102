@@ -121,7 +121,7 @@ FXSmoke, Normal, 0.08, Auto
 PlayableCharacters
 415, 1, 16, 16, 2, 4
 
-##Goomba##====================================
+##Brown Goomba##====================================
 BGoombaM, Normal, 0.133, Auto
 Enemies
 0, 0, 16, 16, 0, 2
@@ -134,6 +134,7 @@ BGoombaKO, Normal, -1, Manual
 Enemies
 0, 16, 15, 31
 
+##Red Goomba##====================================
 RGoombaM, Normal, 0.133, Auto
 Enemies
 88, 0, 16, 16, 0, 2
@@ -146,6 +147,12 @@ RGoombaKO, Normal, -1, Manual
 Enemies
 88, 16, 103, 31
 
+##Tiny Goomba##====================================
+TinyGoomba, Normal, 0.133, Manual
+Enemies
+48, 0, 55, 7
+48, 8, 55, 15
+
 ##Green Koopa##====================================
 GKoopaML, Normal, 0.133, Auto
 Enemies
@@ -155,7 +162,7 @@ GKoopaMR, Normal, 0.133, Auto
 Enemies
 0, 80, 16, 32, 0, 2
 
-#Shell#
+#Shell#====================================
 GKoopaSI, Normal, -1, Manual
 Enemies
 32, 48, 47, 63
@@ -247,10 +254,36 @@ RPiranhaPlant, Normal, 0.133, Auto
 Enemies
 96, 144, 16, 32, 0, 2
 
+##Boomerang Brother##====================================
+BoomerangBroL, Normal, 0.133, Auto
+Enemies
+64, 432, 16, 24, 0, 2
+
+BoomerangBroHoldL, Normal, 0.133, Auto
+Enemies
+96, 432, 16, 24, 0, 2
+
+BoomerangBroR, Normal, 0.133, Auto
+Enemies
+64, 456, 16, 24, 0, 2 
+
+BoomerangBroHoldR, Normal, 0.133, Auto
+Enemies
+96, 456, 16, 24, 0, 2
+
+##Boomerang##====================================
+BoomerangL, Normal, 0.066, Auto
+Enemies
+64, 528, 16, 16, 0, 4
+
+BoomerangR, Normal, 0.066, Auto
+Enemies
+64, 544, 16, 16, 0, 4
+
 ##Question Block##====================================
 QuestionBlockNormal, Fixed, 0.14, Auto
 WAnims
-1, 35, 16, 16, 1, 4 
+1, 35, 16, 16, 1, 4
 
 ##Empty Block##
 EmptyBlock, Normal, -1, Manual
