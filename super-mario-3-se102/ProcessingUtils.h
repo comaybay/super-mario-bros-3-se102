@@ -4,6 +4,8 @@
 
 namespace ProcessingUtils {
 	std::string GetNextNonCommentLine(std::ifstream& file);
+	
+	std::string Trim(const std::string& str);
 
 	std::vector<std::string> SplitByComma(const std::string& line);
 

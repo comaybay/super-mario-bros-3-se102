@@ -46,13 +46,36 @@ std::string ProcessingUtils::GetNextNonCommentLine(std::ifstream& file)
 {
 	std::string resline = "EOF";
 	std::string line;
-	while (std::getline(file, line))
-		if (line[0] != '#' && line != "") {
+	while (std::getline(file, line)) {
+		if (line[0] != '#' && Trim(line) != "") {
 			resline = line;
 			break;
 		}
+	}
 
 	return resline;
+}
+
+std::string ProcessingUtils::Trim(const std::string& str)
+{
+	int start = -1;
+	int end = -1;
+	for (int i = 0; i < str.size(); i++)
+		if (str[i] != ' ') {
+			start = i;
+			break;
+		}
+
+	for (int i = str.size() - 1; i >= 0; i--)
+		if (str[i] != ' ') {
+			start = i;
+			break;
+		}
+
+	if (start == -1)
+		return "";
+	else
+		return str.substr(start, (end - start) + 1);
 }
 
 std::string ProcessingUtils::JoinPath(const std::string& path1, const std::string& path2)
