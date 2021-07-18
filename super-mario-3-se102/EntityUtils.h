@@ -11,7 +11,6 @@ namespace EntityUtils
 	/// <summary>
 	/// Returns true if other entity is above entity
 	/// </summary>
-	bool IsOnAboveOf(LPEntity entity, LPEntity other);
-
+	bool IsAboveOf(LPEntity entity, LPEntity other);
 };
 

@@ -138,7 +138,7 @@ void VenusFireTrap::WaitAndShoot(float delta)
 			const Vector2<float>& playerPos = targetPlayer->GetPosition();
 			float angle = AngleToXAxis(playerPos, position);
 
-			if (EntityUtils::IsOnAboveOf(this, targetPlayer)) {
+			if (EntityUtils::IsAboveOf(this, targetPlayer)) {
 				if (EntityUtils::IsOnLeftSideOf(this, targetPlayer))
 					angle -= OFFSET_ANGLE_HIGH;
 				else
@@ -190,7 +190,7 @@ void VenusFireTrap::MoveDown(float delta)
 void VenusFireTrap::UpdateHeadAnimation() {
 	if (targetPlayer != nullptr) {
 		bool left = EntityUtils::IsOnLeftSideOf(this, targetPlayer);
-		bool above = EntityUtils::IsOnAboveOf(this, targetPlayer);
+		bool above = EntityUtils::IsAboveOf(this, targetPlayer);
 
 		if (left && above)
 			SetAnimation(colorCode + "VenusUL");

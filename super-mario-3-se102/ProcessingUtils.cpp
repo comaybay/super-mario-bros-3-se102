@@ -33,7 +33,6 @@ std::vector<std::string> ProcessingUtils::SplitByComma(const std::string& line) 
 	return tokens;
 }
 
-
 std::vector<std::string> ProcessingUtils::SplitEvery(int splitLength, const std::string& line) {
 	std::vector<std::string> tokens;
 	for (size_t i = 0; i < line.size(); i += splitLength)
