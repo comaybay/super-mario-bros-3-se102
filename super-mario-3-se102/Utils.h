@@ -10,10 +10,11 @@ namespace Utils
 	float Deg2Rad(float deg);
 	float Rad2Deg(float rad);
 	bool AlmostEqual(float a, float b);
+	bool Chance(int percentage);
 
 	/// <summary>
 	/// <para> Returns the angle a vector makes to an origin's X axis </para>
-	/// <para> range from -180 (non-inclusive) to 180 (inclusive)</para>
+	/// <para> Range from -180 (non-inclusive) to 180 (inclusive)</para>
 	/// </summary>
 	template <class T>
 	struct Vector2;

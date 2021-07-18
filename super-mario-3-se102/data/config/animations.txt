@@ -259,17 +259,25 @@ BoomerangBroL, Normal, 0.133, Auto
 Enemies
 64, 432, 16, 24, 0, 2
 
+BoomerangBroR, Normal, 0.133, Auto
+Enemies
+64, 456, 16, 24, 0, 2
+ 
 BoomerangBroHoldL, Normal, 0.133, Auto
 Enemies
 96, 432, 16, 24, 0, 2
 
-BoomerangBroR, Normal, 0.133, Auto
-Enemies
-64, 456, 16, 24, 0, 2 
-
 BoomerangBroHoldR, Normal, 0.133, Auto
 Enemies
 96, 456, 16, 24, 0, 2
+
+BoomerangBroKOL, Normal, -1, Manual
+Enemies
+64, 408, 79, 431
+
+BoomerangBroKOR, Normal, -1, Manual
+Enemies
+80, 408, 95, 431
 
 ##Boomerang##====================================
 BoomerangL, Normal, 0.066, Auto

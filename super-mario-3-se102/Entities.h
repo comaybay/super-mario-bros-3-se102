@@ -9,6 +9,7 @@
 #include "ParaKoopa.h"
 #include "VenusFireTrap.h"
 #include "PiranhaPlant.h"
+#include "BoomerangBrother.h"
 #include "QuestionBlock.h"
 #include "Brick.h"
 #include "ItemWoodBlock.h"

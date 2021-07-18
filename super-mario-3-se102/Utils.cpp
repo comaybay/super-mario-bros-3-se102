@@ -25,6 +25,11 @@ bool Utils::AlmostEqual(float a, float b)
 	return abs(a - b) < std::numeric_limits<float>::epsilon();
 }
 
+bool Utils::Chance(int probability)
+{
+	return (rand() % 100) < probability;
+}
+
 float Utils::AngleToXAxis(const Vector2<float>& vector, const Vector2<float>& origin) {
 	return Rad2Deg(atan2f(origin.y - vector.y, vector.x - origin.x));
 }

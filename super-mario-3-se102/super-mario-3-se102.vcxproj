@@ -177,6 +177,8 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
+    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoomerangBrother.cpp" />
     <ClCompile Include="FXSmoke.cpp" />
     <ClCompile Include="GhostBlock.cpp" />
     <ClCompile Include="ItemWoodBlock.cpp" />
@@ -250,6 +252,8 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoomerangBrother.h" />
     <ClInclude Include="EntityCollection.h" />
     <ClInclude Include="EntityState.hpp" />
     <ClInclude Include="EventHandler.hpp" />
