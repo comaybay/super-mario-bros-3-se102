@@ -305,7 +305,14 @@ LPEntity SceneLoader::ParseParaGoomba(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::ParaGoombaRed(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+	if (tokens[1] == Color::BROWN)
+		return new Entities::ParaGoombaBrown(Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+
+	else if (tokens[1] == Color::RED)
+		return new Entities::ParaGoombaRed(Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+
+	else
+		throw std::exception("Invalid Goomba's color type: expected Brown or Green");
 }
 
 LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)

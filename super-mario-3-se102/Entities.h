@@ -5,6 +5,7 @@
 #include "MarioSuper.h"
 #include "Goomba.h"
 #include "ParaGoombaRed.h"
+#include "ParaGoombaBrown.h"
 #include "Koopa.h"
 #include "ParaKoopa.h"
 #include "VenusFireTrap.h"

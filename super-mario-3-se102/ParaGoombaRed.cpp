@@ -24,7 +24,7 @@ ParaGoombaRed::ParaGoombaRed(const Vector2<float>& position)
 	time(0)
 {
 	SetAnimation(colorCode + "GoombaM");
-	FlapDown();
+	FlapDownWings();
 }
 
 void ParaGoombaRed::Update(float delta)
@@ -43,7 +43,7 @@ void ParaGoombaRed::MoveAround(float delta) {
 
 	if (time >= TIME_TILL_PREPARE) {
 		time = 0;
-		AutoFlap();
+		AutoFlapWings();
 
 		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 			LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
@@ -67,8 +67,8 @@ void ParaGoombaRed::PrepareToJump(float delta) {
 		jumpCount = 0;
 		velocity.y -= JUMP_SPEED;
 
-		AutoFlap();
-		SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
+		AutoFlapWings();
+		SetWingFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 
 		state.SetState(&ParaGoombaRed::Jump);
 	}
@@ -78,7 +78,7 @@ void ParaGoombaRed::Jump(float delta) {
 	if (velocity.y < 0)
 		return;
 
-	SetFlapSpeed(1.0f);
+	SetWingFlapSpeed(1.0f);
 	state.SetState(&ParaGoombaRed::Fall);
 }
 
@@ -86,7 +86,7 @@ void ParaGoombaRed::Fall(float delta) {
 	if (!onGround)
 		return;
 
-	FlapDown();
+	FlapDownWings();
 	state.SetState(&ParaGoombaRed::MoveAround);
 }
 

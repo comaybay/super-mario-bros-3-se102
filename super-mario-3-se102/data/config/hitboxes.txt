@@ -7,6 +7,8 @@ HitboxMarioB, 3, 7, 10, 24
 
 HitboxGoomba, 1, 3, 14, 12
 
+HitboxTinyGoomba 0, 7, 8, 9
+
 HitboxKoopa, 0, 16, 16, 15
 
 HitboxKoopaShell, 2, 8, 14, 7

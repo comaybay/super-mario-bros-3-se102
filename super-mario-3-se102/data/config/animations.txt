@@ -148,10 +148,17 @@ Enemies
 88, 16, 103, 31
 
 ##Tiny Goomba##====================================
-TinyGoomba, Normal, 0.133, Manual
+TinyGoomba, Normal, 0.133, Auto
 Enemies
-48, 0, 55, 7
-48, 8, 55, 15
+32, 16, 8, 16, 0, 2
+
+TinyGoombaKOL, Normal, -1, Manual
+Enemies
+48, 0, 55, 15
+
+TinyGoombaKOR, Normal, -1, Manual
+Enemies
+48, 16, 55, 31
 
 ##Green Koopa##====================================
 GKoopaML, Normal, 0.133, Auto

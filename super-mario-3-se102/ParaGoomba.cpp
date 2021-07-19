@@ -14,6 +14,7 @@ using namespace Utils;
 ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
+	onGround(false),
 	colorCode(Color::ToColorCode(colorType)),
 	wingLeft(Wing(this, WingDirection::LEFT, { -2, -10 })),
 	wingRight(Wing(this, WingDirection::RIGHT, { 10, -10 }))
@@ -54,23 +55,23 @@ void ParaGoomba::UpdateWings(float delta)
 	wingRight.Update(delta);
 }
 
-void ParaGoomba::FlapUp() {
+void ParaGoomba::FlapUpWings() {
 	wingLeft.FlapUp();
 	wingRight.FlapUp();
 }
 
-void ParaGoomba::FlapDown() {
+void ParaGoomba::FlapDownWings() {
 	wingLeft.FlapDown();
 	wingRight.FlapDown();
 }
 
-void ParaGoomba::AutoFlap()
+void ParaGoomba::AutoFlapWings()
 {
 	wingLeft.AutoFlap();
 	wingRight.AutoFlap();
 }
 
-void ParaGoomba::SetFlapSpeed(float speed)
+void ParaGoomba::SetWingFlapSpeed(float speed)
 {
 	wingLeft.SetFlapSpeed(speed);
 	wingRight.SetFlapSpeed(speed);
@@ -114,6 +115,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {
 		if (data.edge.y == -1) {
 			CollisionHandling::Slide(this, data);
+			velocity.y = 0;
 			onGround = true;
 		}
 

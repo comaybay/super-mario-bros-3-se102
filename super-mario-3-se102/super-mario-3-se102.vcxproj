@@ -214,6 +214,8 @@
     <ClCompile Include="MovementKnockedOver.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
+    <ClCompile Include="ParaGoomba.cpp" />
+    <ClCompile Include="ParaGoombaBrown.cpp" />
     <ClCompile Include="ParaGoombaRed.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
@@ -240,6 +242,7 @@
     <ClCompile Include="SpriteBox.cpp" />
     <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TinyGoomba.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireBall.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
@@ -280,6 +283,8 @@
     <ClInclude Include="MovementKnockedOver.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="NoteBlock.h" />
+    <ClInclude Include="ParaGoomba.h" />
+    <ClInclude Include="ParaGoombaBrown.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />
@@ -329,6 +334,7 @@
     <ClInclude Include="SpriteBox.h" />
     <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TinyGoomba.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireBall.h" />
     <ClInclude Include="VenusFireTrap.h" />
