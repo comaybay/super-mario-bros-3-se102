@@ -45,7 +45,7 @@ void Wing::SetFlapSpeed(float speed)
 }
 
 void Wing::FlapUp() {
-	SetAnimation("WingDown" + dirCode, animSpeed);
+	SetAnimation("WingUp" + dirCode, animSpeed);
 }
 
 void Wing::FlapDown() {
