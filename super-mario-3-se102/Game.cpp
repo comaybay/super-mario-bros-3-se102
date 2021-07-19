@@ -251,6 +251,21 @@ void Game::Run()
 		float dt = (accumulator < longFrameTime) ? smallDt : longDt;
 		float frameTime = (accumulator < longFrameTime) ? smallFrameTime : longFrameTime;
 
+#ifdef _DEBUG  
+		//this makes program run faster in debug mode, but less accurate and might cause bugs.
+		ProcessKeyboard();
+
+		const float dynamicDt = duration / 1000.0f;
+		if (collisionEngineEnabled)
+			CollisionEngine::Update(dynamicDt);
+
+		activeScene->Update(dynamicDt);
+
+		CollisionEngine::_HandleUnsubscribeWaitList();
+
+		activeScene->_FreeEntitiesInQueue();
+
+#else
 		while (accumulator >= frameTime)
 		{
 			accumulator -= frameTime;
@@ -262,10 +277,10 @@ void Game::Run()
 			activeScene->Update(dt);
 
 			CollisionEngine::_HandleUnsubscribeWaitList();
-		
+
 			activeScene->_FreeEntitiesInQueue();
 		}
-
+#endif
 		activeScene->Render();
 
 		if (newActiveScene != nullptr)
