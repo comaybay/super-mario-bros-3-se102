@@ -59,13 +59,13 @@ std::string ProcessingUtils::Trim(const std::string& str)
 {
 	int start = -1;
 	int end = -1;
-	for (int i = 0; i < str.size(); i++)
+	for (size_t i = 0; i < str.size(); i++)
 		if (str[i] != ' ') {
 			start = i;
 			break;
 		}
 
-	for (int i = str.size() - 1; i >= 0; i--)
+	for (int i = static_cast<int>(str.size()) - 1; i >= 0; i--)
 		if (str[i] != ' ') {
 			start = i;
 			break;

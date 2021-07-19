@@ -4,7 +4,7 @@
 #include "MarioSmall.h"
 #include "MarioSuper.h"
 #include "Goomba.h"
-#include "ParaGoomba.h"
+#include "ParaGoombaRed.h"
 #include "Koopa.h"
 #include "ParaKoopa.h"
 #include "VenusFireTrap.h"

@@ -214,7 +214,7 @@
     <ClCompile Include="MovementKnockedOver.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NoteBlock.cpp" />
-    <ClCompile Include="ParaGoomba.cpp" />
+    <ClCompile Include="ParaGoombaRed.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
@@ -313,7 +313,7 @@
     <ClInclude Include="HitboxManager.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mario.h" />
-    <ClInclude Include="ParaGoomba.h" />
+    <ClInclude Include="ParaGoombaRed.h" />
     <ClInclude Include="ParaKoopa.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Group.h" />

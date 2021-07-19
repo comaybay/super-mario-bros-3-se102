@@ -1,4 +1,4 @@
-#include "ParaGoomba.h"
+#include "ParaGoombaRed.h"
 #include "Goomba.h"
 #include "CollisionHandling.h"
 #include "Group.h"
@@ -13,18 +13,18 @@
 using namespace Entities;
 using namespace Utils;
 
-const float ParaGoomba::TIME_TILL_PREPARE = 0.75f;
-const float ParaGoomba::PREPARE_JUMP_SPEED = 100;
-const int ParaGoomba::NUM_OF_PREPARE_JUMPS = 3;
-const float ParaGoomba::JUMP_SPEED = 240;
-const float ParaGoomba::FALL_SPEED = EntityConstants::GRAVITY / 1.2f;
-const float ParaGoomba::JUMP_FLAP_ANIM_SPEED = 3;
+const float ParaGoombaRed::TIME_TILL_PREPARE = 0.75f;
+const float ParaGoombaRed::PREPARE_JUMP_SPEED = 100;
+const int ParaGoombaRed::NUM_OF_PREPARE_JUMPS = 3;
+const float ParaGoombaRed::JUMP_SPEED = 240;
+const float ParaGoombaRed::FALL_SPEED = EntityConstants::GRAVITY / 1.2f;
+const float ParaGoombaRed::JUMP_FLAP_ANIM_SPEED = 3;
 
-ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& position)
+ParaGoombaRed::ParaGoombaRed(const std::string& colorType, const Vector2<float>& position)
 	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
 	colorType(colorType),
 	colorCode(Color::ToColorCode(colorType)),
-	state(EntityState<ParaGoomba>(this, &ParaGoomba::MoveAround)),
+	state(EntityState<ParaGoombaRed>(this, &ParaGoombaRed::MoveAround)),
 	onGround(false),
 	jumpCount(0),
 	time(0),
@@ -36,10 +36,10 @@ ParaGoomba::ParaGoomba(const std::string& colorType, const Vector2<float>& posit
 	wingRight.FlapDown();
 }
 
-void ParaGoomba::OnReady()
+void ParaGoombaRed::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &ParaGoomba::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
+	CollisionEngine::Subscribe(this, &ParaGoombaRed::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
@@ -49,11 +49,11 @@ void ParaGoomba::OnReady()
 		velocity.x = -Goomba::WALK_SPEED;
 }
 
-ParaGoomba::~ParaGoomba()
+ParaGoombaRed::~ParaGoombaRed()
 {
 }
 
-void ParaGoomba::Update(float delta)
+void ParaGoombaRed::Update(float delta)
 {
 	Entity::Update(delta);
 
@@ -67,20 +67,20 @@ void ParaGoomba::Update(float delta)
 	onGround = false;
 }
 
-void ParaGoomba::Render() {
+void ParaGoombaRed::Render() {
 	wingLeft.Render();
 	wingRight.Render();
 	Entity::Render();
 }
 
-void ParaGoomba::MoveAround(float delta) {
+void ParaGoombaRed::MoveAround(float delta) {
 	time += delta;
 
 	if (time >= TIME_TILL_PREPARE) {
 		time = 0;
 		wingLeft.AutoFlap();
 		wingRight.AutoFlap();
-		state.SetState(&ParaGoomba::PrepareToJump);
+		state.SetState(&ParaGoombaRed::PrepareToJump);
 
 		if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
 			return;
@@ -90,7 +90,7 @@ void ParaGoomba::MoveAround(float delta) {
 	}
 }
 
-void ParaGoomba::PrepareToJump(float delta) {
+void ParaGoombaRed::PrepareToJump(float delta) {
 	if (!onGround)
 		return;
 
@@ -108,29 +108,29 @@ void ParaGoomba::PrepareToJump(float delta) {
 		wingLeft.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 		wingRight.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 
-		state.SetState(&ParaGoomba::Jump);
+		state.SetState(&ParaGoombaRed::Jump);
 	}
 }
 
-void ParaGoomba::Jump(float delta) {
+void ParaGoombaRed::Jump(float delta) {
 	if (velocity.y >= 0) {
 		wingLeft.SetFlapSpeed(1.0f);
 		wingRight.SetFlapSpeed(1.0f);
-		state.SetState(&ParaGoomba::Fall);
+		state.SetState(&ParaGoombaRed::Fall);
 	}
 }
 
-void ParaGoomba::Fall(float delta) {
+void ParaGoombaRed::Fall(float delta) {
 	if (onGround) {
 		wingLeft.FlapDown();
 		wingRight.FlapDown();
 
-		state.SetState(&ParaGoomba::MoveAround);
+		state.SetState(&ParaGoombaRed::MoveAround);
 		return;
 	}
 }
 
-void ParaGoomba::OnCollision(CollisionData data)
+void ParaGoombaRed::OnCollision(CollisionData data)
 {
 	const EntityGroups& groups = data.who->GetEntityGroups();
 
@@ -171,7 +171,7 @@ void ParaGoomba::OnCollision(CollisionData data)
 		velocity.x = Goomba::WALK_SPEED * data.edge.x;
 }
 
-void ParaGoomba::GetKnockedOver(HDirection direction)
+void ParaGoombaRed::GetKnockedOver(HDirection direction)
 {
 	Goomba* goomba = new Entities::Goomba(colorType, position);
 

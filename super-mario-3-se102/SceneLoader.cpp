@@ -305,7 +305,7 @@ LPEntity SceneLoader::ParseParaGoomba(const std::vector<std::string>& tokens)
 	if (tokens.size() != 5)
 		throw InvalidTokenSizeException(5);
 
-	return new Entities::ParaGoomba(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
+	return new Entities::ParaGoombaRed(tokens[1], Vector2<float>(stof(tokens[2]), stof(tokens[3])));
 }
 
 LPEntity SceneLoader::ParseKoopa(const std::vector<std::string>& tokens)

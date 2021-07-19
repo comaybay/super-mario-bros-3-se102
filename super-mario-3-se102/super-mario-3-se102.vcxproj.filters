@@ -135,9 +135,6 @@
     <ClCompile Include="Mario.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="ParaGoomba.cpp">
-      <Filter>Source Files\Entities\World</Filter>
-    </ClCompile>
     <ClCompile Include="ParaKoopa.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -267,6 +264,9 @@
     <ClCompile Include="BoomerangBrother.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
+    <ClCompile Include="ParaGoombaRed.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -366,9 +366,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PointUpFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ParaGoomba.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wing.h">
@@ -528,6 +525,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Boomerang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParaGoombaRed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

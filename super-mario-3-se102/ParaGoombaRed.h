@@ -9,11 +9,11 @@
 #include "IKnockedOverable.h"
 
 namespace Entities {
-	class ParaGoomba : public Entity, public IKnockedOverable
+	class ParaGoombaRed : public Entity, public IKnockedOverable
 	{
 	public:
-		~ParaGoomba();
-		ParaGoomba(const std::string& colorType, const Utils::Vector2<float>& position);
+		~ParaGoombaRed();
+		ParaGoombaRed(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
 		void Render() override;
 		void GetKnockedOver(HDirection direction) override;
@@ -34,7 +34,7 @@ namespace Entities {
 		float time;
 		Entities::Wing wingLeft;
 		Entities::Wing wingRight;
-		EntityState<ParaGoomba> state;
+		EntityState<ParaGoombaRed> state;
 		static const float PREPARE_JUMP_SPEED;
 		static const float JUMP_SPEED;
 		static const float TIME_TILL_PREPARE;
