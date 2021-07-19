@@ -193,14 +193,6 @@ void Koopa::Update(float delta)
 {
 	Entity::Update(delta);
 	state.Update(delta);
-
-	if (state.GetState() == &Koopa::ShellSlide)
-		velocity.y += EntityConstants::GRAVITY_STRONG * delta;
-	else
-		velocity.y += EntityConstants::GRAVITY * delta;
-
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
-
 	onGround = false;
 }
 
@@ -232,6 +224,8 @@ void Koopa::SwitchState(EntityState<Koopa>::StateHandler handler)
 
 void Koopa::MoveAround(float delta)
 {
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
+
 	if (colorType == Color::GREEN || onGround || lock)
 		return;
 
@@ -246,6 +240,9 @@ void Koopa::MoveAround(float delta)
 
 void Koopa::ShellIdle(float delta)
 {
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
+
+
 	if (velocity.x == 0)
 		return;
 
@@ -257,6 +254,7 @@ void Koopa::ShellIdle(float delta)
 
 void Koopa::ShellSlide(float delta)
 {
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY_STRONG * delta, EntityConstants::MAX_FALL_SPEED);
 }
 
 void Koopa::KnockedOver(float delta)

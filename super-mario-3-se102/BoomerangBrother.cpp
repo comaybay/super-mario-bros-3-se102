@@ -52,9 +52,6 @@ void BoomerangBrother::Update(float delta) {
 		targetPlayer = TryFindPlayer();
 
 	state.Update(delta);
-
-	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
 LPEntity BoomerangBrother::TryFindPlayer() {
@@ -75,6 +72,8 @@ void BoomerangBrother::MoveLeft(float delta)
 {
 	UpdateAnimation();
 
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
+
 	if (!hasTryJumpThisTurn && position.x <= prepareThrowX) {
 		hasTryJumpThisTurn = true;
 		if (Chance(JUMP_CHANCE))
@@ -93,6 +92,8 @@ void BoomerangBrother::MoveLeft(float delta)
 void BoomerangBrother::MoveRight(float delta)
 {
 	UpdateAnimation();
+
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
 
 	if (!hasTryJumpThisTurn && position.x >= prepareThrowX) {
 		hasTryJumpThisTurn = true;
@@ -165,6 +166,9 @@ void BoomerangBrother::MoveAndThrowRight(float delta)
 void BoomerangBrother::Wait(float delta)
 {
 	UpdateAnimation();
+
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
+
 	time += delta;
 	if (time >= WAIT_DURATION) {
 		time = 0;
@@ -191,8 +195,9 @@ void BoomerangBrother::KnockedOver(float delta)
 		parentScene->QueueFree(this);
 }
 
-void BoomerangBrother::StompedOn(float _)
+void BoomerangBrother::StompedOn(float delta)
 {
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
 }
 
 void BoomerangBrother::UpdateAnimation()

@@ -1,4 +1,5 @@
 #include "MovementKnockedOver.h"
+#include "EntityConstants.h"
 
 const Utils::Vector2<float> MovementKnockedOver::KNOCK_OVER_VELOCITY(60, -250);
 const float MovementKnockedOver::EXIST_DURATION = 5;
@@ -19,6 +20,11 @@ void MovementKnockedOver::Init(float _)
 
 void MovementKnockedOver::Run(float delta)
 {
+	Utils::Vector2<float> vel = entity->GetVelocity();
+	vel.y += EntityConstants::GRAVITY * delta;
+	vel.y = min(vel.y, EntityConstants::MAX_FALL_SPEED);
+	entity->SetVelocity(vel);
+
 	time += delta;
 	if (time > EXIST_DURATION)
 		SetMovementFinished();

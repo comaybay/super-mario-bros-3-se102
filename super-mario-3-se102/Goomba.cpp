@@ -46,20 +46,19 @@ void Goomba::OnReady()
 void Goomba::Update(float delta)
 {
 	Entity::Update(delta);
-
 	state.Update(delta);
-
-	velocity.y += EntityConstants::GRAVITY * delta;
-	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 }
 
-void Goomba::MoveAround(float delta) {
-
+void Goomba::MoveAround(float delta)
+{
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
 }
 
-void Goomba::StompedOn(float delta) {
+void Goomba::StompedOn(float delta)
+{
+	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
+
 	time += delta;
-
 	if (time >= 0.25f)
 		parentScene->QueueFree(this);
 }
@@ -67,6 +66,7 @@ void Goomba::StompedOn(float delta) {
 void Goomba::KnockedOver(float delta)
 {
 	knockedOverMovement->Update(delta);
+
 	if (knockedOverMovement->Finished())
 		parentScene->QueueFree(this);
 }

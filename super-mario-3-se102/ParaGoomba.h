@@ -14,14 +14,14 @@ namespace Entities {
 		void OnReady() override;
 		void Render() override;
 		void UpdateWings(float delta);
-		void FlapUp();
-		void FlapDown();
-		void AutoFlap();
-		void SetFlapSpeed(float speed);
+		void FlapUpWings();
+		void FlapDownWings();
+		void AutoFlapWings();
+		void SetWingFlapSpeed(float speed);
 		void GetKnockedOver(HDirection direction) override;
 
 	protected:
-		void OnCollision(CollisionData data);
+		virtual void OnCollision(CollisionData data);
 
 		float onGround;
 		std::string colorType;
