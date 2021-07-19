@@ -12,5 +12,11 @@ namespace EntityUtils
 	/// Returns true if other entity is above entity
 	/// </summary>
 	bool IsAboveOf(LPEntity entity, LPEntity other);
+
+	/// <summary>
+	/// Taken from https://pastebin.com/zD1asN3v with modifications
+	/// </summary>
+	float Wave(float from, float to, float duration, float offset, float time);
+
 };
 
