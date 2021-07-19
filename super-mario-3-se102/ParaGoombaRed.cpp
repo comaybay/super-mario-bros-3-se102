@@ -5,9 +5,6 @@
 #include "EntityConstants.h"
 #include "Scene.h"
 #include "Mario.h"
-#include "FXBoom.h"
-#include "PointUpFactory.h"
-#include "Wing.h"
 #include "Contains.h"
 #include "EntityUtils.h"
 using namespace Entities;
@@ -17,60 +14,28 @@ const float ParaGoombaRed::TIME_TILL_PREPARE = 0.75f;
 const float ParaGoombaRed::PREPARE_JUMP_SPEED = 100;
 const int ParaGoombaRed::NUM_OF_PREPARE_JUMPS = 3;
 const float ParaGoombaRed::JUMP_SPEED = 240;
-const float ParaGoombaRed::FALL_SPEED = EntityConstants::GRAVITY / 1.2f;
+const float ParaGoombaRed::FALL_ACCEL = EntityConstants::GRAVITY / 1.2f;
 const float ParaGoombaRed::JUMP_FLAP_ANIM_SPEED = 3;
 
-ParaGoombaRed::ParaGoombaRed(const std::string& colorType, const Vector2<float>& position)
-	: Entity(position, AnimationId::NONE, "HitboxGoomba", { "ParaGoombas", Group::ENEMIES }, GridType::MOVABLE_ENTITIES),
-	colorType(colorType),
-	colorCode(Color::ToColorCode(colorType)),
+ParaGoombaRed::ParaGoombaRed(const Vector2<float>& position)
+	: ParaGoomba(Color::RED, position),
 	state(EntityState<ParaGoombaRed>(this, &ParaGoombaRed::MoveAround)),
-	onGround(false),
 	jumpCount(0),
-	time(0),
-	wingLeft(Wing(this, WingDirection::LEFT, { -2, -10 })),
-	wingRight(Wing(this, WingDirection::RIGHT, { 10, -10 }))
+	time(0)
 {
 	SetAnimation(colorCode + "GoombaM");
-	wingLeft.FlapDown();
-	wingRight.FlapDown();
-}
-
-void ParaGoombaRed::OnReady()
-{
-	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &ParaGoombaRed::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
-
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
-	}
-	else
-		velocity.x = -Goomba::WALK_SPEED;
-}
-
-ParaGoombaRed::~ParaGoombaRed()
-{
+	FlapDown();
 }
 
 void ParaGoombaRed::Update(float delta)
 {
-	Entity::Update(delta);
+	ParaGoomba::Update(delta);
 
 	state.Update(delta);
-	velocity.y += FALL_SPEED * delta;
+	velocity.y += FALL_ACCEL * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	wingLeft.Update(delta);
-	wingRight.Update(delta);
-
-	onGround = false;
-}
-
-void ParaGoombaRed::Render() {
-	wingLeft.Render();
-	wingRight.Render();
-	Entity::Render();
+	UpdateWings(delta);
 }
 
 void ParaGoombaRed::MoveAround(float delta) {
@@ -78,15 +43,14 @@ void ParaGoombaRed::MoveAround(float delta) {
 
 	if (time >= TIME_TILL_PREPARE) {
 		time = 0;
-		wingLeft.AutoFlap();
-		wingRight.AutoFlap();
+		AutoFlap();
+
+		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
+			LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
+			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
+		}
+
 		state.SetState(&ParaGoombaRed::PrepareToJump);
-
-		if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
-			return;
-
-		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 	}
 }
 
@@ -103,83 +67,26 @@ void ParaGoombaRed::PrepareToJump(float delta) {
 		jumpCount = 0;
 		velocity.y -= JUMP_SPEED;
 
-		wingLeft.AutoFlap();
-		wingRight.AutoFlap();
-		wingLeft.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
-		wingRight.SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
+		AutoFlap();
+		SetFlapSpeed(JUMP_FLAP_ANIM_SPEED);
 
 		state.SetState(&ParaGoombaRed::Jump);
 	}
 }
 
 void ParaGoombaRed::Jump(float delta) {
-	if (velocity.y >= 0) {
-		wingLeft.SetFlapSpeed(1.0f);
-		wingRight.SetFlapSpeed(1.0f);
-		state.SetState(&ParaGoombaRed::Fall);
-	}
+	if (velocity.y < 0)
+		return;
+
+	SetFlapSpeed(1.0f);
+	state.SetState(&ParaGoombaRed::Fall);
 }
 
 void ParaGoombaRed::Fall(float delta) {
-	if (onGround) {
-		wingLeft.FlapDown();
-		wingRight.FlapDown();
-
-		state.SetState(&ParaGoombaRed::MoveAround);
+	if (!onGround)
 		return;
-	}
+
+	FlapDown();
+	state.SetState(&ParaGoombaRed::MoveAround);
 }
 
-void ParaGoombaRed::OnCollision(CollisionData data)
-{
-	const EntityGroups& groups = data.who->GetEntityGroups();
-
-	if (Contains(Group::PLAYERS, groups)) {
-		LPMario player = static_cast<LPMario>(data.who);
-		if (data.edge.y == 1) {
-			player->Bounce();
-			parentScene->AddEntity(new Entities::Goomba(colorType, position));
-			parentScene->AddEntity(PointUpFactory::Create(position));
-			parentScene->QueueFree(this);
-			return;
-		}
-
-		if (!player->IsInvincible()) {
-			player->TakeDamage();
-			return;
-		}
-	}
-
-	if (Contains(Group::COLLISION_WALLS_TYPE_2, groups)) {
-		if (data.edge.y == -1) {
-			CollisionHandling::Slide(this, data);
-			onGround = true;
-		}
-
-		return;
-	}
-
-	CollisionHandling::Slide(this, data);
-
-	if (data.edge.y != 0)
-		velocity.y = 0;
-
-	if (data.edge.y == -1)
-		onGround = true;
-
-	else if (data.edge.x != 0)
-		velocity.x = Goomba::WALK_SPEED * data.edge.x;
-}
-
-void ParaGoombaRed::GetKnockedOver(HDirection direction)
-{
-	Goomba* goomba = new Entities::Goomba(colorType, position);
-
-	parentScene->AddEntity(goomba,
-		[direction](LPEntity goomba) {
-			static_cast<Goomba*>(goomba)->GetKnockedOver(direction);
-		}
-	);
-
-	parentScene->QueueFree(this);
-}
