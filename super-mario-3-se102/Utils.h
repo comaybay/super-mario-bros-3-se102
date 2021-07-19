@@ -34,6 +34,7 @@ namespace Utils
 		Dimension<T> operator*(int value) const;
 		Dimension<T> operator*(float value) const;
 		Dimension<T> operator+(const Dimension<T>& other) const;
+		Dimension<T> operator-(const Dimension<T>& other) const;
 		Dimension<T> Rounded() const;
 	};
 
@@ -265,6 +266,11 @@ inline Utils::Dimension<T> Utils::Dimension<T>::operator*(int value) const {
 template <typename T>
 inline Utils::Dimension<T> Utils::Dimension<T>::operator+(const Utils::Dimension<T>& other) const {
 	return Dimension(width + other.width, height + other.height);
+}
+
+template <typename T>
+inline Utils::Dimension<T> Utils::Dimension<T>::operator-(const Utils::Dimension<T>& other) const {
+	return Dimension(width - other.width, height - other.height);
 }
 
 template <typename T>
