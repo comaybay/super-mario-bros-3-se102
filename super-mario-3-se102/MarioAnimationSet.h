@@ -12,8 +12,12 @@ struct MarioAnimationSet {
 	std::string runRight;
 	std::string jumpLeft;
 	std::string jumpRight;
+	std::string runJumpLeft;
+	std::string runJumpRight;
 	std::string fallLeft;
 	std::string fallRight;
+	std::string runFallLeft;
+	std::string runFallRight;
 	std::string duckLeft;
 	std::string duckRight;
 	std::string idleHoldLeft;
@@ -32,8 +36,12 @@ struct MarioAnimationSet {
 		const std::string& runRight,
 		const std::string& jumpLeft,
 		const std::string& jumpRight,
+		const std::string& runJumpLeft,
+		const std::string& runJumpRight,
 		const std::string& fallLeft,
 		const std::string& fallRight,
+		const std::string& runFallLeft,
+		const std::string& runFallRight,
 		const std::string& duckLeft,
 		const std::string& duckRight,
 		const std::string& idleHoldLeft,

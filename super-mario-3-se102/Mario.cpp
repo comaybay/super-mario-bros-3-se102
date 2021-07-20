@@ -6,13 +6,18 @@
 #include "Group.h"
 #include "Contains.h"
 #include "Scene.h"
+#include "PlayerVariables.h"
 using namespace Entities;
 using namespace Utils;
 
 const float Mario::MAX_WALK_SPEED = 100;
-const float Mario::MAX_RUN_SPEED = 150;
+const float Mario::MAX_RUN_SPEED = 200;
 const float Mario::RUN_STATE_ANIM_SPEED = 2;
-const float Mario::ACCELERATION = 350;
+const float Mario::ACCELERATION = 200;
+const float Mario::FRICTION_ACCEL = 500;
+const float Mario::WAIT_TIME_BEFORE_INCREASE_POWER_METER = 0.75f;
+const float Mario::POWER_METER_INCREASE_RATE = 0.125f;
+const float Mario::POWER_METER_DECREASE_RATE = 0.25f;
 const float Mario::BOUNCE_SPEED = 200;
 const float Mario::BOUNCE_SPEED_HOLD_JUMP = BOUNCE_SPEED * 2;
 const float Mario::JUMP_SPEED = 325;
@@ -23,8 +28,8 @@ const float Mario::DEATH_FALL_ACCEL = EntityConstants::GRAVITY / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
 const float Mario::INVINCIBLE_DURATION = 1;
 const int Mario::FLASH_DURATION = 2;
-const float Mario::MAX_MOVE_ANIM_SPEED = 1.5f;
-const float Mario::MOVE_ANIM_SPEED_INCREASE_UNIT = 1 / 60.0f;
+const float Mario::MAX_MOVE_ANIM_SPEED = 2.0f;
+const float Mario::INCREASE_MOVE_ANIM_UNIT = 1 / 30.0f;
 
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
@@ -45,7 +50,10 @@ Mario::Mario(
 	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
 	inputDir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
 	time(0),
-	moveAnimSpeed(1),
+	powerMeterTime(0),
+	walkAnimSpeed(1),
+	instantDecrease(false),
+	isRunning(false),
 	onGround(false),
 	runBeforeJump(false)
 {
@@ -112,6 +120,18 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 
 	marioState.SetState(stateHandler);
 
+	powerMeterTime = 0;
+
+	if (stateHandler == &Mario::Walk || stateHandler == &Mario::WalkSpeedUp) {
+		isRunning = false;
+		return;
+	}
+
+	if (stateHandler == &Mario::Run) {
+		isRunning = true;
+		return;
+	}
+
 	if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) >= MAX_WALK_SPEED / 2) ? -JUMP_SPEED_AFTER_WALK : -JUMP_SPEED;
 		inputDir.y = 1;
@@ -121,6 +141,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 	}
 
 	if (stateHandler == &Mario::Fall) {
+		powerMeterTime = 0;
 		onGround = false;
 		inputDir.y = 1;
 		return;
@@ -147,6 +168,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 
 void Mario::Idle(float delta)
 {
+	UpdateDecreasePowerMeter(delta);
 	ClipHorizontalPosition();
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
@@ -167,7 +189,7 @@ void Mario::Idle(float delta)
 
 	if (inputDir.x != 0) {
 		if (Game::IsKeyDown(DIK_A))
-			SwitchState(&Mario::Run);
+			SwitchState(&Mario::WalkSpeedUp);
 		else
 			SwitchState(&Mario::Walk);
 
@@ -194,23 +216,27 @@ void Mario::HandleIdleStateAnimation()
 
 void Mario::Walk(float delta)
 {
+	UpdateDecreasePowerMeter(delta);
 	ClipHorizontalPosition();
-	ApplyHorizontalMovement(delta);
+
+	if (inputDir.x != 0 && !AlmostEqual(velocity.x, 0) && inputDir.x != Sign(velocity.x))
+		ApplyFriction(delta);
+	else
+		ApplyHorizontalMovement(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	moveAnimSpeed = max(moveAnimSpeed - MOVE_ANIM_SPEED_INCREASE_UNIT, 1.0f);
+	walkAnimSpeed = max(walkAnimSpeed - INCREASE_MOVE_ANIM_UNIT, 1.0f);
 	if (inputDir.x != 0) {
 		if (inputDir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
-		else {
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
-			moveAnimSpeed = 1;
-		}
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
 	}
 
 	if (Game::IsKeyDown(DIK_A))
-		SwitchState(&Mario::Run);
+		SwitchState(&Mario::WalkSpeedUp);
 
 	else if (!onGround)
 		SwitchState(&Mario::Fall);
@@ -222,22 +248,70 @@ void Mario::Walk(float delta)
 		SwitchState(&Mario::Jump);
 }
 
-void Mario::Run(float delta)
+void Mario::WalkSpeedUp(float delta)
 {
+	if (inputDir.x != 0)
+		if (inputDir.x == Sign(velocity.x))
+			UpdateIncreasePowerMeter(delta);
+		else {
+			powerMeterTime = 0;
+			UpdateDecreasePowerMeter(delta);
+		}
+
 	ClipHorizontalPosition();
-	ApplyHorizontalMovement(delta);
+
+	if (inputDir.x != 0 && !AlmostEqual(velocity.x, 0) && inputDir.x != Sign(velocity.x))
+		ApplyFriction(delta);
+	else
+		ApplyHorizontalMovement(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	moveAnimSpeed = min(moveAnimSpeed + MOVE_ANIM_SPEED_INCREASE_UNIT, MAX_MOVE_ANIM_SPEED);
-	if (inputDir.x != 0) {
+	walkAnimSpeed = min(walkAnimSpeed + INCREASE_MOVE_ANIM_UNIT, MAX_MOVE_ANIM_SPEED);
+	if (inputDir.x != 0)
 		if (inputDir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
 		else {
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
-			moveAnimSpeed = 1;
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+			walkAnimSpeed = 1;
 		}
-	}
+
+	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_LEVEL)
+		SwitchState(&Mario::Run);
+
+	if (!Game::IsKeyDown(DIK_A))
+		SwitchState(&Mario::Walk);
+
+	if (!onGround)
+		SwitchState(&Mario::Fall);
+
+	if (inputDir.x == 0)
+		SwitchState(&Mario::Idle);
+
+	if (onGround && Game::IsKeyPressed(DIK_S))
+		SwitchState(&Mario::Jump);
+}
+
+void Mario::Run(float delta) {
+	ClipHorizontalPosition();
+
+	if (inputDir.x != 0 && !AlmostEqual(velocity.x, 0) && inputDir.x != Sign(velocity.x))
+		ApplyFriction(delta);
+	else
+		ApplyHorizontalMovement(delta);
+
+	velocity.y += EntityConstants::GRAVITY * delta;
+	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
+
+	if (inputDir.x != 0)
+		if (inputDir.x == Sign(velocity.x))
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runLeft : animationSet.runRight);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+
+	if (inputDir.x != 0 && inputDir.x != Sign(velocity.x))
+		SwitchState(&Mario::WalkSpeedUp);
 
 	if (!Game::IsKeyDown(DIK_A))
 		SwitchState(&Mario::Walk);
@@ -254,15 +328,26 @@ void Mario::Run(float delta)
 
 void Mario::Jump(float delta)
 {
+	if (inputDir.x != 0 && inputDir.x != Sign(velocity.x))
+		UpdateDecreasePowerMeter(delta);
+
 	ClipHorizontalPosition();
-	ApplyHorizontalMovement(delta);
+
+	if (inputDir.x != 0 && !AlmostEqual(velocity.x, 0) && inputDir.x != Sign(velocity.x))
+		ApplyFriction(delta);
+	else
+		ApplyHorizontalMovement(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (inputDir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	if (isRunning)
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
+	else
+		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
@@ -272,18 +357,35 @@ void Mario::Jump(float delta)
 }
 
 void Mario::Fall(float delta) {
+	if (inputDir.x != 0 && inputDir.x != Sign(velocity.x))
+		UpdateDecreasePowerMeter(delta);
+
 	ClipHorizontalPosition();
-	ApplyHorizontalMovement(delta);
+
+	if (inputDir.x != 0 && !AlmostEqual(velocity.x, 0) && inputDir.x != Sign(velocity.x))
+		ApplyFriction(delta);
+	else
+		ApplyHorizontalMovement(delta);
+
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	if (inputDir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
-	if (velocity.y < 0)
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
-	else
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
+
+	if (velocity.y < 0) {
+		if (isRunning)
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+	}
+	else {
+		if (isRunning)
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runFallLeft : animationSet.runFallRight);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
+	}
 
 	if (!onGround)
 		return;
@@ -293,8 +395,13 @@ void Mario::Fall(float delta) {
 		return;
 	}
 
-	if (Game::IsKeyDown(DIK_A))
-		SwitchState(&Mario::Run);
+	if (Game::IsKeyDown(DIK_A)) {
+		if (PlayerVariables::GetPowerMeterLevel() < PlayerVariables::MAX_POWER_LEVEL)
+			SwitchState(&Mario::WalkSpeedUp);
+		else
+			SwitchState(&Mario::Run);
+	}
+
 	else
 		SwitchState(&Mario::Walk);
 }
@@ -306,6 +413,8 @@ void Mario::BounceUp(float delta)
 
 void Mario::OnNoteBlock(float delta)
 {
+	UpdateDecreasePowerMeter(delta);
+
 	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
@@ -315,6 +424,8 @@ void Mario::OnNoteBlock(float delta)
 
 void Mario::OffNoteBlock(float delta)
 {
+	UpdateDecreasePowerMeter(delta);
+
 	ClipHorizontalPosition();
 	ApplyHorizontalMovement(delta);
 	velocity.y += EntityConstants::GRAVITY * delta;
@@ -322,7 +433,39 @@ void Mario::OffNoteBlock(float delta)
 	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
 
 	if (onGround)
-		SwitchState(velocity.x <= MAX_WALK_SPEED ? &Mario::Walk : &Mario::Run);
+		SwitchState(velocity.x <= MAX_WALK_SPEED ? &Mario::Walk : &Mario::WalkSpeedUp);
+}
+
+void Mario::UpdateIncreasePowerMeter(float delta)
+{
+	instantDecrease = true;
+
+	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_LEVEL)
+		return;
+
+	powerMeterTime += delta;
+	if (powerMeterTime >= WAIT_TIME_BEFORE_INCREASE_POWER_METER + POWER_METER_INCREASE_RATE) {
+		PlayerVariables::AddToPowerMeterLevel(1);
+		powerMeterTime = WAIT_TIME_BEFORE_INCREASE_POWER_METER;
+	}
+}
+
+void Mario::UpdateDecreasePowerMeter(float delta)
+{
+	if (PlayerVariables::GetPowerMeterLevel() <= 0)
+		return;
+
+	if (instantDecrease) {
+		PlayerVariables::AddToPowerMeterLevel(-1);
+		instantDecrease = false;
+		return;
+	}
+
+	powerMeterTime += delta;
+	if (powerMeterTime >= POWER_METER_DECREASE_RATE) {
+		PlayerVariables::AddToPowerMeterLevel(-1);
+		powerMeterTime = 0;
+	}
 }
 
 void Mario::ReachedGoalRouletteFall(float delta)
@@ -352,7 +495,7 @@ void Mario::ApplyHorizontalMovement(float delta)
 
 	//transition from run to walk
 	if (!isHoldingRunButton && abs(velocity.x) > MAX_WALK_SPEED && Sign(velocity.x) == inputDir.x)
-		accelX = -ACCELERATION;
+		accelX = -accelX;
 
 	else if (isHoldingRunButton && abs(velocity.x) == MAX_RUN_SPEED && Sign(velocity.x) == inputDir.x)
 		accelX = 0;
@@ -368,7 +511,7 @@ void Mario::ApplyHorizontalMovement(float delta)
 
 void Mario::ApplyFriction(float delta) {
 	int frictionDirX = -Sign(velocity.x);
-	velocity.x += ACCELERATION * frictionDirX * delta;
+	velocity.x += FRICTION_ACCEL * frictionDirX * delta;
 
 	if (Sign(velocity.x) == frictionDirX)
 		velocity.x = 0;

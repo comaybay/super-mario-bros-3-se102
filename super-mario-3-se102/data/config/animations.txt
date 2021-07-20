@@ -9,7 +9,7 @@
 #If SpriteboxHandlingMode = Manual => Rect (Left, Top, Right, Bottom), [Offset (X, Y) (default = 0)]
 
 ##Small Mario##====================================
-#Move (Walk, Run)#
+#Walk#
 MarioSWL, Normal, 0.066, Auto
 PlayableCharacters
 1, 16, 16, 16, 2, 2
@@ -17,6 +17,15 @@ PlayableCharacters
 MarioSWR, Normal, 0.066, Auto
 PlayableCharacters
 1, 34, 16, 16, 2, 2
+
+#Run#
+MarioSRL, Normal, 0.016, Auto
+PlayableCharacters
+55, 16, 16, 16, 2, 2
+
+MarioSRR, Normal, 0.016, Auto
+PlayableCharacters
+91, 34, 16, 16, 2, 2
 
 #Turn#
 MarioSTL, Normal, -1, Manual
@@ -36,6 +45,15 @@ MarioSJR, Normal, -1, Manual
 PlayableCharacters
 37, 34, 52, 49
 
+#Run Jump#
+MarioSRJL, Normal, -1, Manual
+PlayableCharacters
+127, 34, 142, 49
+
+MarioSRJR, Normal, -1, Manual
+PlayableCharacters
+145, 34, 160, 49
+
 #Idle#
 MarioSIL, Normal, -1, Manual
 PlayableCharacters
@@ -51,7 +69,7 @@ PlayableCharacters
 289, 16, 304, 31
 
 ##Super Mario##====================================
-#Move (Walk, Run)#
+#Walk#
 MarioBWL, Normal, 0.066, Auto
 PlayableCharacters
 1, 110, 16, 32, 2, 4
@@ -59,6 +77,15 @@ PlayableCharacters
 MarioBWR, Normal, 0.066, Auto
 PlayableCharacters
 73, 110, 16, 32, 2, 4
+
+#Run#
+MarioBRL, Normal, 0.016, Auto
+PlayableCharacters
+333, 42, 19, 32, 7, 4, -2, 0
+
+MarioBRR, Normal, 0.016, Auto
+PlayableCharacters
+333, 76, 19, 32, 7, 4, -2, 0
 
 #Turn#
 MarioBTL, Normal, -1, Manual
@@ -77,6 +104,15 @@ PlayableCharacters
 MarioBJR, Normal, -1, Manual
 PlayableCharacters
 199, 110, 214, 141 
+
+#Run Jump#
+MarioBRJL, Normal, -1, Manual
+PlayableCharacters
+437, 42, 455, 73, -2, 0
+
+MarioBRJR, Normal, -1, Manual
+PlayableCharacters
+437, 76, 455, 107, -2, 0
 
 #Fall#
 MarioBFL, Normal, -1, Manual

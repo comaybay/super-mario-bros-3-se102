@@ -15,9 +15,9 @@ public:
 	static void SetNumberOfLives(int num);
 	static void AddToNumberOfLives(int num);
 
-	static float GetPowerMeterLevel();
-	static void SetPowerMeterLevel(float level);
-	static void AddToPowerMeterLevel(float level);
+	static int GetPowerMeterLevel();
+	static void SetPowerMeterLevel(int level);
+	static void AddToPowerMeterLevel(int level);
 
 	/// <summary>
 	/// Set world map node id. This will be used to determine where player is at when loading a world map.
@@ -29,11 +29,12 @@ public:
 	/// </summary>
 	static const std::string& GetStandingWMNodeId();
 
+	static const int MAX_POWER_LEVEL;
 
 private:
 	static PlayerPowerLevel playerPowerLevel;
 	static int numberOfCoins;
 	static int numberOfLives;
-	static float powerMeterLevel;
+	static int powerMeterLevel;
 	static std::string standingWMNodeId;
 };

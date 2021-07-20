@@ -1,9 +1,12 @@
 #include "PlayerVariables.h"
+#include "Utils.h"
+
+const int PlayerVariables::MAX_POWER_LEVEL = 6;
 
 PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::numberOfCoins = 0;
 int PlayerVariables::numberOfLives = 0;
-float PlayerVariables::powerMeterLevel = 0;
+int PlayerVariables::powerMeterLevel = 0;
 std::string PlayerVariables::standingWMNodeId = "NStart";
 
 PlayerPowerLevel PlayerVariables::GetPlayerPowerLevel()
@@ -46,18 +49,19 @@ void PlayerVariables::AddToNumberOfLives(int num)
 	numberOfLives += num;
 }
 
-float PlayerVariables::GetPowerMeterLevel()
+int PlayerVariables::GetPowerMeterLevel()
 {
 	return powerMeterLevel;
 }
-void PlayerVariables::SetPowerMeterLevel(float level)
+void PlayerVariables::SetPowerMeterLevel(int level)
 {
 	powerMeterLevel = level;
 }
 
-void PlayerVariables::AddToPowerMeterLevel(float level)
+void PlayerVariables::AddToPowerMeterLevel(int level)
 {
 	powerMeterLevel += level;
+	Utils::DebugOut(std::to_string(powerMeterLevel));
 }
 
 void PlayerVariables::SetStandingWMNodeId(const std::string& nodeId)
