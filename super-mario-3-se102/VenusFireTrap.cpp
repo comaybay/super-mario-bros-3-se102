@@ -83,11 +83,10 @@ void VenusFireTrap::Update(float delta)
 LPEntity VenusFireTrap::TryFindPlayer() {
 	if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
 		return nullptr;
-	else {
-		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
-		return player;
-	}
+
+	LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
+	player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
+	return player;
 }
 
 void VenusFireTrap::PrepareCheckDistance(float delta)

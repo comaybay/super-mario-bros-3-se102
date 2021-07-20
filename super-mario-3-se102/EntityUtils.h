@@ -1,5 +1,7 @@
 #pragma once
-#include "Entity.h"
+
+class Entity;
+typedef Entity* LPEntity;
 
 namespace EntityUtils
 {
@@ -17,6 +19,4 @@ namespace EntityUtils
 	/// Taken from https://pastebin.com/zD1asN3v with modifications
 	/// </summary>
 	float Wave(float from, float to, float duration, float offset, float time);
-
 };
-

@@ -1,4 +1,5 @@
 #include "EntityUtils.h"
+#include "Entity.h"
 #include "EntityConstants.h"
 
 bool EntityUtils::IsOnLeftSideOf(LPEntity entity, LPEntity other)

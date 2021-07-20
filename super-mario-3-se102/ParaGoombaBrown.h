@@ -11,6 +11,7 @@ namespace Entities {
 
 	private:
 		void OnPlayerDestroy(LPEntity _);
+		LPEntity TryFindPlayer();
 
 		void MoveAround(float delta);
 		void PrepareToFly(float delta);
