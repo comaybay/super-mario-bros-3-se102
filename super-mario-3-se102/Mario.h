@@ -4,6 +4,7 @@
 #include "PlayerPowerLevel.h"
 #include "MarioAnimationSet.h"
 #include "Direction.h"
+#include "Koopa.h"
 
 namespace Entities {
 	class Mario : public Entity {
@@ -39,6 +40,7 @@ namespace Entities {
 
 	protected:
 		virtual void OnOutOfWorld() override;
+		virtual void HandleIdleStateAnimation();
 
 		void NormalUpdate(float delta);
 		void InvincibilityUpdate(float delta);
@@ -59,7 +61,7 @@ namespace Entities {
 		void OffNoteBlock(float delta);
 
 		virtual void OnCollision(CollisionData data);
-		void UpdateHorizontalDirection();
+		void UpdateInputDirection();
 		void UnsubscribeToCollisionEngine();
 
 		void ApplyHorizontalMovement(float delta);
@@ -70,7 +72,8 @@ namespace Entities {
 		void ClipHorizontalPosition();
 
 		EntityState<Mario> marioState;
-		Utils::Vector2<int> dir;
+		Utils::Vector2<int> inputDir;
+		std::string normalHitboxId;
 		float time;
 		float moveAnimSpeed;
 		bool onGround;

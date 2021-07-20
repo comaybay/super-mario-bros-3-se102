@@ -96,6 +96,15 @@ MarioBIR, Normal, -1, Manual
 PlayableCharacters
 1, 144, 16, 175
 
+#Duck#
+MarioBDL, Normal, -1, Manual
+PlayableCharacters
+263, 144, 278, 175
+
+MarioBDR, Normal, -1, Manual
+PlayableCharacters
+281, 144, 296, 175
+
 ##MarioTransitions##====================================
 MarioTransition1Left, Normal,  0.066, Manual
 PlayableCharacters
