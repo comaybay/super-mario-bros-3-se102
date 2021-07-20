@@ -38,11 +38,12 @@ Mario::Mario(
 		GridType::NONE
 	),
 	animationSet(animationSet),
+	normalHitboxId(hitboxId),
 	powerLevel(powerLevel),
 	marioState(EntityState<Mario>(this, &Mario::Fall)),
 	updateState(EntityState<Mario>(this, &Mario::NormalUpdate)),
 	lastPressedKeyHorizontal(initialFacingDirection == HDirection::LEFT ? DIK_LEFT : DIK_RIGHT),
-	dir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
+	inputDir(Vector2<int>(0, initialFacingDirection == HDirection::LEFT ? -1 : 1)),
 	time(0),
 	moveAnimSpeed(1),
 	onGround(false),
@@ -63,7 +64,7 @@ void Mario::Update(float delta) {
 
 void Mario::NormalUpdate(float delta)
 {
-	UpdateHorizontalDirection();
+	UpdateInputDirection();
 	marioState.Update(delta);
 
 	onGround = false;
@@ -113,7 +114,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 
 	if (stateHandler == &Mario::Jump) {
 		velocity.y = (abs(velocity.x) >= MAX_WALK_SPEED / 2) ? -JUMP_SPEED_AFTER_WALK : -JUMP_SPEED;
-		dir.y = 1;
+		inputDir.y = 1;
 		onGround = false;
 		restartPointUp.Notify();
 		return;
@@ -121,7 +122,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 
 	if (stateHandler == &Mario::Fall) {
 		onGround = false;
-		dir.y = 1;
+		inputDir.y = 1;
 		return;
 	}
 
@@ -150,26 +151,45 @@ void Mario::Idle(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	if (velocity.x != 0)
+	if (!AlmostEqual(velocity.x, 0))
 		ApplyFriction(delta);
 
-	if (velocity.x == 0)
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.idleLeft : animationSet.idleRight);
-	else
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight);
-
-	if (!onGround)
+	HandleIdleStateAnimation();
+	if (!onGround) {
 		SwitchState(&Mario::Fall);
+		return;
+	}
 
-	if (Game::IsKeyPressed(DIK_S))
+	if (Game::IsKeyPressed(DIK_S)) {
 		SwitchState(&Mario::Jump);
+		return;
+	}
 
-	else if (dir.x != 0) {
+	if (inputDir.x != 0) {
 		if (Game::IsKeyDown(DIK_A))
 			SwitchState(&Mario::Run);
 		else
 			SwitchState(&Mario::Walk);
+
+		return;
 	}
+}
+
+void Mario::HandleIdleStateAnimation()
+{
+	if (inputDir.y == 1) {
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.duckLeft : animationSet.duckRight);
+		SetHitbox("HitboxMarioDuck");
+		return;
+	}
+
+	if (AlmostEqual(velocity.x, 0))
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);
+
+	else
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.walkLeft : animationSet.walkRight);
+
+	SetHitbox(normalHitboxId);
 }
 
 void Mario::Walk(float delta)
@@ -180,8 +200,8 @@ void Mario::Walk(float delta)
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	moveAnimSpeed = max(moveAnimSpeed - MOVE_ANIM_SPEED_INCREASE_UNIT, 1.0f);
-	if (dir.x != 0) {
-		if (dir.x == Sign(velocity.x))
+	if (inputDir.x != 0) {
+		if (inputDir.x == Sign(velocity.x))
 			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
 		else {
 			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
@@ -195,7 +215,7 @@ void Mario::Walk(float delta)
 	else if (!onGround)
 		SwitchState(&Mario::Fall);
 
-	else if (dir.x == 0)
+	else if (inputDir.x == 0)
 		SwitchState(&Mario::Idle);
 
 	else if (onGround && Game::IsKeyPressed(DIK_S))
@@ -210,8 +230,8 @@ void Mario::Run(float delta)
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	moveAnimSpeed = min(moveAnimSpeed + MOVE_ANIM_SPEED_INCREASE_UNIT, MAX_MOVE_ANIM_SPEED);
-	if (dir.x != 0) {
-		if (dir.x == Sign(velocity.x))
+	if (inputDir.x != 0) {
+		if (inputDir.x == Sign(velocity.x))
 			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, moveAnimSpeed);
 		else {
 			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight, moveAnimSpeed);
@@ -225,7 +245,7 @@ void Mario::Run(float delta)
 	if (!onGround)
 		SwitchState(&Mario::Fall);
 
-	if (dir.x == 0)
+	if (inputDir.x == 0)
 		SwitchState(&Mario::Idle);
 
 	if (onGround && Game::IsKeyPressed(DIK_S))
@@ -239,7 +259,7 @@ void Mario::Jump(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	if (dir.x == 0 && velocity.x != 0)
+	if (inputDir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
 	SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
@@ -257,7 +277,7 @@ void Mario::Fall(float delta) {
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	if (dir.x == 0 && velocity.x != 0)
+	if (inputDir.x == 0 && velocity.x != 0)
 		ApplyFriction(delta);
 
 	if (velocity.y < 0)
@@ -331,19 +351,19 @@ void Mario::ApplyHorizontalMovement(float delta)
 	float accelX = ACCELERATION;
 
 	//transition from run to walk
-	if (!isHoldingRunButton && abs(velocity.x) > MAX_WALK_SPEED && Sign(velocity.x) == dir.x)
+	if (!isHoldingRunButton && abs(velocity.x) > MAX_WALK_SPEED && Sign(velocity.x) == inputDir.x)
 		accelX = -ACCELERATION;
 
-	else if (isHoldingRunButton && abs(velocity.x) == MAX_RUN_SPEED && Sign(velocity.x) == dir.x)
+	else if (isHoldingRunButton && abs(velocity.x) == MAX_RUN_SPEED && Sign(velocity.x) == inputDir.x)
 		accelX = 0;
 
-	velocity.x += dir.x * accelX * delta;
+	velocity.x += inputDir.x * accelX * delta;
 
 	if (isHoldingRunButton)
 		velocity.x = Clip(velocity.x, -MAX_RUN_SPEED, MAX_RUN_SPEED);
 
 	else if (!isHoldingRunButton && accelX == -ACCELERATION && abs(velocity.x) < MAX_WALK_SPEED)
-		velocity.x = MAX_WALK_SPEED * dir.x;
+		velocity.x = MAX_WALK_SPEED * inputDir.x;
 }
 
 void Mario::ApplyFriction(float delta) {
@@ -400,25 +420,33 @@ void Mario::OnCollision(CollisionData data)
 	}
 }
 
-void Mario::UpdateHorizontalDirection()
+void Mario::UpdateInputDirection()
 {
 	if (Game::IsKeyDown(DIK_RIGHT)) {
 		lastPressedKeyHorizontal = DIK_RIGHT;
-		dir.x = 1;
+		inputDir.x = 1;
 	}
 	else if (Game::IsKeyDown(DIK_LEFT)) {
 		lastPressedKeyHorizontal = DIK_LEFT;
-		dir.x = -1;
+		inputDir.x = -1;
 	}
-	else {
-		dir.x = 0;
+	else
+		inputDir.x = 0;
+
+	if (Game::IsKeyDown(DIK_UP)) {
+		inputDir.y = -1;
 	}
+	else if (Game::IsKeyDown(DIK_DOWN)) {
+		inputDir.y = 1;
+	}
+	else
+		inputDir.y = 0;
 }
 
 HDirection Mario::GetFacingDirection()
 {
-	if (dir.x != 0)
-		return dir.x < 0 ? HDirection::LEFT : HDirection::RIGHT;
+	if (inputDir.x != 0)
+		return inputDir.x < 0 ? HDirection::LEFT : HDirection::RIGHT;
 	else
 		return lastPressedKeyHorizontal == DIK_LEFT ? HDirection::LEFT : HDirection::RIGHT;
 }

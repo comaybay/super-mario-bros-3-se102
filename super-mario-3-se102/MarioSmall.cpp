@@ -1,15 +1,34 @@
 #include "MarioSmall.h"
 #include "EntityConstants.h"
 #include "Game.h"
+#include "Utils.h"
 using namespace Entities;
+using namespace Utils;
 
 const MarioAnimationSet MarioSmall::animationSet(
-	"MarioSIL", "MarioSIR", "MarioSTL", "MarioSTR", "MarioSWL", "MarioSWR", "MarioSJL", "MarioSJR", "MarioSJL", "MarioSJR"
+	"MarioSIL",
+	"MarioSIR",
+	"MarioSTL",
+	"MarioSTR",
+	"MarioSWL",
+	"MarioSWR",
+	"MarioSRL",
+	"MarioSRR",
+	"MarioSJL",
+	"MarioSJR",
+	"MarioSJL",
+	"MarioSJR",
+	"MarioSIL",
+	"MarioSIR",
+	"MarioSIHL",
+	"MarioSIHR",
+	"MarioSHL",
+	"MarioSHR"
 );
 
-MarioSmall::MarioSmall(Utils::Vector2<float> position, HDirection initialFacingDirection)
+MarioSmall::MarioSmall(Vector2<float> position, HDirection initialFacingDirection)
 	: Mario(position, initialFacingDirection, animationSet, "HitboxMarioS", PlayerPowerLevel::SMALL),
-	smallMarioState(this),
+	smallMarioState(this, &MarioSmall::Idle),
 	died(false)
 {
 }
@@ -51,6 +70,17 @@ void MarioSmall::OnOutOfWorld()
 		Mario::OnOutOfWorld();
 	else
 		parentScene->UnsubscribeToOutOfWorldEvent(this);
+}
+
+void MarioSmall::HandleIdleStateAnimation()
+{
+	//same as Mario::HandleIdleStateAnimation but do not allow ducking
+
+	if (AlmostEqual(velocity.x, 0))
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);
+
+	else
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.walkLeft : animationSet.walkRight);
 }
 
 void MarioSmall::Die(float delta) {
