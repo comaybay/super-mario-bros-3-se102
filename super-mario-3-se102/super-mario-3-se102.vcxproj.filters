@@ -177,9 +177,6 @@
     <ClCompile Include="CoinUp.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="MarioAnimationSet.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="GoalRoulette.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
@@ -275,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="TinyGoomba.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioAnimationSet.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

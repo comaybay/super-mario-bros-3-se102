@@ -59,7 +59,7 @@ void VenusFireTrap::OnCollision(CollisionData data)
 	}
 
 	if (Contains("Koopas", groups)) {
-		Koopa* koopa = static_cast<Koopa*>(data.who);
+		LPKoopa koopa = static_cast<LPKoopa>(data.who);
 		if (koopa->IsSliding()) {
 			parentScene->AddEntity(new FXBoom(position));
 			parentScene->AddEntity(PointUpFactory::Create(position));

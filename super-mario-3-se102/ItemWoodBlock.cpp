@@ -73,7 +73,7 @@ void ItemWoodBlock::OnCollision(CollisionData data)
 	}
 
 	if (Contains("Koopas", groups) && data.edge.x != 0) {
-		Koopa* koopa = static_cast<Koopa*>(data.who);
+		LPKoopa koopa = static_cast<LPKoopa>(data.who);
 
 		if (!koopa->IsSliding())
 			return;
