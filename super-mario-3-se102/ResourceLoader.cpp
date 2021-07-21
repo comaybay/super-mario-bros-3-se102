@@ -83,13 +83,24 @@ void ResourceLoader::LoadAnimations(const std::string& configPath)
 			break;
 
 		std::vector<std::string> paramTokens = SplitByComma(line);
-		if (paramTokens.size() != 4)
+		if (paramTokens.size() < 4)
 			throw InvalidTokenSizeException(4);
+
+		if (paramTokens.size() > 5)
+			throw InvalidTokenSizeException(5);
 
 		std::string& animationId = paramTokens[0];
 		std::string& animationType = paramTokens[1];
 		float frameDuration = std::stof(paramTokens[2]);
 		std::string& spriteSequenceHandlingMode = paramTokens[3];
+
+		bool loopAnim = true;
+		if (paramTokens.size() == 5) {
+			if (paramTokens[4] == "False" || paramTokens[4] == "False")
+				loopAnim = paramTokens[4] == "False" ? false : true;
+			else
+				throw std::exception("Invalid LoopAnimation value: expected True or False");
+		}
 
 		std::vector<std::string> idToken = SplitByComma(GetNextNonCommentLine(file));
 		if (idToken.size() != 1)
@@ -118,7 +129,7 @@ void ResourceLoader::LoadAnimations(const std::string& configPath)
 		else
 			throw std::exception("Invalid AnimationType: expected Normal or Fixed");
 
-		AnimationManager::Add(animationId, { animType, animationId, frameDuration, texture, spriteBoxSequence });
+		AnimationManager::Add(animationId, { animType, animationId, frameDuration, texture, spriteBoxSequence, loopAnim });
 	}
 
 	file.close();

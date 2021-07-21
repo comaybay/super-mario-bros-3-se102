@@ -9,14 +9,16 @@
 class Animation
 {
 public:
-	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence);
+	Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence, bool loopAnim = true);
 	virtual void Render(const Utils::Vector2<float>& position);
 	virtual void Update(float delta);
 	void SetAnimationSpeed(float speed);
+	void SetLoopAnimation(float state);
 	const SpriteBox& GetCurrentSpriteBox();
 	const int GetCurrentFrame();
 	void SetFrame(int frame);
 	const std::string& GetId();
+	bool Finished();
 
 protected:
 	std::string id;
@@ -26,6 +28,10 @@ protected:
 	LPDIRECT3DTEXTURE9 texture;
 	std::vector<SpriteBox> sequence;
 private:
+	void(Animation::* updateHandler)(float);
+
+	void LoopUpdate(float delta);
+	void NoLoopUpdate(float delta);
 	float currentDuration;
 };
 typedef Animation* LPAnimation;
