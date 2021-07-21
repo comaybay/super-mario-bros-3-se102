@@ -18,6 +18,7 @@ namespace Entities {
 
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		void PostUpdate() override;
 		virtual void Render() override;
 		HDirection GetFacingDirection();
 		void TurnInvinsible();
@@ -39,9 +40,25 @@ namespace Entities {
 		void SetOnNoteBlock(bool state);
 
 	protected:
+		bool IsBouncingUp();
+		bool IsJumping();
+		bool IsFalling();
+
+		virtual void OnCollision(CollisionData data);
 		virtual void OnOutOfWorld() override;
 		virtual void HandleIdleStateAnimation();
+		virtual void HandleJumpStateAnimation();
+		virtual void HandleFallStateAnimation();
+		virtual void HandleJumpStateMovement(float delta);
+		virtual void HandleFallStateMovement(float delta);
+		void UpdateIncreasePowerMeter(float time);
+		void UpdateDecreasePowerMeter(float time);
+		void UpdateInputDirection();
+		void UnsubscribeToCollisionEngine();
+		void ApplyHorizontalMovement(float delta);
+		void ApplyFriction(float delta);
 
+	private:
 		void NormalUpdate(float delta);
 		void InvincibilityUpdate(float delta);
 		void NormalRender();
@@ -50,6 +67,7 @@ namespace Entities {
 		void SwitchState(EntityState<Mario>::StateHandler state);
 		void Idle(float delta);
 		void Walk(float delta);
+		void WalkSpeedUp(float delta);
 		void Run(float delta);
 		void Jump(float delta);
 		void Fall(float delta);
@@ -60,33 +78,32 @@ namespace Entities {
 		void OnNoteBlock(float delta);
 		void OffNoteBlock(float delta);
 
-		virtual void OnCollision(CollisionData data);
-		void UpdateInputDirection();
-		void UnsubscribeToCollisionEngine();
 
-		void ApplyHorizontalMovement(float delta);
-		void ApplyFriction(float delta);
 		/// <summary>
 		/// Keep player in world horizontally
 		/// </summary>
 		void ClipHorizontalPosition();
 
-		EntityState<Mario> marioState;
-		Utils::Vector2<int> inputDir;
-		std::string normalHitboxId;
-		float time;
-		float moveAnimSpeed;
+
+	protected:
+		bool isRunning;
 		bool onGround;
-		bool runBeforeJump;
 		int lastPressedKeyHorizontal;
-		PlayerPowerLevel powerLevel;
+		Utils::Vector2<int> inputDir;
 
 	private:
+		EntityState<Mario> state;
+		std::string normalHitboxId;
+		float time;
+		float powerMeterTime;
+		float walkAnimSpeed;
+		bool instantDecrease;
+		bool runBeforeJump;
+		PlayerPowerLevel powerLevel;
 		EntityState<Mario> updateState;
 		float invincibleTime;
 		Event<> restartPointUp;
 		MarioAnimationSet animationSet;
-
 
 	public:
 		static const int FLASH_DURATION;
@@ -94,7 +111,11 @@ namespace Entities {
 	protected:
 		static const float MAX_WALK_SPEED;
 		static const float MAX_RUN_SPEED;
+		static const float WAIT_TIME_BEFORE_INCREASE_POWER_METER;
+		static const float POWER_METER_INCREASE_RATE;
+		static const float POWER_METER_DECREASE_RATE;
 		static const float ACCELERATION;
+		static const float FRICTION_ACCEL;
 		static const float JUMP_SPEED;
 		static const float JUMP_SPEED_AFTER_WALK;
 		static const float JUMP_SPEED_RELASE_EARLY;
@@ -106,7 +127,7 @@ namespace Entities {
 		static const float WALK_SPEED_REACHED_GOAL_ROULETTE;
 		static const float INVINCIBLE_DURATION;
 		static const float MAX_MOVE_ANIM_SPEED;
-		static const float MOVE_ANIM_SPEED_INCREASE_UNIT;
+		static const float INCREASE_MOVE_ANIM_UNIT;
 	};
 	typedef Mario* LPMario;
 }

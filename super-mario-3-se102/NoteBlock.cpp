@@ -88,7 +88,7 @@ void NoteBlock::OnCollision(CollisionData data)
 	}
 
 	if (Contains(std::string("Koopas"), groups)) {
-		Koopa* koopa = static_cast<Koopa*>(data.who);
+		LPKoopa koopa = static_cast<LPKoopa>(data.who);
 
 		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 			state.SetState(&NoteBlock::Hit);

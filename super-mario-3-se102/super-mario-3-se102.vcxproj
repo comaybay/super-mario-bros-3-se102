@@ -182,6 +182,8 @@
     <ClCompile Include="FXSmoke.cpp" />
     <ClCompile Include="GhostBlock.cpp" />
     <ClCompile Include="ItemWoodBlock.cpp" />
+    <ClCompile Include="MarioAnimationSet.cpp" />
+    <ClCompile Include="MarioRaccoon.cpp" />
     <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -193,7 +195,6 @@
     <ClCompile Include="GoalRoulette.cpp" />
     <ClCompile Include="ContentFactory.cpp" />
     <ClCompile Include="EventHandlerProps.cpp" />
-    <ClCompile Include="MarioAnimationSet.cpp" />
     <ClCompile Include="MarioSuper.cpp" />
     <ClCompile Include="FXBoom.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="GhostBlock.h" />
     <ClInclude Include="IKnockedOverable.h" />
     <ClInclude Include="ItemWoodBlock.h" />
+    <ClInclude Include="MarioRaccoon.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Movement.hpp" />
     <ClInclude Include="MovementBlockHit.h" />

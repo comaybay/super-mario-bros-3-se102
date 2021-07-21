@@ -17,6 +17,7 @@ namespace Entities {
 		void Die(float delta);
 		void DieFall(float delta);
 
+		float time;
 		bool died;
 		EntityState<MarioSmall> smallMarioState;
 		static const MarioAnimationSet animationSet;

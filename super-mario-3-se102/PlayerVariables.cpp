@@ -1,9 +1,13 @@
 #include "PlayerVariables.h"
+#include "Utils.h"
+
+//TODO: REMOVE TEST VALUE
+const int PlayerVariables::MAX_POWER_METER_VALUE = 2;
 
 PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::numberOfCoins = 0;
 int PlayerVariables::numberOfLives = 0;
-float PlayerVariables::powerMeterLevel = 0;
+int PlayerVariables::powerMeterLevel = 0;
 std::string PlayerVariables::standingWMNodeId = "NStart";
 
 PlayerPowerLevel PlayerVariables::GetPlayerPowerLevel()
@@ -46,16 +50,16 @@ void PlayerVariables::AddToNumberOfLives(int num)
 	numberOfLives += num;
 }
 
-float PlayerVariables::GetPowerMeterLevel()
+int PlayerVariables::GetPowerMeterLevel()
 {
 	return powerMeterLevel;
 }
-void PlayerVariables::SetPowerMeterLevel(float level)
+void PlayerVariables::SetPowerMeter(int level)
 {
 	powerMeterLevel = level;
 }
 
-void PlayerVariables::AddToPowerMeterLevel(float level)
+void PlayerVariables::AddToPowerMeterLevel(int level)
 {
 	powerMeterLevel += level;
 }

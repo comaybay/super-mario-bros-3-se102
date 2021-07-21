@@ -3,6 +3,7 @@
 
 #include "MarioSmall.h"
 #include "MarioSuper.h"
+#include "MarioRaccoon.h"
 #include "Goomba.h"
 #include "ParaGoombaRed.h"
 #include "ParaGoombaBrown.h"

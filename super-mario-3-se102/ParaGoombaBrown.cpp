@@ -37,12 +37,25 @@ void ParaGoombaBrown::Update(float delta)
 {
 	ParaGoomba::Update(delta);
 
+	if (targetPlayer == nullptr)
+		targetPlayer = TryFindPlayer();
+
 	state.Update(delta);
 	UpdateWings(delta);
 }
 
-void ParaGoombaBrown::OnPlayerDestroy(LPEntity _)
+
+LPEntity ParaGoombaBrown::TryFindPlayer()
 {
+	if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+		return nullptr;
+
+	LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
+	player->GetDestroyEvent().Subscribe(this, &ParaGoombaBrown::OnPlayerDestroy);
+	return player;
+}
+
+void ParaGoombaBrown::OnPlayerDestroy(LPEntity _) {
 	targetPlayer = nullptr;
 }
 
@@ -141,12 +154,8 @@ void ParaGoombaBrown::Fall(float delta)
 
 float ParaGoombaBrown::GetVelocityXTowardPlayer()
 {
-	if (targetPlayer == nullptr && parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+	if (targetPlayer == nullptr)
 		return -Goomba::WALK_SPEED;
-
-	targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
-	targetPlayer->GetDestroyEvent().Subscribe(this, &ParaGoombaBrown::OnPlayerDestroy);
-
-	bool playerOnLeftSide = EntityUtils::IsOnLeftSideOf(this, targetPlayer);
-	return playerOnLeftSide ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
+	else
+		return EntityUtils::IsOnLeftSideOf(this, targetPlayer) ? -Goomba::WALK_SPEED : Goomba::WALK_SPEED;
 }

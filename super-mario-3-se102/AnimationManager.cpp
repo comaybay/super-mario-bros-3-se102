@@ -6,12 +6,12 @@
 std::unordered_map<std::string, AnimationProps> AnimationManager::animationPropsById;
 
 AnimationProps::AnimationProps() :
-	type(AnimationType::NORMAL), id(""), frameDuration(0), texture(nullptr), sequence({})
+	type(AnimationType::NORMAL), id(""), frameDuration(0), texture(nullptr), sequence({}), loopAnim(false)
 {
 }
 
-AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence)
-	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence)
+AnimationProps::AnimationProps(AnimationType type, std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence, bool loopAnim)
+	: type(type), id(id), frameDuration(frameDuration), texture(texture), sequence(sequence), loopAnim(loopAnim)
 {
 }
 
@@ -33,7 +33,7 @@ LPAnimation AnimationManager::GetNew(const std::string& id)
 	const AnimationProps& props = animationPropsById[id];
 	switch (props.type) {
 	case AnimationType::NORMAL:
-		return new Animation(props.id, props.frameDuration, props.texture, props.sequence);
+		return new Animation(props.id, props.frameDuration, props.texture, props.sequence, props.loopAnim);
 	case AnimationType::FIXED:
 		return new FixedAnimation(props.id, props.frameDuration, props.texture, props.sequence);
 	default:

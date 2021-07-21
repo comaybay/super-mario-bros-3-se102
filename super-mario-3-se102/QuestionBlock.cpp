@@ -53,7 +53,7 @@ void QuestionBlock::OnCollision(CollisionData data)
 	}
 
 	if (Contains(std::string("Koopas"), groups)) {
-		Koopa* koopa = static_cast<Koopa*>(data.who);
+		LPKoopa koopa = static_cast<LPKoopa>(data.who);
 
 		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));

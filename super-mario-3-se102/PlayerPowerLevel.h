@@ -1,4 +1,4 @@
 #pragma once
 enum class PlayerPowerLevel {
-	BIG, SMALL, RACCOON
+	BIG, SMALL, TANOOKI
 };

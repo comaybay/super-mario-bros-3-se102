@@ -50,6 +50,14 @@ void TinyGoomba::Fall(float delta)
 }
 
 void TinyGoomba::Follow(float delta) {
+	if (targetPlayer == nullptr) {
+		if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+			return;
+
+		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
+		targetPlayer->GetDestroyEvent().Subscribe(this, &TinyGoomba::OnPlayerDestroy);
+	}
+
 	time += delta;
 	position = targetPlayer->GetPosition() + (targetPlayer->GetCurrentSpriteDimension() / 2) -
 		(GetCurrentSpriteDimension() / 2) - GetHitbox().GetRelativePosition() / 2;

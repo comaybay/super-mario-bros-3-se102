@@ -16,8 +16,12 @@ const MarioAnimationSet MarioSmall::animationSet(
 	"MarioSRR",
 	"MarioSJL",
 	"MarioSJR",
+	"MarioSRJL",
+	"MarioSRJR",
 	"MarioSJL",
 	"MarioSJR",
+	"MarioSRJL",
+	"MarioSRJR",
 	"MarioSIL",
 	"MarioSIR",
 	"MarioSIHL",
@@ -28,7 +32,8 @@ const MarioAnimationSet MarioSmall::animationSet(
 
 MarioSmall::MarioSmall(Vector2<float> position, HDirection initialFacingDirection)
 	: Mario(position, initialFacingDirection, animationSet, "HitboxMarioS", PlayerPowerLevel::SMALL),
-	smallMarioState(this, &MarioSmall::Idle),
+	smallMarioState(this),
+	time(0),
 	died(false)
 {
 }

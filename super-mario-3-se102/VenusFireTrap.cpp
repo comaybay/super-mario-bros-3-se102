@@ -59,7 +59,7 @@ void VenusFireTrap::OnCollision(CollisionData data)
 	}
 
 	if (Contains("Koopas", groups)) {
-		Koopa* koopa = static_cast<Koopa*>(data.who);
+		LPKoopa koopa = static_cast<LPKoopa>(data.who);
 		if (koopa->IsSliding()) {
 			parentScene->AddEntity(new FXBoom(position));
 			parentScene->AddEntity(PointUpFactory::Create(position));
@@ -83,11 +83,10 @@ void VenusFireTrap::Update(float delta)
 LPEntity VenusFireTrap::TryFindPlayer() {
 	if (parentScene->IsEntityGroupEmpty(Group::PLAYERS))
 		return nullptr;
-	else {
-		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
-		return player;
-	}
+
+	LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
+	player->GetDestroyEvent().Subscribe(this, &VenusFireTrap::OnPlayerDestroy);
+	return player;
 }
 
 void VenusFireTrap::PrepareCheckDistance(float delta)

@@ -82,7 +82,7 @@ void Koopa::OnCollision(CollisionData data)
 
 		if (state.GetState() == &Koopa::ShellSlide) {
 			if (Contains("Koopas", groups)) {
-				Koopa* otherKoopa = static_cast<Koopa*>(data.who);
+				LPKoopa otherKoopa = static_cast<LPKoopa>(data.who);
 
 				if (otherKoopa->IsSliding())
 					GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);

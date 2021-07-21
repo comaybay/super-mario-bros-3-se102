@@ -5,23 +5,44 @@ using namespace Utils;
 
 const std::string AnimationId::NONE = "__ANI_ID_NONE__";
 
-Animation::Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence)
+Animation::Animation(std::string id, float frameDuration, LPDIRECT3DTEXTURE9 texture, const std::vector<SpriteBox>& sequence, bool loopAnim)
 	: id(id), frameDuration(frameDuration), texture(texture), sequence(sequence),
 	currentFrame(0),
 	currentDuration(0),
-	animSpeed(1)
+	animSpeed(1),
+	updateHandler(loopAnim ? &Animation::LoopUpdate : &Animation::NoLoopUpdate)
 {}
+
+void Animation::SetLoopAnimation(float state) {
+	updateHandler = state ? &Animation::LoopUpdate : &Animation::NoLoopUpdate;
+}
+
 
 void Animation::Update(float delta)
 {
-	if (AlmostEqual(frameDuration, -1.0f))
+	if (frameDuration < 0)
+		return;
+
+	(this->*updateHandler)(delta);
+}
+
+void Animation::LoopUpdate(float delta) {
+	currentDuration += delta * animSpeed;
+
+	int i = int(currentDuration / frameDuration);
+	currentDuration -= frameDuration * i;
+	currentFrame = (currentFrame + i) % sequence.size();
+}
+
+void Animation::NoLoopUpdate(float delta) {
+	if (currentFrame == sequence.size() - 1)
 		return;
 
 	currentDuration += delta * animSpeed;
 
 	int i = int(currentDuration / frameDuration);
 	currentDuration -= frameDuration * i;
-	currentFrame = (currentFrame + i) % sequence.size();
+	currentFrame = min(currentFrame + i, sequence.size() - 1);
 }
 
 const SpriteBox& Animation::GetCurrentSpriteBox()
@@ -42,6 +63,12 @@ void Animation::SetFrame(int frame)
 const std::string& Animation::GetId()
 {
 	return id;
+}
+
+bool Animation::Finished()
+{
+	return (updateHandler == &Animation::NoLoopUpdate && currentFrame == sequence.size() - 1);
+
 }
 
 void Animation::SetAnimationSpeed(float speed)

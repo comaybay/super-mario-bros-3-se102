@@ -40,4 +40,5 @@ namespace Entities {
 		static const float SHELL_SLIDE_SPEED;
 		static const float FRICTION;
 	};
+	typedef Koopa* LPKoopa;
 }
