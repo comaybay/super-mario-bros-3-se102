@@ -18,6 +18,7 @@ namespace Entities {
 
 		void OnReady() override;
 		virtual void Update(float delta) override;
+		void PostUpdate() override;
 		virtual void Render() override;
 		HDirection GetFacingDirection();
 		void TurnInvinsible();
@@ -39,13 +40,23 @@ namespace Entities {
 		void SetOnNoteBlock(bool state);
 
 	protected:
+		bool IsBouncingUp();
+		bool IsJumping();
+		bool IsFalling();
+
 		virtual void OnCollision(CollisionData data);
 		virtual void OnOutOfWorld() override;
 		virtual void HandleIdleStateAnimation();
+		virtual void HandleJumpStateAnimation();
+		virtual void HandleFallStateAnimation();
+		virtual void HandleJumpStateMovement(float delta);
+		virtual void HandleFallStateMovement(float delta);
 		void UpdateIncreasePowerMeter(float time);
 		void UpdateDecreasePowerMeter(float time);
 		void UpdateInputDirection();
 		void UnsubscribeToCollisionEngine();
+		void ApplyHorizontalMovement(float delta);
+		void ApplyFriction(float delta);
 
 	private:
 		void NormalUpdate(float delta);
@@ -67,8 +78,7 @@ namespace Entities {
 		void OnNoteBlock(float delta);
 		void OffNoteBlock(float delta);
 
-		void ApplyHorizontalMovement(float delta);
-		void ApplyFriction(float delta);
+
 		/// <summary>
 		/// Keep player in world horizontally
 		/// </summary>
@@ -76,13 +86,13 @@ namespace Entities {
 
 
 	protected:
-		bool onGround;
 		bool isRunning;
+		bool onGround;
 		int lastPressedKeyHorizontal;
 		Utils::Vector2<int> inputDir;
 
 	private:
-		EntityState<Mario> marioState;
+		EntityState<Mario> state;
 		std::string normalHitboxId;
 		float time;
 		float powerMeterTime;

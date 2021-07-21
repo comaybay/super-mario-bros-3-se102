@@ -16,7 +16,7 @@ public:
 	static void AddToNumberOfLives(int num);
 
 	static int GetPowerMeterLevel();
-	static void SetPowerMeterLevel(int level);
+	static void SetPowerMeter(int level);
 	static void AddToPowerMeterLevel(int level);
 
 	/// <summary>
@@ -29,7 +29,7 @@ public:
 	/// </summary>
 	static const std::string& GetStandingWMNodeId();
 
-	static const int MAX_POWER_LEVEL;
+	static const int MAX_POWER_METER_VALUE;
 
 private:
 	static PlayerPowerLevel playerPowerLevel;

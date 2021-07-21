@@ -264,17 +264,20 @@
     <ClCompile Include="ParaGoombaRed.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
-    <ClCompile Include="ParaGoomba.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ParaGoombaBrown.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TinyGoomba.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MarioAnimationSet.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioRaccoon.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyGoomba.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaGoomba.cpp">
+      <Filter>Source Files\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaGoombaBrown.cpp">
+      <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,6 +549,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TinyGoomba.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioRaccoon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

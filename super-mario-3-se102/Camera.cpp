@@ -25,7 +25,7 @@ void Camera::Update(float delta)
 		return;
 
 	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<int> targetDim = target->GetCurrentSpriteDimension();
+	Dimension<int> targetDim = target->GetHitbox().GetDimension();
 	const Vector2<float>& targetPos = target->GetPosition();
 
 	//center around target

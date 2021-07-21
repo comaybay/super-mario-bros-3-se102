@@ -1,4 +1,4 @@
-#Id, AnimationType (Normal or Fixed), FrameDuration (in seconds), SpriteboxHandlingMode (Auto or Manual)
+#Id, AnimationType (Normal or Fixed), FrameDuration (in seconds), SpriteboxHandlingMode (Auto or Manual), [LoopAnimation (Default = True)]
 ##If FrameDuratio = -1 => Animation will always stay at the first frame
 ##*Normal: each entity controls it's own animation
 ##*Fixed: entities shared the same frame number, independent of creation time
@@ -140,6 +140,106 @@ PlayableCharacters
 MarioBDR, Normal, -1, Manual
 PlayableCharacters
 281, 144, 296, 175
+
+##Raccoon Mario##====================================
+#Walk#
+MarioRWL, Normal, 0.066, Auto
+PlayableCharacters
+1, 368, 24, 32, 2, 4
+
+MarioRWR, Normal, 0.066, Auto
+PlayableCharacters
+105, 368, 24, 32, 2, 4, -8, 0
+
+#Run#
+MarioRRL, Normal, 0.016, Auto
+PlayableCharacters
+367, 368, 24, 32, 2, 4
+
+MarioRRR, Normal, 0.016, Auto
+PlayableCharacters
+367, 334, 24, 32, 2, 4, -8, 0
+
+#Turn#
+MarioRTL, Normal, -1, Manual
+PlayableCharacters
+479, 436, 494, 467
+
+MarioRTR, Normal, -1, Manual
+PlayableCharacters
+497, 436, 512, 467
+
+#Jump#
+MarioRJL, Normal, -1, Manual
+PlayableCharacters
+263, 368, 286, 399
+
+MarioRJR, Normal, -1, Manual
+PlayableCharacters
+289, 368, 312, 399, -8, 0
+
+#Run Jump#
+MarioRRJL, Normal, -1, Manual
+PlayableCharacters
+445, 232, 468, 263
+
+MarioRRJR, Normal, -1, Manual
+PlayableCharacters
+445, 266, 468, 297, -8, 0
+
+#Jump Flap#
+MarioRJumpFlapL, Normal, 0.066, Auto, False
+PlayableCharacters
+445, 232, 24, 32, 2, 3
+
+MarioRJumpFlapR, Normal, 0.066, Auto, False
+PlayableCharacters
+445, 266, 24, 32, 2, 3, -8, 0
+
+#Run Fall#
+MarioRRFL, Normal, -1, Manual
+PlayableCharacters
+471, 232, 494, 263
+
+MarioRRFR, Normal, -1, Manual
+PlayableCharacters
+471, 266, 494, 297, -8, 0
+
+#Fall Flap#
+MarioRFallFlapL, Normal, 0.066, Auto, False
+PlayableCharacters
+367, 300, 24, 32, 2, 3
+
+MarioRFallFlapR, Normal, 0.066, Auto, False
+PlayableCharacters
+445, 300, 24, 32, 2, 3, -8, 0
+
+#Fall#
+MarioRFL, Normal, -1, Manual
+PlayableCharacters
+315, 368, 338, 399
+
+MarioRFR, Normal, -1, Manual
+PlayableCharacters
+341, 368, 364, 399, -8, 0
+
+#Idle#
+MarioRIL, Normal, -1, Manual
+PlayableCharacters
+1, 368, 24, 399
+
+MarioRIR, Normal, -1, Manual
+PlayableCharacters
+105, 368, 128, 399, -8, 0
+
+#Duck#
+MarioRDL, Normal, -1, Manual
+PlayableCharacters
+209, 368, 232, 399
+
+MarioRDR, Normal, -1, Manual
+PlayableCharacters
+237, 368, 260, 399, -8, 0
 
 ##MarioTransitions##====================================
 MarioTransition1Left, Normal,  0.066, Manual

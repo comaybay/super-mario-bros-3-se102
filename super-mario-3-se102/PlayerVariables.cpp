@@ -1,7 +1,8 @@
 #include "PlayerVariables.h"
 #include "Utils.h"
 
-const int PlayerVariables::MAX_POWER_LEVEL = 6;
+//TODO: REMOVE TEST VALUE
+const int PlayerVariables::MAX_POWER_METER_VALUE = 2;
 
 PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::numberOfCoins = 0;
@@ -53,7 +54,7 @@ int PlayerVariables::GetPowerMeterLevel()
 {
 	return powerMeterLevel;
 }
-void PlayerVariables::SetPowerMeterLevel(int level)
+void PlayerVariables::SetPowerMeter(int level)
 {
 	powerMeterLevel = level;
 }
@@ -61,7 +62,6 @@ void PlayerVariables::SetPowerMeterLevel(int level)
 void PlayerVariables::AddToPowerMeterLevel(int level)
 {
 	powerMeterLevel += level;
-	Utils::DebugOut(std::to_string(powerMeterLevel));
 }
 
 void PlayerVariables::SetStandingWMNodeId(const std::string& nodeId)
