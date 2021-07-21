@@ -182,6 +182,7 @@ void Mario::Idle(float delta)
 		ApplyFriction(delta);
 
 	HandleIdleStateAnimation();
+
 	if (!onGround) {
 		SwitchState(&Mario::Fall);
 		return;
@@ -200,14 +201,6 @@ void Mario::Idle(float delta)
 
 		return;
 	}
-
-	if (AlmostEqual(velocity.x, 0))
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);
-
-	else
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.walkLeft : animationSet.walkRight);
-
-	SetHitbox(normalHitboxId);
 }
 
 void Mario::HandleIdleStateAnimation()
