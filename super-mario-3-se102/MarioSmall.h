@@ -11,7 +11,7 @@ namespace Entities {
 		void OnCollision(CollisionData data) override;
 
 	private:
-		void HandleIdleStateAnimation() override;
+		void UpdateIdleStateAnimation() override;
 
 		void OnOutOfWorld() override;
 		void Die(float delta);

@@ -7,4 +7,6 @@
 class IKnockedOverable {
 public:
 	virtual void GetKnockedOver(HDirection direction) = 0;
+
+	//virtual void GetKnockedOverByPlayer(HDirection direction) = 0;
 };

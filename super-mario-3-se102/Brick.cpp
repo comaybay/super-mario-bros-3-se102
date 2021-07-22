@@ -1,7 +1,6 @@
 #include "Brick.h"
 #include "FXBrickBreak.h"
 #include "EmptyBlock.h"
-#include "Koopa.h"
 #include "Group.h"
 #include "Scene.h"
 #include "Mario.h"
@@ -15,7 +14,7 @@ Brick::Brick(const std::string& contentId, const Utils::Vector2<float>& position
 		position,
 		"BrickNormal",
 		HitboxId::TILE_SIZE_HITBOX,
-		{ "Bricks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
+		{ "Bricks", Group::BLOCKS, Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
 	contentId(contentId),
@@ -33,6 +32,12 @@ void Brick::Update(float delta)
 {
 	Entity::Update(delta);
 	state.Update(delta);
+}
+
+void Brick::GetKnockedOver(HDirection direction)
+{
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+		ExposeContent(static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS)));
 }
 
 void Brick::Idle(float delta) {
@@ -56,16 +61,6 @@ void Brick::OnCollision(CollisionData data)
 			ExposeContent(player);
 		else
 			state.SetState(&Brick::Hit);
-
-		return;
-	}
-
-	if (Contains(std::string("Koopas"), groups) && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPKoopa koopa = static_cast<LPKoopa>(data.who);
-		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-
-		if (data.edge.x != 0 && koopa->IsSliding())
-			ExposeContent(player);
 
 		return;
 	}

@@ -279,6 +279,9 @@
     <ClCompile Include="ParaGoombaBrown.cpp">
       <Filter>Source Files\Entities\World</Filter>
     </ClCompile>
+    <ClCompile Include="MarioSpinAttack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -552,6 +555,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MarioRaccoon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioSpinAttack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,6 @@
 #include "EntityUtils.h"
 #include "Scene.h"
 #include "Mario.h"
-#include "Koopa.h"
 #include "FXBoom.h"
 #include "PointUpFactory.h"
 #include "VenusFireBall.h"
@@ -48,26 +47,9 @@ void VenusFireTrap::OnPlayerDestroy(LPEntity entity) {
 
 void VenusFireTrap::OnCollision(CollisionData data)
 {
-	const EntityGroups& groups = data.who->GetEntityGroups();
-
-	if (Contains(Group::PLAYERS, groups)) {
-		LPMario player = static_cast<LPMario>(data.who);
-		if (!player->IsInvincible())
-			player->TakeDamage();
-
-		return;
-	}
-
-	if (Contains("Koopas", groups)) {
-		LPKoopa koopa = static_cast<LPKoopa>(data.who);
-		if (koopa->IsSliding()) {
-			parentScene->AddEntity(new FXBoom(position));
-			parentScene->AddEntity(PointUpFactory::Create(position));
-			parentScene->QueueFree(this);
-		}
-
-		return;
-	}
+	LPMario player = static_cast<LPMario>(data.who);
+	if (!player->IsInvincible())
+		player->TakeDamage();
 }
 
 void VenusFireTrap::Update(float delta)
@@ -78,6 +60,13 @@ void VenusFireTrap::Update(float delta)
 		targetPlayer = TryFindPlayer();
 
 	state.Update(delta);
+}
+
+void VenusFireTrap::GetKnockedOver(HDirection direction)
+{
+	parentScene->AddEntity(new FXBoom(position));
+	parentScene->AddEntity(PointUpFactory::Create(position));
+	parentScene->QueueFree(this);
 }
 
 LPEntity VenusFireTrap::TryFindPlayer() {
@@ -108,7 +97,8 @@ void VenusFireTrap::CheckDistance(float delta)
 	if (distanceX <= SAFE_DISTANCE)
 		return;
 
-	CollisionEngine::Subscribe(this, &VenusFireTrap::OnCollision, { Group::PLAYERS, "Koopas" });
+	SetDetectable(true);
+	CollisionEngine::Subscribe(this, &VenusFireTrap::OnCollision, { Group::PLAYERS });
 	velocity.y = -MOVE_SPEED;
 	state.SetState(&VenusFireTrap::MoveUp);
 }
@@ -181,6 +171,7 @@ void VenusFireTrap::MoveDown(float delta)
 	if (position.y >= stopYMoveDown) {
 		position.y = stopYMoveDown;
 		velocity.y = 0;
+		SetDetectable(false);
 		CollisionEngine::Unsubscribe(this, &VenusFireTrap::OnCollision);
 		state.SetState(&VenusFireTrap::PrepareCheckDistance);
 	}

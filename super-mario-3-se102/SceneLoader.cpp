@@ -281,6 +281,10 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
+	//TODO: REMOVE TEST CODE
+	return new Entities::MarioRaccoon(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
+
+
 	switch (PlayerVariables::GetPlayerPowerLevel()) {
 	case PlayerPowerLevel::SMALL:
 		return new Entities::MarioSmall(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);

@@ -10,22 +10,22 @@ namespace Entities {
 		void TakeDamage() override;
 
 	private:
-		void Wait(float delta);
+		void WaitFlap(float delta);
 		void FlyCountDown(float delta);
 		void FlyFlap(float delta);
 
 		void WaitFallFlap(float delta);
 		void FallFlap(float delta);
 
-		void Bounce(float delta);
+		void WaitSpin(float delta);
+		void Spin(float delta);
 
-		void HandleJumpStateAnimation() override;
-		void HandleFallStateAnimation() override;
+		void UpdateAnimation() override;
 		void HandleJumpStateMovement(float delta) override;
 		void HandleFallStateMovement(float delta) override;
 
-
-		EntityState<MarioRaccoon> raccoonState;
+		EntityState<MarioRaccoon> flapState;
+		EntityState<MarioRaccoon> spinState;
 		float time;
 		float powerMeterTime;
 		float jumpCount;

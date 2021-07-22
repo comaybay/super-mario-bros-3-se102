@@ -77,9 +77,9 @@ void MarioSmall::OnOutOfWorld()
 		parentScene->UnsubscribeToOutOfWorldEvent(this);
 }
 
-void MarioSmall::HandleIdleStateAnimation()
+void MarioSmall::UpdateIdleStateAnimation()
 {
-	//same as Mario::HandleIdleStateAnimation but do not allow ducking
+	//same as base method but do not allow ducking
 
 	if (AlmostEqual(velocity.x, 0))
 		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);

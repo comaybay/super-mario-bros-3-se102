@@ -37,7 +37,7 @@ Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position
 void Koopa::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::ENEMIES, Group::PLAYERS });
+	CollisionEngine::Subscribe(this, &Koopa::OnCollision, { Group::COLLISION_WALLS, Group::BLOCKS, Group::ENEMIES, Group::PLAYERS });
 
 	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
 		LPEntity player = parentScene->GetEntityOfGroup(Group::PLAYERS);
@@ -53,6 +53,14 @@ void Koopa::OnReady()
 void Koopa::OnCollision(CollisionData data)
 {
 	const EntityGroups& groups = data.who->GetEntityGroups();
+
+	if (Contains(Group::BLOCKS, groups) && IsSliding() && data.edge.y == 0) {
+		if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+			entity->GetKnockedOver(dir);
+		};
+
+	}
 
 	if (Contains(Group::COLLISION_WALLS, groups)) {
 		HandleWallCollision(data);
@@ -80,7 +88,7 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (state.GetState() == &Koopa::ShellSlide) {
+		if (IsSliding()) {
 			if (Contains("Koopas", groups)) {
 				LPKoopa otherKoopa = static_cast<LPKoopa>(data.who);
 

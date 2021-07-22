@@ -259,6 +259,8 @@ void Game::Run()
 		if (collisionEngineEnabled)
 			CollisionEngine::Update(dynamicDt);
 
+		activeScene->_FreeEntitiesInQueue();
+
 		activeScene->Update(dynamicDt);
 
 		CollisionEngine::_HandleUnsubscribeWaitList();
@@ -274,18 +276,20 @@ void Game::Run()
 			if (collisionEngineEnabled)
 				CollisionEngine::Update(dt);
 
+			activeScene->_FreeEntitiesInQueue();
+
 			activeScene->Update(dt);
 
 			CollisionEngine::_HandleUnsubscribeWaitList();
 
 			activeScene->_FreeEntitiesInQueue();
-		}
+	}
 #endif
 		activeScene->Render();
 
 		if (newActiveScene != nullptr)
 			InitAndSwitchScene();
-	}
+}
 }
 
 void Game::InitAndSwitchScene()

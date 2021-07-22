@@ -184,6 +184,7 @@
     <ClCompile Include="ItemWoodBlock.cpp" />
     <ClCompile Include="MarioAnimationSet.cpp" />
     <ClCompile Include="MarioRaccoon.cpp" />
+    <ClCompile Include="MarioSpinAttack.cpp" />
     <ClCompile Include="MovementBlockHit.cpp" />
     <ClCompile Include="CoinUp.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -266,6 +267,7 @@
     <ClInclude Include="IKnockedOverable.h" />
     <ClInclude Include="ItemWoodBlock.h" />
     <ClInclude Include="MarioRaccoon.h" />
+    <ClInclude Include="MarioSpinAttack.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Movement.hpp" />
     <ClInclude Include="MovementBlockHit.h" />

@@ -1,6 +1,5 @@
 #include "QuestionBlock.h"
 #include "EmptyBlock.h"
-#include "Koopa.h"
 #include "Group.h"
 #include "EntityManager.h"
 #include "ContentFactory.h"
@@ -15,7 +14,7 @@ QuestionBlock::QuestionBlock(const Vector2<float>& position)
 		position,
 		"QuestionBlockNormal",
 		HitboxId::TILE_SIZE_HITBOX,
-		{ "Blocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
+		{ "Blocks",  Group::BLOCKS, Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
 	contentId(ContentId::NONE)
@@ -37,31 +36,19 @@ QuestionBlock::QuestionBlock(const std::string& contentId, const Vector2<float>&
 void QuestionBlock::OnReady()
 {
 	Entity::OnReady();
-	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYERS, "Koopas" });
+	CollisionEngine::Subscribe(this, &QuestionBlock::OnCollision, { Group::PLAYERS });
+}
+
+void QuestionBlock::GetKnockedOver(HDirection direction)
+{
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+		ExposeContent(static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS)));
 }
 
 void QuestionBlock::OnCollision(CollisionData data)
 {
-	const EntityGroups& groups = data.who->GetEntityGroups();
-	if (Contains(Group::PLAYERS, groups) && data.edge.y == -1) {
-
-		if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-			ExposeContent(player);
-		}
-		return;
-	}
-
-	if (Contains(std::string("Koopas"), groups)) {
-		LPKoopa koopa = static_cast<LPKoopa>(data.who);
-
-		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-			ExposeContent(player);
-		}
-
-		return;
-	}
+	if (data.edge.y == -1)
+		ExposeContent(static_cast<LPMario>(data.who));
 }
 
 void QuestionBlock::ExposeContent(LPMario player)

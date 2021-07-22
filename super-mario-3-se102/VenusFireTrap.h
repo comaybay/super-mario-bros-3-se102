@@ -1,13 +1,15 @@
 #pragma once
 #include "EntityState.h"
 #include "CollisionEngine.h"
+#include "IKnockedOverable.h"
 
 namespace Entities {
-	class VenusFireTrap : public Entity
+	class VenusFireTrap : public Entity, public IKnockedOverable
 	{
 	public:
 		VenusFireTrap(const std::string& colorType, const Utils::Vector2<float>& position);
 		void Update(float delta) override;
+		void GetKnockedOver(HDirection direction) override;
 
 	private:
 		void OnReady() override;

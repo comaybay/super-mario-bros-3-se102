@@ -37,10 +37,19 @@ void NoteBlock::Update(float delta)
 	state.Update(delta);
 }
 
+void NoteBlock::GetKnockedOver(HDirection direction)
+{
+	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS))
+		ExposeContent(static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS)));
+}
+
 void NoteBlock::Idle(float delta) {
 }
 
 void NoteBlock::StompedOn(float delta) {
+	if (targetPlayer == nullptr)
+		return;
+
 	blockHitMovementDown.Update(delta);
 
 	if (Game::IsKeyPressed(DIK_S))
@@ -50,13 +59,16 @@ void NoteBlock::StompedOn(float delta) {
 		state.SetState(&NoteBlock::Idle);
 		blockHitMovementDown.Reset();
 
-		const Vector2<float>& vel = targetPlayer->GetVelocity();
-		Vector2<float> newVel = { vel.x, pressedJump ? -350.0f : -200.0f };
-		targetPlayer->SetVelocity(newVel);
-		targetPlayer->SetOnNoteBlock(false);
+		if (targetPlayer != nullptr) {
+			const Vector2<float>& vel = targetPlayer->GetVelocity();
+			Vector2<float> newVel = { vel.x, pressedJump ? -350.0f : -200.0f };
+			targetPlayer->SetVelocity(newVel);
+			targetPlayer->SetOnNoteBlock(false);
+			targetPlayer = nullptr;
+		}
+
 
 		pressedJump = false;
-		targetPlayer = nullptr;
 	}
 }
 
@@ -71,33 +83,24 @@ void NoteBlock::Hit(float delta) {
 
 void NoteBlock::OnCollision(CollisionData data)
 {
-	const EntityGroups& groups = data.who->GetEntityGroups();
-	if (Contains(Group::PLAYERS, groups) && data.edge.y != 0) {
-		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-		ExposeContent(player);
-
-		if (data.edge.y == 1) {
-			targetPlayer = player;
-			targetPlayer->SetOnNoteBlock(true);
-			state.SetState(&NoteBlock::StompedOn);
-		}
-		else
-			state.SetState(&NoteBlock::Hit);
-
+	if (data.edge.x != 0)
 		return;
+
+	LPMario player = static_cast<LPMario>(data.who);
+	ExposeContent(player);
+
+	if (data.edge.y == 1) {
+		targetPlayer = player;
+		targetPlayer->SetOnNoteBlock(true);
+		targetPlayer->GetDestroyEvent().Subscribe(this, &NoteBlock::OnPlayerDestroy);
+		state.SetState(&NoteBlock::StompedOn);
 	}
+	else
+		state.SetState(&NoteBlock::Hit);
+}
 
-	if (Contains(std::string("Koopas"), groups)) {
-		LPKoopa koopa = static_cast<LPKoopa>(data.who);
-
-		if (koopa->IsSliding() && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-			state.SetState(&NoteBlock::Hit);
-			LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-			ExposeContent(player);
-		}
-
-		return;
-	}
+void NoteBlock::OnPlayerDestroy(LPEntity _) {
+	targetPlayer = nullptr;
 }
 
 void NoteBlock::ExposeContent(LPMario player)

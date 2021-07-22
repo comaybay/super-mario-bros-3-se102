@@ -4,6 +4,7 @@
 #include "PlayerVariables.h"
 #include "Game.h"
 #include "EntityConstants.h"
+#include "MarioSpinAttack.h"
 
 using namespace Entities;
 using namespace Utils;
@@ -40,7 +41,8 @@ const float MarioRaccoon::POWER_METER_DURATION = 4;
 
 MarioRaccoon::MarioRaccoon(const Vector2<float>& position, HDirection direction)
 	: Mario(position, direction, animationSet, "HitboxMarioB", PlayerPowerLevel::TANOOKI),
-	raccoonState(this, &MarioRaccoon::Wait),
+	flapState(this, &MarioRaccoon::WaitFlap),
+	spinState(this, &MarioRaccoon::WaitSpin),
 	time(0),
 	powerMeterTime(0),
 	jumpCount(0),
@@ -53,6 +55,7 @@ MarioRaccoon::MarioRaccoon(const Vector2<float>& position, HDirection direction)
 void MarioRaccoon::Update(float delta)
 {
 	Mario::Update(delta);
+	spinState.Update(delta);
 
 	if (isUsingPowerMeter)
 		PlayerVariables::SetPowerMeter(PlayerVariables::MAX_POWER_METER_VALUE);
@@ -63,7 +66,7 @@ void MarioRaccoon::Update(float delta)
 	if (isOnFallFlapAnim && animation->Finished())
 		isOnFallFlapAnim = false;
 
-	raccoonState.Update(delta);
+	flapState.Update(delta);
 }
 
 void MarioRaccoon::TakeDamage()
@@ -71,7 +74,7 @@ void MarioRaccoon::TakeDamage()
 	parentScene->AddEntity(new MarioTransition(this, PlayerPowerLevel::BIG));
 }
 
-void MarioRaccoon::Wait(float delta)
+void MarioRaccoon::WaitFlap(float delta)
 {
 	time += delta;
 
@@ -86,29 +89,32 @@ void MarioRaccoon::Wait(float delta)
 		jumpCount++;
 		powerMeterTime = 0;
 		isUsingPowerMeter = true;
-		raccoonState.SetState(&MarioRaccoon::FlyCountDown);
+		flapState.SetState(&MarioRaccoon::FlyCountDown);
 		return;
 	}
 
 	if (pressedJumpWhenOnAir) {
 		time = 0;
-		raccoonState.SetState(&MarioRaccoon::WaitFallFlap);
+		flapState.SetState(&MarioRaccoon::WaitFallFlap);
 	}
 }
 
 void MarioRaccoon::WaitFallFlap(float delta) {
 	if (onGround) {
 		time = 0;
-		raccoonState.SetState(&MarioRaccoon::Wait);
+		flapState.SetState(&MarioRaccoon::WaitFlap);
 		return;
 	}
 
 	if (Game::IsKeyPressed(DIK_S)) {
 		isOnFallFlapAnim = true;
-		animation->SetFrame(0);
+
+		if (spinState.GetState() != &MarioRaccoon::Spin)
+			animation->SetFrame(0);
+
 		velocity.y = FALL_FLAP_SPEED;
 		time = 0;
-		raccoonState.SetState(&MarioRaccoon::FallFlap);
+		flapState.SetState(&MarioRaccoon::FallFlap);
 	}
 }
 
@@ -118,8 +124,11 @@ void MarioRaccoon::FallFlap(float delta)
 		time = 0;
 		velocity.y = FALL_FLAP_SPEED;
 		isOnFallFlapAnim = true;
-		animation->SetFrame(0);
-		raccoonState.SetState(&MarioRaccoon::FallFlap);
+
+		if (spinState.GetState() != &MarioRaccoon::Spin)
+			animation->SetFrame(0);
+
+		flapState.SetState(&MarioRaccoon::FallFlap);
 		return;
 	}
 
@@ -127,7 +136,7 @@ void MarioRaccoon::FallFlap(float delta)
 	if (onGround || time >= FLAP_DURATION) {
 		isOnFallFlapAnim = false;
 		time = 0;
-		raccoonState.SetState(&MarioRaccoon::WaitFallFlap);
+		flapState.SetState(&MarioRaccoon::WaitFallFlap);
 	}
 }
 
@@ -135,7 +144,7 @@ void MarioRaccoon::FlyFlap(float delta) {
 	powerMeterTime += delta;
 	if (powerMeterTime >= POWER_METER_DURATION) {
 		PlayerVariables::SetPowerMeter(0);
-		raccoonState.SetState(&MarioRaccoon::Wait);
+		flapState.SetState(&MarioRaccoon::WaitFlap);
 		return;
 	}
 
@@ -143,15 +152,18 @@ void MarioRaccoon::FlyFlap(float delta) {
 		time = 0;
 		velocity.y = -FLY_FLAP_SPEED;
 		isOnFlyFlapAnim = true;
-		animation->SetFrame(0);
-		raccoonState.SetState(&MarioRaccoon::FlyFlap);
+
+		if (spinState.GetState() != &MarioRaccoon::Spin)
+			animation->SetFrame(0);
+
+		flapState.SetState(&MarioRaccoon::FlyFlap);
 		return;
 	}
 
 	time += delta;
 	if (onGround || time >= FLAP_DURATION) {
 		isOnFlyFlapAnim = false;
-		raccoonState.SetState(&MarioRaccoon::FlyCountDown);
+		flapState.SetState(&MarioRaccoon::FlyCountDown);
 	}
 }
 
@@ -162,7 +174,7 @@ void MarioRaccoon::FlyCountDown(float delta)
 	if (powerMeterTime >= POWER_METER_DURATION) {
 		time = 0;
 		PlayerVariables::SetPowerMeter(0);
-		raccoonState.SetState(&MarioRaccoon::Wait);
+		flapState.SetState(&MarioRaccoon::WaitFlap);
 		isUsingPowerMeter = false;
 		return;
 	}
@@ -183,39 +195,21 @@ void MarioRaccoon::FlyCountDown(float delta)
 		velocity.y = -FLY_FLAP_SPEED;
 		time = 0;
 		isOnFlyFlapAnim = true;
-		animation->SetFrame(0);
-		raccoonState.SetState(&MarioRaccoon::FlyFlap);
+
+		if (spinState.GetState() != &MarioRaccoon::Spin)
+			animation->SetFrame(0);
+
+		flapState.SetState(&MarioRaccoon::FlyFlap);
 	}
 }
 
-void MarioRaccoon::HandleJumpStateAnimation()
+void MarioRaccoon::UpdateAnimation()
 {
-	if (onGround || raccoonState.GetState() != &MarioRaccoon::FlyFlap && raccoonState.GetState() != &MarioRaccoon::FallFlap) {
-		Mario::HandleJumpStateAnimation();
+	if (spinState.GetState() == &MarioRaccoon::Spin)
 		return;
-	}
 
-	if (isOnFlyFlapAnim) {
-		int currentFrame = animation->GetCurrentFrame();
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? "MarioRJumpFlapL" : "MarioRJumpFlapR");
-		animation->SetFrame(currentFrame);
-		return;
-	}
-
-	if (isOnFallFlapAnim) {
-		int currentFrame = animation->GetCurrentFrame();
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? "MarioRFallFlapL" : "MarioRFallFlapR");
-		animation->SetFrame(currentFrame);
-		return;
-	}
-}
-
-void MarioRaccoon::HandleFallStateAnimation()
-{
-	if (onGround || raccoonState.GetState() != &MarioRaccoon::FlyFlap && raccoonState.GetState() != &MarioRaccoon::FallFlap) {
-		Mario::HandleFallStateAnimation();
-		return;
-	}
+	if (onGround || flapState.GetState() != &MarioRaccoon::FlyFlap && flapState.GetState() != &MarioRaccoon::FallFlap)
+		Mario::UpdateAnimation();
 
 	if (isOnFlyFlapAnim) {
 		int currentFrame = animation->GetCurrentFrame();
@@ -239,7 +233,7 @@ void MarioRaccoon::HandleJumpStateMovement(float delta)
 	else
 		ApplyFriction(delta);
 
-	if (raccoonState.GetState() != &MarioRaccoon::FlyFlap && raccoonState.GetState() != &MarioRaccoon::FallFlap) {
+	if (flapState.GetState() != &MarioRaccoon::FlyFlap && flapState.GetState() != &MarioRaccoon::FallFlap) {
 		velocity.y += EntityConstants::GRAVITY * delta;
 		velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 	}
@@ -250,4 +244,17 @@ void MarioRaccoon::HandleFallStateMovement(float delta)
 	HandleJumpStateMovement(delta);
 }
 
+void MarioRaccoon::WaitSpin(float delta)
+{
+	if (Game::IsKeyPressed(DIK_A)) {
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? "MarioRSpinL" : "MarioRSpinR");
+		parentScene->AddEntity(new MarioSpinAttack(this, HDirection::LEFT));
+		parentScene->AddEntity(new MarioSpinAttack(this, HDirection::RIGHT));
+		spinState.SetState(&MarioRaccoon::Spin);
+	}
+}
 
+void MarioRaccoon::Spin(float delta) {
+	if (animation->Finished())
+		spinState.SetState(&MarioRaccoon::WaitSpin);
+}

@@ -10,10 +10,10 @@
 using namespace Entities;
 using namespace Utils;
 
-const float Mario::MAX_WALK_SPEED = 80;
+const float Mario::MAX_WALK_SPEED = 90;
 const float Mario::MAX_RUN_SPEED = 180;
 const float Mario::RUN_STATE_ANIM_SPEED = 2;
-const float Mario::ACCELERATION = 200;
+const float Mario::ACCELERATION = 150;
 const float Mario::FRICTION_ACCEL = 500;
 const float Mario::WAIT_TIME_BEFORE_INCREASE_POWER_METER = 0.75f;
 const float Mario::POWER_METER_INCREASE_RATE = 0.125f;
@@ -26,7 +26,7 @@ const float Mario::JUMP_SPEED_AFTER_WALK = JUMP_SPEED + 25;
 const float Mario::DEATH_JUMP_SPEED = JUMP_SPEED / 1.1f;
 const float Mario::DEATH_FALL_ACCEL = EntityConstants::GRAVITY / 1.5f;
 const float Mario::WALK_SPEED_REACHED_GOAL_ROULETTE = MAX_WALK_SPEED / 1.5f;
-const float Mario::INVINCIBLE_DURATION = 1;
+const float Mario::INVINCIBLE_DURATION = 1.5;
 const int Mario::FLASH_DURATION = 2;
 const float Mario::MAX_MOVE_ANIM_SPEED = 2.0f;
 const float Mario::INCREASE_MOVE_ANIM_UNIT = 1 / 30.0f;
@@ -127,7 +127,7 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 
 	powerMeterTime = 0;
 
-	if (stateHandler == &Mario::Walk || stateHandler == &Mario::WalkSpeedUp) {
+	if (stateHandler == &Mario::Idle || stateHandler == &Mario::Walk || stateHandler == &Mario::WalkSpeedUp) {
 		isRunning = false;
 		return;
 	}
@@ -166,6 +166,10 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 	if (stateHandler == &Mario::ReachedGoalRouletteWalkAway) {
 		time = 0;
 		SetAnimation(animationSet.walkRight, 1.75f);
+
+		parentScene->UnsubscribeToOutOfWorldEvent(this);
+		SetDetectable(false);
+		UnsubscribeToCollisionEngine();
 		velocity = { WALK_SPEED_REACHED_GOAL_ROULETTE, 0 };
 		return;
 	}
@@ -181,7 +185,7 @@ void Mario::Idle(float delta)
 	if (!AlmostEqual(velocity.x, 0))
 		ApplyFriction(delta);
 
-	HandleIdleStateAnimation();
+	UpdateAnimation();
 
 	if (!onGround) {
 		SwitchState(&Mario::Fall);
@@ -203,23 +207,6 @@ void Mario::Idle(float delta)
 	}
 }
 
-void Mario::HandleIdleStateAnimation()
-{
-	if (inputDir.y == 1) {
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.duckLeft : animationSet.duckRight);
-		SetHitbox("HitboxMarioDuck");
-		return;
-	}
-
-	if (AlmostEqual(velocity.x, 0))
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);
-
-	else
-		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.walkLeft : animationSet.walkRight);
-
-	SetHitbox(normalHitboxId);
-}
-
 void Mario::Walk(float delta)
 {
 	UpdateDecreasePowerMeter(delta);
@@ -233,13 +220,7 @@ void Mario::Walk(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	walkAnimSpeed = max(walkAnimSpeed - INCREASE_MOVE_ANIM_UNIT, 1.0f);
-	if (inputDir.x != 0) {
-		if (inputDir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
-	}
+	UpdateAnimation();
 
 	if (Game::IsKeyDown(DIK_A))
 		SwitchState(&Mario::WalkSpeedUp);
@@ -274,14 +255,7 @@ void Mario::WalkSpeedUp(float delta)
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	walkAnimSpeed = min(walkAnimSpeed + INCREASE_MOVE_ANIM_UNIT, MAX_MOVE_ANIM_SPEED);
-	if (inputDir.x != 0)
-		if (inputDir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
-		else {
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
-			walkAnimSpeed = 1;
-		}
+	UpdateAnimation();
 
 	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_METER_VALUE)
 		SwitchState(&Mario::Run);
@@ -310,11 +284,7 @@ void Mario::Run(float delta) {
 	velocity.y += EntityConstants::GRAVITY * delta;
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
-	if (inputDir.x != 0)
-		if (inputDir.x == Sign(velocity.x))
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runLeft : animationSet.runRight);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+	UpdateAnimation();
 
 	if (inputDir.x != 0 && inputDir.x != Sign(velocity.x))
 		SwitchState(&Mario::WalkSpeedUp);
@@ -340,21 +310,13 @@ void Mario::Jump(float delta)
 
 	HandleJumpStateMovement(delta);
 
-	HandleJumpStateAnimation();
+	UpdateAnimation();
 
 	if (!Game::IsKeyDown(DIK_S) || velocity.y > 0) {
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
 		SwitchState(&Mario::Fall);
 		return;
 	}
-}
-
-void Mario::HandleJumpStateAnimation()
-{
-	if (isRunning)
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
-	else
-		SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
 }
 
 void Mario::HandleJumpStateMovement(float delta)
@@ -375,7 +337,7 @@ void Mario::Fall(float delta) {
 
 	HandleFallStateMovement(delta);
 
-	HandleFallStateAnimation();
+	UpdateAnimation();
 
 	if (!onGround)
 		return;
@@ -396,21 +358,6 @@ void Mario::Fall(float delta) {
 		SwitchState(&Mario::Walk);
 }
 
-void Mario::HandleFallStateAnimation() {
-	if (velocity.y < 0) {
-		if (isRunning)
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
-	}
-	else {
-		if (isRunning)
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runFallLeft : animationSet.runFallRight);
-		else
-			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
-	}
-}
-
 void Mario::HandleFallStateMovement(float delta)
 {
 	HandleJumpStateMovement(delta);
@@ -425,6 +372,93 @@ void Mario::BounceUp(float delta)
 		velocity.y = max(velocity.y, -JUMP_SPEED_RELASE_EARLY);
 		SwitchState(&Mario::Fall);
 	}
+}
+
+void Mario::UpdateAnimation()
+{
+	if (state.GetState() == &Mario::Idle) {
+		UpdateIdleStateAnimation();
+		return;
+	}
+
+	if (state.GetState() == &Mario::Walk) {
+		walkAnimSpeed = max(walkAnimSpeed - INCREASE_MOVE_ANIM_UNIT, 1.0f);
+		if (inputDir.x != 0) {
+			if (inputDir.x == Sign(velocity.x))
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
+			else
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+		}
+
+		return;
+	}
+
+	if (state.GetState() == &Mario::WalkSpeedUp) {
+		walkAnimSpeed = min(walkAnimSpeed + INCREASE_MOVE_ANIM_UNIT, MAX_MOVE_ANIM_SPEED);
+		if (inputDir.x != 0)
+			if (inputDir.x == Sign(velocity.x))
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.walkLeft : animationSet.walkRight, walkAnimSpeed);
+			else {
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+				walkAnimSpeed = 1;
+			}
+
+		return;
+	}
+
+	if (state.GetState() == &Mario::Run) {
+		if (inputDir.x != 0)
+			if (inputDir.x == Sign(velocity.x))
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runLeft : animationSet.runRight);
+			else
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.turnLeft : animationSet.turnRight);
+
+		return;
+	}
+
+	if (state.GetState() == &Mario::Jump) {
+		if (isRunning)
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+
+		return;
+	}
+
+	if (state.GetState() == &Mario::Fall) {
+		if (velocity.y < 0) {
+			if (isRunning)
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runJumpLeft : animationSet.runJumpRight);
+			else
+				SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.jumpLeft : animationSet.jumpRight);
+
+			return;
+		}
+
+		if (isRunning)
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.runFallLeft : animationSet.runFallRight);
+		else
+			SetAnimation((lastPressedKeyHorizontal == DIK_LEFT) ? animationSet.fallLeft : animationSet.fallRight);
+
+		return;
+	}
+}
+
+void Mario::UpdateIdleStateAnimation()
+{
+	if (inputDir.y == 1) {
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.duckLeft : animationSet.duckRight);
+		SetHitbox("HitboxMarioDuck");
+		return;
+	}
+
+	if (AlmostEqual(velocity.x, 0))
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.idleLeft : animationSet.idleRight);
+
+	else
+		SetAnimation(lastPressedKeyHorizontal == DIK_LEFT ? animationSet.walkLeft : animationSet.walkRight);
+
+	SetHitbox(normalHitboxId);
 }
 
 void Mario::OnNoteBlock(float delta)

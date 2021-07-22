@@ -5,7 +5,6 @@
 #include "Scene.h"
 #include "Contains.h"
 #include "Mario.h"
-#include "Koopa.h"
 #include "FXBoom.h"
 #include "PointUpFactory.h"
 
@@ -44,26 +43,9 @@ void PiranhaPlant::OnPlayerDestroy(LPEntity entity) {
 
 void PiranhaPlant::OnCollision(CollisionData data)
 {
-	const EntityGroups& groups = data.who->GetEntityGroups();
-
-	if (Contains(Group::PLAYERS, groups)) {
-		LPMario player = static_cast<LPMario>(data.who);
-		if (!player->IsInvincible())
-			player->TakeDamage();
-
-		return;
-	}
-
-	if (Contains("Koopas", groups)) {
-		LPKoopa koopa = static_cast<LPKoopa>(data.who);
-		if (koopa->IsSliding()) {
-			parentScene->AddEntity(new FXBoom(position));
-			parentScene->AddEntity(PointUpFactory::Create(position));
-			parentScene->QueueFree(this);
-		}
-
-		return;
-	}
+	LPMario player = static_cast<LPMario>(data.who);
+	if (!player->IsInvincible())
+		player->TakeDamage();
 }
 
 void PiranhaPlant::Update(float delta)
@@ -74,6 +56,13 @@ void PiranhaPlant::Update(float delta)
 		targetPlayer = TryFindPlayer();
 
 	state.Update(delta);
+}
+
+void PiranhaPlant::GetKnockedOver(HDirection direction)
+{
+	parentScene->AddEntity(new FXBoom(position));
+	parentScene->AddEntity(PointUpFactory::Create(position));
+	parentScene->QueueFree(this);
 }
 
 LPEntity PiranhaPlant::TryFindPlayer() {
@@ -105,7 +94,8 @@ void PiranhaPlant::CheckDistance(float delta)
 	if (distanceX <= SAFE_DISTANCE)
 		return;
 
-	CollisionEngine::Subscribe(this, &PiranhaPlant::OnCollision, { Group::PLAYERS, "Koopas" });
+	SetDetectable(true);
+	CollisionEngine::Subscribe(this, &PiranhaPlant::OnCollision, { Group::PLAYERS });
 	velocity.y = -MOVE_SPEED;
 	state.SetState(&PiranhaPlant::MoveUp);
 }
@@ -135,6 +125,7 @@ void PiranhaPlant::MoveDown(float delta)
 	if (position.y >= stopYMoveDown) {
 		position.y = stopYMoveDown;
 		velocity.y = 0;
+		SetDetectable(false);
 		CollisionEngine::Unsubscribe(this, &PiranhaPlant::OnCollision);
 		state.SetState(&PiranhaPlant::PrepareCheckDistance);
 	}

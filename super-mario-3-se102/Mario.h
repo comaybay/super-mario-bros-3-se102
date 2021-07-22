@@ -16,7 +16,7 @@ namespace Entities {
 			const std::string& hitboxId, PlayerPowerLevel powerLevel
 		);
 
-		void OnReady() override;
+		virtual void OnReady() override;
 		virtual void Update(float delta) override;
 		void PostUpdate() override;
 		virtual void Render() override;
@@ -44,13 +44,20 @@ namespace Entities {
 		bool IsJumping();
 		bool IsFalling();
 
+		/// <summary>
+		/// Keep player in world horizontally
+		/// </summary>
+		void ClipHorizontalPosition();
+
 		virtual void OnCollision(CollisionData data);
 		virtual void OnOutOfWorld() override;
-		virtual void HandleIdleStateAnimation();
-		virtual void HandleJumpStateAnimation();
-		virtual void HandleFallStateAnimation();
+
+		virtual void UpdateAnimation();
+		virtual void UpdateIdleStateAnimation();
+
 		virtual void HandleJumpStateMovement(float delta);
 		virtual void HandleFallStateMovement(float delta);
+
 		void UpdateIncreasePowerMeter(float time);
 		void UpdateDecreasePowerMeter(float time);
 		void UpdateInputDirection();
@@ -77,13 +84,6 @@ namespace Entities {
 		void OutOfWorldDeath(float delta);
 		void OnNoteBlock(float delta);
 		void OffNoteBlock(float delta);
-
-
-		/// <summary>
-		/// Keep player in world horizontally
-		/// </summary>
-		void ClipHorizontalPosition();
-
 
 	protected:
 		bool isRunning;

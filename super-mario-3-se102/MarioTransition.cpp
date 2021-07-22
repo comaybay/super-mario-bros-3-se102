@@ -43,7 +43,6 @@ MarioTransition::MarioTransition(LPMario player, PlayerPowerLevel to)
 		return;
 	}
 
-
 	//downgrade to Big or upgrade from Big
 	isDowngradeTransiton = (to == PPL::BIG) ? true : false;
 	resultPowerLevel = to;

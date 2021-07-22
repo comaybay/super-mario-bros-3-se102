@@ -1,8 +1,7 @@
 #include "PlayerVariables.h"
 #include "Utils.h"
 
-//TODO: REMOVE TEST VALUE
-const int PlayerVariables::MAX_POWER_METER_VALUE = 2;
+const int PlayerVariables::MAX_POWER_METER_VALUE = 6;
 
 PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::numberOfCoins = 0;

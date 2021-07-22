@@ -142,6 +142,23 @@ PlayableCharacters
 281, 144, 296, 175
 
 ##Raccoon Mario##====================================
+#Spin#
+MarioRSpinL, Normal, 0.066, Manual, False
+PlayableCharacters
+391, 402, 414, 433
+417, 402, 432, 433
+435, 402, 458, 433, -8, 0
+461, 402, 476, 433
+391, 402, 414, 433
+
+MarioRSpinR, Normal, 0.066, Manual, False
+PlayableCharacters
+365, 436, 388, 467, -8, 0
+391, 436, 406, 467
+409, 436, 432, 467
+435, 436, 450, 467
+365, 436, 388, 467, -8, 0
+
 #Walk#
 MarioRWL, Normal, 0.066, Auto
 PlayableCharacters
