@@ -30,10 +30,11 @@ const float Mario::INVINCIBLE_DURATION = 1.5;
 const int Mario::FLASH_DURATION = 2;
 const float Mario::MAX_MOVE_ANIM_SPEED = 2.0f;
 const float Mario::INCREASE_MOVE_ANIM_UNIT = 1 / 30.0f;
+const Vector2<float> Mario::DEFAULT_HOLD_OFFSET = { Constants::TILE_SIZE * 0.75f , Constants::TILE_SIZE * 0.75f };
 
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
-	const std::string& hitboxId, PlayerPowerLevel powerLevel
+	const std::string& hitboxId, PlayerPowerLevel powerLevel, const Utils::Vector2<float>& holdOffset
 )
 	: Entity::Entity(
 		position,
@@ -43,6 +44,7 @@ Mario::Mario(
 		GridType::NONE
 	),
 	animationSet(animationSet),
+	holdOffset(holdOffset),
 	normalHitboxId(hitboxId),
 	powerLevel(powerLevel),
 	state(EntityState<Mario>(this, &Mario::Fall)),
@@ -55,7 +57,8 @@ Mario::Mario(
 	instantDecrease(false),
 	isRunning(false),
 	onGround(false),
-	runBeforeJump(false)
+	runBeforeJump(false),
+	holdEntity(false)
 {
 }
 
@@ -68,6 +71,22 @@ void Mario::OnReady()
 void Mario::Update(float delta) {
 	Entity::Update(delta);
 	updateState.Update(delta);
+
+	if (IsHolding()) {
+		//TODO: better implementation
+		Vector2<float> offset = holdOffset;
+		offset.x = lastPressedKeyHorizontal == DIK_LEFT ? -offset.x : offset.x;
+		holdEntity->SetPosition(position + offset);
+
+		//set velocity to detect collision (this code is wrote to deal the limitations of current collision detection algorithm)
+		float dir = lastPressedKeyHorizontal == DIK_LEFT ? -1.0f : 1.0f;
+		holdEntity->SetVelocity({ MAX_WALK_SPEED * 3 * dir, 0 });
+
+		if (!Game::IsKeyDown(DIK_A)) {
+			releaseHoldEvent.Notify(this);
+			holdEntity = nullptr;
+		}
+	}
 }
 
 void Mario::PostUpdate()
@@ -128,6 +147,9 @@ void Mario::SwitchState(EntityState<Mario>::StateHandler stateHandler) {
 	powerMeterTime = 0;
 
 	if (stateHandler == &Mario::Idle || stateHandler == &Mario::Walk || stateHandler == &Mario::WalkSpeedUp) {
+		if (stateHandler == &Mario::Idle)
+			walkAnimSpeed = 1.0f;
+
 		isRunning = false;
 		return;
 	}
@@ -569,7 +591,7 @@ void Mario::ApplyFriction(float delta) {
 
 void Mario::ClipHorizontalPosition()
 {
-	float dimX = Game::GetGameSettings().gameDimension.width;
+	int dimX = Game::GetGameSettings().gameDimension.width;
 	float cameraPosX = parentScene->GetCamera().GetPosition().x;
 	float marioOffset = GetHitbox().GetDimension().width + GetHitbox().GetRelativePosition().x;
 	position.x = Clip(position.x, cameraPosX, cameraPosX + dimX - marioOffset);
@@ -654,6 +676,27 @@ void Mario::ShowGoInPipeAnimation()
 {
 	SetAnimation(animationSet.goInPipe);
 }
+
+void Mario::Hold(LPEntity entity)
+{
+	holdEntity = entity;
+}
+
+void Mario::ReleaseHold()
+{
+	holdEntity = nullptr;
+	releaseHoldEvent.Notify(this);
+}
+
+bool Mario::IsHolding() {
+	return holdEntity != nullptr;
+}
+
+Event<LPEntity>& Mario::GetReleaseHoldEvent()
+{
+	return releaseHoldEvent;
+}
+
 
 void Mario::SetOnNoteBlock(bool state)
 {

@@ -1,5 +1,4 @@
 #include "Koopa.h"
-#include "Mario.h"
 #include "FXBoom.h"
 #include "Color.h"
 #include "Group.h"
@@ -10,6 +9,7 @@
 #include "EntityConstants.h"
 #include "PointUpFactory.h"
 #include "EntityUtils.h"
+#include "Game.h"
 
 using namespace Entities;
 using namespace Utils;
@@ -30,7 +30,8 @@ Koopa::Koopa(const std::string& colorType, const Utils::Vector2<float>& position
 	state(EntityState<Koopa>(this, &Koopa::MoveAround)),
 	knockedOverMovement(nullptr),
 	onGround(false),
-	lock(true)
+	lock(true),
+	holder(nullptr)
 {
 }
 
@@ -54,22 +55,24 @@ void Koopa::OnCollision(CollisionData data)
 {
 	const EntityGroups& groups = data.who->GetEntityGroups();
 
-	if (Contains(Group::BLOCKS, groups) && IsSliding() && data.edge.y == 0) {
-		if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
-			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-			entity->GetKnockedOver(dir);
-		};
+	if (state.GetState() != &Koopa::Hold) {
 
-	}
+		if (Contains(Group::BLOCKS, groups) && IsSliding() && data.edge.y == 0) {
+			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+				entity->GetKnockedOver(dir);
+			};
+		}
 
-	if (Contains(Group::COLLISION_WALLS, groups)) {
-		HandleWallCollision(data);
-		return;
-	}
+		if (Contains(Group::COLLISION_WALLS, groups)) {
+			HandleWallCollision(data);
+			return;
+		}
 
-	if (Contains(Group::PLAYERS, groups)) {
-		HandlePlayerCollision(data);
-		return;
+		if (Contains(Group::PLAYERS, groups) && state.GetState() != &Koopa::Hold) {
+			HandlePlayerCollision(data);
+			return;
+		}
 	}
 
 	if (Contains(Group::ENEMIES, groups)) {
@@ -107,7 +110,28 @@ void Koopa::OnCollision(CollisionData data)
 
 			return;
 		}
+
+		if (state.GetState() == &Koopa::Hold) {
+			//if entity implements IKnockedOverable
+			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+				entity->GetKnockedOver(dir);
+			};
+
+			holder->GetReleaseHoldEvent().Unsubscribe(this, &Koopa::OnPlayerReleaseHold);
+			holder->ReleaseHold();
+			holder = nullptr;
+			GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
+		}
 	}
+}
+
+void Koopa::OnPlayerReleaseHold(LPEntity player)
+{
+	SwitchState(&Koopa::ShellSlide);
+	velocity.y = -SHELL_SLIDE_SPEED / 2.0f;
+	velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? SHELL_SLIDE_SPEED : -SHELL_SLIDE_SPEED;
+	holder = nullptr;
 }
 
 void Koopa::HandlePlayerCollision(const CollisionData& data)
@@ -133,14 +157,24 @@ void Koopa::HandlePlayerCollision(const CollisionData& data)
 	}
 
 	if (state.GetState() == &Koopa::ShellIdle) {
-		if (data.edge.x != 0)
-			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
+		bool pressedHold = Game::IsKeyDown(DIK_A);
 
-		else {
-			velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? SHELL_SLIDE_SPEED : -SHELL_SLIDE_SPEED;
-			parentScene->AddEntity(PointUpFactory::Create(position));
+		if (data.edge.x != 0 && !pressedHold) {
+			velocity.x = SHELL_SLIDE_SPEED * data.edge.x;
+			SwitchState(&Koopa::ShellSlide);
+			return;
 		}
 
+		if (data.edge.x != 0 && pressedHold) {
+			player->Hold(this);
+			player->GetReleaseHoldEvent().Subscribe(this, &Koopa::OnPlayerReleaseHold);
+			holder = player;
+			SwitchState(&Koopa::Hold);
+			return;
+		}
+
+		velocity.x = EntityUtils::IsOnLeftSideOf(this, player) ? SHELL_SLIDE_SPEED : -SHELL_SLIDE_SPEED;
+		parentScene->AddEntity(PointUpFactory::Create(position));
 		SwitchState(&Koopa::ShellSlide);
 		return;
 	}
@@ -199,7 +233,10 @@ void Koopa::HandleWallCollision(const CollisionData& data)
 
 void Koopa::Update(float delta)
 {
-	Entity::Update(delta);
+	//not allow update position by velocity when hold
+	if (holder == nullptr)
+		Entity::Update(delta);
+
 	state.Update(delta);
 	onGround = false;
 }
@@ -250,7 +287,6 @@ void Koopa::ShellIdle(float delta)
 {
 	velocity.y = min(velocity.y + EntityConstants::GRAVITY * delta, EntityConstants::MAX_FALL_SPEED);
 
-
 	if (velocity.x == 0)
 		return;
 
@@ -270,6 +306,10 @@ void Koopa::KnockedOver(float delta)
 	knockedOverMovement->Update(delta);
 	if (knockedOverMovement->Finished())
 		parentScene->QueueFree(this);
+}
+
+void Koopa::Hold(float _)
+{
 }
 
 void Koopa::GetKnockedOver(HDirection direction)

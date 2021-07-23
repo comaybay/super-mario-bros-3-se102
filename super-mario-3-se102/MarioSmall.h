@@ -21,5 +21,7 @@ namespace Entities {
 		bool died;
 		EntityState<MarioSmall> smallMarioState;
 		static const MarioAnimationSet animationSet;
+
+		static const Utils::Vector2<float> SMALL_MARIO_HOLD_OFFSET;
 	};
 }

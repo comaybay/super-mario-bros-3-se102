@@ -31,8 +31,10 @@ const MarioAnimationSet MarioSmall::animationSet(
 	"MarioSGTP"
 );
 
+const Utils::Vector2<float> MarioSmall::SMALL_MARIO_HOLD_OFFSET = { Constants::TILE_SIZE * 0.75f, 0 };
+
 MarioSmall::MarioSmall(Vector2<float> position, HDirection initialFacingDirection)
-	: Mario(position, initialFacingDirection, animationSet, "HitboxMarioS", PlayerPowerLevel::SMALL),
+	: Mario(position, initialFacingDirection, animationSet, "HitboxMarioS", PlayerPowerLevel::SMALL, SMALL_MARIO_HOLD_OFFSET),
 	smallMarioState(this),
 	time(0),
 	died(false)

@@ -5,6 +5,7 @@
 #include "CollisionEngine.h"
 #include "IKnockedOverable.h"
 #include "MovementKnockedOver.h"
+#include "Mario.h"
 
 namespace Entities {
 	class Koopa : public Entity, public IKnockedOverable
@@ -19,6 +20,7 @@ namespace Entities {
 	private:
 		void OnReady() override;
 		void OnCollision(CollisionData data);
+		void OnPlayerReleaseHold(LPEntity player);
 		void HandleWallCollision(const CollisionData& data);
 		void HandlePlayerCollision(const CollisionData& data);
 
@@ -27,12 +29,14 @@ namespace Entities {
 		void ShellIdle(float delta);
 		void ShellSlide(float delta);
 		void KnockedOver(float delta);
+		void Hold(float delta);
 
 		std::string colorCode;
 		std::string colorType;
 		LPMovement<MovementKnockedOver> knockedOverMovement;
 		EntityState<Koopa> state;
 		Utils::Vector2<float> prevOnGroundPosition;
+		LPMario holder;
 		bool onGround;
 		bool lock;
 	public:

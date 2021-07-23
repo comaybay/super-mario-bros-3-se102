@@ -4,7 +4,6 @@
 #include "PlayerPowerLevel.h"
 #include "MarioAnimationSet.h"
 #include "Direction.h"
-#include "Koopa.h"
 
 namespace Entities {
 	class Mario : public Entity {
@@ -13,7 +12,7 @@ namespace Entities {
 
 		Mario(
 			const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
-			const std::string& hitboxId, PlayerPowerLevel powerLevel
+			const std::string& hitboxId, PlayerPowerLevel powerLevel, const Utils::Vector2<float>& holdOffset = DEFAULT_HOLD_OFFSET
 		);
 
 		virtual void OnReady() override;
@@ -25,6 +24,10 @@ namespace Entities {
 		bool IsInvincible();
 		void StartReachedGoalRouletteAnimation();
 		void ShowGoInPipeAnimation();
+		void Hold(LPEntity entity);
+		void ReleaseHold();
+		bool IsHolding();
+		Event<LPEntity>& GetReleaseHoldEvent();
 
 		PlayerPowerLevel GetPowerLevel();
 
@@ -93,6 +96,8 @@ namespace Entities {
 		Utils::Vector2<int> inputDir;
 
 	private:
+		Utils::Vector2<float> holdOffset;
+		LPEntity holdEntity;
 		EntityState<Mario> state;
 		std::string normalHitboxId;
 		float time;
@@ -103,6 +108,7 @@ namespace Entities {
 		PlayerPowerLevel powerLevel;
 		EntityState<Mario> updateState;
 		float invincibleTime;
+		Event<LPEntity> releaseHoldEvent;
 		Event<> restartPointUp;
 		MarioAnimationSet animationSet;
 
@@ -129,6 +135,7 @@ namespace Entities {
 		static const float INVINCIBLE_DURATION;
 		static const float MAX_MOVE_ANIM_SPEED;
 		static const float INCREASE_MOVE_ANIM_UNIT;
+		static const Utils::Vector2<float> DEFAULT_HOLD_OFFSET;
 	};
 	typedef Mario* LPMario;
 }
