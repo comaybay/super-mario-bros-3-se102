@@ -10,13 +10,13 @@ using namespace Utils;
 
 Entity::Entity(
 	const Utils::Vector2<float>& position, const std::string& initialAnimation, const std::string& hitbox,
-	const EntityGroups& entityGroups, GridType gridType, bool isRenderedBeforeWorld) :
+	const EntityGroups& entityGroups, GridType gridType, bool isRenderedBeforeForeground) :
 	position(position),
 	animation(AnimationManager::GetNew(initialAnimation)),
 	hitbox(HitboxManager::Get(hitbox)),
 	groups(entityGroups),
 	gridType(gridType),
-	isRenderedBeforeWorld(isRenderedBeforeWorld)
+	isRenderedBeforeForeground(isRenderedBeforeForeground)
 {
 	Init();
 }
@@ -29,7 +29,7 @@ Entity::Entity(
 	hitbox(HitboxManager::Get(hitbox)),
 	groups(entityGroups),
 	gridType(gridType),
-	isRenderedBeforeWorld(false)
+	isRenderedBeforeForeground(false)
 {
 	Init();
 }
@@ -42,7 +42,7 @@ Entity::Entity(
 	hitbox(HitboxManager::Get(hitbox)),
 	groups(EntityGroups{ entityGroup }),
 	gridType(gridType),
-	isRenderedBeforeWorld(false)
+	isRenderedBeforeForeground(false)
 {
 	Init();
 }
@@ -53,7 +53,7 @@ Entity::Entity(const Utils::Vector2<float>& position, const EntityGroups& entity
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
 	groups(entityGroups),
 	gridType(gridType),
-	isRenderedBeforeWorld(false)
+	isRenderedBeforeForeground(false)
 {
 	Init();
 }
@@ -64,7 +64,7 @@ Entity::Entity(const Utils::Vector2<float>& position, const std::string& entityG
 	hitbox(HitboxManager::Get(HitboxId::NONE)),
 	groups(EntityGroups{ entityGroup }),
 	gridType(gridType),
-	isRenderedBeforeWorld(false)
+	isRenderedBeforeForeground(false)
 {
 	Init();
 }
@@ -177,9 +177,9 @@ void Entity::OnReady() {
 		parentScene->SubscribeToOutOfWorldEvent(this, &Entity::OnOutOfWorld);
 }
 
-void Entity::SetRenderedBeforeWorld(bool state)
+void Entity::SetRenderedBeforeForeground(bool state)
 {
-	isRenderedBeforeWorld = state;
+	isRenderedBeforeForeground = state;
 }
 
 void Entity::OnOutOfWorld()
@@ -217,7 +217,7 @@ Event<LPEntity>& Entity::GetDestroyEvent()
 
 bool Entity::_IsRenderedBeforeWorld()
 {
-	return isRenderedBeforeWorld;
+	return isRenderedBeforeForeground;
 }
 
 const EntityGroups& Entity::GetEntityGroups()

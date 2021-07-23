@@ -650,6 +650,11 @@ void Mario::StartReachedGoalRouletteAnimation()
 	SwitchState(&Mario::ReachedGoalRouletteFall);
 }
 
+void Mario::ShowGoInPipeAnimation()
+{
+	SetAnimation(animationSet.goInPipe);
+}
+
 void Mario::SetOnNoteBlock(bool state)
 {
 	SwitchState(state ? &Mario::OnNoteBlock : &Mario::OffNoteBlock);

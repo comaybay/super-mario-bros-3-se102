@@ -24,6 +24,7 @@ struct MarioAnimationSet {
 	std::string idleHoldRight;
 	std::string holdLeft;
 	std::string holdRight;
+	std::string goInPipe;
 
 	MarioAnimationSet(
 		const std::string& idleLeft,
@@ -47,6 +48,7 @@ struct MarioAnimationSet {
 		const std::string& idleHoldLeft,
 		const std::string& idleHoldRight,
 		const std::string& holdLeft,
-		const std::string& holdRight
+		const std::string& holdRight,
+		const std::string& goInPipe
 	);
 };

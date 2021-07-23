@@ -22,7 +22,8 @@ MarioAnimationSet::MarioAnimationSet(
 	const std::string& idleHoldLeft,
 	const std::string& idleHoldRight,
 	const std::string& holdLeft,
-	const std::string& holdRight
+	const std::string& holdRight,
+	const std::string& goInPipe
 ) :
 idleLeft(idleLeft),
 idleRight(idleRight),
@@ -45,6 +46,7 @@ duckRight(duckRight),
 idleHoldLeft(idleHoldLeft),
 idleHoldRight(idleHoldRight),
 holdLeft(holdLeft),
-holdRight(holdRight)
+holdRight(holdRight),
+goInPipe(goInPipe)
 {
 }

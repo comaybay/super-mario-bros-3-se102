@@ -68,6 +68,11 @@ MarioDeath, Normal, -1, Manual
 PlayableCharacters
 289, 16, 304, 31
 
+#Go To Pipe#
+MarioSGTP, Normal, -1, Manual
+PlayableCharacters
+73, 34, 88, 49
+
 ##Super Mario##====================================
 #Walk#
 MarioBWL, Normal, 0.066, Auto
@@ -140,6 +145,11 @@ PlayableCharacters
 MarioBDR, Normal, -1, Manual
 PlayableCharacters
 281, 144, 296, 175
+
+#Go To Pipe#
+MarioBGTP, Normal, -1, Manual
+PlayableCharacters
+217, 110, 232, 141
 
 ##Raccoon Mario##====================================
 #Spin#
@@ -257,6 +267,11 @@ PlayableCharacters
 MarioRDR, Normal, -1, Manual
 PlayableCharacters
 237, 368, 260, 399, -8, 0
+
+#Go To Pipe#
+MarioRGTP, Normal, -1, Manual
+PlayableCharacters
+417, 402, 432, 433
 
 ##MarioTransitions##====================================
 MarioTransition1Left, Normal,  0.066, Manual

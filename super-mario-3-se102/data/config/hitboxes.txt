@@ -28,3 +28,5 @@ HitboxPiranhaPlant, 2, 2, 12, 30
 HitboxBoomerangBrother, 1, 1, 14, 22
 
 HitboxBoomerang, 4, 4, 8, 8
+
+HitboxPipeWarp, 0, 0, 32, 16

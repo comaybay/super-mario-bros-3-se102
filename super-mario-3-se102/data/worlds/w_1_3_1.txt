@@ -1,12 +1,10 @@
 #SceneType (World or WorldMap)
-#WorldType (Normal or Slide, Default = Normal)
-#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
+#WorldType (Normal or Slide, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PlayerDeathScenePath (Relative to Root)
+#WorldMapScenePath (Relative to Root)
 [WORLD PROPERTIES]
 World
-Normal
 Normal
 159, 27
 156, 252, 240
@@ -103,6 +101,8 @@ WallType1, 1488, 416, 1056, 16
 #EntityName, [Entity specific properties...], Position (X, Y), IsInAnyGrid
 #[SpatialPartitionGridCellIndex (X, Y) (If IsInAnyGrid = True)]
 [WORLD ENTITIES]
+PipeWarp, worlds/w_1_3_2.txt, Out, Up, 2096, 80, True
+16, 0
 Coin, 1728, 272, True
 13, 2
 Coin, 1744, 272, True
@@ -159,7 +159,8 @@ Brick, None, 512, 368, True
 4, 3
 Brick, None, 528, 368, True
 4, 3
-SuperNoteBlock, 544, 368, True
+#Super Note Block default ScenePath is worlds/w_*_*_2.txt, change the value if you want to point to a different path
+SuperNoteBlock, worlds/w_1_3_2.txt, 544, 368, True
 4, 3
 Brick, None, 560, 368, True
 4, 3

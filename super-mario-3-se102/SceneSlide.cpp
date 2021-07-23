@@ -15,6 +15,23 @@ void SceneSlide::_Ready()
 	camera._SetParentScene(this);
 	camera.OnReady();
 	camera.SetVelocity({ SLIDE_SPEED, 0 });
-	if (!IsEntityGroupEmpty(Group::PLAYERS))
-		camera.FocusOn(GetEntityOfGroup(Group::PLAYERS));
+
+	if (!IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPEntity player = GetEntityOfGroup(Group::PLAYERS);
+		camera.FocusOn(player);
+		camera.FollowYEntity(player);
+	}
+}
+
+void SceneSlide::Update(float delta)
+{
+	Scene::Update(delta);
+
+	//handling slide stop
+	const float WorldDimX = GetWorldDimension().width;
+	const Utils::Dimension<int>& viewportDim = camera.GetViewportDimension();
+	if (camera.GetPosition().x > WorldDimX - viewportDim.width) {
+		camera.SetVelocity({ 0, 0 });
+		camera.SetPosition({ WorldDimX - viewportDim.width , camera.GetPosition().y });
+	}
 }

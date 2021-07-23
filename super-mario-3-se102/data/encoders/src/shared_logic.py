@@ -70,17 +70,14 @@ class Encoder(ABC):
     def _write_world_props_header(self, encode_file):
         encode_file.write("#SceneType (World or WorldMap)\n")
         encode_file.write("#WorldType (Normal or Slide, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>\n")
-        encode_file.write(
-            "#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>\n")
         encode_file.write("#Dimension (Width, Height)\n")
         encode_file.write("#BackgroundColor (R, G, B)\n")
-        encode_file.write("#PlayerDeathScenePath (Relative to Root)\n")
+        encode_file.write("#WorldMapScenePath (Relative to Root)\n")
         encode_file.write("[WORLD PROPERTIES]\n")
 
     def _encode_world_props(self, encode_file):
         # exclude 2 row of tiles, get height of one of the world in the image.
         encode_file.write(f"{self.scene_type}\n")
-        encode_file.write("Normal\n")
         encode_file.write("Normal\n")
         encode_file.write(f"{self.layer_tiles_size[0]}, {self.layer_tiles_size[1]}\n")
         encode_file.write(
@@ -190,12 +187,22 @@ class Encoder(ABC):
             write_with_grid(EntityCode.COIN.value, pos_x, pos_y)
             return
 
-        if (code in [EntityCode.PORTAL_1_IN,  EntityCode.PORTAL_2_IN, EntityCode.PORTAL_1_OUT,  EntityCode.PORTAL_2_OUT]):
-            world_number = "1" if code in [EntityCode.PORTAL_1_IN, EntityCode.PORTAL_1_OUT] else "2"
-            in_or_out = "In" if code in [EntityCode.PORTAL_1_IN, EntityCode.PORTAL_2_IN] else "Out"
+        if ("PipeWarp" in code.value):
+            world_number = code.value[-1]
+            in_or_out = "In" if "In" in code.value else "Out"
+            direction = "Up" if "Up" in code.value else "Down"
             relative_scene_path = f"worlds/{ntpath.basename(self.output_file_path)}"
             portal_scene_path = relative_scene_path[:13] + world_number + relative_scene_path[14:]
-            code_value = f"Portal, {portal_scene_path}, {in_or_out}"
+            code_value = f"PipeWarp, {portal_scene_path}, {in_or_out}, {direction}"
+            write_with_grid(code_value, pos_x, pos_y)
+            return
+
+        if (code == EntityCode.SUPER_NOTE_BLOCK):
+            relative_scene_path = f"worlds/{ntpath.basename(self.output_file_path)}"
+            note_scene_path = relative_scene_path[:13] + "2" + relative_scene_path[14:]
+            code_value = f"{code.value}, {note_scene_path}"
+            encode_file.write(
+                "#Super Note Block default ScenePath is worlds/w_*_*_2.txt, change the value if you want to point to a different path\n")
             write_with_grid(code_value, pos_x, pos_y)
             return
 
@@ -320,10 +327,14 @@ class EntityCode(Enum):
     BOOMERANG_BRO = "BoomerangBro"
     GOAL_ROULETTE = "GoalRoulette"
     COIN = "Coin"
-    PORTAL_1_IN = "Portal1In"
-    PORTAL_2_IN = "Portal2In"
-    PORTAL_1_OUT = "Portal1Out"
-    PORTAL_2_OUT = "Portal2Out"
+    PIPE_WARP_UP_1_IN = "PipeWarp, Up, In, 1"
+    PIPE_WARP_UP_2_IN = "PipeWarp, Up, In, 2"
+    PIPE_WARP_UP_1_OUT = "PipeWarp, Up, Out, 1"
+    PIPE_WARP_UP_2_OUT = "PipeWarp, Up, Out, 2"
+    PIPE_WARP_DOWN_1_IN = "PipeWarp, Down, In, 1"
+    PIPE_WARP_DOWN_2_IN = "PipeWarp, Down, In, 2"
+    PIPE_WARP_DOWN_1_OUT = "PipeWarp, Down, Out, 1"
+    PIPE_WARP_DOWN_2_OUT = "PipeWarp, Down, Out, 2"
     QUESTION_BLOCK_COIN = "QuestionBlock, Coin"
     QUESTION_BLOCK_SUPER_LEAF = "QuestionBlock, SuperLeaf"
     BRICK = "Brick, None"

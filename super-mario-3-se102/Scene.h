@@ -19,8 +19,9 @@ class Scene
 public:
 	~Scene();
 	Scene();
-	void Update(float delta);
+	virtual void Update(float delta);
 	void Render();
+	const std::string& GetScenePath();
 	Utils::Dimension<int> GetWorldDimension();
 	const Utils::Vector2<float>& GetCameraPosition();
 	Camera& GetCamera();
@@ -29,6 +30,7 @@ public:
 
 	const EntityCollection& GetEntitiesOfGroup(const std::string& groupName);
 	void ForEachNonWallEntityOnCamera(const std::function<void(LPEntity)>& handler);
+
 
 	/// <summary>
 	/// Add given entity after current frame.
@@ -72,6 +74,7 @@ protected:
 	RECT GetTileBoundingBox(int id);
 	void RenderWorld(int(EncodedWorld::* getIndex)(int, int));
 	void GetRenderEntities(std::vector<LPEntity>& entitiesRenderedBeforeWorld, std::vector<LPEntity>& entitiesRenderedrAfterWorld);
+	std::string scenePath;
 	Utils::Dimension<int> worldTileDim;
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
@@ -90,7 +93,7 @@ public:
 	/// initialize scene, this method exist because some operations require scene to exist before 
 	/// it's constructor's arguments are provided, used internally by SceneLoader.
 	/// </summary>
-	void _Init(const Utils::Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager, const std::string& prevScenePath);
+	void _Init(const std::string& scenePath, const Utils::Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld, LPEntityManager entityManager, const std::string& prevScenePath);
 
 	/// <summary>
 	/// called when everything in the scene is loaded, used internally by SceneLoader.

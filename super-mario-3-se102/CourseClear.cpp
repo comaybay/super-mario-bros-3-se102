@@ -29,7 +29,6 @@ void CourseClear::OnReady()
 void CourseClear::Update(float delta)
 {
 	time += delta;
-	if (time >= PREPARE_EXIT_DURATION) {
+	if (time >= PREPARE_EXIT_DURATION)
 		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
-	}
 }

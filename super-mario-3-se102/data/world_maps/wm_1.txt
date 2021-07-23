@@ -1,12 +1,10 @@
 #SceneType (World or WorldMap)
-#WorldType (Normal or Slide, Default = Normal)
-#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
+#WorldType (Normal or Slide, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PlayerDeathScenePath (Relative to Root)
+#WorldMapScenePath (Relative to Root)
 [WORLD PROPERTIES]
 WorldMap
-Normal
 Normal
 16, 13
 0, 0, 0

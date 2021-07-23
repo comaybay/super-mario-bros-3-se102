@@ -22,6 +22,8 @@
 #include "Coin.h"
 #include "Mushroom.h"
 #include "CoinUp.h"
+#include "PipeWarpIn.h"
+#include "PipeWarpOut.h"
 #include "GoalRoulette.h"
 
 #include "WMNode.h"

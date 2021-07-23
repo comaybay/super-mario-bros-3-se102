@@ -5,22 +5,27 @@
 #include "ContentFactory.h"
 #include "Constants.h"
 #include "Game.h"
+#include "PlayerVariables.h"
 
 using namespace Entities;
 using namespace Utils;
 
-SuperNoteBlock::SuperNoteBlock(const Vector2<float>& position)
+const float SuperNoteBlock::WAIT_DURATION = 1;
+
+SuperNoteBlock::SuperNoteBlock(const std::string& scenePath, const Vector2<float>& position)
 	: Entity::Entity(
 		position,
 		AnimationId::NONE,
 		HitboxId::TILE_SIZE_HITBOX, { "SuperNoteBlocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
+	scenePath(scenePath),
 	state(EntityState<SuperNoteBlock>(this, &SuperNoteBlock::Idle)),
 	blockHitMovementUp(MovementBlockHit(this, Direction::UP, position)),
 	blockHitMovementDown(MovementBlockHit(this, Direction::DOWN, position)),
 	targetPlayer(nullptr),
-	pressedJump(false)
+	pressedJump(false),
+	time(0)
 {
 }
 
@@ -47,17 +52,28 @@ void SuperNoteBlock::StompedOn(float delta) {
 		pressedJump = true;
 
 	if (blockHitMovementDown.Finished()) {
-		state.SetState(&SuperNoteBlock::Idle);
 		blockHitMovementDown.Reset();
 
-		//TODO: implement super note block behaviour
 		const Vector2<float>& vel = targetPlayer->GetVelocity();
 		Vector2<float> newVel = { vel.x, pressedJump ? -1000.0f : -200.0f };
 		targetPlayer->SetVelocity(newVel);
 		targetPlayer->SetOnNoteBlock(false);
 
+		state.SetState(pressedJump ? &SuperNoteBlock::PrepareSwitchScene : &SuperNoteBlock::Idle);
+		if (pressedJump)
+			parentScene->GetCamera().StopFollowingEntity();
+
 		pressedJump = false;
 		targetPlayer = nullptr;
+	}
+}
+
+void SuperNoteBlock::PrepareSwitchScene(float delta)
+{
+	time += delta;
+	if (time >= WAIT_DURATION) {
+		PlayerVariables::SetIsFlownBySuperNoteBlock(true);
+		Game::QueueFreeAndSwitchScene(scenePath);
 	}
 }
 

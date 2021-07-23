@@ -1,13 +1,11 @@
 #SceneType (World or WorldMap)
-#WorldType (Normal or Slide, Default = Normal)
-#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
+#WorldType (Normal or Slide, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PlayerDeathScenePath (Relative to Root)
+#WorldMapScenePath (Relative to Root)
 [WORLD PROPERTIES]
 World
 Slide
-SuperNote
 63, 27
 32, 56, 236
 world_maps/wm_1.txt
@@ -157,6 +155,6 @@ Coin, 832, 352, True
 6, 2
 Coin, 864, 352, True
 6, 2
-Portal, worlds/w_1_3_1.txt, Out, 848, 368, True
+PipeWarp, worlds/w_1_3_1.txt, In, Down, 848, 368, True
 6, 3
 Mario, 128, 400, False

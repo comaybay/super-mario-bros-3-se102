@@ -22,7 +22,7 @@ Mushroom::Mushroom(const Vector2<float>& position)
 	riseDestY(position.y + 1), //+1 because of hitbox
 	time(0)
 {
-	SetRenderedBeforeWorld(true);
+	SetRenderedBeforeForeground(true);
 	this->position.y += Constants::TILE_SIZE;
 }
 
@@ -64,7 +64,7 @@ void Mushroom::RiseUp(float delta)
 	else
 		velocity.x = -MOVE_SPEED;
 
-	SetRenderedBeforeWorld(false);
+	SetRenderedBeforeForeground(false);
 	state.SetState(&Mushroom::Move);
 }
 

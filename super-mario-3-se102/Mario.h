@@ -24,6 +24,7 @@ namespace Entities {
 		void TurnInvinsible();
 		bool IsInvincible();
 		void StartReachedGoalRouletteAnimation();
+		void ShowGoInPipeAnimation();
 
 		PlayerPowerLevel GetPowerLevel();
 

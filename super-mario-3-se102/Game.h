@@ -17,7 +17,6 @@ public:
 	static bool IsKeyPressed(int keyCode);
 	static void EnableCollisionEngine(bool state);
 	static LPDIRECT3DDEVICE9 GetDirect3DDevice();
-	static void SwitchScene(LPScene scene);
 
 	/// <summary>
 	/// Queue free previous scene and switch to new scene
@@ -86,6 +85,7 @@ private:
 	static LPScene activeScene;
 	static LPScene newActiveScene;
 	static LPScene waitForDeletionScene;
+	static std::string activeScenePath;
 
 };
 

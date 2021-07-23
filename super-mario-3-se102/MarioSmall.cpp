@@ -27,7 +27,8 @@ const MarioAnimationSet MarioSmall::animationSet(
 	"MarioSIHL",
 	"MarioSIHR",
 	"MarioSHL",
-	"MarioSHR"
+	"MarioSHR",
+	"MarioSGTP"
 );
 
 MarioSmall::MarioSmall(Vector2<float> position, HDirection initialFacingDirection)

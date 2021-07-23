@@ -16,6 +16,7 @@
 #include "PlayerTransitionSuperNote.h"
 
 #include <fstream>
+#include "Group.h"
 
 using namespace Utils;
 using namespace ProcessingUtils;
@@ -36,6 +37,7 @@ const std::unordered_map <std::string, SceneLoader::ParseEntityMethod> SceneLoad
 	{"ItemWoodBlock", &SceneLoader::ParseItemWoodBlock},
 	{"NoteBlock", &SceneLoader::ParseNoteBlock},
 	{"SuperNoteBlock", &SceneLoader::ParseSuperNoteBlock},
+	{"PipeWarp", &SceneLoader::ParsePipeWarp},
 	{"GoalRoulette", &SceneLoader::ParseGoalRoulette},
 
 	{"WMBush", &SceneLoader::ParseWMBush},
@@ -51,7 +53,6 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 
 	std::string sceneType;
 	std::string worldType;
-	std::string playerTransitionType;
 	Dimension<int> worldDim;
 	D3DCOLOR bgColor{};
 	std::string prevScenePath;
@@ -70,7 +71,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 			section = GetNextNonCommentLine(file);
 
 		if (section == "[WORLD PROPERTIES]")
-			section = ParseWorldProperties(file, sceneType, worldType, playerTransitionType, worldDim, bgColor, prevScenePath);
+			section = ParseWorldProperties(file, sceneType, worldType, worldDim, bgColor, prevScenePath);
 
 		else if (section == "[ENCODED WORLD]")
 			section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
@@ -98,35 +99,25 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	else
 		throw std::exception("Invalid World Type: Expected Normal or Slide");
 
-
-	if (playerTransitionType == "PipeUp")
-		entityManager->Add(new Entities::PlayerTransitionPipe(VDirection::UP));
-	else if (playerTransitionType == "PipeDown")
-		entityManager->Add(new Entities::PlayerTransitionPipe(VDirection::DOWN));
-	else if (playerTransitionType == "SuperNote")
-		entityManager->Add(new Entities::PlayerTransitionSuperNote());
-	else if (playerTransitionType != "Normal")
-		throw std::exception("Invalid Player Transition Type: Expected Normal, PipeUp, PipeDown or SuperNote");
+	if (PlayerVariables::IsFlownBySuperNoteBlock() && entityManager->GetEntitiesOfGroup(Group::PLAYERS).size() != 0) {
+		entityManager->Add(new Entities::PlayerTransitionSuperNote(*(entityManager->GetEntitiesOfGroup(Group::PLAYERS).begin())));
+		PlayerVariables::SetIsFlownBySuperNoteBlock(false);
+	}
 
 	file.close();
-	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, prevScenePath);
+	scene->_Init(scenePath, worldDim, bgColor, encodedWorld, entityManager, prevScenePath);
 	scene->_Ready();
 	CollisionEngine::_AddCED(scene);
 	return scene;
 }
 
-std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, std::string& worldType, std::string& playerTransitionType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, std::string& worldType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
-	std::string line = GetNextNonCommentLine(file);
-	std::vector<std::string> sceneTypeToken = SplitByComma(line);
+	std::vector<std::string> sceneTypeToken = SplitByComma(GetNextNonCommentLine(file));
 	if (sceneTypeToken.size() != 1)
 		throw InvalidTokenSizeException(1);
 
 	std::vector<std::string> worldTypeToken = SplitByComma(GetNextNonCommentLine(file));
-	if (sceneTypeToken.size() != 1)
-		throw InvalidTokenSizeException(1);
-
-	std::vector<std::string> playerTransitionTypeToken = SplitByComma(GetNextNonCommentLine(file));
 	if (sceneTypeToken.size() != 1)
 		throw InvalidTokenSizeException(1);
 
@@ -144,7 +135,6 @@ std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& 
 
 	sceneType = sceneTypeToken[0];
 	worldType = worldTypeToken[0];
-	playerTransitionType = playerTransitionTypeToken[0];
 	dim = Dimension<int>(stoi(dimTokens[0]), stoi(dimTokens[1]));
 	bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
 	prevScenePath = pathToken[0];
@@ -311,15 +301,13 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 	if (tokens.size() != 4)
 		throw InvalidTokenSizeException(4);
 
-	//TODO: REMOVE TEST CODE
-	return new Entities::MarioRaccoon(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
-
-
 	switch (PlayerVariables::GetPlayerPowerLevel()) {
 	case PlayerPowerLevel::SMALL:
 		return new Entities::MarioSmall(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
 	case PlayerPowerLevel::BIG:
 		return new Entities::MarioSuper(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
+	case PlayerPowerLevel::RACCOON:
+		return new Entities::MarioRaccoon(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
 	default:
 		throw std::exception("ParseMario failed: not implemented player power level");
 	}
@@ -430,10 +418,22 @@ LPEntity SceneLoader::ParseNoteBlock(const std::vector<std::string>& tokens)
 
 LPEntity SceneLoader::ParseSuperNoteBlock(const std::vector<std::string>& tokens)
 {
-	if (tokens.size() != 4)
-		throw InvalidTokenSizeException(4);
+	if (tokens.size() != 5)
+		throw InvalidTokenSizeException(5);
 
-	return new Entities::SuperNoteBlock({ stof(tokens[1]), stof(tokens[2]) });
+	return new Entities::SuperNoteBlock(tokens[1], { stof(tokens[2]), stof(tokens[3]) });
+}
+
+LPEntity SceneLoader::ParsePipeWarp(const std::vector<std::string>& tokens)
+{
+	if (tokens.size() != 7)
+		throw InvalidTokenSizeException(7);
+
+	if (tokens[2] == "In")
+		return new Entities::PipeWarpIn(tokens[1], tokens[3] == "Up" ? VDirection::UP : VDirection::DOWN, { stof(tokens[4]), stof(tokens[5]) });
+	else
+		//Notes: tokens[3] represent the the facing of the pipe, not player moving direction
+		return new Entities::PipeWarpOut(tokens[1], tokens[3] == "Up" ? VDirection::DOWN : VDirection::UP, { stof(tokens[4]), stof(tokens[5]) });
 }
 
 LPEntity SceneLoader::ParseGoalRoulette(const std::vector<std::string>& tokens)

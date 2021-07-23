@@ -3,6 +3,7 @@
 #include "ResourceLoader.h"
 #include "SceneLoader.h"
 #include "TextureManager.h"
+#include "PlayerVariables.h"
 using namespace Utils;
 
 GameSettings Game::gameSettings;
@@ -24,6 +25,7 @@ DWORD Game::dwInOut = Game::KEYBOARD_BUFER_SIZE;
 LPScene Game::activeScene = nullptr;
 LPScene Game::newActiveScene = nullptr;
 LPScene Game::waitForDeletionScene = nullptr;
+std::string Game::activeScenePath = "";
 
 void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 {
@@ -62,7 +64,8 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 
 	ResourceLoader(gameSettings.dataDirectory).Load();
 
-	activeScene = SceneLoader::LoadScene(gameSettings.initialScenePath);
+	activeScenePath = gameSettings.initialScenePath;
+	activeScene = SceneLoader::LoadScene(activeScenePath);
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 
@@ -193,16 +196,14 @@ void Game::EnableCollisionEngine(bool state) {
 	collisionEngineEnabled = state;
 }
 
-void Game::SwitchScene(LPScene scene) {
-	newActiveScene = scene;
-}
-
 void Game::QueueFreeAndSwitchScene(std::string scenePath)
 {
 	try {
+		PlayerVariables::_SetPreviousScenePath(activeScenePath);
 		LPScene newScene = SceneLoader::LoadScene(scenePath);
 		waitForDeletionScene = activeScene;
 		newActiveScene = newScene;
+		activeScenePath = scenePath;
 	}
 	catch (std::exception e) {
 		//Do nothing if scene do not exist

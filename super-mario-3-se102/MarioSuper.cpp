@@ -26,7 +26,8 @@ const MarioAnimationSet MarioSuper::animationSet(
 	"MarioBIHL",
 	"MarioBIHR",
 	"MarioBHL",
-	"MarioBHR"
+	"MarioBHR",
+	"MarioBGTP"
 );
 
 MarioSuper::MarioSuper(const Utils::Vector2<float>& position, HDirection initialFacingDirection)

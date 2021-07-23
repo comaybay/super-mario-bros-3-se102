@@ -220,6 +220,8 @@
     <ClCompile Include="ParaGoombaBrown.cpp" />
     <ClCompile Include="ParaGoombaRed.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
+    <ClCompile Include="PipeWarpIn.cpp" />
+    <ClCompile Include="PipeWarpOut.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="PlayerTransitionPipe.cpp" />
     <ClCompile Include="PlayerTransitionSuperNote.cpp" />
@@ -292,6 +294,8 @@
     <ClInclude Include="NoteBlock.h" />
     <ClInclude Include="ParaGoomba.h" />
     <ClInclude Include="ParaGoombaBrown.h" />
+    <ClInclude Include="PipeWarpIn.h" />
+    <ClInclude Include="PipeWarpOut.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="PlayerPowerLevel.h" />
     <ClInclude Include="MarioSuper.h" />

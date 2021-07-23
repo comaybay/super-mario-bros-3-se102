@@ -6,31 +6,27 @@ using namespace Entities;
 using namespace Utils;
 
 const float PlayerTransitionPipe::SPEED = 30;
-const float PlayerTransitionPipe::WAIT_DURATION = 0.5f;
+const float PlayerTransitionPipe::WAIT_DURATION = 0.25f;
 
-PlayerTransitionPipe::PlayerTransitionPipe(VDirection direction)
-	: Entity({ 0,0 }, "PlayerTransitions", GridType::NONE),
-	dir(direction), endY(0), velY(0), time(0)
+PlayerTransitionPipe::PlayerTransitionPipe(LPMario player, VDirection direction, const Utils::Vector2<float>& offset)
+	: Entity({ 0,0 }, { "PlayerTransitions", Group::NOT_AFFECTED_BY_TRANSITION_PAUSE }, GridType::NONE),
+	targetPlayer(player), dir(direction), endY(0), velY(0), time(0), offset(offset)
 {
 }
 
 void PlayerTransitionPipe::OnReady()
 {
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		targetPlayer = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		targetPlayer->SetFreeze(true);
-		targetPlayer->SetRenderedBeforeWorld(true);
+	parentScene->TransitionPause(true);
+	targetPlayer->ShowGoInPipeAnimation();
+	targetPlayer->SetFreeze(true);
+	targetPlayer->SetRenderedBeforeForeground(true);
+	targetPlayer->SetPosition(targetPlayer->GetPosition() + offset);
 
-		const Vector2<float>& playerPos = targetPlayer->GetPosition();
-		targetPlayer->SetPosition({ playerPos.x + Constants::TILE_SIZE / 2.0f, playerPos.y });
+	velY = dir == VDirection::DOWN ? SPEED : -SPEED;
+	float targetY = targetPlayer->GetPosition().y;
+	float targetDimY = targetPlayer->GetCurrentSpriteDimension().height;
+	endY = dir == VDirection::DOWN ? targetY + targetDimY : targetY - targetDimY;
 
-		velY = dir == VDirection::DOWN ? SPEED : -SPEED;
-		float targetY = targetPlayer->GetPosition().y;
-		float targetDimY = targetPlayer->GetCurrentSpriteDimension().height;
-		endY = dir == VDirection::DOWN ? targetY + targetDimY : targetY - targetDimY;
-	}
-	else
-		parentScene->QueueFree(this);
 }
 
 void PlayerTransitionPipe::Update(float delta)
@@ -48,8 +44,15 @@ void PlayerTransitionPipe::Update(float delta)
 	{
 		targetPlayer->SetPosition({ newPos.x, endY });
 		targetPlayer->SetFreeze(false);
-		targetPlayer->SetRenderedBeforeWorld(false);
+		targetPlayer->SetRenderedBeforeForeground(false);
 
+		parentScene->TransitionPause(false);
+		transitionCompleteEvent.Notify();
 		parentScene->QueueFree(this);
 	}
+}
+
+Event<>& PlayerTransitionPipe::GetTransitionCompleteEvent()
+{
+	return transitionCompleteEvent;
 }

@@ -3,18 +3,23 @@
 #include "Group.h"
 #include "Game.h"
 #include "Event.h"
+#include "PlayerVariables.h"
 
 using namespace Utils;
 Camera::Camera(const Vector2<float>& position)
 	: Entity::Entity(position, Group::CAMERAS, GridType::NONE),
 	viewportDim(Game::GetGameSettings().gameDimension),
-	target(nullptr)
+	target(nullptr),
+	basePosY(0),
+	followYOnly(false)
 {
 }
 
 void Camera::OnReady() {
 	Entity::OnReady();
 	parentScene->UnsubscribeToOutOfWorldEvent(this);
+
+	basePosY = parentScene->GetWorldDimension().height - viewportDim.height;
 }
 
 void Camera::FocusOn(LPEntity entity)
@@ -38,34 +43,49 @@ void Camera::FocusOn(LPEntity entity)
 	position = newPosition;
 }
 
+void Camera::FocusXOn(LPEntity entity) {
+	float worldDimX = parentScene->GetWorldDimension().width;
+	int targetDimX = entity->GetHitbox().GetDimension().width;
+	float targetPosX = entity->GetPosition().x;
+
+	//center around target
+	float newPosX = targetPosX + targetDimX / 2 - viewportDim.width / 2;
+
+	newPosX += offset.x;
+
+	//keep camera inside of world
+	newPosX = Clip(newPosX, 0.0f, worldDimX - viewportDim.width);
+	position.x = newPosX;
+}
+
+void Camera::FocusYOn(LPEntity entity) {
+	float worldDimY = parentScene->GetWorldDimension().height;
+	int targetDimY = entity->GetHitbox().GetDimension().height;
+	float targetPosY = entity->GetPosition().y;
+
+	//center around target
+	float newPosY = targetPosY + targetDimY / 2 - viewportDim.height / 2;
+
+	newPosY += offset.y;
+
+	//keep camera inside of world
+	newPosY = Clip(newPosY, 0.0f, worldDimY - viewportDim.height);
+	position.y = newPosY;
+}
+
 void Camera::Update(float delta)
 {
 	Entity::Update(delta);
 
-	if (target != nullptr) {
-		FocusOn(target);
+	if (target == nullptr)
 		return;
-	}
 
-	//handling slide
-	const float WorldDimX = parentScene->GetWorldDimension().width;
-	if (!AlmostEqual(velocity.x, 0) && position.x > WorldDimX - viewportDim.width) {
-		velocity.x = 0;
-		position.x = WorldDimX - viewportDim.width;
-	}
+	if (!followYOnly)
+		FocusXOn(target);
 
-	if (player == nullptr && !parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		player = parentScene->GetEntityOfGroup(Group::PLAYERS);
-		player->GetDestroyEvent().Subscribe(this, &Camera::OnPlayerDestroy);
-	}
-
-	if (player) {
-		float worldDimY = parentScene->GetWorldDimension().height;
-		int targetDimY = player->GetHitbox().GetDimension().height;
-		float targetPosY = player->GetPosition().y;
-		float newPositionY = targetPosY + targetDimY / 2 - viewportDim.height / 2;
-		position.y = Clip(newPositionY, 0.0f, worldDimY - viewportDim.height);
-	}
+	if (PlayerVariables::GetPowerMeterLevel() == PlayerVariables::MAX_POWER_METER_VALUE ||
+		position.y < basePosY)
+		FocusYOn(target);
 }
 
 void Camera::FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset)
@@ -75,18 +95,28 @@ void Camera::FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset)
 	entity->GetDestroyEvent().Subscribe(this, &Camera::OnTargetDestroy);
 }
 
+void Camera::FollowYEntity(LPEntity entity, const Utils::Vector2<float>& offset)
+{
+	followYOnly = true;
+	FollowEntity(entity, offset);
+}
+
+const Utils::Dimension<int>& Camera::GetViewportDimension()
+{
+	return viewportDim;
+}
+
 void Camera::StopFollowingEntity()
 {
 	target = nullptr;
+	followYOnly = false;
 }
 
 void Camera::OnTargetDestroy(LPEntity entity)
 {
-	if (target == entity)
+	if (target == entity) {
 		target = nullptr;
+		followYOnly = false;
+	}
 }
 
-void Camera::OnPlayerDestroy(LPEntity _)
-{
-	player = nullptr;
-}

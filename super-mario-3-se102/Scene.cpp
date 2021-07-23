@@ -4,6 +4,7 @@
 #include "EntityManager.h"
 #include "TextureManager.h"
 #include "Group.h"
+#include "PlayerVariables.h"
 using namespace Utils;
 
 Scene::Scene() :
@@ -25,9 +26,10 @@ Scene::~Scene()
 		delete pair.second;
 }
 
-void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
+void Scene::_Init(const std::string& scenePath, const Dimension<int>& worldTileDim, const D3DCOLOR& backgroundColor, LPEncodedWorld encodedWorld,
 	LPEntityManager entityManager, const std::string& prevScenePath)
 {
+	this->scenePath = scenePath;
 	this->worldTileDim = worldTileDim;
 	this->backgroundColor = backgroundColor;
 	this->encodedWorld = encodedWorld;
@@ -37,7 +39,6 @@ void Scene::_Init(const Dimension<int>& worldTileDim, const D3DCOLOR& background
 
 void Scene::_Ready()
 {
-
 	entityManager->ForEach([this](LPEntity entity) {
 		entity->_SetParentScene(this);
 		entity->OnReady();
@@ -46,8 +47,16 @@ void Scene::_Ready()
 
 	camera._SetParentScene(this);
 	camera.OnReady();
-	if (!IsEntityGroupEmpty(Group::PLAYERS))
-		camera.FollowEntity(GetEntityOfGroup(Group::PLAYERS));
+
+	if (!IsEntityGroupEmpty(Group::PLAYERS)) {
+		LPEntity player = GetEntityOfGroup(Group::PLAYERS);
+		//TODO: REMOVE TEST CODE
+		if (scenePath == "worlds/w_1_1_1.txt")
+			player->SetPosition({ 2280, 50 });
+
+		camera.FocusOn(player);
+		camera.FollowEntity(player);
+	}
 }
 
 void Scene::Update(float delta)
@@ -68,7 +77,7 @@ void Scene::Update(float delta)
 	DetectAndNotifyOutOfWorld();
 
 	auto updateEntity = [delta](LPEntity entity) {
-		if (entity->_IsActive()) {
+		if (entity->_IsActive() && !entity->_IsFreezed()) {
 			entity->Update(delta);
 			entity->PostUpdate();
 		}
@@ -91,6 +100,7 @@ void Scene::Update(float delta)
 			updateEntity(entity);
 
 		camera.Update(delta);
+		camera.PostUpdate();
 	}
 }
 
@@ -158,11 +168,12 @@ void Scene::Render()
 		// Clear the whole window with background color
 		Game::ColorFill(backgroundColor);
 
+		RenderWorld(&EncodedWorld::GetBackgroundIndex);
+
 		for (LPEntity entity : entitiesRenderedBeforeWorld)
 			if (entity->_IsActive())
 				entity->Render();
 
-		RenderWorld(&EncodedWorld::GetBackgroundIndex);
 		RenderWorld(&EncodedWorld::GetForegroundIndex);
 
 		for (LPEntity entity : entitiesRenderedrAfterWorld)
@@ -173,6 +184,11 @@ void Scene::Render()
 	}
 
 	Game::Present();
+}
+
+const std::string& Scene::GetScenePath()
+{
+	return scenePath;
 }
 
 void Scene::GetRenderEntities(std::vector<LPEntity>& entitiesRenderedBeforeWorld, std::vector<LPEntity>& entitiesRenderedrAfterWorld) {

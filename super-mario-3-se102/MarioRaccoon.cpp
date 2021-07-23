@@ -31,7 +31,8 @@ const MarioAnimationSet MarioRaccoon::animationSet(
 	"MarioRIHL",
 	"MarioRIHR",
 	"MarioRHL",
-	"MarioRHR"
+	"MarioRHR",
+	"MarioRGTP"
 );
 
 const float MarioRaccoon::FLY_FLAP_SPEED = 100;
@@ -40,7 +41,7 @@ const float MarioRaccoon::FLAP_DURATION = 0.3f;
 const float MarioRaccoon::POWER_METER_DURATION = 4;
 
 MarioRaccoon::MarioRaccoon(const Vector2<float>& position, HDirection direction)
-	: Mario(position, direction, animationSet, "HitboxMarioB", PlayerPowerLevel::TANOOKI),
+	: Mario(position, direction, animationSet, "HitboxMarioB", PlayerPowerLevel::RACCOON),
 	flapState(this, &MarioRaccoon::WaitFlap),
 	spinState(this, &MarioRaccoon::WaitSpin),
 	time(0),

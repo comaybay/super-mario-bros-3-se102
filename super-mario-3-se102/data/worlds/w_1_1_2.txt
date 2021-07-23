@@ -1,13 +1,11 @@
 #SceneType (World or WorldMap)
-#WorldType (Normal or Slide, Default = Normal)
-#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
+#WorldType (Normal or Slide, Default = Normal) <THIS VALUE MUST BE MANUALLY DEFINED>
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PlayerDeathScenePath (Relative to Root)
+#WorldMapScenePath (Relative to Root)
 [WORLD PROPERTIES]
 World
 Normal
-PipeDown
 32, 12
 0, 0, 0
 world_maps/wm_1.txt
@@ -75,9 +73,11 @@ WallType1, 272, 160, 32, 16
 #EntityName, [Entity specific properties...], Position (X, Y), IsInAnyGrid
 #[SpatialPartitionGridCellIndex (X, Y) (If IsInAnyGrid = True)]
 [WORLD ENTITIES]
-Mario, 128, 16, False
-Portal, worlds/w_1_1_1.txt, Out, 352, 16, True
+PipeWarp, worlds/w_1_1_1.txt, Out, Up, 128, 16, True
+1, 0
+PipeWarp, worlds/w_1_1_1.txt, In, Up, 352, 16, True
 2, 0
+Mario, 128, 32, False
 Coin, 224, 32, True
 1, 0
 Coin, 240, 32, True

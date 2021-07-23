@@ -6,7 +6,7 @@ namespace Entities {
 	class PlayerTransitionSuperNote : public Entity
 	{
 	public:
-		PlayerTransitionSuperNote();
+		PlayerTransitionSuperNote(LPEntity player);
 		void OnReady() override;
 
 	private:

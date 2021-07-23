@@ -42,7 +42,7 @@ public:
 	void SetVelocity(const Utils::Vector2<float>& velocity);
 	const std::string& GetId();
 	LPScene GetParentScene();
-	void SetRenderedBeforeWorld(bool state);
+	void SetRenderedBeforeForeground(bool state);
 	virtual Utils::Dimension<int> GetCurrentSpriteDimension();
 	virtual const Hitbox& GetHitbox();
 	SpriteBox GetSpriteBox();
@@ -133,7 +133,7 @@ protected:
 private:
 	void Init();
 	std::string id;
-	bool isRenderedBeforeWorld;
+	bool isRenderedBeforeForeground;
 	bool isDetectable;
 	bool isActive;
 	bool isFreezed;
