@@ -10,11 +10,19 @@ using namespace Utils;
 Scene::Scene() :
 	entityManager(nullptr),
 	encodedWorld(nullptr),
-	camera(Camera()),
 	isInTransitionPause(false),
 	renderMovablesInSPGridEnabled(true),
-	backgroundColor(D3DCOLOR_XRGB(255, 255, 255))
+	backgroundColor(D3DCOLOR_XRGB(255, 255, 255)),
+	camera(),
+	hud(),
+	timer()
 {
+	Dimension<int> viewportDim = Game::GetGameSettings().gameDimension;
+	viewportDim.height -= Constants::TILE_SIZE * 3;
+	camera._SetVieportDimension(viewportDim);
+
+	hud.SetPosition({ 0, static_cast<float>(viewportDim.height) });
+
 	Game::EnableCollisionEngine(true);
 }
 
@@ -56,6 +64,8 @@ void Scene::_Ready()
 
 		camera.FocusOn(player);
 		camera.FollowEntity(player);
+
+		timer.Start();
 	}
 }
 
@@ -86,7 +96,6 @@ void Scene::Update(float delta)
 	CellRange range = GetCellRangeAroundCamera();
 	entityManager->GetGrid(GridType::STATIC_ENTITIES)->ForEachEntityIn(range, updateEntity);
 
-	//Only update player if in transition pause
 	if (isInTransitionPause && !IsEntityGroupEmpty(Group::NOT_AFFECTED_BY_TRANSITION_PAUSE)) {
 		for (LPEntity entity : GetEntitiesOfGroup(Group::NOT_AFFECTED_BY_TRANSITION_PAUSE))
 			updateEntity(entity);
@@ -101,6 +110,10 @@ void Scene::Update(float delta)
 
 		camera.Update(delta);
 		camera.PostUpdate();
+
+		timer.Update(delta);
+
+		hud.Update(delta);
 	}
 }
 
@@ -180,6 +193,8 @@ void Scene::Render()
 			if (entity->_IsActive())
 				entity->Render();
 
+		hud.Render();
+
 		Game::EndRender();
 	}
 
@@ -214,12 +229,12 @@ void Scene::RenderWorld(int(EncodedWorld::* getIndex)(int, int))
 	Utils::Vector2<float> cp = camera.GetPosition().Rounded();
 	Utils::Vector2<int> tileOffset = cp / Constants::TILE_SIZE;
 
-	Utils::Dimension<int> gameDim = Game::GetGameSettings().gameDimension;
+	Utils::Dimension<int> viewportDim = camera.GetViewportDimension();
 
 	//tiles need for rendering, +1 for seemless display when camera move
 	Utils::Dimension<int> tileRange(
-		gameDim.width / Constants::TILE_SIZE + 1,
-		gameDim.height / Constants::TILE_SIZE + 1
+		viewportDim.width / Constants::TILE_SIZE + 1,
+		viewportDim.height / Constants::TILE_SIZE + 1
 	);
 
 	//only render inside camera 

@@ -3,6 +3,8 @@
 
 #include "EncodedWorld.h"
 #include "Camera.h"
+#include "HUD.h"
+#include "Timer.h"
 #include "Grid.h"
 #include "Event.h"
 #include "EntityCollection.h"
@@ -30,7 +32,6 @@ public:
 
 	const EntityCollection& GetEntitiesOfGroup(const std::string& groupName);
 	void ForEachNonWallEntityOnCamera(const std::function<void(LPEntity)>& handler);
-
 
 	/// <summary>
 	/// Add given entity after current frame.
@@ -79,6 +80,8 @@ protected:
 	LPEncodedWorld encodedWorld;
 	D3DCOLOR backgroundColor;
 	std::string prevScenePath;
+	HUD hud;
+	Timer timer;
 	Camera camera;
 	LPEntityManager entityManager;
 	bool isInTransitionPause;

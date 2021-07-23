@@ -20,11 +20,26 @@ const std::unordered_map<PointType, std::string> PointUp::animationIdByType{
 	{PointType::ONE_UP, "1UP"}
 };
 
+const std::unordered_map<PointType, int> PointUp::scoreByType{
+	{PointType::ONE_HUNDRED_POINTS, 100},
+	{PointType::TWO_HUNDRED_POINTS, 200},
+	{PointType::FOUR_HUNDRED_POINTS, 400},
+	{PointType::EIGHT_HUNDRED_POINTS, 800},
+	{PointType::ONE_THOUSAND_POINTS, 1000},
+	{PointType::TWO_THOUSAND_POINTS, 2000},
+	{PointType::FOUR_THOUSAND_POINTS, 4000},
+	{PointType::EIGHT_THOUSAND_POINTS, 8000},
+};
 
 PointUp::PointUp(const Vector2<float>& position, PointType pointType)
 	: Entity::Entity(position, Group::EFFECTS, GridType::NONE),
 	time(0)
 {
+	if (pointType != PointType::ONE_UP)
+		PlayerVariables::AddToScore(scoreByType.at(pointType));
+	else
+		PlayerVariables::AddToNumberOfLives(1);
+
 	velocity.y = -MOVE_UP_SPEED;
 	SetAnimation(animationIdByType.at(pointType));
 }

@@ -10,7 +10,7 @@ typedef Scene* LPScene;
 class Camera : public Entity
 {
 public:
-	Camera(const Utils::Vector2<float>& position = { 0, 0 });
+	Camera(const Utils::Vector2<float>& position = { 0, 0 }, const Utils::Dimension<int>& viewportDim = { 0, 0 });
 	void Update(float _) override;
 	void OnReady() override;
 	void FocusOn(LPEntity entity);
@@ -19,6 +19,7 @@ public:
 	void FollowEntity(LPEntity entity, const Utils::Vector2<float>& offset = { 0, 0 });
 	void FollowYEntity(LPEntity entity, const Utils::Vector2<float>& offset = { 0, 0 });
 	const Utils::Dimension<int>& GetViewportDimension();
+	void _SetVieportDimension(const Utils::Dimension<int>& viewportDimension);
 	void StopFollowingEntity();
 private:
 	void OnTargetDestroy(LPEntity target);
@@ -29,4 +30,5 @@ private:
 	Utils::Vector2<float> offset;
 	bool followYOnly;
 };
+typedef Camera* LPCamera;
 

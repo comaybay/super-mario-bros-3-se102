@@ -180,6 +180,11 @@ void Game::Draw(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float
 	d3dxSprite->Draw(texure, &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
 }
 
+void Game::DrawHUD(LPDIRECT3DTEXTURE9 texure, const RECT& rect, const Vector2<float>& position) {
+	D3DXVECTOR3 p(position.x, position.y, 0);
+	d3dxSprite->Draw(texure, &rect, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
+}
+
 Vector2<float> Game::ToPixelPerfectPosition(const Vector2<float>& position) {
 	return  position.Rounded() - GetActiveScene()->GetCameraPosition().Rounded();
 }
@@ -284,13 +289,13 @@ void Game::Run()
 			CollisionEngine::_HandleUnsubscribeWaitList();
 
 			activeScene->_FreeEntitiesInQueue();
-	}
+		}
 #endif
 		activeScene->Render();
 
 		if (newActiveScene != nullptr)
 			InitAndSwitchScene();
-}
+	}
 }
 
 void Game::InitAndSwitchScene()

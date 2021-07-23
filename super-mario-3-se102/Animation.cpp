@@ -65,6 +65,11 @@ const std::string& Animation::GetId()
 	return id;
 }
 
+LPDIRECT3DTEXTURE9 Animation::GetTexture()
+{
+	return texture;
+}
+
 bool Animation::Finished()
 {
 	return (updateHandler == &Animation::NoLoopUpdate && currentFrame == sequence.size() - 1);

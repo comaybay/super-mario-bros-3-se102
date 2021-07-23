@@ -620,3 +620,29 @@ WMAnims
 WMHelpBubble, Normal, -1, Manual
 WMAnims
 69, 1, 84, 16
+
+##HUD##====================================
+HUDBackground, Normal, -1, Manual
+HUD
+0, 63, 255, 110
+
+HUDBoard, Normal, -1, Manual
+HUD
+6, 1, 157, 28
+
+HUDPowerButton, Normal, 0.266, Auto
+HUD
+67, 35, 15, 7, 12, 2
+
+HUDPowerTriangle, Normal, -1, Auto
+HUD
+58, 35, 8, 7, 19, 2
+
+HUDMarioButton, Normal, 0.133, Manual
+HUD
+10, 34, 25, 40
+
+##Font##====================================
+Numbers, Normal, -1, Auto
+Fonts
+1, 12, 8, 8, 2, 11

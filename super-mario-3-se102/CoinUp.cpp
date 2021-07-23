@@ -13,6 +13,7 @@ CoinUp::CoinUp(const Utils::Vector2<float>& position)
 	pointUpType(PointType::ONE_HUNDRED_POINTS),
 	time(0)
 {
+	PlayerVariables::AddToNumberOfCoins(1);
 	velocity.y = -UP_SPEED;
 }
 

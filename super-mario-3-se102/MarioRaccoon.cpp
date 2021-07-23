@@ -84,7 +84,7 @@ void MarioRaccoon::WaitFlap(float delta)
 
 	bool pressedJumpWhenOnAir = (IsJumping() || IsFalling() || IsBouncingUp()) && Game::IsKeyPressed(DIK_S);
 
-	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_METER_VALUE && pressedJumpWhenOnAir)
+	if (PlayerVariables::GetPowerMeterValue() >= PlayerVariables::MAX_POWER_METER_VALUE && pressedJumpWhenOnAir)
 	{
 		time = 0;
 		jumpCount++;

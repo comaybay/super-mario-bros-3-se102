@@ -18,6 +18,7 @@ namespace Entities {
 		static const float MOVE_UP_SPEED;
 		static const float FRICTION;
 		static const std::unordered_map<PointType, std::string> animationIdByType;
+		static const std::unordered_map<PointType, int> scoreByType;
 	};
 }
 

@@ -18,6 +18,7 @@ public:
 	const int GetCurrentFrame();
 	void SetFrame(int frame);
 	const std::string& GetId();
+	LPDIRECT3DTEXTURE9 GetTexture();
 	bool Finished();
 
 protected:

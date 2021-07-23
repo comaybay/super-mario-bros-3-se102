@@ -181,6 +181,7 @@
     <ClCompile Include="BoomerangBrother.cpp" />
     <ClCompile Include="FXSmoke.cpp" />
     <ClCompile Include="GhostBlock.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ItemWoodBlock.cpp" />
     <ClCompile Include="MarioAnimationSet.cpp" />
     <ClCompile Include="MarioRaccoon.cpp" />
@@ -249,6 +250,7 @@
     <ClCompile Include="SpriteBox.cpp" />
     <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TinyGoomba.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireBall.cpp" />
@@ -269,6 +271,7 @@
     <ClInclude Include="EventHandler.hpp" />
     <ClInclude Include="FXSmoke.h" />
     <ClInclude Include="GhostBlock.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="IKnockedOverable.h" />
     <ClInclude Include="ItemWoodBlock.h" />
     <ClInclude Include="MarioRaccoon.h" />
@@ -348,6 +351,7 @@
     <ClInclude Include="SpriteBox.h" />
     <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TinyGoomba.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireBall.h" />

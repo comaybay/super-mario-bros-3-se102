@@ -6,9 +6,10 @@
 #include "PlayerVariables.h"
 
 using namespace Utils;
-Camera::Camera(const Vector2<float>& position)
+
+Camera::Camera(const Vector2<float>& position, const Utils::Dimension<int>& viewportDim)
 	: Entity::Entity(position, Group::CAMERAS, GridType::NONE),
-	viewportDim(Game::GetGameSettings().gameDimension),
+	viewportDim(viewportDim),
 	target(nullptr),
 	basePosY(0),
 	followYOnly(false)
@@ -18,7 +19,6 @@ Camera::Camera(const Vector2<float>& position)
 void Camera::OnReady() {
 	Entity::OnReady();
 	parentScene->UnsubscribeToOutOfWorldEvent(this);
-
 	basePosY = parentScene->GetWorldDimension().height - viewportDim.height;
 }
 
@@ -83,7 +83,7 @@ void Camera::Update(float delta)
 	if (!followYOnly)
 		FocusXOn(target);
 
-	if (PlayerVariables::GetPowerMeterLevel() == PlayerVariables::MAX_POWER_METER_VALUE ||
+	if (PlayerVariables::GetPowerMeterValue() == PlayerVariables::MAX_POWER_METER_VALUE ||
 		position.y < basePosY)
 		FocusYOn(target);
 }
@@ -104,6 +104,11 @@ void Camera::FollowYEntity(LPEntity entity, const Utils::Vector2<float>& offset)
 const Utils::Dimension<int>& Camera::GetViewportDimension()
 {
 	return viewportDim;
+}
+
+void Camera::_SetVieportDimension(const Utils::Dimension<int>& viewportDimension)
+{
+	viewportDim = viewportDimension;
 }
 
 void Camera::StopFollowingEntity()

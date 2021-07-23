@@ -44,6 +44,11 @@ public:
 	static void Draw(LPDIRECT3DTEXTURE9 texure, const RECT& boundingBox, const Utils::Vector2<float>& position);
 
 	/// <summary>
+	/// Same as Draw, but position are absolute
+	/// </summary>
+	static void DrawHUD(LPDIRECT3DTEXTURE9 texure, const RECT& boundingBox, const Utils::Vector2<float>& position);
+
+	/// <summary>
 	/// Fill backbuffer with color
 	/// </summary>
 	/// <param name="color"></param>

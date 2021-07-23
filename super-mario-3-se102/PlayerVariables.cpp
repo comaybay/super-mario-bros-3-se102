@@ -2,11 +2,17 @@
 #include "Utils.h"
 
 const int PlayerVariables::MAX_POWER_METER_VALUE = 6;
+const int PlayerVariables::MAX_SCORE = 9999999;
+const int PlayerVariables::MAX_COINS = 99;
+const int PlayerVariables::MAX_LIVES = 99;
 
 PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
+int PlayerVariables::score = 0;
+int PlayerVariables::timer = 0;
 int PlayerVariables::numberOfCoins = 0;
-int PlayerVariables::numberOfLives = 0;
+int PlayerVariables::numberOfLives = 4;
 int PlayerVariables::powerMeterLevel = 0;
+int PlayerVariables::worldMapNumber = 1;
 bool PlayerVariables::isInPipe = false;
 bool PlayerVariables::isFlownBySuperNoteBlock = false;
 std::string PlayerVariables::standingWMNodeId = "NStart";
@@ -22,19 +28,43 @@ void PlayerVariables::SetPlayerPowerLevel(PlayerPowerLevel powerLevel)
 	playerPowerLevel = powerLevel;
 }
 
-int PlayerVariables::GetNumberOfCoins()
+int PlayerVariables::GetTime()
 {
+	return timer;
+}
+
+void PlayerVariables::SetTimer(int time)
+{
+	timer = time > 0 ? time : 0;
+}
+
+void PlayerVariables::TickTimer()
+{
+	timer = timer - 1 > 0 ? timer - 1 : 0;
+}
+
+int PlayerVariables::GetScore()
+{
+	return score;
+}
+
+void PlayerVariables::AddToScore(int num) {
+	score = (score + num) < MAX_SCORE ? (score + num) : MAX_SCORE;
+}
+
+
+int PlayerVariables::GetNumberOfCoins() {
 	return numberOfCoins;
 }
 
-void PlayerVariables::SetNumberOfCoins(int num)
-{
-	numberOfCoins = num;
-}
 
 void PlayerVariables::AddToNumberOfCoins(int num)
 {
 	numberOfCoins += num;
+	if (numberOfCoins > MAX_COINS) {
+		AddToNumberOfLives(1);
+		numberOfCoins -= MAX_COINS + 1;
+	}
 }
 
 int PlayerVariables::GetNumberOfLives()
@@ -42,28 +72,35 @@ int PlayerVariables::GetNumberOfLives()
 	return numberOfLives;
 }
 
-void PlayerVariables::SetNumberOfLives(int num)
-{
-	numberOfLives = num;
-}
-
 void PlayerVariables::AddToNumberOfLives(int num)
 {
-	numberOfLives += num;
+	numberOfLives = (numberOfLives + num) < MAX_LIVES ? numberOfLives : MAX_LIVES;
 }
 
-int PlayerVariables::GetPowerMeterLevel()
+int PlayerVariables::GetPowerMeterValue()
 {
 	return powerMeterLevel;
 }
-void PlayerVariables::SetPowerMeter(int level)
+
+void PlayerVariables::SetPowerMeter(int value)
 {
-	powerMeterLevel = level;
+	powerMeterLevel = value < MAX_POWER_METER_VALUE ? value : MAX_POWER_METER_VALUE;
+
 }
 
-void PlayerVariables::AddToPowerMeterLevel(int level)
+void PlayerVariables::AddToPowerMeter(int level)
 {
-	powerMeterLevel += level;
+	powerMeterLevel = (powerMeterLevel + level) < MAX_POWER_METER_VALUE ? (powerMeterLevel + level) : MAX_POWER_METER_VALUE;
+}
+
+int PlayerVariables::GetWorldMapNumber()
+{
+	return worldMapNumber;
+}
+
+void PlayerVariables::SetWorldMapNumber(int number)
+{
+	worldMapNumber = number;
 }
 
 void PlayerVariables::SetIsInPipe(bool state)

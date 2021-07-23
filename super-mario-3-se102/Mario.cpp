@@ -15,7 +15,7 @@ const float Mario::MAX_RUN_SPEED = 180;
 const float Mario::RUN_STATE_ANIM_SPEED = 2;
 const float Mario::ACCELERATION = 150;
 const float Mario::FRICTION_ACCEL = 500;
-const float Mario::WAIT_TIME_BEFORE_INCREASE_POWER_METER = 0.75f;
+const float Mario::WAIT_TIME_BEFORE_INCREASE_POWER_METER = 0.5f;
 const float Mario::POWER_METER_INCREASE_RATE = 0.125f;
 const float Mario::POWER_METER_DECREASE_RATE = 0.25f;
 const float Mario::BOUNCE_SPEED = 200;
@@ -279,7 +279,7 @@ void Mario::WalkSpeedUp(float delta)
 
 	UpdateAnimation();
 
-	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_METER_VALUE)
+	if (PlayerVariables::GetPowerMeterValue() >= PlayerVariables::MAX_POWER_METER_VALUE)
 		SwitchState(&Mario::Run);
 
 	if (!Game::IsKeyDown(DIK_A))
@@ -370,7 +370,7 @@ void Mario::Fall(float delta) {
 	}
 
 	if (Game::IsKeyDown(DIK_A)) {
-		if (PlayerVariables::GetPowerMeterLevel() < PlayerVariables::MAX_POWER_METER_VALUE)
+		if (PlayerVariables::GetPowerMeterValue() < PlayerVariables::MAX_POWER_METER_VALUE)
 			SwitchState(&Mario::WalkSpeedUp);
 		else
 			SwitchState(&Mario::Run);
@@ -512,30 +512,30 @@ void Mario::UpdateIncreasePowerMeter(float delta)
 {
 	instantDecrease = true;
 
-	if (PlayerVariables::GetPowerMeterLevel() >= PlayerVariables::MAX_POWER_METER_VALUE)
+	if (PlayerVariables::GetPowerMeterValue() >= PlayerVariables::MAX_POWER_METER_VALUE)
 		return;
 
 	powerMeterTime += delta;
 	if (powerMeterTime >= WAIT_TIME_BEFORE_INCREASE_POWER_METER + POWER_METER_INCREASE_RATE) {
-		PlayerVariables::AddToPowerMeterLevel(1);
+		PlayerVariables::AddToPowerMeter(1);
 		powerMeterTime = WAIT_TIME_BEFORE_INCREASE_POWER_METER;
 	}
 }
 
 void Mario::UpdateDecreasePowerMeter(float delta)
 {
-	if (PlayerVariables::GetPowerMeterLevel() <= 0)
+	if (PlayerVariables::GetPowerMeterValue() <= 0)
 		return;
 
 	if (instantDecrease) {
-		PlayerVariables::AddToPowerMeterLevel(-1);
+		PlayerVariables::AddToPowerMeter(-1);
 		instantDecrease = false;
 		return;
 	}
 
 	powerMeterTime += delta;
 	if (powerMeterTime >= POWER_METER_DECREASE_RATE) {
-		PlayerVariables::AddToPowerMeterLevel(-1);
+		PlayerVariables::AddToPowerMeter(-1);
 		powerMeterTime = 0;
 	}
 }
