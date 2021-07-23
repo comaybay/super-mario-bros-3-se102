@@ -48,7 +48,7 @@ void CollisionEngine::Update(float delta) {
 
 void CollisionEngine::DetectAndNotify(LPEntity entity, const EntityGroups& targetGroups, float delta)
 {
-	if (!entity->_IsActive())
+	if (!entity->_IsActive() || entity->_IsFreezed())
 		return;
 
 	//get target entities that can be detected (use set data structure to avoid duplications)
@@ -99,7 +99,7 @@ void CollisionEngine::DetectAndNotify(LPEntity entity, const EntityGroups& targe
 		//notifications to entities will cause alot of changes to the game state, therefore alot of checks need to be made. 
 		//if after notification, entity is still active and detectable, target is still detectable 
 		//and is also subscribed to CollisionEngine and it's target groups include entity, then notify the target
-		if (!entity->_IsActive())
+		if (!entity->_IsActive() || entity->_IsFreezed())
 			return;
 
 		if (!entity->IsDetectable() || !target->IsDetectable())

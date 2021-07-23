@@ -569,9 +569,10 @@ void Mario::ApplyFriction(float delta) {
 
 void Mario::ClipHorizontalPosition()
 {
-	Dimension<float> worldDim = parentScene->GetWorldDimension();
-	Dimension<float> marioDim = GetCurrentSpriteDimension();
-	position.x = Clip(position.x, 0.0f, worldDim.width - marioDim.width);
+	float dimX = Game::GetGameSettings().gameDimension.width;
+	float cameraPosX = parentScene->GetCamera().GetPosition().x;
+	float marioOffset = GetHitbox().GetDimension().width + GetHitbox().GetRelativePosition().x;
+	position.x = Clip(position.x, cameraPosX, cameraPosX + dimX - marioOffset);
 }
 
 Event<>& Mario::GetRestartPointUpEvent()

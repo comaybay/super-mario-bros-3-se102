@@ -45,7 +45,7 @@ namespace Entities {
 		bool IsFalling();
 
 		/// <summary>
-		/// Keep player in world horizontally
+		/// Keep player in camera horizontally
 		/// </summary>
 		void ClipHorizontalPosition();
 

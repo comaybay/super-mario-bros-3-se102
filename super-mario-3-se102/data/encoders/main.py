@@ -57,8 +57,8 @@ def main():
 
     # manually provide image_type and target folder
     elif len(sys.argv) == 3:
-        image_type = sys.argv[2]
         input_folder_dir = sys.argv[1]
+        image_type = sys.argv[2]
         if (image_type == "-world"):
             encoding_world_files_form_folder(input_folder_dir,
                                              default_output_world_dir,

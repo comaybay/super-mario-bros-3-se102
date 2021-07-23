@@ -1,4 +1,5 @@
 #include "SceneLoader.h"
+#include "SceneSlide.h"
 #include "EncodedWorld.h"
 #include "EntityManager.h"
 #include "Utils.h"
@@ -10,6 +11,9 @@
 #include "PlayerVariables.h"
 #include "ContentFactory.h"
 #include "Entities.h"
+
+#include "PlayerTransitionPipe.h"
+#include "PlayerTransitionSuperNote.h"
 
 #include <fstream>
 
@@ -46,6 +50,8 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	}
 
 	std::string sceneType;
+	std::string worldType;
+	std::string playerTransitionType;
 	Dimension<int> worldDim;
 	D3DCOLOR bgColor{};
 	std::string prevScenePath;
@@ -56,8 +62,6 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 	LPGrid wallEntitySpatialGrid = nullptr;
 	LPGrid staticEntitySpatialGrid = nullptr;
 	LPDynamicGrid movableEntitySpatialGrid = nullptr;
-	LPScene scene = new Scene();
-	CollisionEngine::_AddCED(scene);
 
 	std::string section = "";
 	while (section != "EOF")
@@ -66,7 +70,7 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 			section = GetNextNonCommentLine(file);
 
 		if (section == "[WORLD PROPERTIES]")
-			section = ParseWorldProperties(file, sceneType, worldDim, bgColor, prevScenePath);
+			section = ParseWorldProperties(file, sceneType, worldType, playerTransitionType, worldDim, bgColor, prevScenePath);
 
 		else if (section == "[ENCODED WORLD]")
 			section = ParseEncodedWorld(file, worldDim.width, sceneType, encodedWorld);
@@ -86,35 +90,61 @@ LPScene SceneLoader::LoadScene(std::string scenePath) {
 			section = ParseWorldMapNodes(file, entityManager);
 	}
 
+	LPScene scene;
+	if (worldType == "Normal")
+		scene = new Scene();
+	else if (worldType == "Slide")
+		scene = new SceneSlide();
+	else
+		throw std::exception("Invalid World Type: Expected Normal or Slide");
+
+
+	if (playerTransitionType == "PipeUp")
+		entityManager->Add(new Entities::PlayerTransitionPipe(VDirection::UP));
+	else if (playerTransitionType == "PipeDown")
+		entityManager->Add(new Entities::PlayerTransitionPipe(VDirection::DOWN));
+	else if (playerTransitionType == "SuperNote")
+		entityManager->Add(new Entities::PlayerTransitionSuperNote());
+	else if (playerTransitionType != "Normal")
+		throw std::exception("Invalid Player Transition Type: Expected Normal, PipeUp, PipeDown or SuperNote");
+
 	file.close();
 	scene->_Init(worldDim, bgColor, encodedWorld, entityManager, prevScenePath);
 	scene->_Ready();
+	CollisionEngine::_AddCED(scene);
 	return scene;
 }
 
-std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
+std::string SceneLoader::ParseWorldProperties(std::ifstream& file, std::string& sceneType, std::string& worldType, std::string& playerTransitionType, Dimension<int>& dim, D3DCOLOR& bgColor, std::string& prevScenePath)
 {
 	std::string line = GetNextNonCommentLine(file);
 	std::vector<std::string> sceneTypeToken = SplitByComma(line);
 	if (sceneTypeToken.size() != 1)
 		throw InvalidTokenSizeException(1);
 
-	line = GetNextNonCommentLine(file);
-	std::vector<std::string> dimTokens = SplitByComma(line);
+	std::vector<std::string> worldTypeToken = SplitByComma(GetNextNonCommentLine(file));
+	if (sceneTypeToken.size() != 1)
+		throw InvalidTokenSizeException(1);
+
+	std::vector<std::string> playerTransitionTypeToken = SplitByComma(GetNextNonCommentLine(file));
+	if (sceneTypeToken.size() != 1)
+		throw InvalidTokenSizeException(1);
+
+	std::vector<std::string> dimTokens = SplitByComma(GetNextNonCommentLine(file));
 	if (dimTokens.size() != 2)
 		throw InvalidTokenSizeException(2);
 
-	line = GetNextNonCommentLine(file);
-	std::vector<std::string> colorTokens = SplitByComma(line);
+	std::vector<std::string> colorTokens = SplitByComma(GetNextNonCommentLine(file));
 	if (colorTokens.size() != 3)
 		throw InvalidTokenSizeException(3);
 
-	line = GetNextNonCommentLine(file);
-	std::vector<std::string> pathToken = SplitByComma(line);
+	std::vector<std::string> pathToken = SplitByComma(GetNextNonCommentLine(file));
 	if (sceneTypeToken.size() != 1)
 		throw InvalidTokenSizeException(1);
 
 	sceneType = sceneTypeToken[0];
+	worldType = worldTypeToken[0];
+	playerTransitionType = playerTransitionTypeToken[0];
 	dim = Dimension<int>(stoi(dimTokens[0]), stoi(dimTokens[1]));
 	bgColor = D3DCOLOR_XRGB(stoi(colorTokens[0]), stoi(colorTokens[1]), stoi(colorTokens[2]));
 	prevScenePath = pathToken[0];
@@ -282,7 +312,7 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 		throw InvalidTokenSizeException(4);
 
 	//TODO: REMOVE TEST CODE
-	return new Entities::MarioRaccoon(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
+	return new Entities::MarioRaccoon(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
 
 
 	switch (PlayerVariables::GetPlayerPowerLevel()) {

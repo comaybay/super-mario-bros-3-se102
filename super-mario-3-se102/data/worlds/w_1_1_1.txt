@@ -1,9 +1,13 @@
 #SceneType (World or WorldMap)
+#WorldType (Normal or Slide, Default = Normal)
+#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PreviousScenePath (Relative to Root)
+#PlayerDeathScenePath (Relative to Root)
 [WORLD PROPERTIES]
 World
+Normal
+Normal
 176, 27
 156, 252, 240
 world_maps/wm_1.txt
@@ -23,30 +27,28 @@ FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 #WallType, Position (X, Y), Dimension (Width, Height), GridPosition (X, Y)
 #SpatialGridCellIndex (X, Y), ColumnSpan, RowSpan
 [WALL ENTITIES]
-WallType1, 2256, 112, 32, 32
-17, 0, 1, 1
+WallType1, 2256, 128, 32, 32
+17, 1, 1, 1
 WallType2, 1312, 144, 64, 16
 10, 1, 1, 1
-WallType1, 2256, 144, 32, 32
+WallType1, 2256, 160, 32, 32
 17, 1, 1, 1
 WallType2, 1488, 176, 208, 16
 11, 1, 3, 1
-WallType1, 2256, 176, 32, 32
-17, 1, 1, 1
 WallType2, 1408, 192, 64, 16
 11, 1, 1, 1
-WallType1, 2256, 208, 32, 32
+WallType1, 2256, 192, 32, 32
 17, 1, 1, 1
-WallType1, 2256, 240, 32, 32
+WallType1, 2256, 224, 32, 32
+17, 1, 1, 1
+WallType1, 2256, 256, 32, 32
 17, 2, 1, 1
 WallType2, 2176, 272, 48, 16
 17, 2, 1, 1
-WallType1, 2256, 272, 32, 32
+WallType1, 2256, 288, 32, 32
 17, 2, 1, 1
 WallType2, 512, 304, 64, 16
 4, 2, 1, 1
-WallType1, 2256, 304, 32, 16
-17, 2, 1, 1
 WallType2, 1328, 320, 112, 16
 10, 2, 2, 1
 WallType2, 272, 336, 48, 16
@@ -111,7 +113,7 @@ WallType1, 1712, 416, 80, 16
 13, 3, 1, 1
 WallType1, 1824, 416, 32, 16
 14, 3, 1, 1
-WallType1, 1888, 416, 352, 16
+WallType1, 1888, 416, 368, 16
 14, 3, 4, 1
 WallType1, 2288, 416, 32, 16
 17, 3, 2, 1
@@ -143,7 +145,7 @@ Coin, 1664, 112, True
 13, 0
 Coin, 1728, 112, True
 13, 0
-Portal, 2, 2256, 112, True
+Portal, worlds/w_1_1_2.txt, In, 2256, 112, True
 17, 0
 Brick, 1Up, 1440, 128, True
 11, 1

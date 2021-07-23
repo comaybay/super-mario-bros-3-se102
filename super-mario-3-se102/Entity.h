@@ -65,6 +65,11 @@ public:
 	void Activate(bool state);
 
 	/// <summary>
+	/// If true, entity won't be updated but will be rendered,
+	/// </summary>
+	void SetFreeze(bool state);
+
+	/// <summary>
 	/// Set if is detectable by CollisionEngine
 	/// </summary>
 	void SetDetectable(bool state);
@@ -104,6 +109,12 @@ public:
 	bool _IsActive();
 
 	/// <summary>
+	/// Used internaly by Scene to see if entity is freezed.
+	/// </summary>
+	/// <returns></returns>
+	bool _IsFreezed();
+
+	/// <summary>
 	/// remainging velocity is used internaly by CollisionEngine and CollisionHandling
 	/// this is the remaining velocity after any change in position by CollisionHandling.
 	/// remaining velocity will be reset every frame.
@@ -125,6 +136,7 @@ private:
 	bool isRenderedBeforeWorld;
 	bool isDetectable;
 	bool isActive;
+	bool isFreezed;
 	GridType gridType;
 	Utils::Vector2<float> remainingVelocity;
 	LPEvent<LPEntity> destroyEvent; //use LPEvent instead of Event to avoid circular dependency

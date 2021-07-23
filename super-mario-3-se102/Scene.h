@@ -63,8 +63,7 @@ public:
 	template<class ENTITY>
 	void UnsubscribeToOutOfWorldEvent(ENTITY* entity);
 
-private:
-
+protected:
 	void DetectAndNotifyOutOfWorld();
 	void OnEntityDestroy(LPEntity entity);
 	bool IsOutOfWorld(LPEntity entity);
@@ -96,7 +95,7 @@ public:
 	/// <summary>
 	/// called when everything in the scene is loaded, used internally by SceneLoader.
 	/// </summary>
-	void _Ready();
+	virtual void _Ready();
 
 	/// <summary>
 	/// Free entities, used internally by Game

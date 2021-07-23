@@ -80,12 +80,17 @@ void Entity::Init()
 
 bool Entity::IsDetectable()
 {
-	return isActive && isDetectable;
+	return isActive && isDetectable && !isFreezed;
 }
 
 bool Entity::_IsActive()
 {
 	return isActive;
+}
+
+bool Entity::_IsFreezed()
+{
+	return isFreezed;
 }
 
 Entity::~Entity() {
@@ -142,6 +147,11 @@ void Entity::SetDetectable(bool state)
 void Entity::Activate(bool state)
 {
 	isActive = state;
+}
+
+void Entity::SetFreeze(bool state)
+{
+	isFreezed = state;
 }
 
 const std::string& Entity::GetId()

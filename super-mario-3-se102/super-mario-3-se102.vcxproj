@@ -221,6 +221,8 @@
     <ClCompile Include="ParaGoombaRed.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
+    <ClCompile Include="PlayerTransitionPipe.cpp" />
+    <ClCompile Include="PlayerTransitionSuperNote.cpp" />
     <ClCompile Include="PlayerVariables.cpp" />
     <ClCompile Include="PointUpFactory.cpp" />
     <ClCompile Include="ProcessingUtils.cpp" />
@@ -241,6 +243,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="PointUp.cpp" />
     <ClCompile Include="MarioSmall.cpp" />
+    <ClCompile Include="SceneSlide.cpp" />
     <ClCompile Include="SpriteBox.cpp" />
     <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -324,6 +327,8 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="ParaGoombaRed.h" />
     <ClInclude Include="ParaKoopa.h" />
+    <ClInclude Include="PlayerTransitionPipe.h" />
+    <ClInclude Include="PlayerTransitionSuperNote.h" />
     <ClInclude Include="PlayerVariables.h" />
     <ClInclude Include="Group.h" />
     <ClInclude Include="PointUpFactory.h" />
@@ -335,6 +340,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="PointUp.h" />
     <ClInclude Include="MarioSmall.h" />
+    <ClInclude Include="SceneSlide.h" />
     <ClInclude Include="SpriteBox.h" />
     <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />

@@ -42,7 +42,7 @@ void Animation::NoLoopUpdate(float delta) {
 
 	int i = int(currentDuration / frameDuration);
 	currentDuration -= frameDuration * i;
-	currentFrame = min(currentFrame + i, sequence.size() - 1);
+	currentFrame = min(currentFrame + i, (int)sequence.size() - 1);
 }
 
 const SpriteBox& Animation::GetCurrentSpriteBox()

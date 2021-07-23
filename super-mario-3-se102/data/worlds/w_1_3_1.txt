@@ -1,9 +1,13 @@
 #SceneType (World or WorldMap)
+#WorldType (Normal or Slide, Default = Normal)
+#PlayerTransitionType (Normal or PipeUp or PipeDown or SuperNote, Default = Normal)
 #Dimension (Width, Height)
 #BackgroundColor (R, G, B)
-#PreviousScenePath (Relative to Root)
+#PlayerDeathScenePath (Relative to Root)
 [WORLD PROPERTIES]
 World
+Normal
+Normal
 159, 27
 156, 252, 240
 world_maps/wm_1.txt
@@ -23,18 +27,14 @@ FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 #WallType, Position (X, Y), Dimension (Width, Height), GridPosition (X, Y)
 #SpatialGridCellIndex (X, Y), ColumnSpan, RowSpan
 [WALL ENTITIES]
-WallType2, 2064, 0, 480, 0
-16, 0, 4, 1
-WallType2, 2080, 0, 464, 0
-16, 0, 4, 1
-WallType2, 2096, 0, 448, 0
-16, 0, 4, 1
-WallType2, 2112, 0, 432, 0
-16, 0, 4, 1
-WallType2, 2128, 0, 416, 0
-16, 0, 4, 1
-WallType2, 2144, 0, 400, 0
-16, 0, 4, 1
+WallType1, 2064, 0, 96, 16
+16, 0, 1, 1
+WallType1, 2096, 16, 32, 32
+16, 0, 1, 1
+WallType1, 2096, 48, 32, 32
+16, 0, 1, 1
+WallType1, 2096, 80, 32, 16
+16, 0, 1, 1
 WallType2, 1568, 272, 64, 16
 12, 2, 1, 1
 WallType2, 1936, 288, 64, 16
