@@ -108,11 +108,12 @@ void Mushroom::HandleWallCollision(const CollisionData& data) {
 }
 
 void Mushroom::HandlePlayerCollision(const CollisionData& data) {
-	parentScene->QueueFree(this);
 	Vector2<float> pointPos = { position.x, position.y - Constants::TILE_SIZE };
 	parentScene->AddEntity(new PointUp(pointPos, PointType::ONE_THOUSAND_POINTS));
 
 	LPMario player = static_cast<LPMario>(data.who);
 	if (player->GetPowerLevel() == PlayerPowerLevel::SMALL)
 		parentScene->AddEntity(new MarioTransition(player, PlayerPowerLevel::BIG));
+
+	parentScene->QueueFree(this);
 }

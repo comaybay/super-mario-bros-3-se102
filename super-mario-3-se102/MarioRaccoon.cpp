@@ -146,6 +146,7 @@ void MarioRaccoon::FlyFlap(float delta) {
 	if (powerMeterTime >= POWER_METER_DURATION) {
 		PlayerVariables::SetPowerMeter(0);
 		flapState.SetState(&MarioRaccoon::WaitFlap);
+		isUsingPowerMeter = false;
 		return;
 	}
 

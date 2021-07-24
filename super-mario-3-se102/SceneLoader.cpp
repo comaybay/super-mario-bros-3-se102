@@ -304,7 +304,7 @@ LPEntity SceneLoader::ParseMario(const std::vector<std::string>& tokens)
 	//TODO: Remove test code
 	//return new Entities::MarioSuper(Vector2<float>(stof(tokens[1]), stof(tokens[2]) - Constants::TILE_SIZE), HDirection::RIGHT);
 
-	switch (PlayerVariables::GetPlayerPowerLevel()) {
+	switch (PlayerVariables::GetPowerLevel()) {
 	case PlayerPowerLevel::SMALL:
 		return new Entities::MarioSmall(Vector2<float>(stof(tokens[1]), stof(tokens[2])), HDirection::RIGHT);
 	case PlayerPowerLevel::BIG:

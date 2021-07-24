@@ -106,6 +106,10 @@ void MarioSmall::DieFall(float delta) {
 	velocity.y = min(velocity.y, EntityConstants::MAX_FALL_SPEED);
 
 	time += delta;
-	if (time >= 3.0f)
+	if (time >= 3.0f) {
 		Game::QueueFreeAndSwitchScene(parentScene->GetPrevScenePath());
+		PlayerVariables::AddToNumberOfLives(-1);
+		PlayerVariables::SetPowerMeter(0);
+		PlayerVariables::SetTimer(0);
+	}
 }

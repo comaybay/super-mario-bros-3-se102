@@ -2,7 +2,6 @@
 #include "PlayerVariables.h"
 #include "Game.h"
 #include "Scene.h"
-#include "Mario.h"
 #include "Group.h"
 #include "AnimationManager.h"
 #include "Scene.h"
@@ -42,11 +41,6 @@ void CourseClear::OnReady()
 
 	parentScene->StopTimer();
 	parentScene->GetCamera().StopFollowingEntity();
-
-	if (!parentScene->IsEntityGroupEmpty(Group::PLAYERS)) {
-		LPMario player = static_cast<LPMario>(parentScene->GetEntityOfGroup(Group::PLAYERS));
-		PlayerVariables::SetPlayerPowerLevel(player->GetPowerLevel());
-	}
 }
 
 void CourseClear::Update(float delta)

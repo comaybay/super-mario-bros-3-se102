@@ -2,6 +2,7 @@
 #include "Contains.h"
 #include "CoinUp.h"
 #include "Mushroom.h"
+#include "SuperLeaf.h"
 using namespace Utils;
 using namespace Entities;
 
@@ -43,7 +44,6 @@ LPEntity ContentFactory::CreateSuperLeaf(const Utils::Vector2<float>& position)
 	if (player->GetPowerLevel() == PlayerPowerLevel::SMALL)
 		return new Mushroom(position);
 	else
-		//TODO: replace with implementation of super leaf
-		return new Mushroom(position);
+		return new SuperLeaf(position);
 
 }

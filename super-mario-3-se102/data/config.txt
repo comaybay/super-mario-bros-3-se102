@@ -5,7 +5,6 @@
 True		#PixelPerfectRendering
 data/		#DataDirectory
 world_maps/wm_1.txt #Initial Scene (Relative to DataDirectory)
-#worlds/w_1_1_1.txt #Initial Scene (Relative to DataDirectory)
 
 [TEXTURES]
 config/textures.txt

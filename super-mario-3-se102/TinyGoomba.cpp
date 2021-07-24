@@ -39,8 +39,15 @@ void TinyGoomba::OnReady()
 
 void TinyGoomba::Update(float delta)
 {
-	Entity::Update(delta);
+	float oldPosX = position.x;
+
+	position.y += velocity.y * delta;
 	state.Update(delta);
+
+	//since posiiton.x is manually assign, this velocity.x will not be used for calculating position
+	//but for collision detection (this is a limittion of current collision engine)
+	int sign = Sign(position.x - oldPosX);
+	velocity.x = sign * 100;
 }
 
 void TinyGoomba::Fall(float delta)
@@ -91,6 +98,8 @@ void TinyGoomba::Follow(float delta) {
 			state.SetState(&TinyGoomba::FallOff);
 		}
 	}
+
+
 }
 
 void TinyGoomba::FallOff(float delta) {

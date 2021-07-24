@@ -60,6 +60,7 @@ Mario::Mario(
 	runBeforeJump(false),
 	holdEntity(nullptr)
 {
+	PlayerVariables::SetPowerLevel(powerLevel);
 }
 
 void Mario::OnReady()

@@ -26,7 +26,7 @@ QuestionBlock::QuestionBlock(const std::string& contentId, const Vector2<float>&
 		position,
 		"QuestionBlockNormal",
 		HitboxId::TILE_SIZE_HITBOX,
-		{ "Blocks", Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
+		{ "Blocks",  Group::BLOCKS, Group::COLLISION_WALLS, Group::COLLISION_WALLS_TYPE_1 },
 		GridType::STATIC_ENTITIES
 	),
 	contentId(contentId)

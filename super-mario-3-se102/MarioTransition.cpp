@@ -1,6 +1,7 @@
 #include "MarioTransition.h"
 #include "MarioSmall.h"
 #include "MarioSuper.h"
+#include "MarioRaccoon.h"
 #include "Game.h"
 #include "Constants.h"
 #include "Group.h"
@@ -152,8 +153,8 @@ void MarioTransition::CreateMario()
 		newPlayer = new MarioSuper(position, player->GetFacingDirection());
 		break;
 
-	default:
-		newPlayer = new MarioSmall({ position.x, position.y + Constants::TILE_SIZE }, player->GetFacingDirection());
+	case PPL::RACCOON:
+		newPlayer = new MarioRaccoon(position, player->GetFacingDirection());
 	}
 
 	if (isDowngradeTransiton) {

@@ -16,7 +16,8 @@ float EntityUtils::Wave(float from, float to, float duration, float offset, floa
 {
 	float mid = (to - from) / 2;
 	float offsetTime = duration * offset;
-	float waveProgress = sinf(((time + offsetTime) / duration) * (Constants::PI * 2));
+	const float startValue = 1.5f * Constants::PI; //make waveProgress = -1 when time = 0;
+	float waveProgress = sinf(((time + offsetTime) / duration) * (Constants::PI * 2) + startValue);
 	return from + mid + waveProgress * mid;
 }
 

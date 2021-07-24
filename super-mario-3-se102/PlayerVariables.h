@@ -8,8 +8,8 @@
 
 class PlayerVariables {
 public:
-	static PlayerPowerLevel GetPlayerPowerLevel();
-	static void SetPlayerPowerLevel(PlayerPowerLevel powerLevel);
+	static PlayerPowerLevel GetPowerLevel();
+	static void SetPowerLevel(PlayerPowerLevel powerLevel);
 
 	static int GetTime();
 	static void SetTimer(int time);
@@ -61,7 +61,7 @@ public:
 
 private:
 	static int score;
-	static PlayerPowerLevel playerPowerLevel;
+	static PlayerPowerLevel powerLevel;
 	static int numberOfCoins;
 	static int numberOfLives;
 	static int powerMeterLevel;

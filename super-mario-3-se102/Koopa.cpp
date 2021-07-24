@@ -56,8 +56,7 @@ void Koopa::OnCollision(CollisionData data)
 	const EntityGroups& groups = data.who->GetEntityGroups();
 
 	if (state.GetState() != &Koopa::Hold) {
-
-		if (Contains(Group::BLOCKS, groups) && IsSliding() && data.edge.y == 0) {
+		if (Contains(Group::BLOCKS, groups) && IsSliding() && data.edge.x != 0) {
 			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
 				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
 				entity->GetKnockedOver(dir);
@@ -69,61 +68,64 @@ void Koopa::OnCollision(CollisionData data)
 			return;
 		}
 
-		if (Contains(Group::PLAYERS, groups) && state.GetState() != &Koopa::Hold) {
+		if (Contains(Group::PLAYERS, groups)) {
 			HandlePlayerCollision(data);
 			return;
 		}
-	}
 
-	if (Contains(Group::ENEMIES, groups)) {
-		if (state.GetState() == &Koopa::ShellIdle)
-			return;
-
-		if (state.GetState() == &Koopa::MoveAround) {
-			CollisionHandling::Slide(this, data);
-			if (data.edge.x == 0)
+		if (Contains(Group::ENEMIES, groups)) {
+			if (state.GetState() == &Koopa::ShellIdle)
 				return;
 
-			velocity.x = WALK_SPEED * data.edge.x;
+			if (state.GetState() == &Koopa::MoveAround) {
+				CollisionHandling::Slide(this, data);
+				if (data.edge.x == 0)
+					return;
 
-			std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
-			SetAnimation(colorCode + anim);
-			return;
-		}
+				velocity.x = WALK_SPEED * data.edge.x;
 
-		if (IsSliding()) {
-			if (Contains("Koopas", groups)) {
-				LPKoopa otherKoopa = static_cast<LPKoopa>(data.who);
-
-				if (otherKoopa->IsSliding())
-					GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
-
-				otherKoopa->GetKnockedOver(data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT);
+				std::string anim = (data.edge.x < 0) ? "KoopaML" : "KoopaMR";
+				SetAnimation(colorCode + anim);
 				return;
 			}
 
-			//if entity implements IKnockedOverable
-			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
-				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-				entity->GetKnockedOver(dir);
-			};
+			if (IsSliding()) {
+				if (Contains("Koopas", groups)) {
+					LPKoopa otherKoopa = static_cast<LPKoopa>(data.who);
 
-			return;
-		}
+					if (otherKoopa->IsSliding())
+						GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
 
-		if (state.GetState() == &Koopa::Hold) {
-			//if entity implements IKnockedOverable
-			if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
-				HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
-				entity->GetKnockedOver(dir);
-			};
+					otherKoopa->GetKnockedOver(data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT);
+					return;
+				}
 
-			holder->GetReleaseHoldEvent().Unsubscribe(this, &Koopa::OnPlayerReleaseHold);
-			holder->ReleaseHold();
-			holder = nullptr;
-			GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
+				//if entity implements IKnockedOverable
+				if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+					HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+					entity->GetKnockedOver(dir);
+				};
+
+				return;
+			}
 		}
 	}
+
+	if (state.GetState() == &Koopa::Hold && Contains(Group::ENEMIES, groups)) {
+		//if entity implements IKnockedOverable
+		if (IKnockedOverable* entity = dynamic_cast<IKnockedOverable*>(data.who)) {
+			HDirection dir = data.edge.x == 1.0f ? HDirection::LEFT : HDirection::RIGHT;
+			entity->GetKnockedOver(dir);
+		};
+
+		holder->GetReleaseHoldEvent().Unsubscribe(this, &Koopa::OnPlayerReleaseHold);
+		holder->ReleaseHold();
+		holder = nullptr;
+		GetKnockedOver(data.edge.x == 1.0f ? HDirection::RIGHT : HDirection::LEFT);
+		return;
+	}
+
+
 }
 
 void Koopa::OnPlayerReleaseHold(LPEntity player)

@@ -21,8 +21,8 @@ void PipeWarpOut::OnReady()
 
 		Vector2<float> newPos = { position.x + Constants::TILE_SIZE / 2.0f, position.y };
 
-		if (player->GetPowerLevel() != PlayerPowerLevel::SMALL)
-			newPos.y += (dir == VDirection::DOWN) ? -Constants::TILE_SIZE : Constants::TILE_SIZE;
+		if (player->GetPowerLevel() != PlayerPowerLevel::SMALL && dir == VDirection::DOWN)
+			newPos.y -= Constants::TILE_SIZE;
 
 		player->SetPosition(newPos);
 

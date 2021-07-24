@@ -557,6 +557,15 @@ Mushroom, Normal, -1, Manual
 WAnims
 86, 69, 101, 84
 
+##Super Leaf##====================================
+SuperLeafL, Normal, -1, Manual
+WAnims
+69, 86, 84, 101
+
+SuperLeafR, Normal, -1, Manual
+WAnims
+86, 86, 101, 101
+
 ##Effects##====================================
 FXBoom, Normal, 0.025, Auto
 Enemies

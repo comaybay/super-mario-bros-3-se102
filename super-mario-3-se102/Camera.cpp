@@ -44,7 +44,7 @@ void Camera::FocusOn(LPEntity entity)
 }
 
 void Camera::FocusXOn(LPEntity entity) {
-	float worldDimX = parentScene->GetWorldDimension().width;
+	float worldDimX = static_cast<float>(parentScene->GetWorldDimension().width);
 	int targetDimX = entity->GetHitbox().GetDimension().width;
 	float targetPosX = entity->GetPosition().x;
 

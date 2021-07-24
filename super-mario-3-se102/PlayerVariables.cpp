@@ -6,7 +6,7 @@ const int PlayerVariables::MAX_SCORE = 9999999;
 const int PlayerVariables::MAX_COINS = 99;
 const int PlayerVariables::MAX_LIVES = 99;
 
-PlayerPowerLevel PlayerVariables::playerPowerLevel = PlayerPowerLevel::SMALL;
+PlayerPowerLevel PlayerVariables::powerLevel = PlayerPowerLevel::SMALL;
 int PlayerVariables::score = 0;
 int PlayerVariables::timer = 0;
 int PlayerVariables::numberOfCoins = 0;
@@ -20,14 +20,14 @@ bool PlayerVariables::isFlownBySuperNoteBlock = false;
 std::string PlayerVariables::standingWMNodeId = "NStart";
 std::string PlayerVariables::prevScenePath = "";
 
-PlayerPowerLevel PlayerVariables::GetPlayerPowerLevel()
+PlayerPowerLevel PlayerVariables::GetPowerLevel()
 {
-	return playerPowerLevel;
+	return powerLevel;
 }
 
-void PlayerVariables::SetPlayerPowerLevel(PlayerPowerLevel powerLevel)
+void PlayerVariables::SetPowerLevel(PlayerPowerLevel powerLevel)
 {
-	playerPowerLevel = powerLevel;
+	PlayerVariables::powerLevel = powerLevel;
 }
 
 int PlayerVariables::GetTime()
@@ -76,7 +76,12 @@ int PlayerVariables::GetNumberOfLives()
 
 void PlayerVariables::AddToNumberOfLives(int num)
 {
-	numberOfLives = (numberOfLives + num) < MAX_LIVES ? numberOfLives : MAX_LIVES;
+	numberOfLives = (numberOfLives + num) < MAX_LIVES ? (numberOfLives + num) : MAX_LIVES;
+	if (numberOfLives < 0) {
+		numberOfLives = 4;
+		score = 0;
+		numberOfCoins = 0;
+	}
 }
 
 int PlayerVariables::GetPowerMeterValue()

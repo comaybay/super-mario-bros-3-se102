@@ -248,6 +248,7 @@
     <ClCompile Include="MarioSmall.cpp" />
     <ClCompile Include="SceneSlide.cpp" />
     <ClCompile Include="SpriteBox.cpp" />
+    <ClCompile Include="SuperLeaf.cpp" />
     <ClCompile Include="SuperNoteBlock.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -350,6 +351,7 @@
     <ClInclude Include="MarioSmall.h" />
     <ClInclude Include="SceneSlide.h" />
     <ClInclude Include="SpriteBox.h" />
+    <ClInclude Include="SuperLeaf.h" />
     <ClInclude Include="SuperNoteBlock.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
