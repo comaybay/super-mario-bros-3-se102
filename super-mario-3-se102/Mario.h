@@ -8,7 +8,7 @@
 namespace Entities {
 	class Mario : public Entity {
 	public:
-		virtual void TakeDamage() = 0;
+		virtual void TakeDamage();
 
 		Mario(
 			const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,

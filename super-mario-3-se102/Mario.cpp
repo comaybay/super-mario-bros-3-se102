@@ -32,6 +32,15 @@ const float Mario::MAX_MOVE_ANIM_SPEED = 2.0f;
 const float Mario::INCREASE_MOVE_ANIM_UNIT = 1 / 30.0f;
 const Vector2<float> Mario::DEFAULT_HOLD_OFFSET = { Constants::TILE_SIZE * 0.75f , Constants::TILE_SIZE * 0.75f };
 
+void Mario::TakeDamage()
+{
+	if (IsHolding()) {
+		releaseHoldEvent.Notify(this);
+		holdEntity = nullptr;
+	}
+
+}
+
 Mario::Mario(
 	const Utils::Vector2<float>& position, HDirection initialFacingDirection, const MarioAnimationSet& animationSet,
 	const std::string& hitboxId, PlayerPowerLevel powerLevel, const Utils::Vector2<float>& holdOffset

@@ -72,6 +72,7 @@ void MarioRaccoon::Update(float delta)
 
 void MarioRaccoon::TakeDamage()
 {
+	Mario::TakeDamage();
 	parentScene->AddEntity(new MarioTransition(this, PlayerPowerLevel::BIG));
 }
 

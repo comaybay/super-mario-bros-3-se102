@@ -43,6 +43,8 @@ MarioSmall::MarioSmall(Vector2<float> position, HDirection initialFacingDirectio
 
 void MarioSmall::TakeDamage()
 {
+	Mario::TakeDamage();
+
 	if (died)
 		return;
 

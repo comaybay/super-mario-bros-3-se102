@@ -37,5 +37,6 @@ MarioSuper::MarioSuper(const Utils::Vector2<float>& position, HDirection initial
 
 void MarioSuper::TakeDamage()
 {
+	Mario::TakeDamage();
 	parentScene->AddEntity(new MarioTransition(this, PlayerPowerLevel::SMALL));
 }
