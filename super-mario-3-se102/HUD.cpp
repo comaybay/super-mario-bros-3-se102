@@ -18,6 +18,8 @@ const Vector2<int> HUD::NUMBER_OFFSET = { 8, 0 };
 const Vector2<int> HUD::LIVE_COUNT_OFFSET = { BOARD_OFFSET.x + 28, BOARD_OFFSET.y + 14 };
 const Vector2<int> HUD::SCORE_COUNT_OFFSET = { BOARD_OFFSET.x + 52, BOARD_OFFSET.y + 14 };
 const Vector2<int> HUD::TIMER_OFFSET = { BOARD_OFFSET.x + 124, BOARD_OFFSET.y + 14 };
+const Vector2<int> HUD::CARD_BOARD_OFFSET = { BOARD_OFFSET.x + 160, BOARD_OFFSET.y };
+const Vector2<int> HUD::CARD_OFFSET = { 24, 0 };
 
 
 HUD::HUD(const Vector2<float>& position) :
@@ -43,6 +45,9 @@ HUD::HUD(const Vector2<float>& position) :
 	for (size_t i = 0; i < timerAnims.size(); i++)
 		timerAnims[i] = AnimationManager::GetNew("Numbers");
 
+	for (size_t i = 0; i < cardAnims.size(); i++)
+		cardAnims[i] = AnimationManager::GetNew("HUDCards");
+
 	worldNumberAnim->SetFrame(PlayerVariables::GetWorldMapNumber());
 }
 
@@ -65,6 +70,27 @@ void HUD::Update(float delta)
 	UpdateNumberAnims(coinCountAnims, PlayerVariables::GetNumberOfCoins(), false);
 	UpdateNumberAnims(liveCountAnims, PlayerVariables::GetNumberOfLives(), false);
 	UpdateNumberAnims(timerAnims, PlayerVariables::GetTime(), true);
+
+	const std::array<GoalRouletteCard, 3>& cards = PlayerVariables::GetCards();
+	for (size_t i = 0; i < cardAnims.size(); i++) {
+		switch (cards[i]) {
+		case GoalRouletteCard::MUSHROOM:
+			cardAnims[i]->SetFrame(1);
+			break;
+
+		case GoalRouletteCard::FLOWER:
+			cardAnims[i]->SetFrame(2);
+			break;
+
+		case GoalRouletteCard::STAR:
+			cardAnims[i]->SetFrame(3);
+			break;
+
+		case GoalRouletteCard::NONE:
+			cardAnims[i]->SetFrame(0);
+			break;
+		}
+	}
 }
 
 void HUD::SetPosition(const Vector2<float>& position)
@@ -80,20 +106,23 @@ void HUD::Render()
 	Game::DrawHUD(playerButtonAnim->GetTexture(), playerButtonAnim->GetCurrentSpriteBox().rect, position + PLAYER_BUTTON_OFFSET);
 	Game::DrawHUD(worldNumberAnim->GetTexture(), worldNumberAnim->GetCurrentSpriteBox().rect, position + WORLD_NUMBER_OFFSET);
 
-	for (int i = 0; i < static_cast<float>(powerMeterTriangles.size()); i++)
+	for (int i = 0; i < static_cast<int>(powerMeterTriangles.size()); i++)
 		Game::DrawHUD(powerMeterTriangles[i]->GetTexture(), powerMeterTriangles[i]->GetCurrentSpriteBox().rect, position + POWER_METER_OFFSET + TRIANGLE_OFFSET * i);
 
-	for (int i = 0; i < static_cast<float>(coinCountAnims.size()); i++)
+	for (int i = 0; i < static_cast<int>(coinCountAnims.size()); i++)
 		Game::DrawHUD(coinCountAnims[i]->GetTexture(), coinCountAnims[i]->GetCurrentSpriteBox().rect, position + COIN_COUNT_OFFSET + NUMBER_OFFSET * i);
 
-	for (int i = 0; i < static_cast<float>(liveCountAnims.size()); i++)
+	for (int i = 0; i < static_cast<int>(liveCountAnims.size()); i++)
 		Game::DrawHUD(liveCountAnims[i]->GetTexture(), liveCountAnims[i]->GetCurrentSpriteBox().rect, position + LIVE_COUNT_OFFSET + NUMBER_OFFSET * i);
 
-	for (int i = 0; i < static_cast<float>(scoreCountAnims.size()); i++)
+	for (int i = 0; i < static_cast<int>(scoreCountAnims.size()); i++)
 		Game::DrawHUD(scoreCountAnims[i]->GetTexture(), scoreCountAnims[i]->GetCurrentSpriteBox().rect, position + SCORE_COUNT_OFFSET + NUMBER_OFFSET * i);
 
-	for (int i = 0; i < static_cast<float>(timerAnims.size()); i++)
+	for (int i = 0; i < static_cast<int>(timerAnims.size()); i++)
 		Game::DrawHUD(timerAnims[i]->GetTexture(), timerAnims[i]->GetCurrentSpriteBox().rect, position + TIMER_OFFSET + NUMBER_OFFSET * i);
+
+	for (int i = 0; i < static_cast<int>(timerAnims.size()); i++)
+		Game::DrawHUD(cardAnims[i]->GetTexture(), cardAnims[i]->GetCurrentSpriteBox().rect, position + CARD_BOARD_OFFSET + CARD_OFFSET * i);
 }
 
 std::vector<int> HUD::SplitNumberToDigits(int number)

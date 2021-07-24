@@ -26,7 +26,14 @@ void PipeWarpOut::OnReady()
 
 		player->SetPosition(newPos);
 
-		parentScene->AddEntity(new PlayerTransitionPipe(player, dir));
-		PlayerVariables::SetIsInPipe(false);
+		LPPlayerTransitionPipe transition = new PlayerTransitionPipe(player, dir);
+		parentScene->AddEntity(transition);
+
+		transition->GetTransitionCompleteEvent().Subscribe(this, &PipeWarpOut::OnTransitionComplete);
 	}
+}
+
+void PipeWarpOut::OnTransitionComplete()
+{
+	PlayerVariables::SetIsInPipe(false);
 }

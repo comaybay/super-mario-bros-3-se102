@@ -252,6 +252,7 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TinyGoomba.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireBall.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TinyGoomba.h" />
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireBall.h" />
     <ClInclude Include="VenusFireTrap.h" />

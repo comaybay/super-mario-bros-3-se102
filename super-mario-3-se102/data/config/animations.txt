@@ -642,7 +642,20 @@ HUDMarioButton, Normal, 0.133, Manual
 HUD
 10, 34, 25, 40
 
+HUDCC, Normal, -1, Manual
+HUD
+0, 114, 255 ,191
+
+HUDCards, Normal, -1, Auto
+HUD
+154, 32, 24, 28, 0, 4
+
 ##Font##====================================
 Numbers, Normal, -1, Auto
 Fonts
 1, 12, 8, 8, 2, 11
+
+##Title Screen##====================================
+TitleScreen, Normal, -1, Manual
+TitleScreen
+0, 0, 255, 239

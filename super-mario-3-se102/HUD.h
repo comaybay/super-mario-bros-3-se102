@@ -28,6 +28,7 @@ private:
 	std::array<LPAnimation, 2> liveCountAnims;
 	std::array<LPAnimation, 7> scoreCountAnims;
 	std::array<LPAnimation, 3> timerAnims;
+	std::array<LPAnimation, 3> cardAnims;
 
 	Utils::Vector2<float> position;
 
@@ -42,6 +43,9 @@ private:
 	static const Utils::Vector2<int> LIVE_COUNT_OFFSET;
 	static const Utils::Vector2<int> SCORE_COUNT_OFFSET;
 	static const Utils::Vector2<int> TIMER_OFFSET;
+	static const Utils::Vector2<int> CARD_BOARD_OFFSET;
+	static const Utils::Vector2<int> CARD_OFFSET;
+
 };
 
 template<std::size_t ARRAY_SIZE>

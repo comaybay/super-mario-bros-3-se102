@@ -3,21 +3,31 @@
 
 const int Timer::START_TIME = 300;
 
-Timer::Timer() : time(0)
+Timer::Timer() : time(0), stop(true)
 {
-	PlayerVariables::SetTimer(0);
 }
 
 void Timer::Start()
 {
-	PlayerVariables::SetTimer(START_TIME);
+	stop = false;
+	if (PlayerVariables::GetTime() == 0)
+		PlayerVariables::SetTimer(START_TIME);
 }
+
+void Timer::Stop()
+{
+	stop = true;
+}
+
 
 void Timer::Update(float delta)
 {
+	if (stop)
+		return;
+
 	time += delta;
-	if (time >= 0.5f) {
-		time -= 0.5f;
+	if (time >= 0.75f) {
+		time -= 0.75f;
 		PlayerVariables::TickTimer();
 	}
 }

@@ -8,7 +8,7 @@
 using namespace Utils;
 
 Camera::Camera(const Vector2<float>& position, const Utils::Dimension<int>& viewportDim)
-	: Entity::Entity(position, Group::CAMERAS, GridType::NONE),
+	: Entity::Entity(position, { Group::CAMERAS , Group::NOT_AFFECTED_BY_TRANSITION_PAUSE }, GridType::NONE),
 	viewportDim(viewportDim),
 	target(nullptr),
 	basePosY(0),
@@ -84,7 +84,8 @@ void Camera::Update(float delta)
 		FocusXOn(target);
 
 	if (PlayerVariables::GetPowerMeterValue() == PlayerVariables::MAX_POWER_METER_VALUE ||
-		position.y < basePosY)
+		position.y < basePosY ||
+		PlayerVariables::IsInPipe())
 		FocusYOn(target);
 }
 

@@ -20,6 +20,8 @@ void SceneSlide::_Ready()
 		LPEntity player = GetEntityOfGroup(Group::PLAYERS);
 		camera.FocusOn(player);
 		camera.FollowYEntity(player);
+
+		timer.Start();
 	}
 }
 

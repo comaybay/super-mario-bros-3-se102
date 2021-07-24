@@ -22,11 +22,12 @@ public:
 	~Scene();
 	Scene();
 	virtual void Update(float delta);
-	void Render();
+	virtual void Render();
 	const std::string& GetScenePath();
 	Utils::Dimension<int> GetWorldDimension();
 	const Utils::Vector2<float>& GetCameraPosition();
 	Camera& GetCamera();
+	void StopTimer();
 	const std::string& GetPrevScenePath();
 	bool IsEntityGroupEmpty(const std::string& groupName);
 

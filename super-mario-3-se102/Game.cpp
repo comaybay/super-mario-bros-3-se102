@@ -4,6 +4,7 @@
 #include "SceneLoader.h"
 #include "TextureManager.h"
 #include "PlayerVariables.h"
+#include "TitleScene.h"
 using namespace Utils;
 
 GameSettings Game::gameSettings;
@@ -65,7 +66,7 @@ void Game::Init(HWND hWnd, const GameSettings& gameSettings)
 	ResourceLoader(gameSettings.dataDirectory).Load();
 
 	activeScenePath = gameSettings.initialScenePath;
-	activeScene = SceneLoader::LoadScene(activeScenePath);
+	activeScene = new TitleScene();
 	CollisionEngine::_SetActiveCED(activeScene);
 }
 

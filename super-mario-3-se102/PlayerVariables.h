@@ -1,8 +1,10 @@
 #pragma once
 #include "PlayerPowerLevel.h"
+#include "GoalRouletteCard.h"
 #include "Utils.h"
 #include <string>
 #include <unordered_map>
+#include <array>
 
 class PlayerVariables {
 public:
@@ -25,6 +27,9 @@ public:
 	static int GetPowerMeterValue();
 	static void SetPowerMeter(int value);
 	static void AddToPowerMeter(int value);
+
+	static void AddCard(GoalRouletteCard card);
+	static const std::array<GoalRouletteCard, 3>& GetCards();
 
 	static int GetWorldMapNumber();
 	static void SetWorldMapNumber(int number);
@@ -62,6 +67,8 @@ private:
 	static int powerMeterLevel;
 	static int worldMapNumber;
 	static int timer;
+	static std::array<GoalRouletteCard, 3> cards;
+	static int cardPointer;
 	static bool isInPipe;
 	static bool isFlownBySuperNoteBlock;
 	static std::string standingWMNodeId;

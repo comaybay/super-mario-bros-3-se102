@@ -13,6 +13,8 @@ int PlayerVariables::numberOfCoins = 0;
 int PlayerVariables::numberOfLives = 4;
 int PlayerVariables::powerMeterLevel = 0;
 int PlayerVariables::worldMapNumber = 1;
+std::array<GoalRouletteCard, 3> PlayerVariables::cards = { GoalRouletteCard::NONE, GoalRouletteCard::NONE, GoalRouletteCard::NONE, };
+int PlayerVariables::cardPointer = 0;
 bool PlayerVariables::isInPipe = false;
 bool PlayerVariables::isFlownBySuperNoteBlock = false;
 std::string PlayerVariables::standingWMNodeId = "NStart";
@@ -91,6 +93,17 @@ void PlayerVariables::SetPowerMeter(int value)
 void PlayerVariables::AddToPowerMeter(int level)
 {
 	powerMeterLevel = (powerMeterLevel + level) < MAX_POWER_METER_VALUE ? (powerMeterLevel + level) : MAX_POWER_METER_VALUE;
+}
+
+void PlayerVariables::AddCard(GoalRouletteCard card)
+{
+	cards[cardPointer] = card;
+	cardPointer = (cardPointer + 1) % 3;
+}
+
+const std::array<GoalRouletteCard, 3>& PlayerVariables::GetCards()
+{
+	return cards;
 }
 
 int PlayerVariables::GetWorldMapNumber()

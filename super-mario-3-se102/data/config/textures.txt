@@ -25,3 +25,6 @@ Fonts, spritesheets/fonts.png
 
 HUD, spritesheets/HUD.png
 0, 224, 142	
+
+TitleScreen, spritesheets/title_screen.png
+69, 42, 0

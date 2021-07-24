@@ -10,6 +10,8 @@ namespace Entities {
 		void OnReady() override;
 
 	private:
+		void OnTransitionComplete();
+
 		std::string scenePath;
 		VDirection dir;
 	};

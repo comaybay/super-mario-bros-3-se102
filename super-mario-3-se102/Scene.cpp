@@ -58,13 +58,8 @@ void Scene::_Ready()
 
 	if (!IsEntityGroupEmpty(Group::PLAYERS)) {
 		LPEntity player = GetEntityOfGroup(Group::PLAYERS);
-		//TODO: REMOVE TEST CODE
-		if (scenePath == "worlds/w_1_1_1.txt")
-			player->SetPosition({ 2280, 50 });
-
 		camera.FocusOn(player);
 		camera.FollowEntity(player);
-
 		timer.Start();
 	}
 }
@@ -100,21 +95,21 @@ void Scene::Update(float delta)
 		for (LPEntity entity : GetEntitiesOfGroup(Group::NOT_AFFECTED_BY_TRANSITION_PAUSE))
 			updateEntity(entity);
 	}
-	else {
 
+	else if (!isInTransitionPause)
+	{
 		LPDynamicGrid movableEntitiesSPGrid = static_cast<LPDynamicGrid>(entityManager->GetGrid(GridType::MOVABLE_ENTITIES));
 		movableEntitiesSPGrid->ForEachEntityIn(range, updateEntity);
 		movableEntitiesSPGrid->UpdateCells(range);
 		for (LPEntity entity : entityManager->GetNonGridEntities())
 			updateEntity(entity);
 
-		camera.Update(delta);
-		camera.PostUpdate();
-
 		timer.Update(delta);
-
-		hud.Update(delta);
 	}
+
+	camera.Update(delta);
+	camera.PostUpdate();
+	hud.Update(delta);
 }
 
 void Scene::_FreeEntitiesInQueue() {
@@ -319,6 +314,10 @@ Camera& Scene::GetCamera() {
 	return camera;
 }
 
+void Scene::StopTimer()
+{
+	timer.Stop();
+}
 
 const std::string& Scene::GetPrevScenePath()
 {

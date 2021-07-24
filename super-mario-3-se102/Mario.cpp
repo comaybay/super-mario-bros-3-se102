@@ -58,7 +58,7 @@ Mario::Mario(
 	isRunning(false),
 	onGround(false),
 	runBeforeJump(false),
-	holdEntity(false)
+	holdEntity(nullptr)
 {
 }
 
