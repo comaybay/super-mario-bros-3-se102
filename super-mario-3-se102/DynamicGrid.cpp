@@ -14,7 +14,7 @@ void DynamicGrid::UpdateCells(const CellRange& range)
 			const EntityCollection& entities = EntitiesAt(range.index + Vector2<int>(x, y));
 			//this process require removing entity in the cell while iterating, therefore an iterator must be used 
 			for (auto it = entities.begin(); it != entities.end();) {
-				int prevSize = entities.size();
+				size_t prevSize = entities.size();
 				auto newIt = UpdateEntityCellIndex(it);
 
 				if (prevSize == entities.size())

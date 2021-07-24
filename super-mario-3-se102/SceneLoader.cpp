@@ -146,7 +146,7 @@ std::string SceneLoader::ParseEncodedWorld(std::ifstream& file, int world_width,
 {
 	std::string line = GetNextNonCommentLine(file);
 
-	int size = line.size();
+	int size = static_cast<int>(line.size());
 	//+1 because strcpy_s require room for null terminate char
 	char* background = new char[size + 1];
 	char* foreground = new char[size + 1];
