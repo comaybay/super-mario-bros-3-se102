@@ -25,7 +25,6 @@ private:
 	void OnTargetDestroy(LPEntity target);
 	float basePosY;
 	LPEntity target;
-	LPEntity player;
 	Utils::Dimension<int> viewportDim;
 	Utils::Vector2<float> offset;
 	bool followYOnly;

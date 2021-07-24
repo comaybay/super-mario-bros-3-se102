@@ -24,7 +24,7 @@ void PlayerTransitionPipe::OnReady()
 
 	velY = dir == VDirection::DOWN ? SPEED : -SPEED;
 	float targetY = targetPlayer->GetPosition().y;
-	float targetDimY = targetPlayer->GetCurrentSpriteDimension().height;
+	int targetDimY = targetPlayer->GetCurrentSpriteDimension().height;
 	endY = dir == VDirection::DOWN ? targetY + targetDimY : targetY - targetDimY;
 
 }

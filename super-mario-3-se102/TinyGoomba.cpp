@@ -47,7 +47,7 @@ void TinyGoomba::Update(float delta)
 	//since posiiton.x is manually assign, this velocity.x will not be used for calculating position
 	//but for collision detection (this is a limittion of current collision engine)
 	int sign = Sign(position.x - oldPosX);
-	velocity.x = sign * 100;
+	velocity.x = sign * 100.0f;
 }
 
 void TinyGoomba::Fall(float delta)

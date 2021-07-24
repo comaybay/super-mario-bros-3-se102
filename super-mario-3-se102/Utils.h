@@ -30,7 +30,7 @@ namespace Utils
 		template <class OTHER>
 		Dimension(const Dimension<OTHER>& other);
 
-		Dimension<T> operator/(float value) const;
+		Dimension<float> operator/(float value) const;
 		Dimension<T> operator*(int value) const;
 		Dimension<T> operator*(float value) const;
 		Dimension<T> operator+(const Dimension<T>& other) const;
@@ -249,8 +249,8 @@ inline Utils::Dimension<T>::Dimension(const Dimension<OTHER>& other)
 	: width(static_cast<T>(other.width)), height(static_cast<T>(other.height)) {}
 
 template <typename T>
-inline Utils::Dimension<T> Utils::Dimension<T>::operator/(float value) const {
-	return Dimension(width / value, height / value);
+inline Utils::Dimension<float> Utils::Dimension<T>::operator/(float value) const {
+	return Dimension<float>(static_cast<float>(width) / value, static_cast<float>(height) / value);
 }
 
 template <typename T>

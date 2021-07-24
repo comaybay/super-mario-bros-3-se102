@@ -30,10 +30,10 @@ void SceneSlide::Update(float delta)
 	Scene::Update(delta);
 
 	//handling slide stop
-	const float WorldDimX = GetWorldDimension().width;
+	int WorldDimX = GetWorldDimension().width;
 	const Utils::Dimension<int>& viewportDim = camera.GetViewportDimension();
 	if (camera.GetPosition().x > WorldDimX - viewportDim.width) {
 		camera.SetVelocity({ 0, 0 });
-		camera.SetPosition({ WorldDimX - viewportDim.width , camera.GetPosition().y });
+		camera.SetPosition({ static_cast<float>(WorldDimX - viewportDim.width), camera.GetPosition().y });
 	}
 }

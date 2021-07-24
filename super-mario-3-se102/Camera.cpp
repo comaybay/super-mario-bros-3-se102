@@ -19,7 +19,7 @@ Camera::Camera(const Vector2<float>& position, const Utils::Dimension<int>& view
 void Camera::OnReady() {
 	Entity::OnReady();
 	parentScene->UnsubscribeToOutOfWorldEvent(this);
-	basePosY = parentScene->GetWorldDimension().height - viewportDim.height;
+	basePosY = static_cast<float>(parentScene->GetWorldDimension().height - viewportDim.height);
 }
 
 void Camera::FocusOn(LPEntity entity)
@@ -59,7 +59,7 @@ void Camera::FocusXOn(LPEntity entity) {
 }
 
 void Camera::FocusYOn(LPEntity entity) {
-	float worldDimY = parentScene->GetWorldDimension().height;
+	float worldDimY = static_cast<float>(parentScene->GetWorldDimension().height);
 	int targetDimY = entity->GetHitbox().GetDimension().height;
 	float targetPosY = entity->GetPosition().y;
 

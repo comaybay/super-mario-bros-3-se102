@@ -54,6 +54,7 @@ Mario::Mario(
 	time(0),
 	powerMeterTime(0),
 	walkAnimSpeed(1),
+	invincibleTime(0),
 	instantDecrease(false),
 	isRunning(false),
 	onGround(false),
